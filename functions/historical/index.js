@@ -373,8 +373,8 @@ exports.handler = async (event, context, callback) => {
     }
 
     response = await axelard({ cmd: 'axelard q tss deactivated-operators -oj', cache: true, cache_timeout: 15 });
-    if (to_json(response?.data?.stdout)) {
-      const deregistering_addresses = to_json(response.data.stdout).operator_addresses || [];
+    if (to_json(response?.stdout)) {
+      const deregistering_addresses = to_json(response.stdout).operator_addresses || [];
       data = _.orderBy(data.map(v => {
         return {
           ...v,
@@ -384,8 +384,8 @@ exports.handler = async (event, context, callback) => {
     }
 
     response = await axelard({ cmd: 'axelard q snapshot validators -oj', cache: true, cache_timeout: 5 });
-    if (to_json(response?.data?.stdout)) {
-      const illegible_addresses = to_json(response.data.stdout).validators?.filter(v => Object.values(v?.tss_illegibility_info || {}).findIndex(v => v) > -1);
+    if (to_json(response?.stdout)) {
+      const illegible_addresses = to_json(response.stdout).validators?.filter(v => Object.values(v?.tss_illegibility_info || {}).findIndex(v => v) > -1);
       data = _.orderBy(data.map(v => {
         return {
           ...v,
@@ -411,8 +411,8 @@ exports.handler = async (event, context, callback) => {
       for (let i = 0; i < should_have_broadcaster_data.length; i++) {
         const v = should_have_broadcaster_data[i];
         response = await axelard({ cmd: `axelard q snapshot proxy ${v.operator_address}`, cache: true, cache_timeout: 5 });
-        if (to_json(response?.data?.stdout)) {
-          v.broadcaster_address = to_json(response.data.stdout).address;
+        if (to_json(response?.stdout)) {
+          v.broadcaster_address = to_json(response.stdout).address;
         }
       }
     }
@@ -446,8 +446,8 @@ exports.handler = async (event, context, callback) => {
     for (let i = 0; i < ids.length; i++) {
       const id = ids[i];
       response = await axelard({ cmd: `axelard q nexus chain-maintainers ${chain_manager.maintainer_id(id, chains)} -oj`, cache: true, cache_timeout: 5 });
-      if (to_json(response?.data?.stdout)?.maintainers) {
-        supported_chains[id] = to_json(response.data.stdout).maintainers;
+      if (to_json(response?.stdout)?.maintainers) {
+        supported_chains[id] = to_json(response.stdout).maintainers;
       }
     }
     data = data.map(v => {
@@ -871,14 +871,14 @@ exports.handler = async (event, context, callback) => {
             response[i] = v;
 
             // request api
-            await requester.get('', { params: {
+            await requester.post('', {
               module: 'index',
               index: 'historical',
               method: 'set',
               id: `${snapshot_block}_${v?.operator_address}`,
               ...v,
               snapshot_block,
-            } }).catch(error => { return { data: { error } }; });
+            }).catch(error => { return { data: { error } }; });
           }
         }
       }
