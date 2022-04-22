@@ -30,12 +30,8 @@ git pull
 bash $HOME/axelarscan-api/agent/scripts/setup.sh
 ```
 
-### [setup axelar node](https://docs.axelar.dev/node/join)
-- Subscriber: run Binary mode
-- Log scraper: run Docker mode
-
 ## Subscriber
-### start axelar node
+### start axelar node (Binary)
 ```
 bash $HOME/axelarscan-api/agent/scripts/axelar-core.sh --environment testnet
 ```
@@ -70,9 +66,10 @@ pm2 reload axelarscan-agent
 ```
 
 ## Log scraper
-### start axelar node
+### start axelar node (Docker)
 ```
 bash $HOME/axelarscan-api/agent/scripts/axelar-core.sh --environment testnet --flags "-e docker"
+
 # start prometheus
 docker rm -f prometheus
 docker run -d --restart unless-stopped \
