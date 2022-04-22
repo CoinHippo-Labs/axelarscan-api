@@ -1,0 +1,43 @@
+##########################
+# Services Configuration #
+##########################
+
+environment: testnet # [testnet|mainnet|devnet]
+log_level: debug # [debug|info]
+
+external_api:
+  endpoints:
+    coingecko: "https://api.coingecko.com/api/v3/"
+    ens: "https://api.thegraph.com/subgraphs/name/ensdomains/ens"
+
+mainnet:
+  endpoints:
+    rpc: "https://axelar-rpc.pops.one:443"
+    lcd: "https://axelar-lcd.quickapi.com:443"
+    prometheus: "http://agent.axelarscan.io:9092"
+    cli: "http://agent.axelarscan.io:3333"
+    indexer:
+      url: "https://indexer.axelarscan.io"
+      username: ""
+      password: ""
+  num_blocks_avg_block_time: 100
+  num_blocks_per_heartbeat: 50
+  fraction_heartbeat_block: 1
+  store_blocks: 100000
+  cache_timeout_minutes: 15
+
+testnet:
+  endpoints:
+    rpc: "http://testnet.rpc.axelarscan.io:26657"
+    lcd: "https://axelartest-lcd.quickapi.com:443"
+    prometheus: "http://testnet.agent.axelarscan.io:9092"
+    cli: "http://testnet.agent.axelarscan.io:3333"
+    indexer:
+      url: "https://testnet.indexer.axelarscan.io"
+      username: ""
+      password: ""
+  num_blocks_avg_block_time: 100
+  num_blocks_per_heartbeat: 50
+  fraction_heartbeat_block: 1
+  store_blocks: 100000
+  cache_timeout_minutes: 15

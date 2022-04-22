@@ -1,0 +1,29 @@
+##########################
+# Services Configuration #
+##########################
+
+environment: testnet # [testnet|mainnet|devnet]
+port:
+  docker: 8080
+  pm2: 3333
+log_level: debug # [debug|info]
+
+mainnet:
+  endpoints:
+    rpc: "http://agent.axelarscan.io:26657"
+    api: "https://api.axelarscan.io"
+  num_prev_blocks_fetch_tx: 1
+  num_reindex_processes: 2
+  start_reindex_block: 1
+  end_reindex_block: 5000000
+  reindex: false
+
+testnet:
+  endpoints:
+    rpc: "http://testnet.agent.axelarscan.io:26657"
+    api: "https://testnet.api.axelarscan.io"
+  num_prev_blocks_fetch_tx: 2
+  num_reindex_processes: 2
+  start_reindex_block: 690489
+  end_reindex_block: 5000000
+  reindex: false
