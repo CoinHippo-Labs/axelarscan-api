@@ -3,7 +3,7 @@ const config = require('config-yml');
 // import module for generate timestamp
 const moment = require('moment');
 
-const log = (level, from, message, data) => {
+const log = (level, from, message, data = {}) => {
   // terminal colors
   const LIGHT_BLUE = '\033[0;94m',
     LIGHT_YELLOW = '\033[0;93m',
