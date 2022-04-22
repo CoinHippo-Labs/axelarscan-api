@@ -4,8 +4,7 @@
 
 environment: testnet # [testnet|mainnet|devnet]
 port:
-  docker: 8080
-  pm2: 3333
+  cli: 3333
 log_level: debug # [debug|info]
 
 mainnet:

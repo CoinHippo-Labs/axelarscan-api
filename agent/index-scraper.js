@@ -7,11 +7,5 @@ const { log } = require('./utils');
 const environment = process.env.ENVIRONMENT || config?.environment;
 
 log('info', 'main', 'start service', { config: config?.[environment] });
-// import block subscriber
-require('./services/subscriber/block')();
-// import tx subscriber
-require('./services/subscriber/tx')();
-if (config?.[environment]?.reindex) {
-  // import reindexer
-  require('./services/reindexer')();
-}
+// import log scraper
+require('./services/scraper/log')();

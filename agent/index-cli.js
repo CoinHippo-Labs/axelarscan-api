@@ -18,8 +18,6 @@ const environment = process.env.ENVIRONMENT || config?.environment;
 log('info', 'main', 'start service', { config: config?.[environment] });
 // import cli routes
 require('./routes/cli')(app);
-// import log scraper
-require('./services/scraper/log')();
 
 // start service
-app.listen(config?.port?.pm2 || 3333);
+app.listen(config?.port?.cli || 3333);

@@ -1,7 +1,7 @@
 # Axelarscan Agent
 ### 2 types of agent:
 1. Subscriber
-2. Log scraper & CLI executor
+2. Log scraper
 
 ## Deployment
 ### Prerequisites
@@ -30,8 +30,8 @@ visudo
 su axelard
 ```
 ### [setup axelar node](https://docs.axelar.dev/node/join)
-- Subscriber: run axelard as Binary
-- Log scraper & CLI executor: run Docker mode
+- Subscriber: run Binary mode
+- Log scraper: run Docker mode
 
 
 ## Subscriber
@@ -43,19 +43,33 @@ bash $HOME/axelarscan-api/agent/scripts/axelar-core.sh --environment testnet
 ```
 cd $HOME/axelarscan-api/agent
 docker-compose up --build -d axelarscan-agent
+
+# cli executor
+cd $HOME/axelarscan-api/agent
+rm -rf node_modules
+npm i
+NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-cli.js -n axelarscan-agent
+pm2 startup
+pm2 save --force
 ```
 ### view logs
 ```
 cd $HOME/axelarscan-api/agent
 docker-compose logs -f --tail=100 axelarscan-agent
+
+# cli executor
+pm2 log --lines 100 axelarscan-agent
 ```
 ### restart services
 ```
 cd $HOME/axelarscan-api/agent
 docker-compose restart axelarscan-agent
+
+# cli executor
+pm2 reload axelarscan-agent
 ```
 
-## Log scraper & CLI executor
+## Log scraper
 ### start axelar node
 ```
 bash $HOME/axelarscan-api/agent/scripts/axelar-core.sh --environment testnet --flags "-e docker"
@@ -68,12 +82,12 @@ docker run -d --restart unless-stopped \
   -v $HOME/axelarscan-api/agent/scripts/prometheus.yml:/etc/prometheus/prometheus.yml \
   prom/prometheus
 ```
-### start scraper & cli agent
+### start scraper agent
 ```
 cd $HOME/axelarscan-api/agent
 rm -rf node_modules
 npm i
-NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-pm2.js -n axelarscan-agent
+NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-scraper.js -n axelarscan-agent
 pm2 startup
 pm2 save --force
 ```
