@@ -17,7 +17,7 @@ rm ~/nodesource_setup.sh
 
 # pm2
 rm -r /usr/lib/node_modules/.pm2-*
-npm install pm2@latest -g
+sudo npm install pm2@latest -g
 pm2 install pm2-logrotate
 pm2 set pm2-logrotate:compress true
 
