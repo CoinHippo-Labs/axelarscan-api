@@ -1,18 +1,23 @@
 // import modules for promise exec
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
+// import config
+const config = require('config-yml');
 // import utils
 const { log } = require('../../utils');
 
 // initial service name
 const service_name = 'cli';
 
+// initial environment
+const environment = process.env.ENVIRONMENT || config?.environment;
+
 module.exports.exec = async params => {
   let data;
 
   log('info', service_name, 'command received', { ...params });
   if (params?.cmd?.startsWith('axelard q ')) {
-    const cmd = `$(which docker) exec axelar-core ${params.cmd}`;
+    const cmd = `/home/axelard/.axelar${['testnet'].includes(environment) ? `_${environment}` : ''}/bin/${params.cmd}`;
     log('debug', service_name, 'exec', { cmd });
     try {
       data = await exec(cmd);
