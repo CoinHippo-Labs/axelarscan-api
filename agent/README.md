@@ -14,12 +14,10 @@ git clone https://github.com/CoinHippo-Labs/axelarscan-api.git
 cd axelarscan-api/agent
 git pull
 ```
-
 ### run setup script
 ```
 bash $HOME/axelarscan-api/agent/scripts/setup.sh
 ```
-
 ### add user
 ```
 adduser axelard
@@ -27,15 +25,14 @@ usermod -a -G sudo axelard
 visudo
 # add: axelard ALL=(ALL) NOPASSWD: ALL
 ```
-
 ### login
 ```
 su axelard
 ```
-
 ### [setup axelar node](https://docs.axelar.dev/node/join)
 - Subscriber: run axelard as Binary
 - Log scraper & CLI executor: run Docker mode
+
 
 ## Subscriber
 ### start axelar node
@@ -71,7 +68,7 @@ docker run -d --restart unless-stopped \
   -v $HOME/axelarscan-api/agent/scripts/prometheus.yml:/etc/prometheus/prometheus.yml \
   prom/prometheus
 ```
-### start scraper && cli agent
+### start scraper & cli agent
 ```
 cd $HOME/axelarscan-api/agent
 rm -rf node_modules
