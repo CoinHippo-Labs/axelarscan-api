@@ -51,6 +51,8 @@ parse_options() {
 parse_options "$@"
 
 # run by axelard
+cd ~
+
 # set ENV
 touch ~/.bash_aliases
 echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin:~/.axelar_testnet/bin:~/.axelar/bin" > ~/.bash_aliases
