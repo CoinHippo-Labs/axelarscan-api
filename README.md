@@ -28,7 +28,7 @@ chmod +x scripts/deploy.sh
 ./scripts/deploy.sh --help
 ```
 
-### Deploy Services
+### Deploy services
 ```
 ./scripts/deploy.sh --environment testnet --aws-region {AWS_REGION}
 ```
