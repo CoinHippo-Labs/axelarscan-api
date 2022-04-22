@@ -112,6 +112,7 @@ exports.handler = async (event, context, callback) => {
           // get from cache
           if (cache) {
             response_cache = await crud({ index: 'cosmos', method: 'get', id: cache_id });
+            response_cache = to_json(response_cache?.response);
             if (response_cache && moment().diff(moment(response_cache.updated_at * 1000), 'minutes', true) <= (cache_timeout || 1)) {
               res = { data: response_cache };
               cache_hit = true;
