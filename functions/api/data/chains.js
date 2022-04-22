@@ -192,7 +192,7 @@ module.exports = {
         website: 'https://axelar.network',
         prefix_address: 'axelar',
         endpoints: {
-          lcd: 'https://axelar-lcd.quickapi.com:443',
+          lcd: 'http://rpc.axelarscan.io:1317',
         },
       },
       {
@@ -500,7 +500,7 @@ module.exports = {
         website: 'https://axelar.network',
         prefix_address: 'axelar',
         endpoints: {
-          lcd: 'https://axelartest-lcd.quickapi.com:443',
+          lcd: 'http://testnet.rpc.axelarscan.io:1317',
         },
       },
       {

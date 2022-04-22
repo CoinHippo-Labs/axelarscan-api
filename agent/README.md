@@ -1,23 +1,12 @@
 # Axelarscan Agent
 ### 2 types of agent:
-1. Subscriber
-2. Log scraper
+- Subscriber
+- Log scraper
 
 ## Deployment
 ### Prerequisites
 Ubuntu
 
-### clone project
-```
-cd $HOME
-git clone https://github.com/CoinHippo-Labs/axelarscan-api.git
-cd axelarscan-api/agent
-git pull
-```
-### run setup script
-```
-bash $HOME/axelarscan-api/agent/scripts/setup.sh
-```
 ### add user
 ```
 adduser axelard
@@ -29,10 +18,21 @@ visudo
 ```
 su axelard
 ```
+### clone project
+```
+cd $HOME
+git clone https://github.com/CoinHippo-Labs/axelarscan-api.git
+cd axelarscan-api/agent
+git pull
+```
+### run setup script
+```
+bash $HOME/axelarscan-api/agent/scripts/setup.sh
+```
+
 ### [setup axelar node](https://docs.axelar.dev/node/join)
 - Subscriber: run Binary mode
 - Log scraper: run Docker mode
-
 
 ## Subscriber
 ### start axelar node
