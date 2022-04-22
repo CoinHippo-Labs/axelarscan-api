@@ -66,11 +66,23 @@ module.exports = async () => {
       index: collection,
       method: 'search',
       query: {
-        range: {
-          updated_at: {
-            lt: moment().subtract(cache_timeout_minutes, 'minutes').unix(),
-          },
-        },
+        bool: [
+          must: [{
+            range: {
+              updated_at: {
+                lt: moment().subtract(cache_timeout_minutes, 'minutes').unix(),
+              },
+            },
+          }],
+          must_not: collection === 'axelard' ? [{
+            bool: {
+              should: [
+                { exists: { field: 'type' } },
+                { match: { type: 'proxy' } },
+              ], 
+            },
+          }] : [],
+        ],
       },
       path: `/${collection}/_delete_by_query`,
     };
