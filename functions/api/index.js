@@ -1260,8 +1260,8 @@ exports.handler = async (event, context, callback) => {
             // get from cache
             if (cache && cache_id?.startsWith('axelard')) {
               response_cache = await crud({ index: 'axelard', method: 'get', id: cache_id });
-              if (response_cache?.data && moment().diff(moment(response_cache.data.updated_at * 1000), 'minutes', true) <= (cache_timeout || 15)) {
-                res = response_cache;
+              if (response_cache && moment().diff(moment(response_cache.updated_at * 1000), 'minutes', true) <= (cache_timeout || 15)) {
+                res = { data: response_cache };
                 cache_hit = true;
               }
             }
@@ -1272,14 +1272,14 @@ exports.handler = async (event, context, callback) => {
                 .catch(error => { return { data: { error } }; });
             }
             // check cache
-            if (res?.data?.data?.stdout) {
+            if (res?.data?.stdout) {
               // process
               if (params.cmd?.startsWith('axelard q snapshot proxy ')) {
                 res.data.type = 'proxy';
               }
               else if ((params.cmd?.startsWith('axelard q evm batched-commands ') || params.cmd?.startsWith('axelard q evm latest-batched-commands ')) && params.cmd?.endsWith(' -oj')) {
                 const chain = params.cmd.split(' ')[4]?.toLowerCase();
-                const output = to_json(res?.data?.data?.stdout);
+                const output = to_json(res.data.stdout);
                 if (output) {
                   const commands = [];
                   if (output.command_ids) {
@@ -1290,7 +1290,7 @@ exports.handler = async (event, context, callback) => {
                         // request cli
                         const response_cmd = await cli.get(path, { params: { cmd, cache: true, cache_timeout: 1 } })
                           .catch(error => { return { data: { error } }; });
-                        commands.push(to_json(response_cmd?.data?.data?.stdout));
+                        commands.push(to_json(response_cmd?.data?.stdout));
                         // sleep before next cmd
                         await sleep(0.5 * 1000);
                       }
@@ -1305,11 +1305,11 @@ exports.handler = async (event, context, callback) => {
                   }
                   else {
                     const response_batch = await crud({ index: 'batches', method: 'search', query: { match_phrase: { 'batch_id': output.batch_id } }, size: 1 });
-                    if (!response_batch?.data?.data?.[0]?.created_at?.ms) {
+                    if (!response_batch?.data?.[0]?.created_at?.ms) {
                       created_at = moment().utc();
                     }
                     else {
-                      created_at = moment(response_batch.data.data[0].created_at.ms).utc();
+                      created_at = moment(response_batch.data[0].created_at.ms).utc();
                     }
                   }
                   if (created_at) {
@@ -1339,7 +1339,7 @@ exports.handler = async (event, context, callback) => {
                           },
                         };
                         const response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 100 });
-                        if (response_txs?.data?.data?.length > 0) {
+                        if (response_txs?.data?.length > 0) {
                           const signed = {
                             chain,
                             batch_id: output.batch_id,
@@ -1354,7 +1354,7 @@ exports.handler = async (event, context, callback) => {
                               }
                             } catch (error) {}
                           }
-                          const txs = response_txs.data.data.filter(tx => tx?.send?.id);
+                          const txs = response_txs.data.filter(tx => tx?.send?.id);
                           const ids = txs.map(tx => tx.send.id);
                           for (let j = 0; j < ids.length; j++) {
                             const id = ids[j];
@@ -1373,16 +1373,16 @@ exports.handler = async (event, context, callback) => {
                   }
 
                   await crud({ index: 'batches', method: 'set', path: `/batches/_update/${output.id}`, ...output });
-                  res.data.data.stdout = JSON.stringify(output);
+                  res.data.stdout = JSON.stringify(output);
                 }
               }
               // save
               if (cache && !cache_hit && cache_id?.startsWith('axelard')) {
-                await crud({ index: 'axelard', method: 'set', id: cache_id, ...res.data, updated_at: moment().unix() });
+                await crud({ index: 'axelard', method: 'set', id: cache_id, ...res, updated_at: moment().unix() });
               }
             }
-            else if (response_cache?.data) {
-              res = response_cache;
+            else if (response_cache) {
+              res = { data: response_cache };
             }
             res.data.cache_hit = cache_hit;
           }
