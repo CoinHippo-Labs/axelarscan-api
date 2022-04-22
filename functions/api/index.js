@@ -112,8 +112,8 @@ exports.handler = async (event, context, callback) => {
           // get from cache
           if (cache) {
             response_cache = await crud({ index: 'cosmos', method: 'get', id: cache_id });
-            if (response_cache?.data && moment().diff(moment(response_cache.data.updated_at * 1000), 'minutes', true) <= (cache_timeout || 1)) {
-              res = response_cache;
+            if (response_cache && moment().diff(moment(response_cache.updated_at * 1000), 'minutes', true) <= (cache_timeout || 1)) {
+              res = { data: response_cache };
               cache_hit = true;
             }
           }
@@ -130,8 +130,8 @@ exports.handler = async (event, context, callback) => {
               await crud({ index: 'cosmos', method: 'set', id: cache_id, response: JSON.stringify(res.data), updated_at: moment().unix() });
             }
           }
-          else if (response_cache?.data) {
-            res = response_cache;
+          else if (response_cache) {
+            res = { data: response_cache };
           }
           // process
           const evm_chains = chains?.[environment]?.evm || [];
@@ -283,7 +283,7 @@ exports.handler = async (event, context, callback) => {
                     },
                   };
                   const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                  const linked = response_linked?.data?.data?.[0];
+                  const linked = response_linked?.data?.[0];
                   if (linked) {
                     tx.sender_chain = linked.sender_chain;
                     tx.recipient_chain = linked.recipient_chain;
@@ -350,7 +350,7 @@ exports.handler = async (event, context, callback) => {
                                 },
                               };
                               const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                              const linked = response_linked?.data?.data?.[0];
+                              const linked = response_linked?.data?.[0];
                               if (linked) {
                                 tx_send.recipient_chain = linked.recipient_chain;
                                 tx_send.denom = tx_send.denom || linked.asset;
@@ -414,7 +414,7 @@ exports.handler = async (event, context, callback) => {
                       },
                     };
                     const response_linked = !tx.recipient_chain && await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                    const linked = response_linked?.data?.data?.[0];
+                    const linked = response_linked?.data?.[0];
                     if (linked?.recipient_chain || tx.recipient_chain) {
                       const recipient_chain = linked?.recipient_chain || tx.recipient_chain;
                       const command_id = tx.transfer_id.toString(16).padStart(64, '0');
@@ -428,7 +428,7 @@ exports.handler = async (event, context, callback) => {
                         },
                       };
                       const response_batch = await crud({ index: 'batches', method: 'search', query, size: 1 });
-                      const batch = response_batch?.data?.data?.[0];
+                      const batch = response_batch?.data?.[0];
                       if (batch) {
                         signed = {
                           chain: recipient_chain,
@@ -468,8 +468,8 @@ exports.handler = async (event, context, callback) => {
                       },
                     };
                     let response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 100 });
-                    if (response_txs?.data?.data?.length > 0) {
-                      const txs = response_txs.data.data.filter(tx => tx?.send?.id);
+                    if (response_txs?.data?.length > 0) {
+                      const txs = response_txs.data.filter(tx => tx?.send?.id);
                       const ids = txs.map(tx => tx.send.id);
                       for (let i = 0; i < ids.length; i++) {
                         const id = ids[i];
@@ -500,8 +500,8 @@ exports.handler = async (event, context, callback) => {
                         },
                       };
                       response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 100 });
-                      if (response_txs?.data?.data?.length > 0) {
-                        const txs = response_txs.data.data.filter(tx => tx?.send?.id);
+                      if (response_txs?.data?.length > 0) {
+                        const txs = response_txs.data.filter(tx => tx?.send?.id);
                         const ids = txs.map(tx => tx.send.id);
                         for (let i = 0; i < ids.length; i++) {
                           const id = ids[i];
@@ -554,7 +554,7 @@ exports.handler = async (event, context, callback) => {
                               },
                             };
                             const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                            const linked = response_linked?.data?.data?.[0];
+                            const linked = response_linked?.data?.[0];
                             if (linked) {
                               tx_send.sender_chain = linked.sender_chain || tx_send.sender_chain;
                               tx_send.recipient_chain = linked.recipient_chain || tx_send.recipient_chain;
@@ -640,7 +640,7 @@ exports.handler = async (event, context, callback) => {
                                 },
                               };
                               const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                              const linked = response_linked?.data?.data?.[0];
+                              const linked = response_linked?.data?.[0];
                               if (linked) {
                                 tx_send.sender_chain = linked.sender_chain || tx_send.sender_chain;
                                 tx_send.recipient_chain = linked.recipient_chain || tx_send.recipient_chain;
@@ -648,7 +648,7 @@ exports.handler = async (event, context, callback) => {
                               }
                               await sleep(0.5 * 1000);
                               const response_txs = await crud({ index: 'crosschain_txs', method: 'search', query: { match: { 'send.id': transaction_id } }, size: 1 });
-                              const tx_confirm_deposit = response_txs?.data?.data?.[0]?.confirm_deposit;
+                              const tx_confirm_deposit = response_txs?.data?.[0]?.confirm_deposit;
                               const params = { index: 'crosschain_txs', method: 'set', path: `/crosschain_txs/_update/${transaction_id}`, id: transaction_id, send: tx_send, vote_confirm_deposit: tx };
                               if (tx_confirm_deposit) {
                                 body.confirm_deposit = tx_confirm_deposit;
@@ -807,7 +807,7 @@ exports.handler = async (event, context, callback) => {
                   },
                 };
                 const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: txs.length });
-                const linked_list = response_linked?.data?.data?.filter(l => l);
+                const linked_list = response_linked?.data?.filter(l => l);
                 for (let i = 0; i < txs.length; i++) {
                   const linked = linked_list?.find(l => l?.deposit_address?.toLowerCase() === txs[i]?.recipient_address?.toLowerCase());
                   if (linked) {
@@ -894,7 +894,7 @@ exports.handler = async (event, context, callback) => {
                   },
                 };
                 const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: txs.length });
-                const linked_list = response_linked?.data?.data?.filter(l => l);
+                const linked_list = response_linked?.data?.filter(l => l);
                 for (let i = 0; i < txs.length; i++) {
                   const linked = linked_list?.find(l => l?.deposit_address?.toLowerCase() === txs[i]?.recipient_address?.toLowerCase());
                   if (linked) {
@@ -966,7 +966,7 @@ exports.handler = async (event, context, callback) => {
                   },
                 };
                 const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: txs.length });
-                const linked_list = response_linked?.data?.data?.filter(l => l);
+                const linked_list = response_linked?.data?.filter(l => l);
                 for (let i = 0; i < txs.length; i++) {
                   if (txs[i].type === 'ConfirmDeposit') {
                     let signed, send_gateway;
@@ -984,7 +984,7 @@ exports.handler = async (event, context, callback) => {
                         },
                       };
                       const response_batch = await crud({ index: 'batches', method: 'search', query, size: 1 });
-                      const batch = response_batch?.data?.data?.[0];
+                      const batch = response_batch?.data?.[0];
                       if (batch) {
                         signed = {
                           chain: recipient_chain,
@@ -1024,8 +1024,8 @@ exports.handler = async (event, context, callback) => {
                       },
                     };
                     let response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 100 });
-                    if (response_txs?.data?.data?.length > 0) {
-                      const _txs = response_txs.data.data.filter(tx => tx?.send?.id);
+                    if (response_txs?.data?.length > 0) {
+                      const _txs = response_txs.data.filter(tx => tx?.send?.id);
                       const ids = _txs.map(tx => tx.send.id);
                       for (let j = 0; j < ids.length; j++) {
                         const id = ids[j];
@@ -1056,8 +1056,8 @@ exports.handler = async (event, context, callback) => {
                         },
                       };
                       response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 100 });
-                      if (response_txs?.data?.data?.length > 0) {
-                        const _txs = response_txs.data.data.filter(tx => tx?.send?.id);
+                      if (response_txs?.data?.length > 0) {
+                        const _txs = response_txs.data.filter(tx => tx?.send?.id);
                         const ids = _txs.map(tx => tx.send.id);
                         for (let i = 0; i < ids.length; i++) {
                           const id = ids[i];
@@ -1205,7 +1205,7 @@ exports.handler = async (event, context, callback) => {
                               },
                             };
                             const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                            const linked = response_linked?.data?.data?.[0];
+                            const linked = response_linked?.data?.[0];
                             if (linked) {
                               tx_send.sender_chain = linked.sender_chain || tx_send.sender_chain;
                               tx_send.recipient_chain = linked.recipient_chain || tx_send.recipient_chain;
@@ -1447,7 +1447,7 @@ exports.handler = async (event, context, callback) => {
               }
             };
             const response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 1 });
-            let tx = response_txs?.data?.data?.[0];
+            let tx = response_txs?.data?.[0];
             if (!tx && depositAddress) {
               const created_at = moment().utc();
               const evm_chains = chains?.[environment]?.evm || [];
@@ -1487,7 +1487,7 @@ exports.handler = async (event, context, callback) => {
                           },
                         };
                         const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                        const linked = response_linked?.data?.data?.[0];
+                        const linked = response_linked?.data?.[0];
                         if (linked) {
                           tx_send.recipient_chain = linked.recipient_chain || tx_send.recipient_chain;
                           tx_send.denom = tx_send.denom || linked.asset;
@@ -1538,7 +1538,7 @@ exports.handler = async (event, context, callback) => {
                           },
                         };
                         const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-                        const linked = response_linked?.data?.data?.[0];
+                        const linked = response_linked?.data?.[0];
                         if (linked) {
                           tx_send.recipient_chain = normalize_chain(linked.recipient_chain);
                           tx_send.denom = tx_send.denom || linked.asset;
@@ -1559,7 +1559,7 @@ exports.handler = async (event, context, callback) => {
                 },
               };
               const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
-              const linked = response_linked?.data?.data?.[0];
+              const linked = response_linked?.data?.[0];
               tx = { ...tx, linked };
             }
             response = [tx].filter(t => t);
@@ -1575,7 +1575,7 @@ exports.handler = async (event, context, callback) => {
               },
             };
             const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, sort: [{ height: 'desc' }], size: 1000 });
-            const linked_list = response_linked?.data?.data || [];
+            const linked_list = response_linked?.data || [];
             const should = [];
             for (let i = 0; i < linked_list.length; i++) {
               const linked = linked_list[i];
@@ -1593,7 +1593,7 @@ exports.handler = async (event, context, callback) => {
                 },
               };
               const response_txs = await crud({ index: 'crosschain_txs', method: 'search', query, size: 1000 });
-              txs = response_txs?.data?.data?.filter(tx => tx).map(tx => {
+              txs = response_txs?.data?.filter(tx => tx).map(tx => {
                 return {
                   ...tx,
                   linked: linked_list.find(l => l?.deposit_address?.toLowerCase() === tx?.send?.recipient_address?.toLowerCase()),

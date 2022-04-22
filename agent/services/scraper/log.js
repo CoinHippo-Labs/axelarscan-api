@@ -60,14 +60,14 @@ const save = async (data, index_name, requester, is_update = false, delay_sec = 
         .catch(error => { return { data: { error } }; });
 
       // handle error
-      if (response?.data?.data && !response.data.data.stdout && response.data.data.stderr && moment().diff(moment(data.timestamp * 1000), 'day') <= 1) {
+      if (response?.data && !response.data.stdout && response.data.stderr && moment().diff(moment(data.timestamp * 1000), 'day') <= 1) {
         response = await requester.get('', { params: { module: 'cli', cmd: 'axelard q snapshot info latest -oj', cache: true, cache_timeout: 5 } })
           .catch(error => { return { data: { error } }; });
       }
 
-      if (response?.data?.data?.stdout) {
+      if (response?.data?.stdout) {
         try {
-          const snapshotData = JSON.parse(response.data.data.stdout);
+          const snapshotData = JSON.parse(response.data.stdout);
           if (!data.height) {
             data.height = Number(snapshotData.height);
           }
@@ -82,9 +82,9 @@ const save = async (data, index_name, requester, is_update = false, delay_sec = 
       const response = await requester.get('', { params: { module: 'cli', cmd: `axelard q tss key ${data.key_id} -oj`, cache: true, cache_timeout: 15 } })
         .catch(error => { return { data: { error } }; });
 
-      if (response?.data?.data?.stdout) {
+      if (response?.data?.stdout) {
         try {
-          const keyData = JSON.parse(response.data.data.stdout);
+          const keyData = JSON.parse(response.data.stdout);
           if (keyData) {
             if (keyData.role) {
               if (!keyData.role.includes('KEY_ROLE_UNSPECIFIED')) {
@@ -410,8 +410,8 @@ module.exports = () => {
           size: 1,
         }).catch(error => { return { data: { error } }; });
 
-        if (response?.data?.hits?.hits?.[0]) {
-          keygen.id = response.data.hits.hits[0]._id;
+        if (response?.data?.data?.[0]) {
+          keygen.id = response.data.data[0]._id;
         }
         keygen.failed = true;
         await save(keygen, 'keygens', requester, true);
@@ -480,8 +480,8 @@ module.exports = () => {
               size: 1,
             }).catch(error => { return { data: { error } }; });
 
-            if (response_txs?.data?.hits?.hits?.[0]?._source) {
-              const tx = response_txs.data.hits.hits[0]._source;
+            if (response_txs?.data?.data?.[0]) {
+              const tx = response_txs.data.data[0];
               if (tx.confirm_deposit) {
                 tx.confirm_deposit.transfer_id = confirm.transfer_id;
               }
@@ -510,8 +510,8 @@ module.exports = () => {
                 size: 1,
               }).catch(error => { return { data: { error } }; });
 
-              if (response_batch?.data?.hits?.hits?.[0]?._source) {
-                const batch = response_batch.data.hits.hits[0]._source;
+              if (response_batch?.data?.data?.[0]) {
+                const batch = response_batch.data.data[0];
                 if (batch) {
                   signed = {
                     chain: confirm.chain,
