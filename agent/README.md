@@ -49,7 +49,7 @@ cd $HOME/axelarscan-api/agent
 rm -rf node_modules
 npm i
 NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-cli.js -n axelarscan-agent
-pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u axelard --hp /home/axelard
 pm2 save --force
 ```
 ### view logs
@@ -88,7 +88,7 @@ cd $HOME/axelarscan-api/agent
 rm -rf node_modules
 npm i
 NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-scraper.js -n axelarscan-agent
-pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u axelard --hp /home/axelard
 pm2 save --force
 ```
 ### view logs
