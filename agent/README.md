@@ -1,4 +1,7 @@
 # Axelarscan Agent
+### 2 types of agent:
+1. Subscriber
+2. Log scraper & CLI executor
 
 ## Deployment
 ### Prerequisites
@@ -14,8 +17,7 @@ git pull
 
 ### run setup script
 ```
-cd $HOME/axelarscan-api/agent
-bash scripts/setup.sh
+bash $HOME/axelarscan-api/agent/scripts/setup.sh
 ```
 
 ### add user
@@ -31,17 +33,36 @@ visudo
 su axelard
 ```
 
-### setup axelar node
-[doc](https://docs.axelar.dev/node/join)
+### [setup axelar node](https://docs.axelar.dev/node/join)
+- Subscriber: run axelard as Binary
+- Log scraper & CLI executor: run Docker mode
 
+## Subscriber
 ### start axelar node
 ```
+bash $HOME/axelarscan-api/agent/scripts/axelar-core.sh --environment testnet
+```
+### start subscriber agent
+```
 cd $HOME/axelarscan-api/agent
-bash scripts/axelar-core.sh --environment testnet --flags "-e docker"
+docker-compose up --build -d axelarscan-agent
+```
+### view logs
+```
+cd $HOME/axelarscan-api/agent
+docker-compose logs -f --tail=100 axelarscan-agent
+```
+### restart services
+```
+cd $HOME/axelarscan-api/agent
+docker-compose restart axelarscan-agent
 ```
 
-### start prometheus
+## Log scraper & CLI executor
+### start axelar node
 ```
+bash $HOME/axelarscan-api/agent/scripts/axelar-core.sh --environment testnet --flags "-e docker"
+# start prometheus
 docker rm -f prometheus
 docker run -d --restart unless-stopped \
   --add-host=host.docker.internal:host-gateway \
@@ -50,14 +71,7 @@ docker run -d --restart unless-stopped \
   -v $HOME/axelarscan-api/agent/scripts/prometheus.yml:/etc/prometheus/prometheus.yml \
   prom/prometheus
 ```
-
-### start subscriber agent
-```
-cd $HOME/axelarscan-api/agent
-docker-compose up --build -d axelarscan-agent
-```
-
-### start cli & scraper agent
+### start scraper && cli agent
 ```
 cd $HOME/axelarscan-api/agent
 rm -rf node_modules
@@ -66,23 +80,11 @@ NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-pm2.js -n 
 pm2 startup
 pm2 save --force
 ```
-
 ### view logs
 ```
-# subscriber agent
-cd $HOME/axelarscan-api/agent
-docker-compose logs -f --tail=100 axelarscan-agent
-
-# cli & scraper agent
 pm2 log --lines 100 axelarscan-agent
 ```
-
 ### restart services
 ```
-# subscriber agent
-cd $HOME/axelarscan-api/agent
-docker-compose restart axelarscan-agent
-
-# cli & scraper agent
 pm2 reload axelarscan-agent
 ```
