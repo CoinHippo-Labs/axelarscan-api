@@ -28,7 +28,7 @@ mainnet:
 
 testnet:
   endpoints:
-    rpc: "http://testnet.rpc.axelarscan.io:26657"
+    rpc: "http://testnet.agent.axelarscan.io:26657"
     lcd: "https://axelartest-lcd.quickapi.com:443"
     prometheus: "http://testnet.agent.axelarscan.io:9092"
     cli: "http://testnet.agent.axelarscan.io:3333"
