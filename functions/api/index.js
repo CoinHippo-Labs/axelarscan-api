@@ -1378,7 +1378,7 @@ exports.handler = async (event, context, callback) => {
               }
               // save
               if (cache && !cache_hit && cache_id?.startsWith('axelard')) {
-                await crud({ index: 'axelard', method: 'set', id: cache_id, ...res, updated_at: moment().unix() });
+                await crud({ index: 'axelard', method: 'set', id: cache_id, ...res.data, updated_at: moment().unix() });
               }
             }
             else if (response_cache) {
