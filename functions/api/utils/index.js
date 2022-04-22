@@ -3,7 +3,7 @@ const config = require('config-yml');
 // import module for generate timestamp
 const moment = require('moment');
 
-const log = (level, from, message, data) => {
+const log = (level, from, message, data = {}) => {
   // generate log message
   const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' && data ? JSON.stringify(data, null, 2) : data}`;
 
