@@ -13,7 +13,7 @@ external_api:
 mainnet:
   endpoints:
     rpc: "https://axelar-rpc.pops.one:443"
-    lcd: "http://agent.axelarscan.io:1317"
+    lcd: "http://rpc.axelarscan.io:1317"
     prometheus: "http://agent.axelarscan.io:9092"
     cli: "http://agent.axelarscan.io:3333"
     indexer:
@@ -28,8 +28,8 @@ mainnet:
 
 testnet:
   endpoints:
-    rpc: "http://testnet.agent.axelarscan.io:26657"
-    lcd: "http://testnet.agent.axelarscan.io:1317"
+    rpc: "http://testnet.rpc.axelarscan.io:26657"
+    lcd: "http://testnet.rpc.axelarscan.io:1317"
     prometheus: "http://testnet.agent.axelarscan.io:9092"
     cli: "http://testnet.agent.axelarscan.io:3333"
     indexer:

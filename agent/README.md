@@ -62,7 +62,7 @@ docker-compose up --build -d axelarscan-agent
 cd $HOME/axelarscan-api/agent
 rm -rf node_modules
 npm i
-NODE_NO_WARNINGS=1 pm2 start $HOME/axelarscan-api/agent/index-pm2.js -n axelarscan-agent
+NODE_NO_WARNINGS=1 pm2 start /home/axelard/axelarscan-api/agent/index-pm2.js -n axelarscan-agent
 pm2 startup
 pm2 save --force
 ```

@@ -66,7 +66,7 @@ module.exports = async () => {
       index: collection,
       method: 'search',
       query: {
-        bool: [
+        bool: {
           must: [{
             range: {
               updated_at: {
@@ -82,7 +82,7 @@ module.exports = async () => {
               ], 
             },
           }] : [],
-        ],
+        },
       },
       path: `/${collection}/_delete_by_query`,
     };
