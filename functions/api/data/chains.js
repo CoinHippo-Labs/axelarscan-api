@@ -214,7 +214,7 @@ module.exports = {
         website: 'https://cosmos.network',
         prefix_address: 'cosmos',
         endpoints: {
-          lcd: 'https://cosmos-lcd.quickapi.com:443',
+          lcd: 'https://lcd-cosmoshub.blockapsis.com',
         },
       },
       {
@@ -236,7 +236,7 @@ module.exports = {
         website: 'https://terra.money',
         prefix_address: 'terra',
         endpoints: {
-          lcd: 'https://terra-lcd.quickapi.com:443',
+          lcd: 'https://lcd.terra.dev',
         },
       },
       {
@@ -258,7 +258,7 @@ module.exports = {
         website: 'https://osmosis.zone',
         prefix_address: 'osmo',
         endpoints: {
-          lcd: 'https://osmosis-lcd.quickapi.com:443',
+          lcd: 'https://lcd-osmosis.blockapsis.com',
         },
       },
       {
@@ -556,7 +556,7 @@ module.exports = {
         website: 'https://osmosis.zone',
         prefix_address: 'osmo',
         endpoints: {
-          lcd: 'https://osmosistest-lcd.quickapi.com:443',
+          lcd: 'https://testnet-rest.osmosis.zone',
         },
       },
       {

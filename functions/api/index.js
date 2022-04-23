@@ -137,7 +137,7 @@ exports.handler = async (event, context, callback) => {
           // process
           const evm_chains = chains?.[environment]?.evm || [];
           const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, _.head(c?.provider_params?.[0]?.rpcUrls)]) || []);
-          const cosmos_chains = chains?.[environment]?.cosmos || [];
+          const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
           const _assets = assets?.[environment] || [];
           const num_blocks_per_heartbeat = config?.[environment]?.num_blocks_per_heartbeat || 50;
           const fraction_heartbeat_block = config?.[environment]?.fraction_heartbeat_block || 1;
@@ -295,20 +295,26 @@ exports.handler = async (event, context, callback) => {
               }
               // MsgRecvPacket -> MsgTransfer
               else if (res.data.tx_response && res.data.tx?.body?.messages?.findIndex(m => _.last(m?.['@type']?.split('.')) === 'MsgRecvPacket') > -1) {
-                const event_recv_packets = res.data.tx_response.logs.flatMap(l => l?.events?.filter(e => e?.type === 'recv_packet'));
+                const event_recv_packets = res.data.tx_response.logs.map(l => {
+                  return {
+                    ...l?.events?.find(e => e?.type === 'recv_packet'),
+                    height: Number(res.data.tx.body.messages.find(m => _.last(m?.['@type']?.split('.')) === 'MsgRecvPacket')?.proof_height?.revision_height || '0') - 1,
+                  };
+                });
                 for (let i = 0; i < event_recv_packets.length; i++) {
                   const event_recv_packet = event_recv_packets[i];
                   const packet_data = to_json(event_recv_packet?.attributes?.find(a => a?.key === 'packet_data' && a.value)?.value);
                   const packet_data_hex = event_recv_packet?.attributes?.find(a => a?.key === 'packet_data_hex' && a.value)?.value;
                   const packet_sequence = event_recv_packet?.attributes?.find(a => a?.key === 'packet_sequence' && a.value)?.value;
-                  if (packet_data_hex && packet_data && typeof packet_data === 'object') {
+                  const _height = event_recv_packet?.height;
+                  if (_height && packet_data_hex && packet_data && typeof packet_data === 'object') {
                     for (let j = 0; j < cosmos_chains.length; j++) {
                       const chain = cosmos_chains[j];
                       if (chain?.endpoints?.lcd && packet_data.sender?.startsWith(chain.prefix_address)) {
                         // initial lcd
                         const lcd = axios.create({ baseURL: chain.endpoints.lcd });
                         // request lcd
-                        const response_txs = await lcd.get('/cosmos/tx/v1beta1/txs', { params: { events: `send_packet.packet_data_hex=${packet_data_hex}`, limit: 5 } })
+                        const response_txs = await lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${_height}`)
                           .catch(error => { return { data: { error } }; });
                         const transactionIndex = response_txs?.data?.tx_responses?.findIndex(t => {
                           const event_send_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'send_packet')));
@@ -367,9 +373,9 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               // ConfirmDeposit / ConfirmERC20Deposit
-              else if (res.data.tx_response && res.data.tx?.body?.messages?.findIndex(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.')))) > -1) {
+              else if (res.data.tx_response && res.data.tx?.body?.messages?.findIndex(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', ''))) > -1) {
                 const event_message = _.head(res.data.tx_response.logs.flatMap(l => l?.events?.filter(e => e?.type === 'message')));
-                const type = event_message?.attributes?.find(a => a?.key === 'action' && transfer_actions?.includes(a.value))?.value || _.last(res.data.tx.body.messages.find(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))))?.['@type']?.split('.'))?.replace('Request', '');
+                const type = event_message?.attributes?.find(a => a?.key === 'action' && transfer_actions?.includes(a.value))?.value || _.last(res.data.tx.body.messages.find(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', '')))?.['@type']?.split('.'))?.replace('Request', '');
                 const height = Number(res.data.tx_response.height);
                 const created_at = moment(res.data.tx_response.timestamp).utc();
                 const user = res.data.tx.body.messages.find(m => m?.sender)?.sender?.toLowerCase();
@@ -530,9 +536,7 @@ exports.handler = async (event, context, callback) => {
                         const transaction = await provider.getTransaction(transaction_id);
                         const height = transaction?.blockNumber;
                         if (height) {
-                          if (transaction.input) {
-                            tx.amount = BigNumber.from(`0x${transaction.input.substring(10 + 64)}`).toNumber() || tx.amount;
-                          }
+                          tx.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber() || tx.amount;
                           if (transaction.to?.toLowerCase() === tx.token_address?.toLowerCase() || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to?.toLowerCase()) > -1) > -1) {
                             tx.denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id || tx.denom;
                             const tx_send = {
@@ -616,9 +620,7 @@ exports.handler = async (event, context, callback) => {
                           const transaction = await provider.getTransaction(transaction_id);
                           const height = transaction?.blockNumber;
                           if (height) {
-                            if (transaction.input) {
-                              tx.amount = BigNumber.from(`0x${transaction.input.substring(10 + 64)}`).toNumber() || Number(_.last(tx.poll_id?.split('_')));
-                            }
+                            tx.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber() || Number(_.last(tx.poll_id?.split('_')));
                             if (transaction.to?.toLowerCase() === tx.token_address?.toLowerCase() || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to?.toLowerCase()) > -1) > -1) {
                               tx.denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id || tx.denom;
                               const tx_send = {
@@ -652,7 +654,7 @@ exports.handler = async (event, context, callback) => {
                               const tx_confirm_deposit = response_txs?.data?.[0]?.confirm_deposit;
                               const params = { index: 'crosschain_txs', method: 'set', path: `/crosschain_txs/_update/${transaction_id}`, id: transaction_id, send: tx_send, vote_confirm_deposit: tx };
                               if (tx_confirm_deposit) {
-                                body.confirm_deposit = tx_confirm_deposit;
+                                params.confirm_deposit = tx_confirm_deposit;
                               }
                               await crud(params);
                             }
@@ -822,21 +824,27 @@ exports.handler = async (event, context, callback) => {
 
               // MsgRecvPacket -> MsgTransfer
               txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => _.last(m?.['@type']?.split('.')) === 'MsgRecvPacket') > -1).map(async _tx => {
-                const event_recv_packets = _tx.logs.flatMap(l => l?.events?.filter(e => e?.type === 'recv_packet'));
+                const event_recv_packets = _tx.logs.map(l => {
+                  return {
+                    ...l?.events?.find(e => e?.type === 'recv_packet'),
+                    height: Number(_tx.tx.body.messages.find(m => _.last(m?.['@type']?.split('.')) === 'MsgRecvPacket')?.proof_height?.revision_height || '0') - 1,
+                  };
+                });
                 const _txs = [];
                 for (let i = 0; i < event_recv_packets.length; i++) {
                   const event_recv_packet = event_recv_packets[i];
                   const packet_data = to_json(event_recv_packet?.attributes?.find(a => a?.key === 'packet_data' && a.value)?.value);
                   const packet_data_hex = event_recv_packet?.attributes?.find(a => a?.key === 'packet_data_hex' && a.value)?.value;
                   const packet_sequence = event_recv_packet?.attributes?.find(a => a?.key === 'packet_sequence' && a.value)?.value;
-                  if (packet_data_hex && packet_data && typeof packet_data === 'object') {
+                  const _height = event_recv_packet?.height;
+                  if (_height && packet_data_hex && packet_data && typeof packet_data === 'object') {
                     for (let j = 0; j < cosmos_chains.length; j++) {
                       const chain = cosmos_chains[j];
                       if (chain?.endpoints?.lcd && packet_data.sender?.startsWith(chain.prefix_address)) {
                         // initial lcd
                         const lcd = axios.create({ baseURL: chain.endpoints.lcd });
                         // request lcd
-                        const response_txs = await lcd.get('/cosmos/tx/v1beta1/txs', { params: { events: `send_packet.packet_data_hex=${packet_data_hex}`, limit: 5 } })
+                        const response_txs = await lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${_height}`)
                           .catch(error => { return { data: { error } }; });
                         const transactionIndex = response_txs?.data?.tx_responses?.findIndex(t => {
                           const event_send_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'send_packet')));
@@ -907,7 +915,7 @@ exports.handler = async (event, context, callback) => {
               }
 
               // ConfirmDeposit / ConfirmERC20Deposit
-              txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.')))) > -1).map(_tx => {
+              txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(_tx => {
                 const event_message = _.head(_tx.logs.flatMap(l => l?.events?.filter(e => e?.type === 'message')));
                 const type = event_message?.attributes?.find(a => a?.key === 'action' && transfer_actions?.includes(a.value))?.value || _.last(_tx.tx.body.messages.find(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', '')))?.['@type']?.split('.'))?.replace('Request', '');
                 const height = Number(_tx.height);
@@ -1086,9 +1094,7 @@ exports.handler = async (event, context, callback) => {
                         const transaction = await provider.getTransaction(transaction_id);
                         const height = transaction?.blockNumber;
                         if (height) {
-                          if (transaction.input) {
-                            txs[i].amount = BigNumber.from(`0x${transaction.input.substring(10 + 64)}`).toNumber() || txs[i].amount;
-                          }
+                          txs[i].amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber() || txs[i].amount;
                           if (transaction.to?.toLowerCase() === txs[i].token_address?.toLowerCase() || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to?.toLowerCase()) > -1) > -1) {
                             txs[i].denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id || txs[i].denom;
                             const tx_send = {
@@ -1181,9 +1187,7 @@ exports.handler = async (event, context, callback) => {
                         const transaction = await provider.getTransaction(transaction_id);
                         const height = transaction?.blockNumber;
                         if (height) {
-                          if (transaction.input) {
-                            txs[i].amount = BigNumber.from(`0x${transaction.input.substring(10 + 64)}`).toNumber() || Number(_.last(txs[i].poll_id?.split('_')));
-                          }
+                          txs[i].amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber() || Number(_.last(txs[i].poll_id?.split('_')));
                           if (transaction.to?.toLowerCase() === txs[i].token_address?.toLowerCase() || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to?.toLowerCase()) > -1) > -1) {
                             txs[i].denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id || txs[i].denom;
                             const tx_send = {
@@ -1324,7 +1328,7 @@ exports.handler = async (event, context, callback) => {
                     const gateway_address = evm_chains?.find(c => c?.id === chain)?.gateway_address;
                     const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
                     if (gateway) {
-                      const cosmos_chains = chains?.[environment]?.cosmos || [];
+                      const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
                       const command_ids = output.command_ids.filter(c => parseInt(c, 16) >= 1);
                       let send_gateway;
                       for (let i = 0; i < command_ids.length; i++) {
@@ -1452,7 +1456,7 @@ exports.handler = async (event, context, callback) => {
             if (!tx && depositAddress) {
               const created_at = moment().utc();
               const evm_chains = chains?.[environment]?.evm || [];
-              const cosmos_chains = chains?.[environment]?.cosmos || [];
+              const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
               const _assets = assets?.[environment] || [];
 
               if (txHash.startsWith('0x')) {
@@ -1476,9 +1480,7 @@ exports.handler = async (event, context, callback) => {
                           recipient_address: depositAddress?.toLowerCase(),
                           sender_chain: chain.id,
                         };
-                        if (transaction.input) {
-                          tx_send.amount = BigNumber.from(`0x${transaction.input.substring(10 + 64)}`).toNumber();
-                        }
+                        tx_send.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber();
                         tx_send.denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id;
 
                         // get linked address

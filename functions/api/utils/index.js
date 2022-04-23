@@ -74,7 +74,7 @@ const normalize_chain = chain => {
   return chain;
 };
 
-const transfer_actions = ['ConfirmDepositRequest', 'ConfirmERC20DepositRequest'];
+const transfer_actions = ['ConfirmDeposit', 'ConfirmERC20Deposit'];
 
 module.exports = {
   log,
