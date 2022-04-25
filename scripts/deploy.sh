@@ -227,8 +227,8 @@ rm -f ${function_dir}/${function}/${zip_name}*
 npm install && rm package-lock.json && zip -r ${zip_name} *
 
 # set timeout, memory size and environment
-timeout=60
-memory_size=512
+timeout=30
+memory_size=256
 indexer_username=$(get_variable_value "INDEXER_USERNAME")
 indexer_password=$(get_variable_value "INDEXER_PASSWORD")
 environment_variables="Variables={NODE_NO_WARNINGS=1,ENVIRONMENT=${environment},INDEXER_USERNAME=${indexer_username},INDEXER_PASSWORD=${indexer_password}}"
