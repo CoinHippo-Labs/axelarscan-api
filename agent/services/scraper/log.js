@@ -581,7 +581,7 @@ module.exports = () => {
         stream.on('close', () => scrape());
 
         // restart schedule
-        new cronjob('30 0 0 * * *', () => stream.destroy(), null, true);
+        // new cronjob('30 0 0 * * *', () => stream.destroy(), null, true);
       });
     };
 
