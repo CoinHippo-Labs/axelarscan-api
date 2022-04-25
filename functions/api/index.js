@@ -1426,7 +1426,7 @@ exports.handler = async (event, context, callback) => {
             data = data[params.collection];
           }
           res = { data };
-          break;        
+          break;
         default:
           break;
       };
