@@ -480,8 +480,8 @@ exports.handler = async (event, context, callback) => {
                       const ids = txs.map(tx => tx.send.id);
                       for (let i = 0; i < ids.length; i++) {
                         const id = ids[i];
-                        const tx = txs[i];
-                        const tx_send = tx.send;
+                        const _tx = txs[i];
+                        const tx_send = _tx.send;
                         const params = { index: 'crosschain_txs', method: 'update', path: `/crosschain_txs/_update/${id}`, id, ...tx, confirm_deposit: tx };
                         if (signed) {
                           params.signed = signed;
@@ -1038,8 +1038,8 @@ exports.handler = async (event, context, callback) => {
                       const ids = _txs.map(tx => tx.send.id);
                       for (let j = 0; j < ids.length; j++) {
                         const id = ids[j];
-                        const tx = _txs[j];
-                        const tx_send = tx.send;
+                        const _tx = _txs[j];
+                        const tx_send = _tx.send;
                         const params = { index: 'crosschain_txs', method: 'update', path: `/crosschain_txs/_update/${id}`, id, ...tx, confirm_deposit: txs[i] };
                         if (signed) {
                           params.signed = signed;
