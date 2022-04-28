@@ -12,7 +12,7 @@ external_api:
 
 mainnet:
   endpoints:
-    rpc: "https://axelar-rpc.pops.one:443"
+    rpc: "http://rpc.axelarscan.io:26657"
     lcd: "http://rpc.axelarscan.io:1317"
     prometheus: "http://docker.axelarscan.io:9092"
     cli: "http://rpc.axelarscan.io:3333"
