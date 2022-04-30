@@ -199,9 +199,34 @@ exports.handler = async (event, context, callback) => {
                 const message = data.tx.body.messages[i];
                 message.denom = message.asset;
                 delete message.asset;
+                data.tx.body.messages[i] = message;
               }
             }
-            const addressFields = ['signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress'];
+            else if (data.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes('VoteRequest')) > -1) {
+              const byteArrayFields = ['tx_id', 'to'];
+              for (let i = 0; i < data.tx.body.messages.length; i++) {
+                const message = data.tx.body.messages[i];
+                if (message?.inner_message?.vote?.results) {
+                  const results = message.inner_message.vote.results;
+                  for (let j = 0; j < results.length; j++) {
+                    const result = results[j];
+                    for (let k = 0; k < byteArrayFields.length; k++) {
+                      const field = byteArrayFields[k];
+                      if (Array.isArray(result?.[field])) {
+                        result[field] = to_hex(result[field]);
+                      }
+                      else if (Array.isArray(result?.transfer?.[field])) {
+                        result.transfer[field] = to_hex(result.transfer[field]);
+                      }
+                      results[j] = result;
+                      message.inner_message.vote.results = results;
+                    }
+                  }
+                }
+                data.tx.body.messages[i] = message;
+              }
+            }
+            const addressFields = ['signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress', 'voter'];
             let addresses = [], types = [];
             if (data.tx?.body?.messages) {
               addresses = _.uniq(_.concat(addresses, data.tx.body.messages.flatMap(m => _.concat(addressFields.map(f => m[f]), addressFields.map(f => m.inner_message?.[f])))).filter(a => typeof a === 'string' && a.startsWith('axelar')));
@@ -410,7 +435,7 @@ exports.handler = async (event, context, callback) => {
                   poll_id,
                   transaction_id,
                 };
-                if (!tx.status_code && (tx.transfer_id || tx.poll_id) && tx.id && tx.amount > 0) {
+                if (!tx.status_code && (tx.transfer_id || tx.poll_id) && tx.id/* && tx.amount > 0*/) {
                   if (tx.type === 'ConfirmDeposit') {
                     let signed, send_gateway;
                     let query = {
@@ -592,6 +617,119 @@ exports.handler = async (event, context, callback) => {
                     const deposit_address = event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value?.toLowerCase() || poll_id?.split('_')[1];
                     const confirmed = message?.inner_message?.confirmed || false;
                     const vote_confirmed = res.data.tx_response.logs?.findIndex(l => l?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1) > -1) > -1;
+                    const poll_initial = res.data.tx_response.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
+                    const tx = {
+                      id: res.data.tx_response.txhash?.toLowerCase(),
+                      type,
+                      status_code: res.data.tx_response.code,
+                      status: res.data.tx_response.code ? 'failed' : 'success',
+                      height,
+                      created_at: get_granularity(created_at),
+                      module: __module,
+                      sender_chain,
+                      recipient_chain,
+                      deposit_address,
+                      transfer_id,
+                      poll_id,
+                      transaction_id,
+                      confirmed,
+                      voter: message?.inner_message?.sender,
+                      vote_confirmed,
+                      poll_initial,
+                    };
+                    if (!tx.status_code && tx.poll_id && tx.confirmed && tx.id && tx.vote_confirmed) {
+                      try {
+                        const provider = new JsonRpcProvider(chains_rpc[tx.sender_chain]);
+                        const transaction_id = tx.transaction_id?.toLowerCase();
+                        if (transaction_id) {
+                          const transaction = await provider.getTransaction(transaction_id);
+                          const height = transaction?.blockNumber;
+                          if (height) {
+                            tx.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber() || Number(_.last(tx.poll_id?.split('_')));
+                            if (transaction.to?.toLowerCase() === tx.token_address?.toLowerCase() || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to?.toLowerCase()) > -1) > -1) {
+                              tx.denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id || tx.denom;
+                              const tx_send = {
+                                id: transaction_id,
+                                type: 'evm_transfer',
+                                status_code: 0,
+                                status: 'success',
+                                height,
+                                created_at: tx.created_at,
+                                sender_address: transaction.from?.toLowerCase(),
+                                recipient_address: tx.deposit_address,
+                                sender_chain: tx.sender_chain,
+                                recipient_chain: tx.recipient_chain,
+                                amount: tx.amount,
+                                denom: tx.denom,
+                              };
+                              const query = {
+                                match: {
+                                  deposit_address: tx.deposit_address,
+                                },
+                              };
+                              const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
+                              const linked = response_linked?.data?.[0];
+                              if (linked) {
+                                tx_send.sender_chain = linked.sender_chain || tx_send.sender_chain;
+                                tx_send.recipient_chain = linked.recipient_chain || tx_send.recipient_chain;
+                                tx_send.denom = tx_send.denom || linked.asset;
+                              }
+                              await sleep(0.5 * 1000);
+                              const response_txs = await crud({ index: 'crosschain_txs', method: 'search', query: { match: { 'send.id': transaction_id } }, size: 1 });
+                              const tx_confirm_deposit = response_txs?.data?.[0]?.confirm_deposit;
+                              const params = { index: 'crosschain_txs', method: 'set', path: `/crosschain_txs/_update/${transaction_id}`, id: transaction_id, send: tx_send, vote_confirm_deposit: tx };
+                              if (tx_confirm_deposit) {
+                                params.confirm_deposit = tx_confirm_deposit;
+                              }
+                              await crud(params);
+                            }
+                          }
+                        }
+                      } catch (error) {}
+                    }
+                    if (!tx.status_code && tx.poll_id && tx.voter) {
+                      const vote = {
+                        id: `${tx.poll_id}_${tx.voter}`,
+                        txhash: tx.id,
+                        height: tx.height,
+                        created_at: tx.created_at,
+                        sender: tx.voter,
+                        sender_chain: tx.sender_chain,
+                        module: tx.module,
+                        poll_id: tx.poll_id,
+                        transaction_id: tx.transaction_id,
+                        confirmed: tx.confirmed,
+                        vote_confirmed: tx.vote_confirmed,
+                        poll_initial: tx.poll_initial,
+                      };
+                      if (vote.poll_initial) {
+                        vote.poll_start_height = vote.height;
+                      }
+                      await crud({ index: 'evm_votes', method: 'set', path: `/evm_votes/_update/${vote.id}`, ...vote });
+                    }
+                  }
+                }
+              }
+              // Vote
+              else if (res.data.tx_response && res.data.tx?.body?.messages?.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '') === 'Vote') > -1) {
+                const messages = res.data.tx.body.messages;
+                for (let i = 0; i < messages.length; i++) {
+                  const message = messages[i];
+                  const type = _.last(message?.inner_message?.['@type']?.split('.'))?.replace('Request', '');
+                  if (type === 'Vote') {
+                    const height = Number(res.data.tx_response.height);
+                    const created_at = moment(res.data.tx_response.timestamp).utc();
+                    const event = res.data.tx_response.logs?.[i]?.events?.find(e => e?.type === 'vote');
+                    const confirmed_event = res.data.tx_response.logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
+                    const __module = message?.inner_message?.poll_key?.module || event?.attributes?.find(a => a?.key === 'module' && a.value)?.value || 'evm';
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || __module);
+                    const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
+                    const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
+                    const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
+                    const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.split('_')[0];
+                    const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.split('_')[1];
+                    const confirmed = message?.inner_message?.vote?.results?.length > 0;
+                    const vote_confirmed = !!confirmed_event;
                     const poll_initial = res.data.tx_response.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
                     const tx = {
                       id: res.data.tx_response.txhash?.toLowerCase(),
@@ -961,7 +1099,7 @@ exports.handler = async (event, context, callback) => {
                   transaction_id,
                 };
                 return tx;
-              }).filter(tx => !tx.status_code && (tx.transfer_id || tx.poll_id) && tx.id && tx.amount > 0);
+              }).filter(tx => !tx.status_code && (tx.transfer_id || tx.poll_id) && tx.id/* && tx.amount > 0*/);
               if (txs.length > 0) {
                 const query = {
                   bool: {
@@ -1151,6 +1289,124 @@ exports.handler = async (event, context, callback) => {
                     const deposit_address = event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value?.toLowerCase() || poll_id?.split('_')[1];
                     const confirmed = message?.inner_message?.confirmed || false;
                     const vote_confirmed = _tx.logs?.findIndex(l => l?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1) > -1) > -1;
+                    const poll_initial = _tx.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
+                    const tx = {
+                      id: _tx.txhash?.toLowerCase(),
+                      type,
+                      status_code: _tx.code,
+                      status: _tx.code ? 'failed' : 'success',
+                      height,
+                      created_at: get_granularity(created_at),
+                      module: __module,
+                      sender_chain,
+                      recipient_chain,
+                      deposit_address,
+                      transfer_id,
+                      poll_id,
+                      transaction_id,
+                      confirmed,
+                      voter: message?.inner_message?.sender,
+                      vote_confirmed,
+                      poll_initial,
+                    };
+                    _txs.push(tx);
+                  }
+                }
+                return _txs;
+              }).flatMap(tx => tx).filter(tx => !tx.status_code && tx.poll_id && tx.id);
+              if (txs.length > 0) {
+                await sleep(1 * 1000);
+                for (let i = 0; i < txs.length; i++) {
+                  try {
+                    if (txs[i].confirmed && txs[i].vote_confirmed) {
+                      const provider = new JsonRpcProvider(chains_rpc[txs[i].sender_chain]);
+                      const transaction_id = txs[i].transaction_id?.toLowerCase();
+                      if (transaction_id) {
+                        const transaction = await provider.getTransaction(transaction_id);
+                        const height = transaction?.blockNumber;
+                        if (height) {
+                          txs[i].amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toNumber() || Number(_.last(txs[i].poll_id?.split('_')));
+                          if (transaction.to?.toLowerCase() === txs[i].token_address?.toLowerCase() || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to?.toLowerCase()) > -1) > -1) {
+                            txs[i].denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.contract_address?.toLowerCase() === transaction.to.toLowerCase()) > -1)?.id || txs[i].denom;
+                            const tx_send = {
+                              id: transaction_id,
+                              type: 'evm_transfer',
+                              status_code: 0,
+                              status: 'success',
+                              height,
+                              created_at: txs[i].created_at,
+                              sender_address: transaction.from?.toLowerCase(),
+                              recipient_address: txs[i].deposit_address,
+                              sender_chain: txs[i].sender_chain,
+                              recipient_chain: txs[i].recipient_chain,
+                              amount: txs[i].amount,
+                              denom: txs[i].denom,
+                            };
+                            const query = {
+                              match: {
+                                deposit_address: txs[i].deposit_address,
+                              },
+                            };
+                            const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
+                            const linked = response_linked?.data?.[0];
+                            if (linked) {
+                              tx_send.sender_chain = linked.sender_chain || tx_send.sender_chain;
+                              tx_send.recipient_chain = linked.recipient_chain || tx_send.recipient_chain;
+                              tx_send.denom = tx_send.denom || linked.asset;
+                            }
+                            crud({ index: 'crosschain_txs', method: 'set', path: `/crosschain_txs/_update/${transaction_id}`, id: transaction_id, send: tx_send, vote_confirm_deposit: txs[i] });
+                          }
+                        }
+                      }
+                    }
+                  } catch (error) {}
+                }
+                for (let i = 0; i < txs.length; i++) {
+                  const tx = txs[i];
+                  if (tx.voter) {
+                    const vote = {
+                      id: `${tx.poll_id}_${tx.voter}`,
+                      txhash: tx.id,
+                      height: tx.height,
+                      created_at: tx.created_at,
+                      sender: tx.voter,
+                      sender_chain: tx.sender_chain,
+                      module: tx.module,
+                      poll_id: tx.poll_id,
+                      transaction_id: tx.transaction_id,
+                      confirmed: tx.confirmed,
+                      vote_confirmed: tx.vote_confirmed,
+                      poll_initial: tx.poll_initial,
+                    };
+                    if (vote.poll_initial) {
+                      vote.poll_start_height = vote.height;
+                    }
+                    await crud({ index: 'evm_votes', method: 'set', path: `/evm_votes/_update/${vote.id}`, ...vote });
+                  }
+                }
+              }
+
+              // Vote
+              txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '') === 'Vote') > -1).map(_tx => {
+                const _txs = [];
+                const messages = _tx.tx.body.messages;
+                for (let i = 0; i < messages.length; i++) {
+                  const message = messages[i];
+                  const type = _.last(message?.inner_message?.['@type']?.split('.'))?.replace('Request', '');
+                  if (type === 'Vote') {
+                    const height = Number(_tx.height);
+                    const created_at = moment(_tx.timestamp).utc();
+                    const event = _tx.logs?.[i]?.events?.find(e => e?.type === 'vote');
+                    const confirmed_event = _tx.logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
+                    const __module = 'evm';
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain);
+                    const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
+                    const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
+                    const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
+                    const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.split('_')[0];
+                    const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.split('_')[1];
+                    const confirmed = message?.inner_message?.vote?.results?.length > 0;
+                    const vote_confirmed = !!confirmed_event;
                     const poll_initial = _tx.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
                     const tx = {
                       id: _tx.txhash?.toLowerCase(),
