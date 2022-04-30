@@ -722,7 +722,7 @@ exports.handler = async (event, context, callback) => {
                     const event = res.data.tx_response.logs?.[i]?.events?.find(e => e?.type === 'vote');
                     const confirmed_event = res.data.tx_response.logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const __module = message?.inner_message?.poll_key?.module || event?.attributes?.find(a => a?.key === 'module' && a.value)?.value || 'evm';
-                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || __module);
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain);
                     const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
                     const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
@@ -750,6 +750,20 @@ exports.handler = async (event, context, callback) => {
                       vote_confirmed,
                       poll_initial,
                     };
+                    if (!tx.status_code && tx.deposit_address && !tx.sender_chain) {
+                      const query = {
+                        bool: {
+                          must: [
+                            { match: { deposit_address: tx.deposit_address } },
+                          ],
+                        },
+                      };
+                      const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
+                      const linked = response_linked?.data?.[0];
+                      if (linked?.sender_chain) {
+                        tx.sender_chain = linked.sender_chain;
+                      }
+                    }
                     if (!tx.status_code && tx.poll_id && tx.confirmed && tx.id && tx.vote_confirmed) {
                       try {
                         const provider = new JsonRpcProvider(chains_rpc[tx.sender_chain]);
@@ -1387,7 +1401,7 @@ exports.handler = async (event, context, callback) => {
               }
 
               // Vote
-              txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '') === 'Vote') > -1).map(_tx => {
+              txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '') === 'Vote') > -1).map(async _tx => {
                 const _txs = [];
                 const messages = _tx.tx.body.messages;
                 for (let i = 0; i < messages.length; i++) {
@@ -1427,6 +1441,20 @@ exports.handler = async (event, context, callback) => {
                       vote_confirmed,
                       poll_initial,
                     };
+                    if (!tx.status_code && tx.deposit_address && !tx.sender_chain) {
+                      const query = {
+                        bool: {
+                          must: [
+                            { match: { deposit_address: tx.deposit_address } },
+                          ],
+                        },
+                      };
+                      const response_linked = await crud({ index: 'linked_addresses', method: 'search', query, size: 1 });
+                      const linked = response_linked?.data?.[0];
+                      if (linked?.sender_chain) {
+                        tx.sender_chain = linked.sender_chain;
+                      }
+                    }
                     _txs.push(tx);
                   }
                 }
