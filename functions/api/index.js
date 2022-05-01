@@ -712,6 +712,7 @@ exports.handler = async (event, context, callback) => {
               }
               // Vote
               else if (res.data.tx_response && res.data.tx?.body?.messages?.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '') === 'Vote') > -1) {
+                const evm_chains = chains?.[environment]?.evm || [];
                 const messages = res.data.tx.body.messages;
                 for (let i = 0; i < messages.length; i++) {
                   const message = messages[i];
@@ -722,10 +723,10 @@ exports.handler = async (event, context, callback) => {
                     const event = res.data.tx_response.logs?.[i]?.events?.find(e => e?.type === 'vote');
                     const confirmed_event = res.data.tx_response.logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const __module = message?.inner_message?.poll_key?.module || event?.attributes?.find(a => a?.key === 'module' && a.value)?.value || 'evm';
-                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain);
                     const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
                     const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                     const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '')?.split('_')[0];
                     const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
                     const confirmed = message?.inner_message?.vote?.results?.length > 0;
@@ -1403,6 +1404,7 @@ exports.handler = async (event, context, callback) => {
               // Vote
               txs = res.data.tx_responses.filter(_tx => _tx && _tx.tx?.body?.messages?.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '') === 'Vote') > -1).map(async _tx => {
                 const _txs = [];
+                const evm_chains = chains?.[environment]?.evm || [];
                 const messages = _tx.tx.body.messages;
                 for (let i = 0; i < messages.length; i++) {
                   const message = messages[i];
@@ -1413,10 +1415,10 @@ exports.handler = async (event, context, callback) => {
                     const event = _tx.logs?.[i]?.events?.find(e => e?.type === 'vote');
                     const confirmed_event = _tx.logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const __module = 'evm';
-                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain);
                     const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
                     const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                     const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
                     const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
                     const confirmed = message?.inner_message?.vote?.results?.length > 0;
