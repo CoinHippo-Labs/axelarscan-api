@@ -1084,7 +1084,7 @@ exports.handler = async (event, context, callback) => {
                 const token_address = event?.attributes?.find(a => a?.key === 'tokenAddress' && a.value)?.value?.toLowerCase();
                 const deposit_address = _tx.tx.body.messages.find(m => m?.deposit_address)?.deposit_address?.toLowerCase() || event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value?.toLowerCase();
                 const transfer_id = Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value);
-                const poll_id = convertToJson(event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
+                const poll_id = to_json(event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
                 const transaction_id = event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value?.toLowerCase() || poll_id?.split('_')[0];
                 const tx = {
                   id: _tx.txhash?.toLowerCase(),
@@ -1193,7 +1193,7 @@ exports.handler = async (event, context, callback) => {
                         const id = ids[j];
                         const _tx = _txs[j];
                         const tx_send = _tx.send;
-                        const params = { index: 'crosschain_txs', method: 'update', path: `/crosschain_txs/_update/${id}`, id, ...tx, confirm_deposit: txs[i] };
+                        const params = { index: 'crosschain_txs', method: 'update', path: `/crosschain_txs/_update/${id}`, id, ..._tx, confirm_deposit: txs[i] };
                         if (signed) {
                           params.signed = signed;
                         }
