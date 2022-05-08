@@ -74,6 +74,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/6F4968A73F90CF7DE6394BF937D6DF7C7D162D74D839C13F53B41157D315E05F',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -115,6 +116,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -161,10 +163,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421',
           chain_id: 'cosmoshub',
+          contract_decimals: 6,
         },
         {
           ibc_denom: 'ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858',
           chain_id: 'osmosis',
+          contract_decimals: 6,
         },
       ],
     },
@@ -211,10 +215,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/3792246C7C422C037C603C955F8383B4E32E7555D693344F9A029A67FE221C57',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/0E43EDE2E2A3AFA36D0CD38BDDC0B49FECA64FA426A82E102F304E430ECF46EE',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
       ],
     },
@@ -261,6 +267,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/9117A26BA81E29FA4F78F57DC2BD90CD3D26848101BA880445F119B22A1E254E',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -307,10 +314,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/4A98C8AC2C35498162346F28EEBF3206CBEF81F44725FE62A3DB0CC10E88E695',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
       ],
     },
@@ -357,10 +366,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/5662412372381F56C5F83A0404DC7209E5143ABD32EF67B5705DBE8D9C2BF001',
           chain_id: 'cosmoshub',
+          contract_decimals: 6,
         },
         {
           ibc_denom: 'ibc/8242AD24008032E457D2E12D46588FD39FB54FB29680C6C7663D296B383C37C4',
           chain_id: 'osmosis',
+          contract_decimals: 6,
         },
       ],
     },
@@ -437,6 +448,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/373EF14936B38AC8F8A7E7024C0FB7099369FDDFDA3CDA9EFA73684B16249B64',
           chain_id: 'emoney',
+          contract_decimals: 6,
         },
       ],
     },
@@ -451,6 +463,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/13B2C536BB057AC79D5616B8EA1B9540EC1F2170718CAFF6F0083C966FFFED0B',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -537,6 +550,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/6F4968A73F90CF7DE6394BF937D6DF7C7D162D74D839C13F53B41157D315E05F',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -578,6 +592,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -676,6 +691,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/EF48E6B1A1A19F47ECAEA62F5670C37C0580E86A9E88498B7E393EB6F49F33C0',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
@@ -717,10 +733,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/3DC20E9A12C8F19A92CDEBC37116C26EADF4C65E7498193791A3DAAD0B263556',
           chain_id: 'cosmoshub',
+          contract_decimals: 6,
         },
         {
           ibc_denom: 'ibc/423FB88C7D1D4FCA2F7E67F07473DB4BB14282AE6F7B1A41B220A1AD9A762254',
           chain_id: 'osmosis',
+          contract_decimals: 6,
         },
       ],
     },
@@ -767,22 +785,27 @@ module.exports = {
         {
           ibc_denom: 'ibc/375BC04D74C122624097D38B5D8449D2883D8EC4BB21A94F1C936EB454B02048',
           chain_id: 'axelar',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/DEC3B614DEA87E77AFABE3EDA1F95A7E1A429080950AD9B0AF257FE01706CA0B',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/E614301CF4F54C23FAEEBF50F33D247AC743E9F247AB094AC57F68DB3A80635C',
           chain_id: 'terra',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/A8C7A5D5767DECBAF96AFDE4C2D99D95BE9FF38CA75BE3A1CD31E3D20264EFF9',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/AAD7136DD626569C3DDE7C5F764968BB2E939875EFC568AE5712B62081850814',
           chain_id: 'crescent',
+          contract_decimals: 18,
         },
       ],
     },
@@ -829,18 +852,22 @@ module.exports = {
         {
           ibc_denom: 'ibc/4786D3D8B8AC06B085F0C017742861F121F67501347149A054CAB77D24ECA49D',
           chain_id: 'axelar',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/88C2DE3AE63A443385CDFE54A18B0FC48402DDF3FE5AC532A663F9C3A1144462',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/0D2A39F3DF653685ED16DED245C83A51B9DD6CB8A55DE2C39D194BE44C108765',
           chain_id: 'terra',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/9534907D2838E2134F21CC286A4CD0FF3CA96AA032F9F695ABF5621CC98AB17F',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
       ],
     },
@@ -887,18 +914,22 @@ module.exports = {
         {
           ibc_denom: 'ibc/C31901B8CB873F83E5B383CABAC2133135E786BDE25380616E4B0DB5B8F08F3D',
           chain_id: 'axelar',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/1BE5BF73F50D2D82C74628C6290834E66C5467F231B7FBC7DD45E217EE1D42A5',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/90CC92BD6683D3D39933223D50FB678B6C2EDC4F4B048E21BF358570B2087916',
           chain_id: 'terra',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/67D0DAF8D504ED1616A1886CCECB4E366DC81A8EF48BD22AEA1F44BE87ED19AE',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
       ],
     },
@@ -945,18 +976,22 @@ module.exports = {
         {
           ibc_denom: 'ibc/49745E2A5A7D2F9CDB90491FB11D78B1DAE86D92404AAD6DC2DA11152A609CD0',
           chain_id: 'axelar',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/947B84E653CBEC9386287883173A40D3C0A284AB554557342C50378219ECE147',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/95482BCD668E74C030E1B8CE0874A447A593C144C8E9DB41BE05B7A9495ECDD7',
           chain_id: 'terra',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/033C5FCE2C549920B75CC794D12BC3407F638421C982CE9B48D4E5D986F4EFCE',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
       ],
     },
@@ -1003,18 +1038,22 @@ module.exports = {
         {
           ibc_denom: 'ibc/FD0B436BB2E3095C04E67481D4C7F03FABC9C0A85FFC0FBA8CFCE9C8FBCBB0F3',
           chain_id: 'axelar',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/12B944E03F3E2197589129CB359E1BD5FA3F06841792FFE46852EAFE31EEB20A',
           chain_id: 'cosmoshub',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/2A3208A0A402373F2E3E43228FC51F298433CE1BA5EDBF246ACE5F2E5111448E',
           chain_id: 'terra',
+          contract_decimals: 18,
         },
         {
           ibc_denom: 'ibc/D3AF2C7986FA1191157529F68609887103EBBD0B9CAFAD615CF19B419E2F5566',
           chain_id: 'osmosis',
+          contract_decimals: 18,
         },
       ],
     },
@@ -1029,6 +1068,7 @@ module.exports = {
         {
           ibc_denom: 'ibc/13B2C536BB057AC79D5616B8EA1B9540EC1F2170718CAFF6F0083C966FFFED0B',
           chain_id: 'axelar',
+          contract_decimals: 6,
         },
       ],
     },
