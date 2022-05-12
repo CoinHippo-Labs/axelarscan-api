@@ -324,6 +324,29 @@ module.exports = {
       ],
     },
     {
+      id: 'weth-wei',
+      symbol: 'WETH',
+      title: 'Ethereum',
+      image: '/logos/assets/eth.png',
+      contract_decimals: 18,
+      coingecko_id: 'ethereum',
+      contracts: [
+        {
+          contract_address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          chain_id: 1,
+          contract_decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/EA1D43981D5C9A1C4AAEA9C23BB1D4FA126BA9BC7020A25E0AE4AA841EA25DC5',
+          chain_id: 'osmosis',
+          contract_decimals: 18,
+        },
+      ],
+    },
+    {
       id: 'uusdt',
       symbol: 'USDT',
       title: 'Tether',
