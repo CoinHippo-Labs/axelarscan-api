@@ -226,7 +226,7 @@ module.exports = {
         {
           contract_address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
           chain_id: 1,
-          contract_decimals: 18,
+          contract_decimals: 8,
           is_native: true,
         },
       ],
