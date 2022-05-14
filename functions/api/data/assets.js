@@ -37,90 +37,6 @@ module.exports = {
       ],
     },
     {
-      id: 'uusd',
-      symbol: 'UST',
-      title: 'TerraUSD',
-      image: '/logos/assets/ust.png',
-      contract_decimals: 6,
-      coingecko_id: 'terrausd',
-      contracts: [
-        {
-          contract_address: '0x085416975fe14c2a731a97ec38b9bf8135231f62',
-          chain_id: 1,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0x260bbf5698121eb85e7a74f2e45e16ce762ebe11',
-          chain_id: 43114,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0xeddc6ede8f3af9b4971e1fa9639314905458be87',
-          chain_id: 137,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0x2b9d3f168905067d88d93f094c938bacee02b0cb',
-          chain_id: 250,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0x085416975fe14c2a731a97ec38b9bf8135231f62',
-          chain_id: 1284,
-          contract_decimals: 6,
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/6F4968A73F90CF7DE6394BF937D6DF7C7D162D74D839C13F53B41157D315E05F',
-          chain_id: 'axelar',
-          contract_decimals: 6,
-        },
-      ],
-    },
-    {
-      id: 'uluna',
-      symbol: 'LUNA',
-      title: 'Terra',
-      image: '/logos/assets/luna.png',
-      contract_decimals: 6,
-      coingecko_id: 'terra-luna',
-      contracts: [
-        {
-          contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',
-          chain_id: 1,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0x120ad3e5a7c796349e591f1570d9f7980f4ea9cb',
-          chain_id: 43114,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0xa17927fb75e9faea10c08259902d0468b3dead88',
-          chain_id: 137,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0x5e3c572a97d898fe359a2cea31c7d46ba5386895',
-          chain_id: 250,
-          contract_decimals: 6,
-        },
-        {
-          contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',
-          chain_id: 1284,
-          contract_decimals: 6,
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8',
-          chain_id: 'axelar',
-          contract_decimals: 6,
-        },
-      ],
-    },
-    {
       id: 'uusdc',
       symbol: 'USDC',
       title: 'USD Coin',
@@ -169,6 +85,149 @@ module.exports = {
           ibc_denom: 'ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858',
           chain_id: 'osmosis',
           contract_decimals: 6,
+        },
+      ],
+    },
+    {
+      id: 'uusdt',
+      symbol: 'USDT',
+      title: 'Tether',
+      image: '/logos/assets/usdt.png',
+      contract_decimals: 6,
+      coingecko_id: 'tether',
+      contracts: [
+        {
+          contract_address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+          chain_id: 1,
+          contract_decimals: 6,
+          is_native: true,
+        },
+        {
+          contract_address: '0xf976ba91b6bb3468c91e4f02e68b37bc64a57e66',
+          chain_id: 43114,
+          contract_decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          contract_address: '0xceed2671d8634e3ee65000edbbee66139b132fbf',
+          chain_id: 137,
+          contract_decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          contract_address: '0xd226392c23fb3476274ed6759d4a478db3197d82',
+          chain_id: 250,
+          contract_decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          contract_address: '0xdfd74af792bc6d45d1803f425ce62dd16f8ae038',
+          chain_id: 1284,
+          contract_decimals: 6,
+          symbol: 'axlUSDT',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/5662412372381F56C5F83A0404DC7209E5143ABD32EF67B5705DBE8D9C2BF001',
+          chain_id: 'cosmoshub',
+          contract_decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/8242AD24008032E457D2E12D46588FD39FB54FB29680C6C7663D296B383C37C4',
+          chain_id: 'osmosis',
+          contract_decimals: 6,
+        },
+      ],
+    },
+    {
+      id: 'dai-wei',
+      symbol: 'DAI',
+      title: 'Dai',
+      image: '/logos/assets/dai.png',
+      contract_decimals: 18,
+      coingecko_id: 'dai',
+      contracts: [
+        {
+          contract_address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          chain_id: 1,
+          contract_decimals: 18,
+          is_native: true,
+        },
+        {
+          contract_address: '0xc5fa5669e326da8b2c35540257cd48811f40a36b',
+          chain_id: 43114,
+          contract_decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          contract_address: '0xddc9e2891fa11a4cc5c223145e8d14b44f3077c9',
+          chain_id: 137,
+          contract_decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          contract_address: '0xd5d5350f42cb484036a1c1af5f2df77eafadcaff',
+          chain_id: 250,
+          contract_decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          contract_address: '0x14df360966a1c4582d2b18edbdae432ea0a27575',
+          chain_id: 1284,
+          contract_decimals: 18,
+          symbol: 'axlDAI',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/4A98C8AC2C35498162346F28EEBF3206CBEF81F44725FE62A3DB0CC10E88E695',
+          chain_id: 'cosmoshub',
+          contract_decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7',
+          chain_id: 'osmosis',
+          contract_decimals: 18,
+        },
+      ],
+    },
+    {
+      id: 'weth-wei',
+      symbol: 'WETH',
+      title: 'Ethereum',
+      image: '/logos/assets/eth.png',
+      contract_decimals: 18,
+      coingecko_id: 'ethereum',
+      contracts: [
+        {
+          contract_address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          chain_id: 1,
+          contract_decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/EA1D43981D5C9A1C4AAEA9C23BB1D4FA126BA9BC7020A25E0AE4AA841EA25DC5',
+          chain_id: 'osmosis',
+          contract_decimals: 18,
+        },
+      ],
+    },
+    {
+      id: 'wbtc-satoshi',
+      symbol: 'WBTC',
+      title: 'Bitcoin',
+      image: '/logos/assets/wbtc.png',
+      contract_decimals: 8,
+      coingecko_id: 'bitcoin',
+      contracts: [
+        {
+          contract_address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+          chain_id: 1,
+          contract_decimals: 18,
+          is_native: true,
         },
       ],
     },
@@ -272,133 +331,6 @@ module.exports = {
       ],
     },
     {
-      id: 'dai-wei',
-      symbol: 'DAI',
-      title: 'Dai',
-      image: '/logos/assets/dai.png',
-      contract_decimals: 18,
-      coingecko_id: 'dai',
-      contracts: [
-        {
-          contract_address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-          chain_id: 1,
-          contract_decimals: 18,
-          is_native: true,
-        },
-        {
-          contract_address: '0xc5fa5669e326da8b2c35540257cd48811f40a36b',
-          chain_id: 43114,
-          contract_decimals: 18,
-          symbol: 'axlDAI',
-        },
-        {
-          contract_address: '0xddc9e2891fa11a4cc5c223145e8d14b44f3077c9',
-          chain_id: 137,
-          contract_decimals: 18,
-          symbol: 'axlDAI',
-        },
-        {
-          contract_address: '0xd5d5350f42cb484036a1c1af5f2df77eafadcaff',
-          chain_id: 250,
-          contract_decimals: 18,
-          symbol: 'axlDAI',
-        },
-        {
-          contract_address: '0x14df360966a1c4582d2b18edbdae432ea0a27575',
-          chain_id: 1284,
-          contract_decimals: 18,
-          symbol: 'axlDAI',
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/4A98C8AC2C35498162346F28EEBF3206CBEF81F44725FE62A3DB0CC10E88E695',
-          chain_id: 'cosmoshub',
-          contract_decimals: 18,
-        },
-        {
-          ibc_denom: 'ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7',
-          chain_id: 'osmosis',
-          contract_decimals: 18,
-        },
-      ],
-    },
-    {
-      id: 'weth-wei',
-      symbol: 'WETH',
-      title: 'Ethereum',
-      image: '/logos/assets/eth.png',
-      contract_decimals: 18,
-      coingecko_id: 'ethereum',
-      contracts: [
-        {
-          contract_address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-          chain_id: 1,
-          contract_decimals: 18,
-          is_native: true,
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/EA1D43981D5C9A1C4AAEA9C23BB1D4FA126BA9BC7020A25E0AE4AA841EA25DC5',
-          chain_id: 'osmosis',
-          contract_decimals: 18,
-        },
-      ],
-    },
-    {
-      id: 'uusdt',
-      symbol: 'USDT',
-      title: 'Tether',
-      image: '/logos/assets/usdt.png',
-      contract_decimals: 6,
-      coingecko_id: 'tether',
-      contracts: [
-        {
-          contract_address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-          chain_id: 1,
-          contract_decimals: 6,
-          is_native: true,
-        },
-        {
-          contract_address: '0xf976ba91b6bb3468c91e4f02e68b37bc64a57e66',
-          chain_id: 43114,
-          contract_decimals: 6,
-          symbol: 'axlUSDT',
-        },
-        {
-          contract_address: '0xceed2671d8634e3ee65000edbbee66139b132fbf',
-          chain_id: 137,
-          contract_decimals: 6,
-          symbol: 'axlUSDT',
-        },
-        {
-          contract_address: '0xd226392c23fb3476274ed6759d4a478db3197d82',
-          chain_id: 250,
-          contract_decimals: 6,
-          symbol: 'axlUSDT',
-        },
-        {
-          contract_address: '0xdfd74af792bc6d45d1803f425ce62dd16f8ae038',
-          chain_id: 1284,
-          contract_decimals: 6,
-          symbol: 'axlUSDT',
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/5662412372381F56C5F83A0404DC7209E5143ABD32EF67B5705DBE8D9C2BF001',
-          chain_id: 'cosmoshub',
-          contract_decimals: 6,
-        },
-        {
-          ibc_denom: 'ibc/8242AD24008032E457D2E12D46588FD39FB54FB29680C6C7663D296B383C37C4',
-          chain_id: 'osmosis',
-          contract_decimals: 6,
-        },
-      ],
-    },
-    {
       id: 'ungm',
       symbol: 'NGM',
       title: 'e-Money',
@@ -497,6 +429,90 @@ module.exports = {
       image: '/logos/assets/juno.png',
       contract_decimals: 6,
       coingecko_id: 'juno-network',
+    },
+    {
+      id: 'uusd',
+      symbol: 'UST',
+      title: 'TerraUSD',
+      image: '/logos/assets/ust.png',
+      contract_decimals: 6,
+      coingecko_id: 'terrausd',
+      contracts: [
+        {
+          contract_address: '0x085416975fe14c2a731a97ec38b9bf8135231f62',
+          chain_id: 1,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0x260bbf5698121eb85e7a74f2e45e16ce762ebe11',
+          chain_id: 43114,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0xeddc6ede8f3af9b4971e1fa9639314905458be87',
+          chain_id: 137,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0x2b9d3f168905067d88d93f094c938bacee02b0cb',
+          chain_id: 250,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0x085416975fe14c2a731a97ec38b9bf8135231f62',
+          chain_id: 1284,
+          contract_decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/6F4968A73F90CF7DE6394BF937D6DF7C7D162D74D839C13F53B41157D315E05F',
+          chain_id: 'axelar',
+          contract_decimals: 6,
+        },
+      ],
+    },
+    {
+      id: 'uluna',
+      symbol: 'LUNA',
+      title: 'Terra',
+      image: '/logos/assets/luna.png',
+      contract_decimals: 6,
+      coingecko_id: 'terra-luna',
+      contracts: [
+        {
+          contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',
+          chain_id: 1,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0x120ad3e5a7c796349e591f1570d9f7980f4ea9cb',
+          chain_id: 43114,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0xa17927fb75e9faea10c08259902d0468b3dead88',
+          chain_id: 137,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0x5e3c572a97d898fe359a2cea31c7d46ba5386895',
+          chain_id: 250,
+          contract_decimals: 6,
+        },
+        {
+          contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',
+          chain_id: 1284,
+          contract_decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8',
+          chain_id: 'axelar',
+          contract_decimals: 6,
+        },
+      ],
     },
   ],
   testnet: [
