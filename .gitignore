@@ -8,9 +8,15 @@ node_modules
 # testing
 /coverage
 
+# terraform
+.terraform
+.terraform.*
+terraform.*
+
 # production
 /build
 package-lock.json
+yarn.lock
 *.zip*
 
 # misc
@@ -27,6 +33,3 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-.env.testnet
-.env.mainnet
-.env.devnet
