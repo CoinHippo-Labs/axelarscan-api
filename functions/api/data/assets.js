@@ -230,6 +230,13 @@ module.exports = {
           is_native: true,
         },
       ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/D1542AA8762DB13087D8364F3EA6509FD6F009A34F00426AF9E4F9FA85CBBF1F',
+          chain_id: 'osmosis',
+          contract_decimals: 8,
+        },
+      ],
     },
     {
       id: 'frax-wei',
