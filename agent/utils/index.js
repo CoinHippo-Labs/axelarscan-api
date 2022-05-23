@@ -14,28 +14,30 @@ const log = (level, from, message, data = {}) => {
     RED = '\033[0;31m',
     NO_COLOR = '\033[0m';
 
-  // generate log message
-  const log_message = `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${level === 'error' ? `${RED}ERR` : level === 'warn' ? `${YELLOW}WARN` : level === 'debug' ? `${GREEN}DBG` : `${GREEN}INF`}${NO_COLOR} ${LIGHT_BLUE}[${from?.toUpperCase()}]${NO_COLOR} ${LIGHT_YELLOW}${message}${NO_COLOR} ${typeof data === 'string' ? data : typeof data === 'object' && data ? Object.entries(data).map(([k, v]) => `${CYAN}${k}=${NO_COLOR}${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' ') : data}`;
+  try {
+    // generate log message
+    const log_message = `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${level === 'error' ? `${RED}ERR` : level === 'warn' ? `${YELLOW}WARN` : level === 'debug' ? `${GREEN}DBG` : `${GREEN}INF`}${NO_COLOR} ${LIGHT_BLUE}[${from?.toUpperCase()}]${NO_COLOR} ${LIGHT_YELLOW}${message}${NO_COLOR} ${typeof data === 'string' ? data : typeof data === 'object' && data ? Object.entries(data).map(([k, v]) => `${CYAN}${k}=${NO_COLOR}${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' ') : data}`;
 
-  // normalize level
-  level = level?.toLowerCase();
+    // normalize level
+    level = level?.toLowerCase();
 
-  switch (level) {
-    case 'error':
-      console.error(log_message);
-      break;
-    case 'warn':
-      console.warn(log_message);
-      break;
-    case 'debug':
-      if (config?.log_level === 'debug') {
-        console.debug(log_message);
-      }
-      break;
-    default:
-      console.log(log_message);
-      break;
-  };
+    switch (level) {
+      case 'error':
+        console.error(log_message);
+        break;
+      case 'warn':
+        console.warn(log_message);
+        break;
+      case 'debug':
+        if (config?.log_level === 'debug') {
+          console.debug(log_message);
+        }
+        break;
+      default:
+        console.log(log_message);
+        break;
+    };
+  } catch (error) {}
 };
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));

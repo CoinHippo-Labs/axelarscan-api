@@ -1,5 +1,3 @@
-// import module for scheduler
-const cronjob = require('cron').CronJob;
 // import module for http request
 const axios = require('axios');
 // import module for data
@@ -8,9 +6,8 @@ const _ = require('lodash');
 const moment = require('moment');
 // import config
 const config = require('config-yml');
-// import modules for docker log stream
-const Docker = require('dockerode');
-const stream = require('stream');
+// import modules for log stream
+const TailFile = require('@logdna/tail-file');
 // import utils
 const { log, sleep } = require('../../utils');
 
@@ -20,7 +17,7 @@ const service_name = 'log-scraper';
 // initial environment
 const environment = process.env.ENVIRONMENT || config?.environment;
 
-const mergeData = (_data, attributes, initial_data = {}) => {
+const merge_data = (_data, attributes, initial_data = {}) => {
   const data = initial_data;
 
   if (_data && attributes) {
@@ -37,9 +34,8 @@ const mergeData = (_data, attributes, initial_data = {}) => {
           data[a.id] = data[a.id].trim();
           data[a.id] = a.type === 'date' ? Number(moment(data[a.id]).format('X')) :
             a.type === 'number' ? Number(data[a.id]) :
-              a.type?.startsWith('array') ? data[a.id].replace('[', '').replace(']', '').split('"').join('').split('\\n').join('').split('\\').join('').split(',').map(e => e?.trim()).filter(e => e).map(e => a.type?.includes('number') ? Number(e) : e).filter(e => e) :
-                a.type === 'json' ? JSON.parse(data[a.id]) :
-                  data[a.id];
+            a.type?.startsWith('array') ? data[a.id].replace('[', '').replace(']', '').split('"').join('').split('\\n').join('').split('\\').join('').split(',').map(e => e?.trim()).filter(e => e).map(e => a.type?.includes('number') ? Number(e) : e).filter(e => e) :
+            a.type === 'json' ? JSON.parse(data[a.id]) : data[a.id];
         }
 
         if (a.primary_key) {
@@ -56,44 +52,62 @@ const save = async (data, index_name, requester, is_update = false, delay_sec = 
   if (data && index_name && requester && (data.id || index_name.endsWith('keygens'))) {
     if (typeof data.snapshot === 'number') {
       // request api
-      let response = await requester.get('', { params: { module: 'cli', cmd: `axelard q snapshot info ${data.snapshot} -oj`, cache: true, cache_timeout: 5 } })
-        .catch(error => { return { data: { error } }; });
+      let response = await requester.get('', {
+        params: {
+          module: 'cli',
+          cmd: `axelard q snapshot info ${data.snapshot} -oj`,
+          cache: true,
+          cache_timeout: 5,
+        }
+      }).catch(error => { return { data: { error } }; });
 
       // handle error
       if (response?.data && !response.data.stdout && response.data.stderr && moment().diff(moment(data.timestamp * 1000), 'day') <= 1) {
-        response = await requester.get('', { params: { module: 'cli', cmd: 'axelard q snapshot info latest -oj', cache: true, cache_timeout: 5 } })
-          .catch(error => { return { data: { error } }; });
+        response = await requester.get('', {
+          params: {
+            module: 'cli',
+            cmd: 'axelard q snapshot info latest -oj',
+            cache: true,
+            cache_timeout: 5,
+          }
+        }).catch(error => { return { data: { error } }; });
       }
 
       if (response?.data?.stdout) {
         try {
-          const snapshotData = JSON.parse(response.data.stdout);
+          const snapshot_data = JSON.parse(response.data.stdout);
           if (!data.height) {
-            data.height = Number(snapshotData.height);
+            data.height = Number(snapshot_data.height);
           }
           data.id = `${data.key_id}_${data.height}`;
-          data.snapshot_validators = snapshotData;
+          data.snapshot_validators = snapshot_data;
         } catch (error) {}
       }
     }
 
     if (data.key_id) {
       // request api
-      const response = await requester.get('', { params: { module: 'cli', cmd: `axelard q tss key ${data.key_id} -oj`, cache: true, cache_timeout: 15 } })
-        .catch(error => { return { data: { error } }; });
+      const response = await requester.get('', {
+        params: {
+          module: 'cli',
+          cmd: `axelard q tss key ${data.key_id} -oj`,
+          cache: true,
+          cache_timeout: 15,
+        }
+      }).catch(error => { return { data: { error } }; });
 
       if (response?.data?.stdout) {
         try {
-          const keyData = JSON.parse(response.data.stdout);
-          if (keyData) {
-            if (keyData.role) {
-              if (!keyData.role.includes('KEY_ROLE_UNSPECIFIED')) {
-                data.key_role = keyData.role;
+          const key_data = JSON.parse(response.data.stdout);
+          if (key_data) {
+            if (key_data.role) {
+              if (!key_data.role.includes('KEY_ROLE_UNSPECIFIED')) {
+                data.key_role = key_data.role;
               }
             }
-            if (keyData.multisig_key) {
-              if (keyData.multisig_key.threshold && !['sign_attempts'].includes(index_name)) {
-                data.threshold = Number(keyData.multisig_key.threshold) - 1;
+            if (key_data.multisig_key) {
+              if (key_data.multisig_key.threshold && !['sign_attempts'].includes(index_name)) {
+                data.threshold = Number(key_data.multisig_key.threshold) - 1;
               }
             }
           }
@@ -119,34 +133,6 @@ const save = async (data, index_name, requester, is_update = false, delay_sec = 
   }
 };
 
-const index = async (_data, attributes, index_name, requester, is_update = false, delay_sec = 0) => {
-  if (_data && attributes && index_name && requester) {
-    const data = mergeData(_data, attributes);
-    const primary_key = attributes.find(a => a.primary_key);
-
-    if (data[primary_key?.id]) {
-      if (is_update) {
-        await sleep(delay_sec * 1000);
-      }
-      const log_obj = { index_name, id: primary_key.id };
-      if (data.participants || data.non_participants) {
-        log_obj.participants = data.participants?.length;
-        log_obj.non_participants = data.non_participants?.length;
-      }
-      log('debug', service_name, 'index', log_obj);
-      // send request
-      await requester.post('', {
-        module: 'index',
-        index: index_name,
-        method: 'update',
-        path: is_update ? `/${index_name}/_update/${data[primary_key.id]}` : undefined,
-        id: data[primary_key.id],
-        ...data,
-      }).catch(error => { return { data: { error } }; });
-    }
-  }
-};
-
 module.exports = () => {
   if (config?.[environment]?.endpoints?.api) {
     // initial endpoints
@@ -155,18 +141,16 @@ module.exports = () => {
     // initial api requester
     const requester = axios.create({ baseURL: api });
 
-    // setup log stream from docker
-    const container = new Docker().getContainer('axelar-core');
-    const logStream = new stream.PassThrough();
+    // setup log stream
+    const tail = new TailFile(`/home/axelard/.axelar${['testnet'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`, { encoding: 'utf8' });
 
     // initial temp variables
-    let height, snapshot = 0, excludeValidators = {}, lastBatch;
+    let height, snapshot = 0, exclude_validators = {}, last_batch;
 
     // subscribe log data
-    logStream.on('data', async chunk => {
+    tail.on('data', async chunk => {
       // initial data
       const data = chunk.toString('utf8').replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '').trim();
-
       // block
       if (data.includes('executed block height=')) {
         const attributes = [
@@ -177,8 +161,7 @@ module.exports = () => {
             type: 'number',
           },
         ];
-
-        height = mergeData(data, attributes).height;
+        height = merge_data(data, attributes).height;
         log('debug', service_name, 'block', { height });
       }
       // participations
@@ -230,12 +213,10 @@ module.exports = () => {
             hard_value: true,
           },
         ];
-
         log('debug', service_name, 'next sign');
-        const sign = mergeData(data, attributes);
+        const sign = merge_data(data, attributes);
         if (sign) {
           sign._height = height;
-
           if (sign.participants) {
             sign.participants = sign.participants.filter(a => a?.startsWith('axelarvaloper'));
           }
@@ -249,17 +230,14 @@ module.exports = () => {
               return a;
             }).filter(a => a?.startsWith('axelarvaloper'));
           }
-
           if (sign.sig_id) {
             // request api
             const response = await requester.get('', { params: { module: 'lcd', path: '/cosmos/tx/v1beta1/txs', events: `sign.sigID='${sign.sig_id}'` } })
               .catch(error => { return { data: { error } }; });
-
             if (response?.data?.tx_responses?.[0]?.height) {
               sign.height = Number(response.data.tx_responses[0].height);
             }
           }
-
           if (!sign.height && sign._height) {
             sign.height = sign._height;
           }
@@ -300,12 +278,10 @@ module.exports = () => {
             type: 'array',
           },
         ];
-
         log('debug', service_name, 'next sign');
-        const sign = mergeData(data, attributes);
+        const sign = merge_data(data, attributes);
         if (sign) {
           sign._height = height;
-
           if (sign.participants) {
             sign.participants = sign.participants.filter(a => a?.startsWith('axelarvaloper'));
           }
@@ -319,17 +295,14 @@ module.exports = () => {
               return a;
             }).filter(a => a?.startsWith('axelarvaloper'));
           }
-
           if (sign.sig_id) {
             // request api
             const response = await requester.get('', { params: { module: 'cosmos', path: '/cosmos/tx/v1beta1/txs', events: `sign.sigID='${sign.sig_id}'` } })
               .catch(error => { return { data: { error } }; });
-
             if (response?.data?.tx_responses?.[0]?.height) {
               sign.height = Number(response.data.tx_responses[0].height);
             }
           }
-
           if (!sign.height && sign._height) {
             sign.height = sign._height;
           }
@@ -351,13 +324,12 @@ module.exports = () => {
             type: 'number',
           },
         ];
-
         log('debug', service_name, 'keygen excluding validator');
-        const excludeValidatorData = mergeData(data, attributes);
-        if (typeof excludeValidatorData?.snapshot === 'number') {
-          snapshot = excludeValidatorData.snapshot;
+        const exclude_validator_data = merge_data(data, attributes);
+        if (typeof exclude_validator_data?.snapshot === 'number') {
+          snapshot = exclude_validator_data.snapshot;
         }
-        excludeValidators[snapshot] = _.concat(excludeValidators[snapshot] || [], excludeValidatorData);
+        exclude_validators[snapshot] = _.concat(exclude_validators[snapshot] || [], exclude_validator_data);
       }
       else if (data.includes('new Keygen: key_id')) {
         const attributes = [
@@ -373,14 +345,13 @@ module.exports = () => {
             pattern_end: '] threshold [',
           },
         ];
-
         log('debug', service_name, 'new keygen');
-        const keygen = mergeData(data, attributes);
+        const keygen = merge_data(data, attributes);
         keygen.height = height + 1;
         keygen.snapshot = snapshot;
-        keygen.snapshot_non_participant_validators = { validators: _.uniqBy(excludeValidators[keygen.snapshot] || [], 'validator') };
+        keygen.snapshot_non_participant_validators = { validators: _.uniqBy(exclude_validators[keygen.snapshot] || [], 'validator') };
         snapshot++;
-        excludeValidators = {};
+        exclude_validators = {};
         await save(keygen, 'keygens', requester);
       }
       else if (data.includes('multisig keygen ') && data.includes(' timed out')) {
@@ -397,10 +368,8 @@ module.exports = () => {
             pattern_end: ' timed out',
           },
         ];
-
         log('debug', service_name, 'keygen failed');
-        const keygen = mergeData(data, attributes);
-
+        const keygen = merge_data(data, attributes);
         // request api
         const response = await requester.post('', {
           module: 'index',
@@ -409,14 +378,13 @@ module.exports = () => {
           query: { match_phrase: { 'key_id': keygen.key_id } },
           size: 1,
         }).catch(error => { return { data: { error } }; });
-
         if (response?.data?.data?.[0]) {
           keygen.id = response.data.data[0]._id;
         }
         keygen.failed = true;
         await save(keygen, 'keygens', requester, true);
       }
-      // cross-chain
+      // transfers
       else if (data.includes('deposit confirmed on chain ')) {
         const attributes = [
           {
@@ -452,45 +420,39 @@ module.exports = () => {
             pattern_end: ' module=',
           },
         ];
-
         log('debug', service_name, 'confirm deposit - evm');
-        const confirm = mergeData(data, attributes);
+        const confirm = merge_data(data, attributes);
         if (confirm) {
           confirm.chain = confirm.chain?.toLowerCase();
           if (confirm.tx_id && confirm.deposit_address && confirm.transfer_id) {
-            confirm.tx_id = confirm.tx_id.toLowerCase();
-            confirm.deposit_address = confirm.deposit_address.toLowerCase();
-
-            // get exist tx
+            // get exist transfer
             const id = confirm.tx_id;
             let query = {
               bool: {
                 must: [
-                  { match: { 'send.id': id } },
-                  { match: { 'send.recipient_address': confirm.deposit_address } },
+                  { match: { 'source.id': id } },
+                  { match: { 'source.recipient_address': confirm.deposit_address } },
                 ],
               },
             };
             // request api
-            const response_txs = await requester.post('', {
+            let response = await requester.post('', {
               module: 'index',
-              index: 'crosschain_txs',
+              index: 'transfers',
               method: 'search',
               query,
               size: 1,
             }).catch(error => { return { data: { error } }; });
-
-            if (response_txs?.data?.data?.[0]) {
-              const tx = response_txs.data.data[0];
-              if (tx.confirm_deposit) {
-                tx.confirm_deposit.transfer_id = confirm.transfer_id;
+            if (response?.data?.data?.[0]) {
+              const transfer = response.data.data[0];
+              if (transfer.confirm_deposit) {
+                transfer.confirm_deposit.transfer_id = confirm.transfer_id;
               }
-              if (tx.vote_confirm_deposit) {
-                tx.vote_confirm_deposit.transfer_id = confirm.transfer_id;
+              if (transfer.vote) {
+                transfer.vote.transfer_id = confirm.transfer_id;
               }
-
-              // check signed
-              let signed;
+              // sign batch
+              let sign_batch;
               const command_id = confirm.command_id || confirm.transfer_id.toString(16).padStart(64, '0');
               query = {
                 bool: {
@@ -502,18 +464,17 @@ module.exports = () => {
                 },
               };
               // request api
-              const response_batch = await requester.post('', {
+              response = await requester.post('', {
                 module: 'index',
                 index: 'batches',
                 method: 'search',
                 query,
                 size: 1,
               }).catch(error => { return { data: { error } }; });
-
-              if (response_batch?.data?.data?.[0]) {
-                const batch = response_batch.data.data[0];
+              if (response?.data?.data?.[0]) {
+                const batch = response.data.data[0];
                 if (batch) {
-                  signed = {
+                  sign_batch = {
                     chain: confirm.chain,
                     batch_id: batch.batch_id,
                     command_id,
@@ -521,17 +482,16 @@ module.exports = () => {
                   };
                 }
               }
-
-              log('debug', service_name, 'save tx', { chain: confirm.chain, tx_hash: id, transfer_id: confirm.transfer_id });
+              log('debug', service_name, 'save transfer', { chain: confirm.chain, tx_hash: id, transfer_id: confirm.transfer_id });
               // request api
               await requester.post('', {
                 module: 'index',
-                index: 'crosschain_txs',
+                index: 'transfers',
                 method: 'update',
-                path: `/crosschain_txs/_update/${id}`,
+                path: `/transfers/_update/${id}`,
                 id,
-                ...tx,
-                signed,
+                ...transfer,
+                sign_batch,
               }).catch(error => { return { data: { error } }; });
             }
           }
@@ -556,36 +516,30 @@ module.exports = () => {
             pattern_end: ' using key',
           },
         ];
-
         log('debug', service_name, 'sign batch');
-        const batch = mergeData(data, attributes);
+        const batch = merge_data(data, attributes);
         if (batch?.batch_id && batch.chain) {
           batch.chain = batch.chain.toLowerCase();
-          if (lastBatch && !(lastBatch.batch_id === batch.batch_id && lastBatch.chain === batch.chain)) {
+          if (last_batch && !(last_batch.batch_id === batch.batch_id && last_batch.chain === batch.chain)) {
             log('debug', service_name, 'get batch', { batch_id: batch.batch_id });
             // request api
-            requester.get('', { params: { module: 'cli', cmd: `axelard q evm batched-commands ${lastBatch.chain} ${lastBatch.batch_id} -oj`, created_at: lastBatch.timestamp, cache: true, cache_timeout: 1 } })
-              .catch(error => { return { data: { error } }; });
+            requester.get('', {
+              params: {
+                module: 'cli',
+                cmd: `axelard q evm batched-commands ${last_batch.chain} ${last_batch.batch_id} -oj`,
+                created_at: last_batch.timestamp,
+                cache: true,
+                cache_timeout: 1,
+              }
+            }).catch(error => { return { data: { error } }; });
           }
-          lastBatch = batch;
+          last_batch = batch;
         }
       }
-    });
-
-    // initial function to scrape log from docker
-    const scrape = () => {
-      container.logs({ follow: true, stdout: true, stderr: true }, (error, stream) => {
-        if (error) return;
-        container.modem.demuxStream(stream, logStream, logStream);
-        stream.on('end', () => {});
-        stream.on('close', () => scrape());
-
-        // restart schedule
-        // new cronjob('30 0 0 * * *', () => stream.destroy(), null, true);
-      });
-    };
-
-    // start scrape
-    scrape();
+    })
+    .on('tail_error', error => {})
+    .on('error', error => {})
+    .start()
+    .catch(error => log('error', service_name, { ...error }));
   }
 };
