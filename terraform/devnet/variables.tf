@@ -25,7 +25,7 @@ variable "indexer_username" {
 
 variable "indexer_password" {
   description = "Indexer password"
-  default     = "axelarscan!"
+  default     = "0xAxelarsc@n"
 }
 
 variable "log_level" {

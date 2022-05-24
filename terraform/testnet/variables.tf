@@ -25,7 +25,7 @@ variable "indexer_username" {
 
 variable "indexer_password" {
   description = "Indexer password"
-  default     = "axelarscan!"
+  default     = "0xAxelarsc@n"
 }
 
 variable "transfers_indexer_username" {
@@ -35,7 +35,7 @@ variable "transfers_indexer_username" {
 
 variable "transfers_indexer_password" {
   description = "Transfers indexer password"
-  default     = "axelarscan!"
+  default     = "0xAxelarsc@n"
 }
 
 variable "log_level" {
