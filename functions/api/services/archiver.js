@@ -21,8 +21,8 @@ module.exports = async () => {
   const cache_timeout_minutes = config?.[environment]?.cache_timeout_minutes || 15;
 
   // initial collections
-  const db_collections = ['blocks'];
-  if (db_collections.length > 0 && config?.[environment]?.endpoints?.rpc) {
+  const collections = ['blocks'];
+  if (collections.length > 0 && config?.[environment]?.endpoints?.rpc) {
     // get latest block
     const rpc = axios.create({ baseURL: config[environment].endpoints.rpc });
     // request rpc
@@ -31,12 +31,12 @@ module.exports = async () => {
     const latest_block = Number(response?.data?.result?.sync_info?.latest_block_height);
     if (latest_block > store_blocks) {
       // iterate collections
-      for (let i = 0; i < db_collections.length; i++) {
+      for (let i = 0; i < collections.length; i++) {
         // initial collection
-        const collection = db_collections[i];
+        const collection = collections[i];
         // initial params
         const params = {
-          index: collection,
+          collection,
           method: 'search',
           query: {
             range: {
@@ -47,7 +47,6 @@ module.exports = async () => {
           },
           path: `/${collection}/_delete_by_query`,
         };
-
         log('info', service_name, 'archive', { collection, store_blocks });
         const output = await crud(params);
         log('debug', service_name, 'archive output', output);
@@ -63,7 +62,7 @@ module.exports = async () => {
     const collection = cache_collections[i];
     // initial params
     const params = {
-      index: collection,
+      collection,
       method: 'search',
       query: {
         bool: {
@@ -86,7 +85,6 @@ module.exports = async () => {
       },
       path: `/${collection}/_delete_by_query`,
     };
-
     log('info', service_name, 'archive', { collection, cache_timeout_minutes });
     const output = await crud(params);
     log('debug', service_name, 'archive output', output);

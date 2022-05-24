@@ -4,31 +4,35 @@ const config = require('config-yml');
 const moment = require('moment');
 
 const log = (level, from, message, data = {}) => {
-  // generate log message
-  const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' && data ? JSON.stringify(data, null, 2) : data}`;
+  try {
+    // generate log message
+    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' && data ? JSON.stringify(data, null, 2) : data}`;
 
-  // normalize level
-  level = level?.toLowerCase();
+    // normalize level
+    level = level?.toLowerCase();
 
-  switch (level) {
-    case 'error':
-      console.error(log_message);
-      break;
-    case 'warn':
-      console.warn(log_message);
-      break;
-    case 'debug':
-      if (config?.log_level === 'debug') {
-        console.debug(log_message);
-      }
-      break;
-    default:
-      console.log(log_message);
-      break;
-  };
+    switch (level) {
+      case 'error':
+        console.error(log_message);
+        break;
+      case 'warn':
+        console.warn(log_message);
+        break;
+      case 'debug':
+        if (config?.log_level === 'debug') {
+          console.debug(log_message);
+        }
+        break;
+      default:
+        console.log(log_message);
+        break;
+    };
+  } catch (error) {}
 };
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const equals_ignore_case = (a, b) => (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
 
 const get_params = req => {
   // initial params
@@ -49,9 +53,9 @@ const to_json = s => {
   return null;
 };
 
-const to_hex = byteArray => {
+const to_hex = byte_array => {
   let string = '0x';
-  byteArray.forEach(byte => string += ('0' + (byte & 0xFF).toString(16)).slice(-2));
+  byte_array.forEach(byte => string += ('0' + (byte & 0xFF).toString(16)).slice(-2));
   return string;
 };
 
@@ -76,13 +80,36 @@ const normalize_chain = chain => {
 
 const transfer_actions = ['ConfirmDeposit', 'ConfirmERC20Deposit'];
 
+const vote_types = ['VoteConfirmDeposit', 'Vote'];
+
+// get block time
+const getBlockTime = async (provider, block_number) => {
+  // initial output
+  let output;
+
+  if (provider && block_number) {
+    try {
+      // get block
+      const block = await provider.getBlock(block_number);
+      if (block?.timestamp) {
+        output = block.timestamp;
+      }
+    } catch (error) {}
+  }
+
+  return output;
+};
+
 module.exports = {
   log,
   sleep,
+  equals_ignore_case,
   get_params,
   to_json,
   to_hex,
   get_granularity,
   normalize_chain,
   transfer_actions,
+  vote_types,
+  getBlockTime,
 };

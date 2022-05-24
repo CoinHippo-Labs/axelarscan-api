@@ -3,22 +3,26 @@ const axios = require('axios');
 // import config
 const config = require('config-yml');
 // import utils
-const { normalize_obj } = require('./utils');
+const { normalize_obj, transfer_collections } = require('./utils');
 
 // service name
 const service_name = 'index';
 
 // initial environment
 const environment = process.env.ENVIRONMENT || config?.environment;
+// initial indexer info
+let indexer_url = process.env.INDEXER_URL || config?.[environment]?.endpoints?.indexer?.url;
+let indexer_username = process.env.INDEXER_USERNAME || config?.[environment]?.endpoints?.indexer?.username;
+let indexer_password = process.env.INDEXER_PASSWORD || config?.[environment]?.endpoints?.indexer?.password;
 
 module.exports.crud = async (params = {}) => {
   // initial response
   let response;
 
-  if (config?.[environment]?.endpoints?.indexer?.url && params?.index) {
+  if (indexer_url && params?.collection) {
     // set collection name
-    const collection = params.index;
-    delete params.index;
+    const collection = params.collection;
+    delete params.collection;
     // set method
     const method = params.method; // get, set, update, query, search, delete, remove
     delete params.method;
@@ -30,6 +34,9 @@ module.exports.crud = async (params = {}) => {
     // initial use raw data
     const use_raw_data = typeof params.use_raw_data === 'boolean' ? params.use_raw_data : typeof params.use_raw_data === 'string' ? params.use_raw_data?.trim().toLowerCase() === 'true' ? true : false : true;
     delete params.use_raw_data;
+    // initial update only
+    const update_only = typeof params.update_only === 'boolean' ? params.update_only : typeof params.update_only === 'string' ? params.update_only?.trim().toLowerCase() === 'true' ? true : false : true;
+    delete params.update_only;
 
     // normalize
     if (!isNaN(params.height)) {
@@ -44,12 +51,19 @@ module.exports.crud = async (params = {}) => {
       }
     });
 
+    // change indexer info
+    if (transfer_collections.includes(collection)) {
+      indexer_url = process.env.TRANSFERS_INDEXER_URL || config?.[environment]?.endpoints?.transfers_indexer?.url;
+      indexer_username = process.env.TRANSFERS_INDEXER_USERNAME || config?.[environment]?.endpoints?.transfers_indexer?.username;
+      indexer_password = process.env.TRANSFERS_INDEXER_PASSWORD || config?.[environment]?.endpoints?.transfers_indexer?.password;
+    }
+
     // initial indexer
-    const indexer = axios.create({ baseURL: config[environment].endpoints.indexer.url });
+    const indexer = axios.create({ baseURL: indexer_url });
     // initial auth
     const auth = {
-      username: process.env.INDEXER_USERNAME || config[environment].endpoints.indexer.username,
-      password: process.env.INDEXER_PASSWORD || config[environment].endpoints.indexer.password,
+      username: indexer_username,
+      password: indexer_password,
     };
 
     // run method
@@ -82,6 +96,14 @@ module.exports.crud = async (params = {}) => {
           // retry with update/insert
           if (response?.data?.error) {
             path = path?.replace(path.includes('_doc') ? '_doc' : '_update', path.includes('_doc') ? '_update' : '_doc') || path;
+            if (update_only && path?.includes('_doc')) {
+              // request indexer
+              const _response = await indexer.get(path, { auth })
+                .catch(error => { return { data: { error } }; });
+              if (_response?.data?._source) {
+                path = path?.replace('_doc', '_update') || path;
+              }
+            }
             // request indexer
             response = await (path.includes('_update') ?
               indexer.post(path, { doc: params }, { auth })

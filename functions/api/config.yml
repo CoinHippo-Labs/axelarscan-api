@@ -14,10 +14,13 @@ mainnet:
   endpoints:
     rpc: "http://rpc.axelarscan.io:26657"
     lcd: "http://rpc.axelarscan.io:1317"
-    prometheus: "http://docker.axelarscan.io:9092"
     cli: "http://rpc.axelarscan.io:3333"
     indexer:
       url: "https://indexer.axelarscan.io"
+      username: ""
+      password: ""
+    transfers_indexer:
+      url: "https://indexer.transfers.axelarscan.io"
       username: ""
       password: ""
   num_blocks_avg_block_time: 100
@@ -30,10 +33,13 @@ testnet:
   endpoints:
     rpc: "http://testnet.rpc.axelarscan.io:26657"
     lcd: "http://testnet.rpc.axelarscan.io:1317"
-    prometheus: "http://testnet.docker.axelarscan.io:9092"
     cli: "http://testnet.rpc.axelarscan.io:3333"
     indexer:
       url: "https://testnet.indexer.axelarscan.io"
+      username: ""
+      password: ""
+    transfers_indexer:
+      url: "https://testnet.indexer.transfers.axelarscan.io"
       username: ""
       password: ""
   num_blocks_avg_block_time: 100

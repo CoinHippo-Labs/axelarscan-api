@@ -4,14 +4,14 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
-        title: 'Ethereum',
+        name: 'Ethereum',
         short_name: 'ETH',
         chain_id: 1,
         provider_params: [
           {
             chainId: '0x1',
-            chainName: 'Ethereum Mainnet',
-            rpcUrls: ['https://rpc.ankr.com/eth'],
+            chainName: 'Ethereum',
+            rpcUrls: ['https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161', 'https://rpc.ankr.com/eth'],
             nativeCurrency: {
               name: 'Ether',
               symbol: 'ETH',
@@ -33,18 +33,18 @@ module.exports = {
         image: '/logos/chains/ethereum.png',
         color: '#c0c2c3',
         website: 'https://ethereum.org',
-        gateway_address: '0x4f4495243837681061c4743b74b3eedf548d56a5',
+        gateway_address: '0x4F4495243837681061C4743b74B3eEdf548D56A5',
       },
       {
         id: 'avalanche',
         maintainer_id: 'avalanche',
-        title: 'Avalanche',
+        name: 'Avalanche',
         short_name: 'AVAX',
         chain_id: 43114,
         provider_params: [
           {
             chainId: '0xa86a',
-            chainName: 'Avalanche Mainnet C-Chain',
+            chainName: 'Avalanche C-Chain',
             rpcUrls: ['https://api.avax.network/ext/bc/C/rpc', 'https://rpc.ankr.com/avalanche'],
             nativeCurrency: {
               name: 'Avalanche',
@@ -67,19 +67,19 @@ module.exports = {
         image: '/logos/chains/avalanche.png',
         color: '#e84143',
         website: 'https://avax.network',
-        gateway_address: '0x5029c0eff6c34351a0cec334542cdb22c7928f78',
+        gateway_address: '0x5029C0EFf6C34351a0CEc334542cDb22c7928f78',
       },
       {
         id: 'polygon',
         maintainer_id: 'polygon',
-        title: 'Polygon',
+        name: 'Polygon',
         short_name: 'MATIC',
         chain_id: 137,
         provider_params: [
           {
             chainId: '0x89',
-            chainName: 'Matic Mainnet',
-            rpcUrls: ['https://polygon-rpc.com', 'https://rpc.ankr.com/polygon', 'https://matic-mainnet.chainstacklabs.com'],
+            chainName: 'Polygon',
+            rpcUrls: ['https://polygon-rpc.com', 'https://rpc.ankr.com/polygon'],
             nativeCurrency: {
               name: 'Matic',
               symbol: 'MATIC',
@@ -101,12 +101,12 @@ module.exports = {
         image: '/logos/chains/polygon.png',
         color: '#8247e5',
         website: 'https://polygon.technology',
-        gateway_address: '0x6f015f16de9fc8791b234ef68d486d2bf203fba8',
+        gateway_address: '0x6f015F16De9fC8791b234eF68D486d2bF203FBA8',
       },
       {
         id: 'fantom',
         maintainer_id: 'fantom',
-        title: 'Fantom',
+        name: 'Fantom',
         short_name: 'FTM',
         chain_id: 250,
         provider_params: [
@@ -135,12 +135,12 @@ module.exports = {
         image: '/logos/chains/fantom.png',
         color: '#1869ff',
         website: 'https://fantom.foundation',
-        gateway_address: '0x304acf330bbe08d1e512eefaa92f6a57871fd895',
+        gateway_address: '0x304acf330bbE08d1e512eefaa92F6a57871fD895',
       },
       {
         id: 'moonbeam',
         maintainer_id: 'moonbeam',
-        title: 'Moonbeam',
+        name: 'Moonbeam',
         short_name: 'MBEAM',
         chain_id: 1284,
         provider_params: [
@@ -169,13 +169,13 @@ module.exports = {
         image: '/logos/chains/moonbeam.png',
         color: '#53cbc8',
         website: 'https://moonbeam.network',
-        gateway_address: '0x4f4495243837681061c4743b74b3eedf548d56a5',
+        gateway_address: '0x4F4495243837681061C4743b74B3eEdf548D56A5',
       },
     ],
     cosmos: [
       {
         id: 'axelarnet',
-        title: 'Axelar Network',
+        name: 'Axelar Network',
         short_name: 'AXELAR',
         explorer: {
           name: 'Axelarscan',
@@ -197,7 +197,7 @@ module.exports = {
       },
       {
         id: 'cosmoshub',
-        title: 'Cosmos',
+        name: 'Cosmos',
         short_name: 'COSMOS',
         explorer: {
           name: 'Mintscan',
@@ -218,30 +218,8 @@ module.exports = {
         },
       },
       {
-        id: 'terra',
-        title: 'Terra',
-        short_name: 'TERRA',
-        explorer: {
-          name: 'TerraFinder',
-          url: 'https://finder.terra.money/mainnet',
-          icon: '/logos/explorers/terra.png',
-          block_path: '/blocks/{block}',
-          address_path: '/address/{address}',
-          contract_path: '/address/{address}',
-          contract_0_path: '/address/{address}',
-          transaction_path: '/tx/{tx}',
-        },
-        image: '/logos/chains/terra.png',
-        color: '#ffd83d',
-        website: 'https://terra.money',
-        prefix_address: 'terra',
-        endpoints: {
-          lcd: 'https://lcd.terra.dev',
-        },
-      },
-      {
         id: 'osmosis',
-        title: 'Osmosis',
+        name: 'Osmosis',
         short_name: 'OSMO',
         explorer: {
           name: 'Mintscan',
@@ -263,7 +241,7 @@ module.exports = {
       },
       {
         id: 'juno',
-        title: 'Juno',
+        name: 'Juno',
         short_name: 'JUNO',
         explorer: {
           name: 'JunoScan',
@@ -285,7 +263,7 @@ module.exports = {
       },
       {
         id: 'emoney',
-        title: 'e-Money',
+        name: 'e-Money',
         short_name: 'EMO',
         explorer: {
           name: 'Mintscan',
@@ -305,6 +283,28 @@ module.exports = {
           lcd: 'https://lcd-emoney.keplr.app',
         },
       },
+      {
+        id: 'terra',
+        name: 'Terra',
+        short_name: 'TERRA',
+        explorer: {
+          name: 'TerraFinder',
+          url: 'https://finder.terra.money/mainnet',
+          icon: '/logos/explorers/terra.png',
+          block_path: '/blocks/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/terra.png',
+        color: '#ffd83d',
+        website: 'https://terra.money',
+        prefix_address: 'terra',
+        endpoints: {
+          lcd: 'https://lcd.terra.dev',
+        },
+      },
     ],
   },
   testnet: {
@@ -312,13 +312,13 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
-        title: 'Ethereum Ropsten',
-        short_name: 'ROP',
+        name: 'Ethereum',
+        short_name: 'ETH',
         chain_id: 3,
         provider_params: [
           {
             chainId: '0x3',
-            chainName: 'Ethereum Testnet Ropsten',
+            chainName: 'Ethereum Ropsten',
             rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
             nativeCurrency: {
               name: 'Ropsten Ether',
@@ -341,18 +341,18 @@ module.exports = {
         image: '/logos/chains/ethereum.png',
         color: '#c0c2c3',
         website: 'https://ethereum.org',
-        gateway_address: '0xbc6fcce7c5487d43830a219ca6e7b83238b41e71',
+        gateway_address: '0xBC6fcce7c5487d43830a219CA6E7B83238B41e71',
       },
       {
         id: 'avalanche',
         maintainer_id: 'avalanche',
-        title: 'Avalanche Fuji',
-        short_name: 'AVAXT',
+        name: 'Avalanche',
+        short_name: 'AVAX',
         chain_id: 43113,
         provider_params: [
           {
             chainId: '0xa869',
-            chainName: 'Avalanche Testnet C-Chain',
+            chainName: 'Avalanche Fuji',
             rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
             nativeCurrency: {
               name: 'Avalanche',
@@ -375,13 +375,13 @@ module.exports = {
         image: '/logos/chains/avalanche.png',
         color: '#e84143',
         website: 'https://avax.network',
-        gateway_address: '0xc249632c2d40b9001fe907806902f63038b737ab',
+        gateway_address: '0xC249632c2D40b9001FE907806902f63038B737Ab',
       },
       {
         id: 'polygon',
         maintainer_id: 'polygon',
-        title: 'Polygon Mumbai',
-        short_name: 'MUM',
+        name: 'Polygon',
+        short_name: 'MATIC',
         chain_id: 80001,
         provider_params: [
           {
@@ -409,13 +409,13 @@ module.exports = {
         image: '/logos/chains/polygon.png',
         color: '#8247e5',
         website: 'https://polygon.technology',
-        gateway_address: '0xbf62ef1486468a6bd26dd669c06db43ded5b849b',
+        gateway_address: '0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B',
       },
       {
         id: 'fantom',
         maintainer_id: 'fantom',
-        title: 'Fantom Testnet',
-        short_name: 'FTMT',
+        name: 'Fantom',
+        short_name: 'FTM',
         chain_id: 4002,
         provider_params: [
           {
@@ -443,12 +443,12 @@ module.exports = {
         image: '/logos/chains/fantom.png',
         color: '#1869ff',
         website: 'https://fantom.foundation',
-        gateway_address: '0x97837985ec0494e7b9c71f5d3f9250188477ae14',
+        gateway_address: '0x97837985Ec0494E7b9C71f5D3f9250188477ae14',
       },
       {
         id: 'moonbeam',
         maintainer_id: 'moonbeam',
-        title: 'Moonbase Alpha',
+        name: 'Moonbase',
         short_name: 'MBASE',
         chain_id: 1287,
         provider_params: [
@@ -477,13 +477,13 @@ module.exports = {
         image: '/logos/chains/moonbeam.png',
         color: '#53cbc8',
         website: 'https://moonbeam.network',
-        gateway_address: '0x5769d84dd62a6fd969856c75c7d321b84d455929',
+        gateway_address: '0x5769D84DD62a6fD969856c75c7D321b84d455929',
       },
     ],
     cosmos: [
       {
         id: 'axelarnet',
-        title: 'Axelar Testnet',
+        name: 'Axelar Network',
         short_name: 'AXELAR',
         explorer: {
           name: 'Axelarscan',
@@ -505,7 +505,7 @@ module.exports = {
       },
       {
         id: 'cosmoshub',
-        title: 'Cosmos Testnet',
+        name: 'Cosmos',
         short_name: 'COSMOS',
         explorer: {
           name: 'BigDipper',
@@ -526,30 +526,8 @@ module.exports = {
         },
       },
       {
-        id: 'terra',
-        title: 'Terra Testnet',
-        short_name: 'TERRA',
-        explorer: {
-          name: 'TerraFinder',
-          url: 'https://finder.terra.money/testnet',
-          icon: '/logos/explorers/terra.png',
-          block_path: '/blocks/{block}',
-          address_path: '/address/{address}',
-          contract_path: '/address/{address}',
-          contract_0_path: '/address/{address}',
-          transaction_path: '/tx/{tx}',
-        },
-        image: '/logos/chains/terra.png',
-        color: '#ffd83d',
-        website: 'https://terra.money',
-        prefix_address: 'terra',
-        endpoints: {
-          lcd: 'https://bombay-lcd.terra.dev',
-        },
-      },
-      {
         id: 'osmosis',
-        title: 'Osmosis Testnet',
+        name: 'Osmosis',
         short_name: 'OSMO',
         image: '/logos/chains/osmosis.png',
         color: '#d705cc',
@@ -561,7 +539,7 @@ module.exports = {
       },
       {
         id: 'juno',
-        title: 'Juno Testnet',
+        name: 'Juno',
         short_name: 'JUNO',
         explorer: {
           name: 'JunoScan',
@@ -583,7 +561,7 @@ module.exports = {
       },
       {
         id: 'crescent',
-        title: 'Crescent Testnet',
+        name: 'Crescent',
         short_name: 'CRE',
         image: '/logos/chains/crescent.png',
         color: '#bf7c5e',
@@ -591,6 +569,28 @@ module.exports = {
         prefix_address: 'crescent',
         endpoints: {
           lcd: '',
+        },
+      },
+      {
+        id: 'terra',
+        name: 'Terra',
+        short_name: 'TERRA',
+        explorer: {
+          name: 'TerraFinder',
+          url: 'https://finder.terra.money/testnet',
+          icon: '/logos/explorers/terra.png',
+          block_path: '/blocks/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/terra.png',
+        color: '#ffd83d',
+        website: 'https://terra.money',
+        prefix_address: 'terra',
+        endpoints: {
+          lcd: 'https://bombay-lcd.terra.dev',
         },
       },
     ],

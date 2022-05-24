@@ -48,8 +48,8 @@ const merge_data = (_data, attributes, initial_data = {}) => {
   return data;
 };
 
-const save = async (data, index_name, requester, is_update = false, delay_sec = 0) => {
-  if (data && index_name && requester && (data.id || index_name.endsWith('keygens'))) {
+const save = async (data, collection, requester, is_update = false, delay_sec = 0) => {
+  if (data && collection && requester && (data.id || collection.endsWith('keygens'))) {
     if (typeof data.snapshot === 'number') {
       // request api
       let response = await requester.get('', {
@@ -106,7 +106,7 @@ const save = async (data, index_name, requester, is_update = false, delay_sec = 
               }
             }
             if (key_data.multisig_key) {
-              if (key_data.multisig_key.threshold && !['sign_attempts'].includes(index_name)) {
+              if (key_data.multisig_key.threshold && !['sign_attempts'].includes(collection)) {
                 data.threshold = Number(key_data.multisig_key.threshold) - 1;
               }
             }
@@ -119,13 +119,13 @@ const save = async (data, index_name, requester, is_update = false, delay_sec = 
       if (is_update) {
         await sleep(delay_sec * 1000);
       }
-      log('debug', service_name, 'index', { index_name, id: data.id });
+      log('debug', service_name, 'index', { collection, id: data.id });
       // request api
       await requester.post('', {
         module: 'index',
-        index: index_name,
+        collection,
         method: 'update',
-        path: is_update ? `/${index_name}/_update/${data.id}` : undefined,
+        path: is_update ? `/${collection}/_update/${data.id}` : undefined,
         id: data.id,
         ...data,
       }).catch(error => { return { data: { error } }; });
@@ -373,7 +373,7 @@ module.exports = () => {
         // request api
         const response = await requester.post('', {
           module: 'index',
-          index: 'keygens',
+          collection: 'keygens',
           method: 'search',
           query: { match_phrase: { 'key_id': keygen.key_id } },
           size: 1,
@@ -438,7 +438,7 @@ module.exports = () => {
             // request api
             let response = await requester.post('', {
               module: 'index',
-              index: 'transfers',
+              collection: 'transfers',
               method: 'search',
               query,
               size: 1,
@@ -466,7 +466,7 @@ module.exports = () => {
               // request api
               response = await requester.post('', {
                 module: 'index',
-                index: 'batches',
+                collection: 'batches',
                 method: 'search',
                 query,
                 size: 1,
@@ -486,7 +486,7 @@ module.exports = () => {
               // request api
               await requester.post('', {
                 module: 'index',
-                index: 'transfers',
+                collection: 'transfers',
                 method: 'update',
                 path: `/transfers/_update/${id}`,
                 id,
