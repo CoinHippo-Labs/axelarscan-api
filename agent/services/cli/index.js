@@ -17,7 +17,7 @@ module.exports.exec = async params => {
 
   log('info', service_name, 'command received', { ...params });
   if (params?.cmd?.startsWith('axelard q ')) {
-    const cmd = `/home/axelard/.axelar${['testnet'].includes(environment) ? `_${environment}` : ''}/bin/${params.cmd}`;
+    const cmd = `/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/bin/${params.cmd}`;
     log('debug', service_name, 'exec', { cmd });
     try {
       data = await exec(cmd);

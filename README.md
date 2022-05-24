@@ -18,12 +18,19 @@
 2. [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 3. [Install terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 4. [Install npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-5. [Setup agent](/agent)
+
+### Deploy agent on RPC node
+[Setup agent](/agent)
+
+### Install dependencies
+```
+cd functions/api
+npm i
+```
 
 ### Deploy services
 ```
-yarn
-cd ./terraform/testnet
+cd terraform/testnet
 terraform init
 terraform apply
 ```

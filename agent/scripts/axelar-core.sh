@@ -7,7 +7,7 @@ usage() {
 Usage: bash $(basename "${BASH_SOURCE[0]}") [options]
 Options:
 -h, --help            print options
--e, --environment     environment [testnet|mainnet|devnet] [default: testnet]
+-e, --environment     environment [testnet|mainnet|devnet|testnet-2] [default: testnet]
 -f, --flags           options to use on ~/axelarate-community/scripts/node.sh [default: ""]
 
 EOF
@@ -55,7 +55,7 @@ cd ~
 
 # set ENV
 touch ~/.bash_aliases
-echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin:~/.axelar_testnet/bin:~/.axelar/bin" > ~/.bash_aliases
+echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin:~/.axelar_testnet-2/bin:~/.axelar_devnet/bin:~/.axelar_testnet/bin:~/.axelar/bin" > ~/.bash_aliases
 echo "sudo chmod 666 /var/run/docker.sock" >> ~/.bash_aliases
 source ~/.bash_aliases
 

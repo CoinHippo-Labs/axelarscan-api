@@ -1127,4 +1127,143 @@ module.exports = {
       ],
     },
   ],
+  devnet: [
+    {
+      id: 'uaxl',
+      symbol: 'AXL',
+      name: 'Axelar',
+      image: '/logos/assets/axl.png',
+      decimals: 6,
+      coingecko_id: 'axelar-network',
+      contracts: [
+        {
+          contract_address: '0x321c017c08b681b1a34909eb159ed128772a5bbe',
+          chain_id: 3,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x46cc87ea84586c03bb2109ed9b33f998d40b7623',
+          chain_id: 43113,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x6ff1fa8cfb26551aa13e3d5dbf077f0a98ecd232',
+          chain_id: 80001,
+          decimals: 6,
+        },
+        {
+          contract_address: '0xc1ff1364f7a263a535e3caf60d424b78bb5b7c19',
+          chain_id: 4002,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x8a6614f33ec72fb70084b22b2effb643424e9cc9',
+          chain_id: 1287,
+          decimals: 6,
+        },
+      ],
+    },
+  ],
+  'testnet-2': [
+    {
+      id: 'uaxl',
+      symbol: 'AXL',
+      name: 'Axelar',
+      image: '/logos/assets/axl.png',
+      decimals: 6,
+      coingecko_id: 'axelar-network',
+      contracts: [
+        {
+          contract_address: '0x4ecfcCeC5A50103d257965fe379209D924a4601E',
+          chain_id: 3,
+          decimals: 6,
+        },
+        {
+          contract_address: '0xF2B55C5A2BA224691021A6E8575E921D00362a9B',
+          chain_id: 43113,
+          decimals: 6,
+        },
+      ],
+    },
+    {
+      id: 'weth-wei',
+      symbol: 'WETH',
+      name: 'Ethereum',
+      image: '/logos/assets/eth.png',
+      decimals: 18,
+      coingecko_id: 'ethereum',
+      contracts: [
+        {
+          contract_address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+          chain_id: 3,
+          decimals: 18,
+        },
+        {
+          contract_address: '0x84998BdB8Cd71588a1e5981D2297656Beaf0dAD2',
+          chain_id: 43113,
+          decimals: 18,
+        },
+      ],
+    },
+    {
+      id: 'wavax-wei',
+      symbol: 'WAVAX',
+      name: 'Avalanche',
+      image: '/logos/assets/avax.png',
+      decimals: 18,
+      coingecko_id: 'avalanche-2',
+      contracts: [
+        {
+          contract_address: '0x5e39FF8ce8D4d35f984E9Be4f6c8674E85E03B4A',
+          chain_id: 3,
+          decimals: 18,
+        },
+        {
+          contract_address: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c',
+          chain_id: 43113,
+          decimals: 18,
+        },
+      ],
+    },
+    {
+      id: 'uusd',
+      symbol: 'UST',
+      name: 'TerraUSD',
+      image: '/logos/assets/ust.png',
+      decimals: 6,
+      coingecko_id: 'terrausd',
+      contracts: [
+        {
+          contract_address: '0x4d5A08dab9F62D00559BB5Eeb5D3f545275832c6',
+          chain_id: 3,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x9f59cb0d2660cd2Ca3aBaa9E2880fd1AedA6A173',
+          chain_id: 43113,
+          decimals: 6,
+        },
+      ],
+    },
+    {
+      id: 'uluna',
+      symbol: 'LUNA',
+      name: 'Terra',
+      image: '/logos/assets/luna.png',
+      decimals: 6,
+      coingecko_id: 'terra-luna',
+      contracts: [
+        {
+          contract_address: '0xebe4E666bb3f931e60c322fc99007EB0803eef0b',
+          chain_id: 3,
+          decimals: 6,
+        },
+        {
+          contract_address: '0xa0164F7B73dcAe5E3c44581c2f99Bf92dc9b4b3D',
+          chain_id: 43113,
+          decimals: 6,
+        },
+      ],
+    },
+  ],
 };

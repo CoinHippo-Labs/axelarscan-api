@@ -56,6 +56,10 @@ module.exports.crud = async (params = {}) => {
       indexer_url = process.env.TRANSFERS_INDEXER_URL || config?.[environment]?.endpoints?.transfers_indexer?.url;
       indexer_username = process.env.TRANSFERS_INDEXER_USERNAME || config?.[environment]?.endpoints?.transfers_indexer?.username;
       indexer_password = process.env.TRANSFERS_INDEXER_PASSWORD || config?.[environment]?.endpoints?.transfers_indexer?.password;
+      // return if indexer is not exist
+      if (!indexer_url) {
+        return response;
+      }
     }
 
     // initial indexer
