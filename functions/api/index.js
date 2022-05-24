@@ -268,7 +268,7 @@ exports.handler = async (event, context, callback) => {
                   sender: _.head(messages.map(m => m?.sender)),
                   key_ids: _.uniq(messages.flatMap(m => m?.inner_message?.key_ids || [])),
                 };
-                record.period_height = record.height - (record.height % num_blocks_per_heartbeat) + fraction_heartbeat_block,
+                record.period_height = record.height - (record.height % num_blocks_per_heartbeat) + fraction_heartbeat_block;
                 if (record.sender) {
                   await crud({
                     collection: 'heartbeats',
