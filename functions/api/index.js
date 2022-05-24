@@ -984,7 +984,7 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               // VoteConfirmDeposit & Vote
-              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => vote_types.includes(_.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(t => {
+              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => vote_types.includes(_.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(async t => {
                 const { logs } = { ...t };
                 const { messages } = { ...t?.tx?.body };
                 const _records = [];
