@@ -11,9 +11,9 @@ const service_name = 'index';
 // initial environment
 const environment = process.env.ENVIRONMENT || config?.environment;
 // initial indexer info
-let indexer_url = process.env.INDEXER_URL || config?.[environment]?.endpoints?.indexer?.url;
-let indexer_username = process.env.INDEXER_USERNAME || config?.[environment]?.endpoints?.indexer?.username;
-let indexer_password = process.env.INDEXER_PASSWORD || config?.[environment]?.endpoints?.indexer?.password;
+let indexer_url = process.env.INDEXER_URL;
+let indexer_username = process.env.INDEXER_USERNAME;
+let indexer_password = process.env.INDEXER_PASSWORD;
 
 module.exports.crud = async (params = {}) => {
   // initial response
@@ -53,9 +53,9 @@ module.exports.crud = async (params = {}) => {
 
     // change indexer info
     if (transfer_collections.includes(collection)) {
-      indexer_url = process.env.TRANSFERS_INDEXER_URL || config?.[environment]?.endpoints?.transfers_indexer?.url;
-      indexer_username = process.env.TRANSFERS_INDEXER_USERNAME || config?.[environment]?.endpoints?.transfers_indexer?.username;
-      indexer_password = process.env.TRANSFERS_INDEXER_PASSWORD || config?.[environment]?.endpoints?.transfers_indexer?.password;
+      indexer_url = process.env.TRANSFERS_INDEXER_URL;
+      indexer_username = process.env.TRANSFERS_INDEXER_USERNAME;
+      indexer_password = process.env.TRANSFERS_INDEXER_PASSWORD;
       // return if indexer is not exist
       if (!indexer_url) {
         return response;

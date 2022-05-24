@@ -15,14 +15,6 @@ mainnet:
     rpc: "http://rpc.axelarscan.io:26657"
     lcd: "http://rpc.axelarscan.io:1317"
     cli: "http://rpc.axelarscan.io:3333"
-    indexer:
-      url: "https://indexer.axelarscan.io"
-      username: ""
-      password: ""
-    transfers_indexer:
-      url: "https://indexer.transfers.axelarscan.io"
-      username: ""
-      password: ""
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -34,14 +26,6 @@ testnet:
     rpc: "http://testnet.rpc.axelarscan.io:26657"
     lcd: "http://testnet.rpc.axelarscan.io:1317"
     cli: "http://testnet.rpc.axelarscan.io:3333"
-    indexer:
-      url: "https://testnet.indexer.axelarscan.io"
-      username: ""
-      password: ""
-    transfers_indexer:
-      url: "https://testnet.indexer.transfers.axelarscan.io"
-      username: ""
-      password: ""
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -53,10 +37,6 @@ devnet:
     rpc: "http://devnet.rpc.axelarscan.io:26657"
     lcd: "http://devnet.rpc.axelarscan.io:1317"
     cli: "http://devnet.rpc.axelarscan.io:3333"
-    indexer:
-      url: "https://devnet.indexer.axelarscan.io"
-      username: ""
-      password: ""
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -68,10 +48,6 @@ testnet-2:
     rpc: "http://testnet-2.rpc.axelarscan.io:26657"
     lcd: "http://testnet-2.rpc.axelarscan.io:1317"
     cli: "http://testnet-2.rpc.axelarscan.io:3333"
-    indexer:
-      url: "https://testnet-2.indexer.axelarscan.io"
-      username: ""
-      password: ""
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
