@@ -36,7 +36,7 @@ const log = (level, from, message, data = {}) => {
       default:
         console.log(log_message);
         break;
-    };
+    }
   } catch (error) {}
 };
 

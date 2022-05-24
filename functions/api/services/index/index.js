@@ -1,15 +1,8 @@
 // import module for http request
 const axios = require('axios');
-// import config
-const config = require('config-yml');
 // import utils
 const { normalize_obj, transfer_collections } = require('./utils');
 
-// service name
-const service_name = 'index';
-
-// initial environment
-const environment = process.env.ENVIRONMENT || config?.environment;
 // initial indexer info
 let indexer_url = process.env.INDEXER_URL;
 let indexer_username = process.env.INDEXER_USERNAME;
@@ -135,7 +128,7 @@ module.exports.crud = async (params = {}) => {
                     break;
                   default:
                     break;
-                };
+                }
                 // set match query
                 return {
                   match: {
@@ -167,7 +160,7 @@ module.exports.crud = async (params = {}) => {
         break;
       default:
         break;
-    };
+    }
 
     // set response
     if (response?.data) {
