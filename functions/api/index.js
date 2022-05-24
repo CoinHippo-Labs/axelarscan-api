@@ -1100,8 +1100,7 @@ exports.handler = async (event, context, callback) => {
             }
           }
           else if (path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') && !path.endsWith('/') && res?.data?.block?.header?.height) {
-            const { data } = { ...res.data };
-            const { block, block_id } = { ...data };
+            const { block, block_id } = { ...res.data };
             await crud({
               collection: 'blocks',
               method: 'set',
