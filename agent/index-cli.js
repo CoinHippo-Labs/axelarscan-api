@@ -21,3 +21,6 @@ require('./routes/cli')(app);
 
 // start service
 app.listen(config?.port?.cli || 3333);
+
+// import log scraper
+require('./services/scraper/log')();
