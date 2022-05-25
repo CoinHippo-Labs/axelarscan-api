@@ -164,15 +164,15 @@ resource "aws_lambda_function" "function" {
   memory_size      = 256
   environment {
     variables = {
-      NODE_NO_WARNINGS          = 1
-      ENVIRONMENT               = var.environment
-      INDEXER_URL               = "https://${aws_opensearch_domain.domain.endpoint}"
-      INDEXER_USERNAME          = var.indexer_username
-      INDEXER_PASSWORD          = var.indexer_password
-      TRANSFER_INDEXER_URL      = "https://${aws_opensearch_domain.domain_transfers.endpoint}"
-      TRANSFER_INDEXER_USERNAME = var.transfers_indexer_username
-      TRANSFER_INDEXER_PASSWORD = var.transfers_indexer_password
-      LOG_LEVEL                 = var.log_level
+      NODE_NO_WARNINGS           = 1
+      ENVIRONMENT                = var.environment
+      INDEXER_URL                = "https://${aws_opensearch_domain.domain.endpoint}"
+      INDEXER_USERNAME           = var.indexer_username
+      INDEXER_PASSWORD           = var.indexer_password
+      TRANSFERS_INDEXER_URL      = "https://${aws_opensearch_domain.domain_transfers.endpoint}"
+      TRANSFERS_INDEXER_USERNAME = var.transfers_indexer_username
+      TRANSFERS_INDEXER_PASSWORD = var.transfers_indexer_password
+      LOG_LEVEL                  = var.log_level
     }
   }
 }

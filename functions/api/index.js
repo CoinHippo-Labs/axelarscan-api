@@ -300,10 +300,10 @@ exports.handler = async (event, context, callback) => {
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
                 record.recipient_chain = normalize_chain(record.recipient_chain);
-                if (record.asset) {
+                if (record.asset || record.denom) {
                   const created_at = moment(tx_response.timestamp).utc();
                   const prices_data = await assets_price({
-                    denom: record.asset,
+                    denom: record.asset || record.denom,
                     timestamp: created_at,
                   });
                   if (prices_data?.[0]?.price) {
@@ -961,10 +961,10 @@ exports.handler = async (event, context, callback) => {
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
                 record.recipient_chain = normalize_chain(record.recipient_chain);
-                if (record.asset) {
+                if (record.asset || record.denom) {
                   const created_at = moment(t.timestamp).utc();
                   const prices_data = await assets_price({
-                    denom: record.asset,
+                    denom: record.asset || record.denom,
                     timestamp: created_at,
                   });
                   if (prices_data?.[0]?.price) {
