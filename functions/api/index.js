@@ -1298,6 +1298,9 @@ exports.handler = async (event, context, callback) => {
             res.data.cache_hit = cache_hit;
           }
           break;
+        case 'assets':
+          res = { data: await assets_price(params) };
+          break;
         case 'index':
           res = { data: await crud(params) };
           break;
