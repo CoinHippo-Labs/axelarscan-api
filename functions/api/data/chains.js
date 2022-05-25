@@ -305,6 +305,18 @@ module.exports = {
           lcd: 'https://lcd-emoney.keplr.app',
         },
       },
+      {
+        id: 'crescent',
+        title: 'Crescent',
+        short_name: 'CRE',
+        image: '/logos/chains/crescent.png',
+        color: '#bf7c5e',
+        website: 'https://crescent.network',
+        prefix_address: 'crescent',
+        endpoints: {
+          lcd: '',
+        },
+      },
     ],
   },
   testnet: {
