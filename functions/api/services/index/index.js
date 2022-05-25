@@ -24,6 +24,9 @@ module.exports.crud = async (params = {}) => {
     // set id
     let id = params.id;
     delete params.id;
+    // initial track total
+    const track_total_hits = typeof params.track_total_hits === 'boolean' ? params.track_total_hits : typeof params.track_total_hits === 'string' ? params.track_total_hits?.trim().toLowerCase() === 'true' ? true : false : true;
+    delete params.track_total_hits;
     // initial use raw data
     const use_raw_data = typeof params.use_raw_data === 'boolean' ? params.use_raw_data : typeof params.use_raw_data === 'string' ? params.use_raw_data?.trim().toLowerCase() === 'true' ? true : false : true;
     delete params.use_raw_data;
@@ -118,7 +121,7 @@ module.exports.crud = async (params = {}) => {
           query: {
             bool: {
               // set query for each field
-              must: Object.entries(params || {}).filter(([k, v]) => !['from', 'size', 'query', 'aggs', 'sort', '_source', 'fields'].includes(k)).map(([k, v]) => {
+              must: Object.entries({ ...params }).filter(([k, v]) => !['from', 'size', 'query', 'aggs', 'sort', '_source', 'fields'].includes(k)).map(([k, v]) => {
                 // overide field from params
                 switch (k) {
                   case 'id':
@@ -144,6 +147,8 @@ module.exports.crud = async (params = {}) => {
           search_data.size = params?.size || 10;
           // set sort fields
           search_data.sort = params?.sort;
+          // set track total
+          search_data.track_total_hits = track_total_hits;
         }
         // request indexer
         response = await indexer.post(path, search_data, { auth })

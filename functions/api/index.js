@@ -731,7 +731,8 @@ exports.handler = async (event, context, callback) => {
                         break;
                       case 'Vote':
                         sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
-                        vote = message?.inner_message?.vote?.results?.length > 0;
+                        const vote_results = message?.inner_message?.vote?.results;
+                        vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         confirmation = !!event;
                         break;
                       default:
@@ -1005,7 +1006,8 @@ exports.handler = async (event, context, callback) => {
                         break;
                       case 'Vote':
                         sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
-                        vote = message?.inner_message?.vote?.results?.length > 0;
+                        const vote_results = message?.inner_message?.vote?.results;
+                        vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         confirmation = !!event;
                         break;
                       default:
