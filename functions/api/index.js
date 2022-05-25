@@ -210,7 +210,7 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               else if (messages.findIndex(m => m?.['@type']?.includes('VoteRequest')) > -1) {
-                const byte_array_fields = ['tx_id', 'to'];
+                const byte_array_fields = ['tx_id', 'to', 'sender', 'payload_hash'];
                 for (let i = 0; i < messages.length; i++) {
                   const message = messages[i];
                   if (message?.inner_message?.vote?.results) {
@@ -228,6 +228,27 @@ exports.handler = async (event, context, callback) => {
                           }
                           results[j] = result;
                           message.inner_message.vote.results = results;
+                        }
+                      }
+                    }
+                  }
+                  if (message?.inner_message?.vote?.result?.events) {
+                    const result = message.inner_message.vote.result;
+                      for (let j = 0; j < result.events.length; j++) {
+                        const event = result.events[j];
+                        for (let k = 0; k < byteArrayFields.length; k++) {
+                          const field = byteArrayFields[k];
+                          if (Array.isArray(event?.[field])) {
+                            event[field] = to_hex(event[field]);
+                          }
+                          else if (Array.isArray(event?.contract_call?.[field])) {
+                            event.contract_call[field] = to_hex(event.contract_call[field]);
+                          }
+                          else if (Array.isArray(event?.contract_call_with_token?.[field])) {
+                            event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
+                          }
+                          result.events[j] = event;
+                          message.inner_message.vote.result = result;
                         }
                       }
                     }
@@ -730,8 +751,8 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
-                        const vote_results = message?.inner_message?.vote?.results;
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         confirmation = !!event;
                         break;
@@ -1005,8 +1026,8 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
-                        const vote_results = message?.inner_message?.vote?.results;
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         confirmation = !!event;
                         break;
