@@ -537,9 +537,9 @@ module.exports = () => {
         }
       }
     })
-    .on('tail_error', error => log('error', service_name, { error: error.message }))
-    .on('error', error => log('error', service_name, { error: error.message }))
+    .on('tail_error', error => log('error', service_name, 'tail error', { ...error }))
+    .on('error', error => log('error', service_name, 'on error', { ...error }))
     .start()
-    .catch(error => log('error', service_name, { error: error.message }));
+    .catch(error => log('error', service_name, 'catch error', { ...error }));
   }
 };
