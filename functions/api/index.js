@@ -234,22 +234,21 @@ exports.handler = async (event, context, callback) => {
                   }
                   if (message?.inner_message?.vote?.result?.events) {
                     const result = message.inner_message.vote.result;
-                      for (let j = 0; j < result.events.length; j++) {
-                        const event = result.events[j];
-                        for (let k = 0; k < byteArrayFields.length; k++) {
-                          const field = byteArrayFields[k];
-                          if (Array.isArray(event?.[field])) {
-                            event[field] = to_hex(event[field]);
-                          }
-                          else if (Array.isArray(event?.contract_call?.[field])) {
-                            event.contract_call[field] = to_hex(event.contract_call[field]);
-                          }
-                          else if (Array.isArray(event?.contract_call_with_token?.[field])) {
-                            event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
-                          }
-                          result.events[j] = event;
-                          message.inner_message.vote.result = result;
+                    for (let j = 0; j < result.events.length; j++) {
+                      const event = result.events[j];
+                      for (let k = 0; k < byteArrayFields.length; k++) {
+                        const field = byteArrayFields[k];
+                        if (Array.isArray(event?.[field])) {
+                          event[field] = to_hex(event[field]);
                         }
+                        else if (Array.isArray(event?.contract_call?.[field])) {
+                          event.contract_call[field] = to_hex(event.contract_call[field]);
+                        }
+                        else if (Array.isArray(event?.contract_call_with_token?.[field])) {
+                          event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
+                        }
+                        result.events[j] = event;
+                        message.inner_message.vote.result = result;
                       }
                     }
                   }
