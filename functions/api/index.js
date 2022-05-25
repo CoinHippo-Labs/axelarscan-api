@@ -203,7 +203,7 @@ exports.handler = async (event, context, callback) => {
               }
             }
             else if (data.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes('VoteRequest')) > -1) {
-              const byteArrayFields = ['tx_id', 'to'];
+              const byteArrayFields = ['tx_id', 'to', 'sender', 'payload_hash'];
               for (let i = 0; i < data.tx.body.messages.length; i++) {
                 const message = data.tx.body.messages[i];
                 if (message?.inner_message?.vote?.results) {
@@ -220,6 +220,27 @@ exports.handler = async (event, context, callback) => {
                       }
                       results[j] = result;
                       message.inner_message.vote.results = results;
+                    }
+                  }
+                }
+                if (message?.inner_message?.vote?.result?.events) {
+                  const result = message.inner_message.vote.result;
+                    for (let j = 0; j < result.events.length; j++) {
+                      const event = result.events[j];
+                      for (let k = 0; k < byteArrayFields.length; k++) {
+                        const field = byteArrayFields[k];
+                        if (Array.isArray(event?.[field])) {
+                          event[field] = to_hex(event[field]);
+                        }
+                        else if (Array.isArray(event?.contract_call?.[field])) {
+                          event.contract_call[field] = to_hex(event.contract_call[field]);
+                        }
+                        else if (Array.isArray(event?.contract_call_with_token?.[field])) {
+                          event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
+                        }
+                        result.events[j] = event;
+                        message.inner_message.vote.result = result;
+                      }
                     }
                   }
                 }
@@ -726,10 +747,10 @@ exports.handler = async (event, context, callback) => {
                     const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
                     const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
-                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                     const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '')?.split('_')[0];
                     const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
-                    const confirmed = Array.isArray(message?.inner_message?.vote?.results) ? message.inner_message.vote.results.length > 0 : Object.keys({ ...message?.inner_message?.vote?.results }).length > 0;
+                    const confirmed = Array.isArray(message?.inner_message?.vote?.results) ? message.inner_message.vote.results.length > 0 : Object.keys({ ...message?.inner_message?.vote?.result }).length > 0;
                     const vote_confirmed = !!confirmed_event;
                     const poll_initial = res.data.tx_response.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
                     const tx = {
@@ -1418,10 +1439,10 @@ exports.handler = async (event, context, callback) => {
                     const recipient_chain = normalize_chain(confirmed_event?.attributes?.find(a => a?.key === 'destinationChain' && a.value)?.value);
                     const transfer_id = confirmed_event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value;
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id?.toLowerCase();
-                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                    const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                     const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
                     const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
-                    const confirmed = Array.isArray(message?.inner_message?.vote?.results) ? message.inner_message.vote.results.length > 0 : Object.keys({ ...message?.inner_message?.vote?.results }).length > 0;
+                    const confirmed = Array.isArray(message?.inner_message?.vote?.results) ? message.inner_message.vote.results.length > 0 : Object.keys({ ...message?.inner_message?.vote?.result }).length > 0;
                     const vote_confirmed = !!confirmed_event;
                     const poll_initial = _tx.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
                     const tx = {
