@@ -284,6 +284,18 @@ module.exports = {
         },
       },
       {
+        id: 'crescent',
+        title: 'Crescent',
+        short_name: 'CRE',
+        image: '/logos/chains/crescent.png',
+        color: '#bf7c5e',
+        website: 'https://crescent.network',
+        prefix_address: 'crescent',
+        endpoints: {
+          lcd: '',
+        },
+      },
+      {
         id: 'terra',
         name: 'Terra',
         short_name: 'TERRA',
