@@ -153,7 +153,7 @@ module.exports = async () => {
       await tail.start();
       const splitter = readline.createInterface({ input: tail });
       // subscribe log data
-      splitter.on('line', chunk => {
+      splitter.on('line', async chunk => {
         // initial data
         const data = chunk.toString('utf8').replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '').trim();
         // block
