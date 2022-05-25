@@ -143,7 +143,7 @@ module.exports = async () => {
     const requester = axios.create({ baseURL: api });
 
     // setup log stream
-    const tail = new TailFile(`/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`, { encoding: 'utf8' })
+    const tail = new TailFile(`/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`, { encoding: 'utf8', startPos: 0 })
       .on('tail_error', error => log('error', service_name, 'tail error', { ...error }));
 
     // initial temp variables

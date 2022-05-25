@@ -385,7 +385,7 @@ exports.handler = async (event, context, callback) => {
                   if (_height && packet_data_hex && packet_data && typeof packet_data === 'object') {
                     for (let j = 0; j < cosmos_chains.length; j++) {
                       const chain_data = cosmos_chains[j];
-                      if (chain?.endpoints?.lcd && packet_data.sender?.startsWith(chain_data.prefix_address)) {
+                      if (chain_data?.endpoints?.lcd && packet_data.sender?.startsWith(chain_data.prefix_address)) {
                         // initial lcd
                         const lcd = axios.create({ baseURL: chain_data.endpoints.lcd });
                         // request lcd
@@ -1219,12 +1219,12 @@ exports.handler = async (event, context, callback) => {
                       const sign_batch = {
                         chain,
                         batch_id: output.batch_id,
-                        command_id,
-                        transfer_id,
                       };
                       for (let i = 0; i < command_ids.length; i++) {
                         const command_id = command_ids[i];
                         const transfer_id = parseInt(command_id, 16);
+                        sign_batch.command_id = command_id;
+                        sign_batch.transfer_id = transfer_id;
                         const query = {
                           bool: {
                             should: [
