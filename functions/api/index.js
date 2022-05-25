@@ -729,7 +729,7 @@ exports.handler = async (event, context, callback) => {
                     const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                     const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '')?.split('_')[0];
                     const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
-                    const confirmed = message?.inner_message?.vote?.results?.length > 0;
+                    const confirmed = Array.isArray(message?.inner_message?.vote?.results) ? message.inner_message.vote.results.length > 0 : Object.keys({ ...message?.inner_message?.vote?.results }).length > 0;
                     const vote_confirmed = !!confirmed_event;
                     const poll_initial = res.data.tx_response.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
                     const tx = {
@@ -1421,7 +1421,7 @@ exports.handler = async (event, context, callback) => {
                     const sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                     const transaction_id = confirmed_event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
                     const deposit_address = confirmed_event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
-                    const confirmed = message?.inner_message?.vote?.results?.length > 0;
+                    const confirmed = Array.isArray(message?.inner_message?.vote?.results) ? message.inner_message.vote.results.length > 0 : Object.keys({ ...message?.inner_message?.vote?.results }).length > 0;
                     const vote_confirmed = !!confirmed_event;
                     const poll_initial = _tx.logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1;
                     const tx = {
