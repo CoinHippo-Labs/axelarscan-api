@@ -122,8 +122,8 @@ module.exports = async (params = {}) => {
       });
     }
 
-    const to_update_cache = !timestamp && data.filter(d => (!d?.updated_at || d.updated_at < updated_at_threshold) && ('symbol' in d));
-    to_update_cache?.forEach(d => {
+    const to_update_cache = data.filter(d => (!d?.updated_at || d.updated_at < updated_at_threshold) && ('symbol' in d));
+    to_update_cache.forEach(d => {
       d.updated_at = moment().valueOf();
       const price_timestamp = moment(Number(timestamp) || d.updated_at).startOf('day').valueOf();
       d.price_timestamp = price_timestamp;
