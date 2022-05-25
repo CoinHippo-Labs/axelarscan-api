@@ -161,6 +161,7 @@ module.exports = () => {
             type: 'number',
           },
         ];
+        log('debug', service_name, 'block data', { data });
         height = merge_data(data, attributes).height;
         log('debug', service_name, 'block', { height });
       }
