@@ -207,6 +207,7 @@ exports.handler = async (event, context, callback) => {
                     }
                   }
                   messages[i] = message;
+                  res.data.tx.body.messages[i] = message;
                 }
               }
               else if (messages.findIndex(m => m?.['@type']?.includes('VoteRequest')) > -1) {
@@ -253,6 +254,7 @@ exports.handler = async (event, context, callback) => {
                     }
                   }
                   messages[i] = message;
+                  res.data.tx.body.messages[i] = message;
                 }
               }
               data.tx.body.messages = messages;
