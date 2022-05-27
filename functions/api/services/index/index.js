@@ -3,11 +3,6 @@ const axios = require('axios');
 // import utils
 const { normalize_obj, transfer_collections } = require('./utils');
 
-// initial indexer info
-let indexer_url = process.env.INDEXER_URL;
-let indexer_username = process.env.INDEXER_USERNAME;
-let indexer_password = process.env.INDEXER_PASSWORD;
-
 module.exports.crud = async (params = {}) => {
   // initial response
   let response;
@@ -47,6 +42,10 @@ module.exports.crud = async (params = {}) => {
       }
     });
 
+    // initial indexer info
+    let indexer_url = process.env.INDEXER_URL;
+    let indexer_username = process.env.INDEXER_USERNAME;
+    let indexer_password = process.env.INDEXER_PASSWORD;
     // change indexer info
     if (transfer_collections.includes(collection)) {
       indexer_url = process.env.TRANSFERS_INDEXER_URL;
