@@ -157,9 +157,11 @@ exports.handler = async (event, context, callback) => {
           if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && res?.data?.tx_response?.txhash) {
             const { tx_response, tx } = { ...res.data };
             // custom evm deposit confirmation
-            const deposit_confirmation_log = tx_response.logs?.find(l => l?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'module' && a.value === 'evm') > -1) > -1);
+            const log_index = tx_response.logs?.findIndex(l => l?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'module' && a.value === 'evm') > -1) > -1);
+            const deposit_confirmation_log = tx_response.logs?.[log_index];
             if (deposit_confirmation_log) {
-              const event = deposit_confirmation_log?.events?.find(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'module' && a.value === 'evm') > -1);
+              const event_index = deposit_confirmation_log?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'module' && a.value === 'evm') > -1);
+              const event = deposit_confirmation_log?.events?.[event_index];
               const chain = event?.attributes?.find(a => a?.key === 'chain' && a.value)?.value;
               const token_address = event?.attributes?.find(a => a?.key === 'tokenAddress' && a.value)?.value;
               if (chain && token_address) {
@@ -167,8 +169,28 @@ exports.handler = async (event, context, callback) => {
                 const denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, token_address)) > -1)?.id;
                 if (denom) {
                   tx_response.denom = denom;
-                  res.data.tx_response = tx_response;
                 }
+                const amount_index = event.attributes.findIndex(a => a?.key === 'amount' && a.value);
+                if (amount_index > -1) {
+                  const attribute = event.attributes[amount_index];
+                  const amount_splited = attribute.value.split('');
+                  let amount = '';
+                  for (let i = 0; i < amount_splited.length; i++) {
+                    const c = amount_splited[i];
+                    if (!isNaN(c)) {
+                      amount = `${amount}${c}`;
+                    }
+                    else {
+                      break;
+                    }
+                  }
+                  attribute.value = amount;
+                  event.attributes[amount_index] = attribute;
+                  deposit_confirmation_log.events[event_index] = event;
+                  tx_response.logs[log_index] = deposit_confirmation_log;
+                  tx_response.raw_log = JSON.stringify(tx_response.logs);
+                }
+                res.data.tx_response = tx_response;
               }
             }
 
