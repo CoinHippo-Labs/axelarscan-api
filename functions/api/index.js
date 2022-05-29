@@ -157,10 +157,10 @@ exports.handler = async (event, context, callback) => {
           if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && res?.data?.tx_response?.txhash) {
             const { tx_response, tx } = { ...res.data };
             // custom evm deposit confirmation
-            const log_index = tx_response.logs?.findIndex(l => l?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'module' && a.value === 'evm') > -1) > -1);
+            const log_index = tx_response.logs?.findIndex(l => l?.events?.findIndex(e => e?.type === 'depositConfirmation') > -1);
             const deposit_confirmation_log = tx_response.logs?.[log_index];
             if (deposit_confirmation_log) {
-              const event_index = deposit_confirmation_log?.events?.findIndex(e => e?.type === 'depositConfirmation' && e.attributes?.findIndex(a => a?.key === 'module' && a.value === 'evm') > -1);
+              const event_index = deposit_confirmation_log?.events?.findIndex(e => e?.type === 'depositConfirmation');
               const event = deposit_confirmation_log?.events?.[event_index];
               const chain = event?.attributes?.find(a => a?.key === 'chain' && a.value)?.value;
               const token_address = event?.attributes?.find(a => a?.key === 'tokenAddress' && a.value)?.value;
