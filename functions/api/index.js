@@ -170,28 +170,28 @@ exports.handler = async (event, context, callback) => {
                 if (denom) {
                   tx_response.denom = denom;
                 }
-                const amount_index = event.attributes.findIndex(a => a?.key === 'amount' && a.value);
-                if (amount_index > -1) {
-                  const attribute = event.attributes[amount_index];
-                  const amount_splited = attribute.value.split('');
-                  let amount = '';
-                  for (let i = 0; i < amount_splited.length; i++) {
-                    const c = amount_splited[i];
-                    if (!isNaN(c)) {
-                      amount = `${amount}${c}`;
-                    }
-                    else {
-                      break;
-                    }
-                  }
-                  attribute.value = amount;
-                  event.attributes[amount_index] = attribute;
-                  deposit_confirmation_log.events[event_index] = event;
-                  tx_response.logs[log_index] = deposit_confirmation_log;
-                  tx_response.raw_log = JSON.stringify(tx_response.logs);
-                }
-                res.data.tx_response = tx_response;
               }
+              const amount_index = event?.attributes?.findIndex(a => a?.key === 'amount' && a.value);
+              if (amount_index > -1) {
+                const attribute = event.attributes[amount_index];
+                const amount_splited = attribute.value.split('');
+                let amount = '';
+                for (let i = 0; i < amount_splited.length; i++) {
+                  const c = amount_splited[i];
+                  if (!isNaN(c)) {
+                    amount = `${amount}${c}`;
+                  }
+                  else {
+                    break;
+                  }
+                }
+                attribute.value = amount;
+                event.attributes[amount_index] = attribute;
+                deposit_confirmation_log.events[event_index] = event;
+                tx_response.logs[log_index] = deposit_confirmation_log;
+                tx_response.raw_log = JSON.stringify(tx_response.logs);
+              }
+              res.data.tx_response = tx_response;
             }
 
             // index transaction
