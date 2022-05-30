@@ -144,7 +144,7 @@ module.exports.crud = async (params = {}) => {
         };
         if (path.endsWith('/_search')) {
           // set results size
-          search_data.size = params?.size || 10;
+          search_data.size = !isNaN(params?.size) ? Number(params.size) : 10;
           // set sort fields
           search_data.sort = params?.sort;
           // set track total
