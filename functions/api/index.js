@@ -232,7 +232,7 @@ exports.handler = async (event, context, callback) => {
                   res.data.tx.body.messages[i] = message;
                 }
               }
-              else if (messages.findIndex(m => m?.['@type']?.includes('VoteRequest')) > -1) {
+              else if (messages.findIndex(m => m?.['@type']?.includes('VoteRequest') || m?.inner_message?.['@type']?.includes('VoteRequest')) > -1) {
                 const byte_array_fields = ['tx_id', 'to', 'sender', 'payload_hash'];
                 for (let i = 0; i < messages.length; i++) {
                   const message = messages[i];
@@ -281,6 +281,8 @@ exports.handler = async (event, context, callback) => {
               }
               data.tx.body.messages = messages;
             }
+            res.data.tx_response.tx = res.data.tx;
+
             // index addresses & message type
             const address_fields = ['signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress', 'voter'];
             let addresses = [], types = [];
@@ -801,7 +803,7 @@ exports.handler = async (event, context, callback) => {
                       unconfirmed: logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1,
                     };
                     if (!record.status_code) {
-                      if (record.deposit_address && !record.sender_chain) {
+                      if (!record.sender_chain && record.deposit_address) {
                         const query = {
                           bool: {
                             must: [
@@ -820,6 +822,18 @@ exports.handler = async (event, context, callback) => {
                           record.sender_chain = link.sender_chain;
                         }
                       }
+                      if (!record.sender_chain && record.poll_id) {
+                        const _response = await crud({
+                          collection: 'evm_polls',
+                          method: 'get',
+                          id: record.poll_id,
+                        });
+                        const poll = _response;
+                        if (poll?.sender_chain) {
+                          record.sender_chain = poll.sender_chain;
+                        }
+                      }
+                      
                       if (record.poll_id) {
                         if (record.id && record.vote && record.confirmation) {
                           try {
@@ -1076,7 +1090,7 @@ exports.handler = async (event, context, callback) => {
                       unconfirmed: logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1,
                     };
                     if (!record.status_code) {
-                      if (record.deposit_address && !record.sender_chain) {
+                      if (!record.sender_chain && record.deposit_address) {
                         const query = {
                           bool: {
                             must: [
@@ -1093,6 +1107,17 @@ exports.handler = async (event, context, callback) => {
                         const link = _response?.data?.[0];
                         if (link?.sender_chain) {
                           record.sender_chain = link.sender_chain;
+                        }
+                      }
+                      if (!record.sender_chain && record.poll_id) {
+                        const _response = await crud({
+                          collection: 'evm_polls',
+                          method: 'get',
+                          id: record.poll_id,
+                        });
+                        const poll = _response;
+                        if (poll?.sender_chain) {
+                          record.sender_chain = poll.sender_chain;
                         }
                       }
                     }
