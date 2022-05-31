@@ -285,7 +285,7 @@ module.exports = {
       },
       {
         id: 'crescent',
-        title: 'Crescent',
+        name: 'Crescent',
         short_name: 'CRE',
         image: '/logos/chains/crescent.png',
         color: '#bf7c5e',
