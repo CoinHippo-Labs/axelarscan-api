@@ -284,6 +284,28 @@ module.exports = {
         },
       },
       {
+        id: 'injective',
+        name: 'injective',
+        short_name: 'INJ',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/injective',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/injective.png',
+        color: '#00a3ba',
+        website: 'https://injective.com',
+        prefix_address: 'inj',
+        endpoints: {
+          lcd: 'https://public.lcd.injective.network',
+        },
+      },
+      {
         id: 'crescent',
         name: 'Crescent',
         short_name: 'CRE',
