@@ -28,15 +28,26 @@ module.exports = () => {
         if (height % num_reindex_processes === process_index) {
           log('info', service_name, 'get block', { height, from_block, to_block, process_index });
           // request api
-          await requester.get('', { params: { module: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } })
-            .catch(error => { return { data: { error } }; });
+          requester.get('', {
+            params: {
+              module: 'lcd',
+              path: `/cosmos/base/tendermint/v1beta1/blocks/${height}`,
+            },
+          }).catch(error => { return { data: { error } }; });
 
           // get transactions in block
           let pageKey = true;
           while (pageKey) {
             // request api
-            const response = await requester.get('', { params: { module: 'lcd', path: '/cosmos/tx/v1beta1/txs', events: `tx.height=${height}`, 'pagination.key': pageKey && typeof pageKey === 'string' ? pageKey : undefined, no_index: true } })
-              .catch(error => { return { data: { error } }; });
+            const response = await requester.get('', {
+              params: {
+                module: 'lcd',
+                path: '/cosmos/tx/v1beta1/txs',
+                events: `tx.height=${height}`,
+                'pagination.key': pageKey && typeof pageKey === 'string' ? pageKey : undefined,
+                no_index: true,
+              },
+            }).catch(error => { return { data: { error } }; });
 
             // transactions data
             const txs = response?.data?.tx_responses || [];
@@ -46,8 +57,20 @@ module.exports = () => {
                 const hash = tx.txhash;
                 log('info', service_name, 'get tx', { hash, height });
                 // request api
-                await requester.get('', { params: { module: 'lcd', path: `/cosmos/tx/v1beta1/txs/${hash}` } })
-                  .catch(error => { return { data: { error } }; });
+                const params = {
+                  params: {
+                    module: 'lcd',
+                    path: `/cosmos/tx/v1beta1/txs/${hash}`,
+                  },
+                };
+                if (txs.length < 25) {
+                  requester.get('', params)
+                    .catch(error => { return { data: { error } }; });
+                }
+                else {
+                  await requester.get('', params)
+                    .catch(error => { return { data: { error } }; });
+                }
               }
             }
             pageKey = response?.data?.pagination?.next_key;
