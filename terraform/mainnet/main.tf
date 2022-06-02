@@ -40,7 +40,7 @@ resource "aws_iam_role" "role" {
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
-  name       = "attachment"
+  name       = "${var.package_name}-${var.environment}-attachment"
   roles      = [aws_iam_role.role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
