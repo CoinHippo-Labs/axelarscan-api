@@ -734,7 +734,7 @@ exports.handler = async (event, context, callback) => {
                                 transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
                                 transfer_source.denom = transfer_source.denom || link.asset;
                               }
-                              if (transfer_source.denom) {
+                              if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                                 const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals;
                                 transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
@@ -889,7 +889,7 @@ exports.handler = async (event, context, callback) => {
                                     transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
                                     transfer_source.denom = transfer_source.denom || link.asset;
                                   }
-                                  if (transfer_source.denom) {
+                                  if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                     const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals;
                                     transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
@@ -1489,7 +1489,7 @@ exports.handler = async (event, context, callback) => {
                           if (link) {
                             transfer_source.recipient_chain = normalize_chain(link.recipient_chain || transfer_source.recipient_chain);
                             transfer_source.denom = transfer_source.denom || link.asset;
-                            if (transfer_source.denom) {
+                            if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                               const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                               const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals;
                               transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
@@ -1560,7 +1560,7 @@ exports.handler = async (event, context, callback) => {
                           if (link) {
                             transfer_source.recipient_chain = normalize_chain(link.recipient_chain);
                             transfer_source.denom = transfer_source.denom || link.asset;
-                            if (transfer_source.denom) {
+                            if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                               const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                               const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals;
                               transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
