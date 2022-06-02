@@ -411,6 +411,7 @@ exports.handler = async (event, context, callback) => {
                     path: `/transfers/_update/${record.id}`,
                     id: record.id,
                     source: record,
+                    link,
                   });
                 }
               }
@@ -497,6 +498,7 @@ exports.handler = async (event, context, callback) => {
                                 path: `/transfers/_update/${record.id}`,
                                 id: record.id,
                                 source: record,
+                                link,
                               });
                               break;
                             }
@@ -747,6 +749,7 @@ exports.handler = async (event, context, callback) => {
                                 id: transaction_id,
                                 source: transfer_source,
                                 confirm_deposit: record,
+                                link,
                               });
                             }
                           }
@@ -1500,6 +1503,7 @@ exports.handler = async (event, context, callback) => {
                               path: `/transfers/_update/${transfer_source.id}`,
                               id: transfer_source.id,
                               source: transfer_source,
+                              link,
                             });
                           }
                           transfer = {
@@ -1570,6 +1574,7 @@ exports.handler = async (event, context, callback) => {
                               path: `/transfers/_update/${transfer_source.id}`,
                               id: transfer_source.id,
                               source: transfer_source,
+                              link,
                             });
                           }
                           transfer = {
