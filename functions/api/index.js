@@ -399,8 +399,10 @@ exports.handler = async (event, context, callback) => {
                   }
                   if (record.denom) {
                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom));
-                    const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
-                    record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                    if (asset_data) {
+                      const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
+                      record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                    }
                   }
                   if (link?.price && typeof record.amount === 'number') {
                     record.value = record.amount * link.price;
@@ -486,9 +488,11 @@ exports.handler = async (event, context, callback) => {
                               }
                               if (record.denom) {
                                 const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
-                                const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data.id)?.decimals || asset_data?.decimals || 6;
-                                record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
-                                record.denom = asset_data?.id || record.denom;
+                                if (asset_data) {
+                                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data.id)?.decimals || asset_data?.decimals || 6;
+                                  record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                                  record.denom = asset_data?.id || record.denom;
+                                }
                               }
                               if (link?.price && typeof record.amount === 'number') {
                                 record.value = record.amount * link.price;
@@ -737,8 +741,10 @@ exports.handler = async (event, context, callback) => {
                               }
                               if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                                 const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
-                                const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
-                                transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                if (asset_data) {
+                                  const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
+                                  transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                }
                               }
                               if (link?.price && typeof transfer_source.amount === 'number') {
                                 transfer_source.value = transfer_source.amount * link.price;
@@ -892,8 +898,10 @@ exports.handler = async (event, context, callback) => {
                                   }
                                   if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
-                                    const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
-                                    transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                    if (asset_data) {
+                                      const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
+                                      transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                    }
                                   }
                                   if (link?.price && typeof transfer_source.amount === 'number') {
                                     transfer_source.value = transfer_source.amount * link.price;
@@ -1492,8 +1500,10 @@ exports.handler = async (event, context, callback) => {
                             transfer_source.denom = transfer_source.denom || link.asset;
                             if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                               const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
-                              const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
-                              transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                              if (asset_data) {
+                                const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
+                                transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                              }
                             }
                             if (link?.price && typeof transfer_source.amount === 'number') {
                               transfer_source.value = transfer_source.amount * link.price;
@@ -1563,9 +1573,11 @@ exports.handler = async (event, context, callback) => {
                             transfer_source.denom = transfer_source.denom || link.asset;
                             if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                               const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
-                              const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
-                              transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
-                              transfer_source.denom = asset_data?.id || transfer_source.denom;
+                              if (asset_data) {
+                                const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
+                                transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                transfer_source.denom = asset_data?.id || transfer_source.denom;
+                              }
                             }
                             if (link?.price && typeof transfer_source.amount === 'number') {
                               transfer_source.value = transfer_source.amount * link.price;
