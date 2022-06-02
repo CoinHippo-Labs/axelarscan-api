@@ -632,7 +632,7 @@ exports.handler = async (event, context, callback) => {
                             const transfer = transfers[i];
                             const transfer_source = transfer.source;
                             const params = {
-                              index: 'transfers',
+                              collection: 'transfers',
                               method: 'set',
                               path: `/transfers/_update/${id}`,
                               id,
@@ -672,7 +672,7 @@ exports.handler = async (event, context, callback) => {
                               const transfer = transfers[i];
                               const transfer_source = transfer.source;
                               const params = {
-                                index: 'transfers',
+                                collection: 'transfers',
                                 method: 'set',
                                 path: `/transfers/_update/${id}`,
                                 id,
@@ -915,7 +915,7 @@ exports.handler = async (event, context, callback) => {
                                   });
                                   const transfer_confirm_deposit = _response?.data?.[0]?.confirm_deposit;
                                   const params = {
-                                    index: 'transfers',
+                                    collection: 'transfers',
                                     method: 'set',
                                     path: `/transfers/_update/${transaction_id}`,
                                     id: transaction_id,
