@@ -118,11 +118,15 @@ resource "aws_lambda_function" "function" {
       LOG_LEVEL                 = var.log_level
     }
   }
+  kms_key_arn      = ""
 }
 
 resource "aws_apigatewayv2_api" "api" {
   name          = "${var.package_name}-${var.environment}-api"
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+  }
   route_key     = "ANY /${aws_lambda_function.function.function_name}"
   target        = aws_lambda_function.function.arn
 }
