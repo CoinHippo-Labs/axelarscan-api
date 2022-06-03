@@ -407,11 +407,12 @@ exports.handler = async (event, context, callback) => {
                   if (link?.price && typeof record.amount === 'number') {
                     record.value = record.amount * link.price;
                   }
+                  const _id = `${record.id}_${record.recipient_address}`.toLowerCase();
                   await crud({
                     collection: 'transfers',
                     method: 'set',
-                    path: `/transfers/_update/${record.id}`,
-                    id: record.id,
+                    path: `/transfers/_update/${_id}`,
+                    id: _id,
                     source: record,
                     link,
                   });
@@ -497,11 +498,12 @@ exports.handler = async (event, context, callback) => {
                               if (link?.price && typeof record.amount === 'number') {
                                 record.value = record.amount * link.price;
                               }
+                              const _id = `${record.id}_${record.recipient_address}`.toLowerCase();
                               await crud({
                                 collection: 'transfers',
                                 method: 'set',
-                                path: `/transfers/_update/${record.id}`,
-                                id: record.id,
+                                path: `/transfers/_update/${_id}`,
+                                id: _id,
                                 source: record,
                                 link,
                               });
@@ -631,11 +633,12 @@ exports.handler = async (event, context, callback) => {
                             const id = ids[i];
                             const transfer = transfers[i];
                             const transfer_source = transfer.source;
+                            const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                             const params = {
                               collection: 'transfers',
                               method: 'set',
-                              path: `/transfers/_update/${id}`,
-                              id,
+                              path: `/transfers/_update/${_id}`,
+                              id: _id,
                               confirm_deposit: record,
                             };
                             if (sign_batch) {
@@ -671,11 +674,12 @@ exports.handler = async (event, context, callback) => {
                               const id = ids[i];
                               const transfer = transfers[i];
                               const transfer_source = transfer.source;
+                              const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                               const params = {
                                 collection: 'transfers',
                                 method: 'set',
-                                path: `/transfers/_update/${id}`,
-                                id,
+                                path: `/transfers/_update/${_id}`,
+                                id: _id,
                                 sign_batch,
                               };
                               if (transfer_source) {
@@ -749,11 +753,12 @@ exports.handler = async (event, context, callback) => {
                               if (link?.price && typeof transfer_source.amount === 'number') {
                                 transfer_source.value = transfer_source.amount * link.price;
                               }
+                              const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                               await crud({
                                 collection: 'transfers',
                                 method: 'set',
-                                path: `/transfers/_update/${transaction_id}`,
-                                id: transaction_id,
+                                path: `/transfers/_update/${_id}`,
+                                id: _id,
                                 source: transfer_source,
                                 confirm_deposit: record,
                                 link,
@@ -910,15 +915,23 @@ exports.handler = async (event, context, callback) => {
                                   _response = await crud({
                                     collection: 'transfers',
                                     method: 'search',
-                                    query: { match: { 'source.id': transaction_id } },
+                                    query: {
+                                      bool: {
+                                        must: [
+                                          { match: { 'source.id': transaction_id } },
+                                          { match: { 'source.recipient_address': deposit_address } },
+                                        ],
+                                      },
+                                    },
                                     size: 1,
                                   });
                                   const transfer_confirm_deposit = _response?.data?.[0]?.confirm_deposit;
+                                  const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                                   const params = {
                                     collection: 'transfers',
                                     method: 'set',
-                                    path: `/transfers/_update/${transaction_id}`,
-                                    id: transaction_id,
+                                    path: `/transfers/_update/${_id}`,
+                                    id: _id,
                                     source: transfer_source,
                                     vote: record,
                                   };
@@ -1337,11 +1350,12 @@ exports.handler = async (event, context, callback) => {
                             const id = ids[j];
                             const transfer = transfers[j];
                             const transfer_source = transfer?.source;
+                            const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                             const params = {
                               collection: 'transfers',
                               method: 'set',
-                              path: `/transfers/_update/${id}`,
-                              id,
+                              path: `/transfers/_update/${_id}`,
+                              id: _id,
                               ...transfer,
                               sign_batch,
                             };
@@ -1508,11 +1522,12 @@ exports.handler = async (event, context, callback) => {
                             if (link?.price && typeof transfer_source.amount === 'number') {
                               transfer_source.value = transfer_source.amount * link.price;
                             }
+                            const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                             await crud({
                               collection: 'transfers',
                               method: 'set',
-                              path: `/transfers/_update/${transfer_source.id}`,
-                              id: transfer_source.id,
+                              path: `/transfers/_update/${_id}`,
+                              id: _id,
                               source: transfer_source,
                               link,
                             });
@@ -1582,11 +1597,12 @@ exports.handler = async (event, context, callback) => {
                             if (link?.price && typeof transfer_source.amount === 'number') {
                               transfer_source.value = transfer_source.amount * link.price;
                             }
+                            const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
                             await crud({
                               collection: 'transfers',
                               method: 'set',
-                              path: `/transfers/_update/${transfer_source.id}`,
-                              id: transfer_source.id,
+                              path: `/transfers/_update/${_id}`,
+                              id: _id,
                               source: transfer_source,
                               link,
                             });
