@@ -1355,7 +1355,10 @@ module.exports = {
       name: 'Terra',
       image: '/logos/assets/luna.png',
       decimals: 6,
-      coingecko_id: 'terra-luna',
+      coingecko_id: 'terra-luna-2',
+      coingecko_ids: {
+        'terra': 'terra-luna',
+      },
       contracts: [
         {
           contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',

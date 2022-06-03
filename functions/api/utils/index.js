@@ -71,6 +71,13 @@ const get_granularity = time => {
   };
 };
 
+const normalize_original_chain = chain => {
+  if (chain) {
+    chain = chain.trim().toLowerCase();
+  }
+  return chain;
+};
+
 const normalize_chain = chain => {
   if (chain) {
     chain = chain.split('-').filter(c => isNaN(c)).join('').trim().toLowerCase();

@@ -19,7 +19,7 @@ exports.handler = async (event, context, callback) => {
   // import asset price
   const assets_price = require('./services/assets');
   // import utils
-  const { sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_chain, transfer_actions, vote_types, getBlockTime } = require('./utils');
+  const { sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getBlockTime } = require('./utils');
   // data
   const { chains, assets } = require('./data');
   // IAxelarGateway
@@ -336,6 +336,8 @@ exports.handler = async (event, context, callback) => {
                   sender_chain,
                   deposit_address,
                 };
+                record.original_sender_chain = normalize_original_chain(record.sender_chain);
+                record.original_recipient_chain = normalize_original_chain(record.recipient_chain);
                 record.id = record.deposit_address || record.txhash;
                 record.type = record['@type']?.split('.')[0]?.replace('/', '');
                 delete record['@type'];
@@ -349,6 +351,7 @@ exports.handler = async (event, context, callback) => {
                 if (record.asset || record.denom) {
                   const created_at = moment(tx_response.timestamp).utc();
                   const prices_data = await assets_price({
+                    chain: record.original_sender_chain,
                     denom: record.asset || record.denom,
                     timestamp: created_at,
                   });
@@ -436,80 +439,90 @@ exports.handler = async (event, context, callback) => {
                     for (let j = 0; j < cosmos_chains.length; j++) {
                       const chain_data = cosmos_chains[j];
                       if (chain_data?.endpoints?.lcd && packet_data.sender?.startsWith(chain_data.prefix_address)) {
-                        // initial lcd
-                        const lcd = axios.create({ baseURL: chain_data.endpoints.lcd });
-                        // request lcd
-                        const _response = await lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${_height}`)
-                          .catch(error => { return { data: { error } }; });
-                        const tx_index = _response?.data?.tx_responses?.findIndex(t => {
-                          const event_send_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'send_packet')));
-                          const _packet_sequence = event_send_packet?.attributes?.find(a => a?.key === 'packet_sequence' && a.value)?.value;
-                          return packet_sequence === _packet_sequence;
-                        });
-                        if (tx_index > -1) {
-                          const transaction = {
-                            ..._response.data.tx_responses[tx_index],
-                            tx: {
-                              ..._response.data.txs?.[tx_index],
-                            },
-                          };
-                          const _messages = transaction.tx.body?.messages;
-                          if (_messages) {
-                            const created_at = moment(transaction.timestamp).utc();
-                            const amount_denom = _messages.find(m => m?.token)?.token;
-                            const record = {
-                              id: transaction.txhash,
-                              type: 'ibc_transfer',
-                              status_code: transaction.code,
-                              status: transaction.code ? 'failed' : 'success',
-                              height: Number(transaction.height),
-                              created_at: get_granularity(created_at),
-                              sender_chain: chain_data.id,
-                              sender_address: _messages.find(m => m?.sender)?.sender,
-                              recipient_address: _messages.find(m => m?.receiver)?.receiver,
-                              amount: amount_denom?.amount,
-                              denom: amount_denom?.denom,
+                        let found = false;
+                        const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
+                        for (let k = 0; k < lcds.length; k++) {
+                          // initial lcd
+                          const lcd = axios.create({ baseURL: lcds[k] });
+                          // request lcd
+                          const _response = await lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${_height}`)
+                            .catch(error => { return { data: { error } }; });
+                          const tx_index = _response?.data?.tx_responses?.findIndex(t => {
+                            const event_send_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'send_packet')));
+                            const _packet_sequence = event_send_packet?.attributes?.find(a => a?.key === 'packet_sequence' && a.value)?.value;
+                            return packet_sequence === _packet_sequence;
+                          });
+                          if (tx_index > -1) {
+                            const transaction = {
+                              ..._response.data.tx_responses[tx_index],
+                              tx: {
+                                ..._response.data.txs?.[tx_index],
+                              },
                             };
-                            if (record.recipient_address?.length >= 65 && record.id && record.amount) {
-                              const query = {
-                                match: {
-                                  deposit_address: record.recipient_address,
-                                },
+                            const _messages = transaction.tx.body?.messages;
+                            if (_messages) {
+                              const created_at = moment(transaction.timestamp).utc();
+                              const amount_denom = _messages.find(m => m?.token)?.token;
+                              const record = {
+                                id: transaction.txhash,
+                                type: 'ibc_transfer',
+                                status_code: transaction.code,
+                                status: transaction.code ? 'failed' : 'success',
+                                height: Number(transaction.height),
+                                created_at: get_granularity(created_at),
+                                sender_chain: chain_data.id,
+                                sender_address: _messages.find(m => m?.sender)?.sender,
+                                recipient_address: _messages.find(m => m?.receiver)?.receiver,
+                                amount: amount_denom?.amount,
+                                denom: amount_denom?.denom,
                               };
-                              const _response = await crud({
-                                collection: 'deposit_addresses',
-                                method: 'search',
-                                query,
-                                size: 1,
-                              });
-                              const link = _response?.data?.[0];
-                              if (link) {
-                                record.recipient_chain = link.recipient_chain;
-                                record.denom = record.denom || link.asset;
-                              }
-                              if (record.denom) {
-                                const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
-                                if (asset_data) {
-                                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data.id)?.decimals || asset_data?.decimals || 6;
-                                  record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
-                                  record.denom = asset_data?.id || record.denom;
+                              if (record.recipient_address?.length >= 65 && record.id && record.amount) {
+                                const query = {
+                                  match: {
+                                    deposit_address: record.recipient_address,
+                                  },
+                                };
+                                const _response = await crud({
+                                  collection: 'deposit_addresses',
+                                  method: 'search',
+                                  query,
+                                  size: 1,
+                                });
+                                const link = _response?.data?.[0];
+                                record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
+                                record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
+                                if (link) {
+                                  record.recipient_chain = link.recipient_chain;
+                                  record.denom = record.denom || link.asset;
                                 }
+                                if (record.denom) {
+                                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                                  if (asset_data) {
+                                    const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data.id)?.decimals || asset_data?.decimals || 6;
+                                    record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                                    record.denom = asset_data?.id || record.denom;
+                                  }
+                                }
+                                if (link?.price && typeof record.amount === 'number') {
+                                  record.value = record.amount * link.price;
+                                }
+                                const _id = `${record.id}_${record.recipient_address}`.toLowerCase();
+                                await crud({
+                                  collection: 'transfers',
+                                  method: 'set',
+                                  path: `/transfers/_update/${_id}`,
+                                  id: _id,
+                                  source: record,
+                                  link,
+                                });
+                                found = true;
+                                break;
                               }
-                              if (link?.price && typeof record.amount === 'number') {
-                                record.value = record.amount * link.price;
-                              }
-                              const _id = `${record.id}_${record.recipient_address}`.toLowerCase();
-                              await crud({
-                                collection: 'transfers',
-                                method: 'set',
-                                path: `/transfers/_update/${_id}`,
-                                id: _id,
-                                source: record,
-                                link,
-                              });
-                              break;
                             }
                           }
+                        }
+                        if (found) {
+                          break;
                         }
                       }
                     }
@@ -738,6 +751,8 @@ exports.handler = async (event, context, callback) => {
                                 size: 1,
                               });
                               const link = _response?.data?.[0];
+                              transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                              transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                               if (link) {
                                 transfer_source.sender_chain = link.sender_chain || transfer_source.sender_chain;
                                 transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
@@ -896,6 +911,8 @@ exports.handler = async (event, context, callback) => {
                                     size: 1,
                                   });
                                   const link = _response?.data?.[0];
+                                  transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                                  transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                                   if (link) {
                                     transfer_source.sender_chain = link.sender_chain || transfer_source.sender_chain;
                                     transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
@@ -1035,6 +1052,8 @@ exports.handler = async (event, context, callback) => {
                   sender_chain,
                   deposit_address,
                 };
+                record.original_sender_chain = normalize_original_chain(record.sender_chain);
+                record.original_recipient_chain = normalize_original_chain(record.recipient_chain);
                 record.id = record.deposit_address || record.txhash;
                 record.type = record['@type']?.split('.')[0]?.replace('/', '');
                 delete record['@type'];
@@ -1048,6 +1067,7 @@ exports.handler = async (event, context, callback) => {
                 if (record.asset || record.denom) {
                   const created_at = moment(t.timestamp).utc();
                   const prices_data = await assets_price({
+                    chain: record.original_sender_chain,
                     denom: record.asset || record.denom,
                     timestamp: created_at,
                   });
@@ -1509,6 +1529,8 @@ exports.handler = async (event, context, callback) => {
                             size: 1,
                           });
                           const link = _response?.data?.[0];
+                          transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                          transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                           if (link) {
                             transfer_source.recipient_chain = normalize_chain(link.recipient_chain || transfer_source.recipient_chain);
                             transfer_source.denom = transfer_source.denom || link.asset;
@@ -1547,74 +1569,84 @@ exports.handler = async (event, context, callback) => {
                 for (let i = 0; i < cosmos_chains.length; i++) {
                   const chain_data = cosmos_chains[i];
                   if ((!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) && chain_data?.endpoints?.lcd) {
-                    // initial lcd
-                    const lcd = axios.create({ baseURL: chain_data.endpoints.lcd });
-                    try {
-                      // request lcd
-                      let _response = await lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
-                        .catch(error => { return { data: { error } }; });
-                      const transaction = _response?.data?.tx_response;
-                      if (transaction.tx?.body?.messages) {
-                        const created_at = moment(transaction.timestamp).utc();
-                        const amount_denom = transaction.tx.body.messages.find(m => m?.token)?.token;
-                        const transfer_source = {
-                          id: transaction.txhash,
-                          type: 'ibc_transfer',
-                          status_code: transaction.code,
-                          status: transaction.code ? 'failed' : 'success',
-                          height: Number(transaction.height),
-                          created_at: get_granularity(created_at),
-                          sender_chain: chain_data.id,
-                          sender_address: transaction.tx.body.messages.find(m => m?.sender)?.sender,
-                          recipient_address: transaction.tx.body.messages.find(m => m?.receiver)?.receiver,
-                          amount: amount_denom?.amount,
-                          denom: amount_denom?.denom,
-                        };
-                        if (transfer_source.recipient_address?.length >= 65 && transfer_source.id && transfer_source.amount) {
-                          const query = {
-                            match: {
-                              deposit_address: transfer_source.recipient_address,
-                            },
+                    let found = false;
+                    const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
+                    for (let j = 0; j < lcds.length; j++) {
+                      // initial lcd
+                      const lcd = axios.create({ baseURL: lcds[j] });
+                      try {
+                        // request lcd
+                        let _response = await lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
+                          .catch(error => { return { data: { error } }; });
+                        const transaction = _response?.data?.tx_response;
+                        if (transaction.tx?.body?.messages) {
+                          const created_at = moment(transaction.timestamp).utc();
+                          const amount_denom = transaction.tx.body.messages.find(m => m?.token)?.token;
+                          const transfer_source = {
+                            id: transaction.txhash,
+                            type: 'ibc_transfer',
+                            status_code: transaction.code,
+                            status: transaction.code ? 'failed' : 'success',
+                            height: Number(transaction.height),
+                            created_at: get_granularity(created_at),
+                            sender_chain: chain_data.id,
+                            sender_address: transaction.tx.body.messages.find(m => m?.sender)?.sender,
+                            recipient_address: transaction.tx.body.messages.find(m => m?.receiver)?.receiver,
+                            amount: amount_denom?.amount,
+                            denom: amount_denom?.denom,
                           };
-                          _response = await crud({
-                            collection: 'deposit_addresses',
-                            method: 'search',
-                            query,
-                            size: 1,
-                          });
-                          const link = _response?.data?.[0];
-                          if (link) {
-                            transfer_source.recipient_chain = normalize_chain(link.recipient_chain);
-                            transfer_source.denom = transfer_source.denom || link.asset;
-                            if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                              const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
-                              if (asset_data) {
-                                const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
-                                transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
-                                transfer_source.denom = asset_data?.id || transfer_source.denom;
+                          if (transfer_source.recipient_address?.length >= 65 && transfer_source.id && transfer_source.amount) {
+                            const query = {
+                              match: {
+                                deposit_address: transfer_source.recipient_address,
+                              },
+                            };
+                            _response = await crud({
+                              collection: 'deposit_addresses',
+                              method: 'search',
+                              query,
+                              size: 1,
+                            });
+                            const link = _response?.data?.[0];
+                            transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                            transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
+                            if (link) {
+                              transfer_source.recipient_chain = normalize_chain(link.recipient_chain);
+                              transfer_source.denom = transfer_source.denom || link.asset;
+                              if (transfer_source.denom && typeof transfer_source.amount === 'string') {
+                                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                                if (asset_data) {
+                                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
+                                  transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                  transfer_source.denom = asset_data?.id || transfer_source.denom;
+                                }
                               }
+                              if (link?.price && typeof transfer_source.amount === 'number') {
+                                transfer_source.value = transfer_source.amount * link.price;
+                              }
+                              const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
+                              await crud({
+                                collection: 'transfers',
+                                method: 'set',
+                                path: `/transfers/_update/${_id}`,
+                                id: _id,
+                                source: transfer_source,
+                                link,
+                              });
                             }
-                            if (link?.price && typeof transfer_source.amount === 'number') {
-                              transfer_source.value = transfer_source.amount * link.price;
-                            }
-                            const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
-                            await crud({
-                              collection: 'transfers',
-                              method: 'set',
-                              path: `/transfers/_update/${_id}`,
-                              id: _id,
+                            transfer = {
                               source: transfer_source,
                               link,
-                            });
+                            };
                           }
-                          transfer = {
-                            source: transfer_source,
-                            link,
-                          };
+                          found = true;
+                          break;
                         }
-                        break;
-                      }
-                    } catch (error) {}
+                      } catch (error) {}
+                    }
+                    if (found) {
+                      break;
+                    }
                   }
                 }
               }

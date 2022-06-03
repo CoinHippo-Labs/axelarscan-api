@@ -31,7 +31,7 @@ module.exports = async (params = {}) => {
   const current_time = moment();
 
   // initial parameters
-  const { denom, timestamp } = { ...params };
+  const { chain, denom, timestamp } = { ...params };
   let { denoms } = { ...params };
   denoms = _.uniq((Array.isArray(denoms) ? denoms : (denoms || denom)?.split(',') || []).map(d => d?.trim().toLowerCase()).filter(d => d));
 
@@ -57,10 +57,10 @@ module.exports = async (params = {}) => {
     });
     const data = denoms.map(d => {
       const asset_data = _assets?.find(a => equals_ignore_case(a?.id, d));
-      const { coingecko_id, is_stablecoin } = { ...asset_data };
+      const { coingecko_id, coingecko_ids, is_stablecoin } = { ...asset_data };
       const _d = {
         denom: d,
-        coingecko_id,
+        coingecko_id: coingecko_ids?.[chain] || coingecko_id,
         price: is_stablecoin ? 1 : undefined,
       };
       return _d;
