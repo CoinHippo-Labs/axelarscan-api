@@ -312,7 +312,7 @@ module.exports = {
         image: '/logos/chains/crescent.png',
         color: '#bf7c5e',
         website: 'https://crescent.network',
-        prefix_address: 'crescent',
+        prefix_address: 'cre',
         endpoints: {
           lcd: '',
         },
@@ -337,6 +337,7 @@ module.exports = {
         prefix_address: 'terra',
         endpoints: {
           lcd: 'https://lcd.terra.dev',
+          lcds: ['https://phoenix-lcd.terra.dev', 'https://columbus-lcd.terra.dev'],
         },
       },
     ],
@@ -600,7 +601,7 @@ module.exports = {
         image: '/logos/chains/crescent.png',
         color: '#bf7c5e',
         website: 'https://crescent.network',
-        prefix_address: 'crescent',
+        prefix_address: 'cre',
         endpoints: {
           lcd: '',
         },

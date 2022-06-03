@@ -115,6 +115,7 @@ module.exports = {
   to_json,
   to_hex,
   get_granularity,
+  normalize_original_chain,
   normalize_chain,
   transfer_actions,
   vote_types,
