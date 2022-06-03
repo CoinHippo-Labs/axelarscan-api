@@ -502,7 +502,7 @@ module.exports = {
     {
       id: 'wftm-wei',
       symbol: 'WFTM',
-      name: 'Moonbeam',
+      name: 'Fantom',
       image: '/logos/assets/ftm.png',
       decimals: 18,
       coingecko_id: 'fantom',

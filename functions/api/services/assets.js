@@ -33,7 +33,12 @@ module.exports = async (params = {}) => {
   // initial parameters
   const { chain, denom, timestamp } = { ...params };
   let { denoms } = { ...params };
-  denoms = _.uniq((Array.isArray(denoms) ? denoms : (denoms || denom)?.split(',') || []).map(d => d?.trim().toLowerCase()).filter(d => d));
+  denoms = _.uniq((Array.isArray(denoms) ? denoms : (denoms || denom)?.split(',') || []).map(d => {
+    if (typeof d === 'object') {
+      return d;
+    }
+    return d?.trim().toLowerCase();
+  }).filter(d => d));
 
   if (denoms.length > 0) {
     const price_timestamp = moment(Number(timestamp) || current_time.valueOf()).startOf('day').valueOf();
@@ -44,7 +49,7 @@ module.exports = async (params = {}) => {
         ],
         should: denoms.map(d => {
           return {
-            match: { denoms: d },
+            match: { denoms: typeof d === 'object' ? d?.denom : d },
           };
         }),
       },
