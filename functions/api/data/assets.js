@@ -1364,26 +1364,31 @@ module.exports = {
           contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',
           chain_id: 1,
           decimals: 6,
+          chain: 'terra',
         },
         {
           contract_address: '0x120ad3e5a7c796349e591f1570d9f7980f4ea9cb',
           chain_id: 43114,
           decimals: 6,
+          chain: 'terra',
         },
         {
           contract_address: '0xa17927fb75e9faea10c08259902d0468b3dead88',
           chain_id: 137,
           decimals: 6,
+          chain: 'terra',
         },
         {
           contract_address: '0x5e3c572a97d898fe359a2cea31c7d46ba5386895',
           chain_id: 250,
           decimals: 6,
+          chain: 'terra',
         },
         {
           contract_address: '0x31dab3430f3081dff3ccd80f17ad98583437b213',
           chain_id: 1284,
           decimals: 6,
+          chain: 'terra',
         },
       ],
       ibc: [

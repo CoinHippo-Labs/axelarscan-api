@@ -56,11 +56,14 @@ module.exports = async (params = {}) => {
       size: denoms.length,
     });
     const data = denoms.map(d => {
-      const asset_data = _assets?.find(a => equals_ignore_case(a?.id, d));
+      const denom_data = typeof d === 'object' ? d : { denom: d };
+      const _denom = denom_data?.denom || d;
+      const _chain = denom_data?.chain || chain;
+      const asset_data = _assets?.find(a => equals_ignore_case(a?.id, _denom));
       const { coingecko_id, coingecko_ids, is_stablecoin } = { ...asset_data };
       const _d = {
-        denom: d,
-        coingecko_id: coingecko_ids?.[chain] || coingecko_id,
+        denom: _denom,
+        coingecko_id: coingecko_ids?.[_chain] || coingecko_id,
         price: is_stablecoin ? 1 : undefined,
       };
       return _d;
