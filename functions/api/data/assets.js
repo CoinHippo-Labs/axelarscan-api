@@ -537,6 +537,11 @@ module.exports = {
           contract_decimals: 6,
         },
         {
+          contract_address: '0xfc3b4feb754d8082f745940347600d373f03dcac',
+          chain_id: 97,
+          contract_decimals: 6,
+        },
+        {
           contract_address: '0x46cc87ea84586c03bb2109ed9b33f998d40b7623',
           chain_id: 43113,
           contract_decimals: 6,
@@ -657,12 +662,6 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
-          contract_address: '',
-          chain_id: 97,
-          contract_decimals: 6,
-          symbol: 'axlUSDC',
-        },
-        {
           contract_address: '0x3fb643de114d5dc03dde8dfdbc06c60dcaf7d3c4',
           chain_id: 43113,
           contract_decimals: 6,
@@ -703,7 +702,7 @@ module.exports = {
           symbol: 'axlATOM',
         },
         {
-          contract_address: '',
+          contract_address: '0x00f0f14872c4ded7343fd8352d75d13922d8ca0e',
           chain_id: 97,
           contract_decimals: 6,
           symbol: 'axlATOM',
@@ -755,6 +754,11 @@ module.exports = {
           contract_decimals: 6,
         },
         {
+          contract_address: '0xc2fa98fab811b785b81c64ac875b31cc9e40f9d2',
+          chain_id: 97,
+          contract_decimals: 6,
+        },
+        {
           contract_address: '0x57f1c63497aee0be305b8852b354cec793da43bb',
           chain_id: 43113,
           contract_decimals: 6,
@@ -802,7 +806,7 @@ module.exports = {
           contract_decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x03dc012b7851b7d65592aebc40a6af9a171e9315',
           chain_id: 97,
           contract_decimals: 18,
         },
@@ -869,7 +873,7 @@ module.exports = {
           contract_decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x1b29ec62efc689c462b4e0512457175793cec9e6',
           chain_id: 97,
           contract_decimals: 18,
         },
@@ -931,7 +935,7 @@ module.exports = {
           contract_decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x920fa0dbb65ce928c29103aec7b5c188bbea2f24',
           chain_id: 97,
           contract_decimals: 18,
         },
@@ -993,7 +997,7 @@ module.exports = {
           contract_decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x90decd89a744a0cfbb3cc8de08a5f3b14875b6c4',
           chain_id: 97,
           contract_decimals: 18,
         },
@@ -1055,7 +1059,7 @@ module.exports = {
           contract_decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0xa893fd868c3159b294f6416f512203be53315fd8',
           chain_id: 97,
           contract_decimals: 18,
         },
