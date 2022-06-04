@@ -1415,6 +1415,11 @@ module.exports = {
           decimals: 6,
         },
         {
+          contract_address: '0xfC3B4feb754d8082F745940347600D373f03dcaC',
+          chain_id: 97,
+          decimals: 6,
+        },
+        {
           contract_address: '0x46cc87ea84586c03bb2109ed9b33f998d40b7623',
           chain_id: 43113,
           decimals: 6,
@@ -1447,12 +1452,6 @@ module.exports = {
         {
           contract_address: '0x772df70ff68c8dea1863794824410e90e46cd433',
           chain_id: 3,
-          decimals: 6,
-          symbol: 'axlUSDC',
-        },
-        {
-          contract_address: '',
-          chain_id: 97,
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -1497,7 +1496,7 @@ module.exports = {
           symbol: 'axlATOM',
         },
         {
-          contract_address: '',
+          contract_address: '0x00F0F14872c4deD7343fD8352D75D13922D8CA0E',
           chain_id: 97,
           decimals: 6,
           symbol: 'axlATOM',
@@ -1549,6 +1548,11 @@ module.exports = {
           decimals: 6,
         },
         {
+          contract_address: '0xc2fA98faB811B785b81c64Ac875b31CC9E40F9D2',
+          chain_id: 97,
+          decimals: 6,
+        },
+        {
           contract_address: '0x57f1c63497aee0be305b8852b354cec793da43bb',
           chain_id: 43113,
           decimals: 6,
@@ -1591,34 +1595,9 @@ module.exports = {
       coingecko_id: 'bitcoin',
       contracts: [
         {
-          contract_address: '0xc778417e063141139fce010982780140aa0cd5ab',
+          contract_address: '0x5db5f7d211FA88266Fb316948da0D45798e5a22f',
           chain_id: 3,
-          decimals: 18,
-        },
-        {
-          contract_address: '',
-          chain_id: 97,
-          decimals: 18,
-        },
-        {
-          contract_address: '0x3613c187b3ef813619a25322595ba5e297e4c08a',
-          chain_id: 43113,
-          decimals: 18,
-        },
-        {
-          contract_address: '0xfba15fff35558fe2a469b96a90aed7727fe38fae',
-          chain_id: 80001,
-          decimals: 18,
-        },
-        {
-          contract_address: '0x930640ef299bf772f786cf7e88da951d76e33168',
-          chain_id: 4002,
-          decimals: 18,
-        },
-        {
-          contract_address: '0xc40fdaa2cb43c85eaa6d43856df42e7a80669fca',
-          chain_id: 1287,
-          decimals: 18,
+          decimals: 8,
         },
       ],
       ibc: [
@@ -1639,32 +1618,32 @@ module.exports = {
       coingecko_id: 'ethereum',
       contracts: [
         {
-          contract_address: '0xc778417e063141139fce010982780140aa0cd5ab',
+          contract_address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
           chain_id: 3,
           decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x03Dc012b7851b7D65592Aebc40a6aF9A171E9315',
           chain_id: 97,
           decimals: 18,
         },
         {
-          contract_address: '0x3613c187b3ef813619a25322595ba5e297e4c08a',
+          contract_address: '0x3613C187b3eF813619A25322595bA5E297E4C08a',
           chain_id: 43113,
           decimals: 18,
         },
         {
-          contract_address: '0xfba15fff35558fe2a469b96a90aed7727fe38fae',
+          contract_address: '0xfba15fFF35558fE2A469B96A90AeD7727FE38fAE',
           chain_id: 80001,
           decimals: 18,
         },
         {
-          contract_address: '0x930640ef299bf772f786cf7e88da951d76e33168',
+          contract_address: '0x930640ef299Bf772f786Cf7E88DA951D76E33168',
           chain_id: 4002,
           decimals: 18,
         },
         {
-          contract_address: '0xc40fdaa2cb43c85eaa6d43856df42e7a80669fca',
+          contract_address: '0xc40Fdaa2cB43C85eAA6D43856df42E7A80669fca',
           chain_id: 1287,
           decimals: 18,
         },
@@ -1711,7 +1690,7 @@ module.exports = {
           decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x1B29EC62efC689c462b4E0512457175793cEc9e6',
           chain_id: 97,
           decimals: 18,
         },
@@ -1773,7 +1752,7 @@ module.exports = {
           decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x920fA0DbB65cE928C29103AeC7B5c188bbea2f24',
           chain_id: 97,
           decimals: 18,
         },
@@ -1835,7 +1814,7 @@ module.exports = {
           decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0x90dEcD89a744a0CFbB3cc8DE08A5f3B14875B6C4',
           chain_id: 97,
           decimals: 18,
         },
@@ -1897,7 +1876,7 @@ module.exports = {
           decimals: 18,
         },
         {
-          contract_address: '',
+          contract_address: '0xa893Fd868c3159B294f6416F512203be53315fd8',
           chain_id: 97,
           decimals: 18,
         },
