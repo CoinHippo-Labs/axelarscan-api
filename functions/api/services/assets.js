@@ -63,7 +63,7 @@ module.exports = async (params = {}) => {
     const data = denoms.map(d => {
       const denom_data = typeof d === 'object' ? d : { denom: d };
       const _denom = denom_data?.denom || d;
-      const _chain = denom_data?.chain || chain;
+      const _chain = _denom === 'uluna' && !['terra-2'].includes(chain) ? 'terra' : denom_data?.chain || chain;
       const asset_data = _assets?.find(a => equals_ignore_case(a?.id, _denom));
       const { coingecko_id, coingecko_ids, is_stablecoin } = { ...asset_data };
       const _d = {

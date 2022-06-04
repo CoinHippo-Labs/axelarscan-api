@@ -1722,6 +1722,68 @@ exports.handler = async (event, context, callback) => {
             response = transfers || [];
           }
           break;
+        case 'transfers-stats':
+          const { query } = { ...params };
+          const _response = await crud({
+            collection: 'transfers',
+            method: 'search',
+            query,
+            aggs: {
+              source_chains: {
+                terms: { field: 'source.sender_chain.keyword', size: 1000 },
+                aggs: {
+                  destination_chains: {
+                    terms: { field: 'source.recipient_chain.keyword', size: 1000 },
+                    aggs: {
+                      assets: {
+                        terms: { field: 'source.denom.keyword', size: 1000 },
+                        aggs: {
+                          volume: {
+                            sum: { field: 'source.value' },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            size: 0,
+          });
+          if (_response?.aggs?.source_chains?.buckets) {
+            response = {
+              data: _.orderBy(_response.aggs.source_chains.buckets.flatMap(s => (
+                s.destination_chains?.buckets?.flatMap(d => (
+                  d.assets?.buckets?.map(a => {
+                    return {
+                      id: `${s.key}_${d.key}_${a.key}`,
+                      source_chain: s.key,
+                      destination_chain: d.key,
+                      asset: a.key,
+                      num_txs: a.doc_count,
+                      volume: a.volume?.value,
+                    };
+                  }) || [{
+                    id: `${s.key}_${d.key}`,
+                    source_chain: s.key,
+                    destination_chain: d.key,
+                    num_txs: d.doc_count,
+                    volume: d.volume?.value,
+                  }]
+                )) || [{
+                  id: `${s.key}`,
+                  source_chain: s.key,
+                  num_txs: s.doc_count,
+                  volume: s.volume?.value,
+                }]
+              )), ['volume', 'num_txs'], ['desc', 'desc']),
+              total: _response.total,
+            };
+          }
+          else {
+            response = _response;
+          }
+          break;
         default:
           break;
       };
