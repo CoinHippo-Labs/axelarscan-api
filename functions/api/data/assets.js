@@ -1590,7 +1590,7 @@ module.exports = {
       id: 'wbtc-satoshi',
       symbol: 'WBTC',
       name: 'Bitcoin',
-      image: '/logos/assets/btc.png',
+      image: '/logos/assets/wbtc.png',
       decimals: 8,
       coingecko_id: 'bitcoin',
       contracts: [
