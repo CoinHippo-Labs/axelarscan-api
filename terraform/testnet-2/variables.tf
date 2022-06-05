@@ -10,7 +10,7 @@ variable "aws_profile" {
 
 variable "package_name" {
   description = "Package name"
-  default     = "axelarscan-api"
+  default     = "axelarscan"
 }
 
 variable "environment" {
