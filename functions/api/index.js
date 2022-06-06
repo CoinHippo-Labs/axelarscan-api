@@ -1723,7 +1723,20 @@ exports.handler = async (event, context, callback) => {
           }
           break;
         case 'transfers-stats':
-          const { query } = { ...params };
+          let { query, fromTime, toTime } = { ...params };
+          if (!query) {
+            if (fromTime && toTime) {
+              fromTime = Number(fromTime) * 1000;
+              toTime = Number(toTime) * 1000;
+              query = {
+                bool: {
+                  must: [
+                    { range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } },
+                  ],
+                },
+              };
+            }
+          }
           const _response = await crud({
             collection: 'transfers',
             method: 'search',
