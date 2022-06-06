@@ -1474,7 +1474,7 @@ exports.handler = async (event, context, callback) => {
               query,
               size: 1,
             });
-            let transfer = response?.data?.[0];
+            let transfer = _response?.data?.[0];
             if (!transfer && depositAddress) {
               let created_at = moment().utc();
               const evm_chains = chains?.[environment]?.evm || [];
@@ -1657,7 +1657,7 @@ exports.handler = async (event, context, callback) => {
                   deposit_address: transfer.source?.recipient_address || depositAddress,
                 },
               };
-              const _response = await crud({
+              _response = await crud({
                 collection: 'deposit_addresses',
                 method: 'search',
                 query,
