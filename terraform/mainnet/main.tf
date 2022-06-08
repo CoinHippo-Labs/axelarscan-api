@@ -58,7 +58,7 @@ resource "aws_opensearch_domain" "domain" {
   ebs_options {
     ebs_enabled = true
     volume_type = "gp2"
-    volume_size = 96
+    volume_size = 128
   }
   encrypt_at_rest {
     enabled = true
