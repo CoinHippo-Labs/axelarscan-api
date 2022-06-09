@@ -336,8 +336,8 @@ module.exports = {
         website: 'https://terra.money',
         prefix_address: 'terra',
         endpoints: {
-          lcd: 'https://lcd.terra.dev',
-          lcds: ['https://phoenix-lcd.terra.dev', 'https://columbus-lcd.terra.dev'],
+          lcd: 'https://phoenix-lcd.terra.dev',
+          lcds: ['https://blockdaemon-terra-lcd.api.bdnodes.net:1317', 'https://terra-lcd.quickapi.com', 'https://lcd.terra.dev', 'https://columbus-lcd.terra.dev'],
         },
       },
     ],
@@ -659,7 +659,8 @@ module.exports = {
         website: 'https://terra.money',
         prefix_address: 'terra',
         endpoints: {
-          lcd: 'https://bombay-lcd.terra.dev',
+          lcd: 'https://pisco-lcd.terra.dev',
+          lcds: ['https://bombay-lcd.terra.dev'],
         },
       },
     ],
