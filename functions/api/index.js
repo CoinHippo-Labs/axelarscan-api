@@ -259,10 +259,13 @@ exports.handler = async (event, context, callback) => {
                     const result = message.inner_message.vote.result;
                     for (let j = 0; j < result.events.length; j++) {
                       const event = result.events[j];
-                      for (let k = 0; k < byteArrayFields.length; k++) {
-                        const field = byteArrayFields[k];
+                      for (let k = 0; k < byte_array_fields.length; k++) {
+                        const field = byte_array_fields[k];
                         if (Array.isArray(event?.[field])) {
                           event[field] = to_hex(event[field]);
+                        }
+                        else if (Array.isArray(event.transfer?.[field])) {
+                          event.transfer[field] = to_hex(event.transfer[field]);
                         }
                         else if (Array.isArray(event?.contract_call?.[field])) {
                           event.contract_call[field] = to_hex(event.contract_call[field]);
