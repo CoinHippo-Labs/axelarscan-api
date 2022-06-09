@@ -806,7 +806,7 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.events?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results.length > 0 : Object.keys({ ...vote_results })).length > 0;
                         confirmation = !!event;
@@ -1108,7 +1108,7 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.events?.[0]?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results.length > 0 : Object.keys({ ...vote_results })).length > 0;
                         confirmation = !!event;
