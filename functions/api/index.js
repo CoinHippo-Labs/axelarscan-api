@@ -866,7 +866,6 @@ exports.handler = async (event, context, callback) => {
                           record.sender_chain = poll.sender_chain;
                         }
                       }
-                      
                       if (record.poll_id) {
                         if (record.id && record.vote && record.confirmation) {
                           try {
@@ -957,6 +956,9 @@ exports.handler = async (event, context, callback) => {
                                   };
                                   if (transfer_confirm_deposit) {
                                     params.confirm_deposit = transfer_confirm_deposit;
+                                  }
+                                  if (link) {
+                                    params.link = link;
                                   }
                                   await crud(params);
                                 }
