@@ -1702,8 +1702,20 @@ exports.handler = async (event, context, callback) => {
                 });
                 link = _response?.data?.[0];
               }
-              if (link?.price && typeof transfer.source?.amount === 'number') {
-                transfer.source.value = transfer.source.amount * link.price;
+              let price;
+              if (!link && (transfer.source?.asset || transfer.source?.denom)) {
+                const created_at = moment(transfer.source.created_at?.ms).utc();
+                const prices_data = await assets_price({
+                  chain: transfer.source.original_sender_chain,
+                  denom: transfer.source.asset || transfer.source.denom,
+                  timestamp: created_at,
+                });
+                if (prices_data?.[0]?.price) {
+                  price = prices_data[0].price;
+                }
+              }
+              if ((link?.price || price) && typeof transfer.source?.amount === 'number') {
+                transfer.source.value = transfer.source.amount * (link?.price || price);
                 const _id = `${transfer.source.id}_${transfer.source.recipient_address}`.toLowerCase();
                 await crud({
                   collection: 'transfers',
