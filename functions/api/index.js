@@ -1480,11 +1480,11 @@ exports.handler = async (event, context, callback) => {
               size: 1,
             });
             let transfer = _response?.data?.[0];
+            const _assets = assets?.[environment] || [];
             if (!transfer && depositAddress) {
               let created_at = moment().utc();
               const evm_chains = chains?.[environment]?.evm || [];
               const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
-              const _assets = assets?.[environment] || [];
               if (txHash.startsWith('0x')) {
                 if (evm_chains.length > 0) {
                   const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
@@ -1657,6 +1657,8 @@ exports.handler = async (event, context, callback) => {
               }
             }
             else if (transfer) {
+              const evm_chains = chains?.[environment]?.evm || [];
+              const cosmos_chains = chains?.[environment]?.cosmos || [];
               const query = {
                 match: {
                   deposit_address: transfer.source?.recipient_address || depositAddress,
@@ -1669,6 +1671,30 @@ exports.handler = async (event, context, callback) => {
                 size: 1,
               });
               const link = _response?.data?.[0];
+              if (transfer.source && link) {
+                transfer.source.sender_chain = link.sender_chain || transfer.source.sender_chain;
+                transfer.source.recipient_chain = link.recipient_chain || transfer.source.recipient_chain;
+                transfer.source.denom = transfer.source.denom || link.asset;
+              }
+              if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
+                const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
+                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom));
+                if (chain_data && asset_data) {
+                  const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
+                  transfer.source.amount = Number(utils.formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
+                }
+              }
+              if (link?.price && typeof transfer.source?.amount === 'number') {
+                transfer.source.value = transfer.source.amount * link.price;
+                const _id = `${transfer.source.id}_${transfer.source.recipient_address}`.toLowerCase();
+                await crud({
+                  collection: 'transfers',
+                  method: 'set',
+                  path: `/transfers/_update/${_id}`,
+                  id: _id,
+                  source: transfer.source,
+                });
+              }
               transfer = {
                 ...transfer,
                 link,
