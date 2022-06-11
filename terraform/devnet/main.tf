@@ -50,7 +50,7 @@ resource "aws_opensearch_domain" "domain" {
   engine_version  = "OpenSearch_1.2"
   cluster_config {
     instance_type            = "m6g.4xlarge.search"
-    instance_count           = 3
+    instance_count           = 1
     dedicated_master_enabled = false
     zone_awareness_enabled   = false
     warm_enabled             = false
