@@ -15,6 +15,7 @@ mainnet:
     rpc: "http://rpc.axelarscan.io:26657"
     lcd: "http://rpc.axelarscan.io:1317"
     cli: "http://rpc.axelarscan.io:3333"
+    api: "https://api.axelarscan.io"
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -26,6 +27,7 @@ testnet:
     rpc: "http://testnet.rpc.axelarscan.io:26657"
     lcd: "http://testnet.rpc.axelarscan.io:1317"
     cli: "http://testnet.rpc.axelarscan.io:3333"
+    api: "https://testnet.api.axelarscan.io"
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -37,6 +39,7 @@ devnet:
     rpc: "http://devnet.rpc.axelarscan.io:26657"
     lcd: "http://devnet.rpc.axelarscan.io:1317"
     cli: "http://devnet.rpc.axelarscan.io:3333"
+    api: "https://devnet.api.axelarscan.io"
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -48,6 +51,7 @@ testnet-2:
     rpc: "http://testnet-2.rpc.axelarscan.io:26657"
     lcd: "http://testnet-2.rpc.axelarscan.io:1317"
     cli: "http://testnet-2.rpc.axelarscan.io:3333"
+    api: "https://testnet-2.api.axelarscan.io"
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1

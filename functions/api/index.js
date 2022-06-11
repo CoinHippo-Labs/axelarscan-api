@@ -404,10 +404,11 @@ exports.handler = async (event, context, callback) => {
                     record.denom = record.denom || link.asset;
                   }
                   if (record.denom) {
-                    const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom));
+                    const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                     if (asset_data) {
                       const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
                       record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                      record.denom = asset_data?.id || record.denom;
                     }
                   }
                   if (link?.price && typeof record.amount === 'number') {
@@ -1670,7 +1671,7 @@ exports.handler = async (event, context, callback) => {
                 query,
                 size: 1,
               });
-              const link = _response?.data?.[0];
+              let link = _response?.data?.[0];
               if (transfer.source && link) {
                 transfer.source.sender_chain = link.sender_chain || transfer.source.sender_chain;
                 transfer.source.recipient_chain = link.recipient_chain || transfer.source.recipient_chain;
@@ -1678,11 +1679,28 @@ exports.handler = async (event, context, callback) => {
               }
               if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
                 const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
-                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom));
+                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
                 if (chain_data && asset_data) {
                   const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
                   transfer.source.amount = Number(utils.formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
+                  transfer.source.denom = asset_data?.id || transfer.source.denom;
                 }
+              }
+              if (link?.txhash && typeof link.price !== 'number' && config?.[environment]?.endpoints?.api) {
+                // initial api
+                const api = axios.create({ baseURL: config[environment].endpoints.api });
+                await api.post('', {
+                  module: 'lcd',
+                  path: `/cosmos/tx/v1beta1/txs/${link.txhash}`,
+                }).catch(error => { return { data: { error } }; });
+                await sleep(0.5 * 1000);
+                _response = await crud({
+                  collection: 'deposit_addresses',
+                  method: 'search',
+                  query,
+                  size: 1,
+                });
+                link = _response?.data?.[0];
               }
               if (link?.price && typeof transfer.source?.amount === 'number') {
                 transfer.source.value = transfer.source.amount * link.price;
