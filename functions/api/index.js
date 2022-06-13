@@ -814,7 +814,7 @@ exports.handler = async (event, context, callback) => {
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
-                        confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1);
+                        confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_COMPLETED'].includes(v?.status)) > -1);
                         late = !event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1;
                         break;
                       default:
@@ -871,7 +871,7 @@ exports.handler = async (event, context, callback) => {
                         }
                       }
                       if (record.poll_id) {
-                        if (record.id && record.vote && record.confirmation) {
+                        if (record.id && record.vote && (record.confirmation || !record.unconfirmed)) {
                           try {
                             const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, record.sender_chain));
                             const rpcs = chains_rpc[record.sender_chain];
@@ -1122,7 +1122,7 @@ exports.handler = async (event, context, callback) => {
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
-                        confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1);
+                        confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_COMPLETED'].includes(v?.status)) > -1);
                         late = !event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1;
                         break;
                       default:
