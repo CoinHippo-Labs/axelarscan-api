@@ -233,7 +233,7 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               else if (messages.findIndex(m => m?.['@type']?.includes('VoteRequest') || m?.inner_message?.['@type']?.includes('VoteRequest')) > -1) {
-                const byte_array_fields = ['tx_id', 'to', 'sender', 'payload_hash'];
+                const byte_array_fields = ['tx_id', 'to', 'sender', 'payload_hash', 'pre_operators', 'new_operators'];
                 for (let i = 0; i < messages.length; i++) {
                   const message = messages[i];
                   if (message?.inner_message?.vote?.results) {
@@ -272,6 +272,9 @@ exports.handler = async (event, context, callback) => {
                         }
                         else if (Array.isArray(event?.contract_call_with_token?.[field])) {
                           event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
+                        }
+                        else if (Array.isArray(event?.multisig_operatorship_transferred?.[field])) {
+                          event.multisig_operatorship_transferred[field] = to_hex(event.multisig_operatorship_transferred[field]);
                         }
                         result.events[j] = event;
                         message.inner_message.vote.result = result;
