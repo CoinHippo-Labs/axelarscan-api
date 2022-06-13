@@ -802,7 +802,7 @@ exports.handler = async (event, context, callback) => {
                     const event = logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const event_vote = logs?.[i]?.events?.find(e => e?.type === 'vote');
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
-                    let sender_chain, vote, confirmation;
+                    let sender_chain, vote, confirmation, late;
                     switch (type) {
                       case 'VoteConfirmDeposit':
                         sender_chain = normalize_chain(message?.inner_message?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value);
@@ -813,7 +813,9 @@ exports.handler = async (event, context, callback) => {
                         sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
-                        confirmation = !!event;
+                        const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
+                        confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].include(v?.status)) > -1);
+                        late = !event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].include(v?.status)) > -1;
                         break;
                       default:
                         break;
@@ -834,6 +836,7 @@ exports.handler = async (event, context, callback) => {
                       voter: message?.inner_message?.sender,
                       vote,
                       confirmation,
+                      late,
                       unconfirmed: logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1,
                     };
                     if (!record.status_code) {
@@ -968,7 +971,7 @@ exports.handler = async (event, context, callback) => {
                           } catch (error) {}
                         }
                         if (record.voter) {
-                          const { id, height, created_at, sender_chain, poll_id, transaction_id, voter, vote, confirmation, unconfirmed } = { ...record };
+                          const { id, height, created_at, sender_chain, poll_id, transaction_id, voter, vote, confirmation, late, unconfirmed } = { ...record };
                           if (confirmation || unconfirmed) {
                             const poll_record = {
                               id: poll_id,
@@ -996,6 +999,7 @@ exports.handler = async (event, context, callback) => {
                             transaction_id,
                             vote,
                             confirmation,
+                            late,
                             unconfirmed,
                           };
                           await crud({
@@ -1106,7 +1110,7 @@ exports.handler = async (event, context, callback) => {
                     const event = logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const event_vote = logs?.[i]?.events?.find(e => e?.type === 'vote');
                     const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
-                    let sender_chain, vote, confirmation;
+                    let sender_chain, vote, confirmation, late;
                     switch (type) {
                       case 'VoteConfirmDeposit':
                         sender_chain = normalize_chain(message?.inner_message?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value);
@@ -1117,7 +1121,9 @@ exports.handler = async (event, context, callback) => {
                         sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
-                        confirmation = !!event;
+                        const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
+                        confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].include(v?.status)) > -1);
+                        late = !event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].include(v?.status)) > -1;
                         break;
                       default:
                         break;
@@ -1138,6 +1144,7 @@ exports.handler = async (event, context, callback) => {
                       voter: message?.inner_message?.sender,
                       vote,
                       confirmation,
+                      late,
                       unconfirmed: logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1,
                     };
                     if (!record.status_code) {
@@ -1181,7 +1188,7 @@ exports.handler = async (event, context, callback) => {
                 await sleep(1 * 1000);
                 for (let i = 0; i < records.length; i++) {
                   const record = records[i];
-                  const { id, height, created_at, sender_chain, poll_id, transaction_id, voter, vote, confirmation, unconfirmed } = { ...record };
+                  const { id, height, created_at, sender_chain, poll_id, transaction_id, voter, vote, confirmation, late, unconfirmed } = { ...record };
                   if (confirmation || unconfirmed) {
                     const poll_record = {
                       id: poll_id,
@@ -1209,6 +1216,7 @@ exports.handler = async (event, context, callback) => {
                     transaction_id,
                     vote,
                     confirmation,
+                    late,
                     unconfirmed,
                   };
                   crud({
