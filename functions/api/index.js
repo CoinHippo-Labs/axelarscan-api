@@ -383,6 +383,7 @@ exports.handler = async (event, context, callback) => {
                   status: tx_response.code ? 'failed' : 'success',
                   height: Number(tx_response.height),
                   created_at: get_granularity(created_at),
+                  sender_chain: 'axelarnet',
                   sender_address: messages.find(m => m?.from_address)?.from_address,
                   recipient_address: messages.find(m => m?.to_address)?.to_address,
                   amount: amount_denom?.amount,
@@ -402,8 +403,8 @@ exports.handler = async (event, context, callback) => {
                   });
                   const link = _response?.data?.[0];
                   if (link) {
-                    record.sender_chain = link.sender_chain;
-                    record.recipient_chain = link.recipient_chain;
+                    record.sender_chain = link.sender_chain || record.sender_chain;
+                    record.recipient_chain = link.recipient_chain || record.recipient_chain;
                     record.denom = record.denom || link.asset;
                   }
                   record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
