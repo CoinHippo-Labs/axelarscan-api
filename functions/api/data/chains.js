@@ -282,6 +282,11 @@ module.exports = {
         endpoints: {
           lcd: 'https://lcd-emoney.keplr.app',
         },
+        overrides: {
+          'e-money': {
+
+          },
+        },
       },
       {
         id: 'injective',
@@ -636,6 +641,14 @@ module.exports = {
         prefix_address: 'osmo',
         endpoints: {
           lcd: 'https://testnet-rest.osmosis.zone',
+        },
+        overrides: {
+          'osmosis-2': {
+
+          },
+          'osmosis-3': {
+
+          },
         },
       },
       {
