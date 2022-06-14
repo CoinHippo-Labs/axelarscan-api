@@ -406,6 +406,8 @@ exports.handler = async (event, context, callback) => {
                     record.recipient_chain = link.recipient_chain;
                     record.denom = record.denom || link.asset;
                   }
+                  record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
+                  record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
                   if (record.denom) {
                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                     if (asset_data) {
@@ -496,12 +498,12 @@ exports.handler = async (event, context, callback) => {
                                   size: 1,
                                 });
                                 const link = _response?.data?.[0];
-                                record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
-                                record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
                                 if (link) {
                                   record.recipient_chain = link.recipient_chain;
                                   record.denom = record.denom || link.asset;
                                 }
+                                record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
+                                record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
                                 if (record.denom) {
                                   const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                                   if (asset_data) {
@@ -667,6 +669,8 @@ exports.handler = async (event, context, callback) => {
                             if (transfer_source) {
                               transfer_source.sender_chain = normalize_chain(cosmos_chains.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
                               transfer_source.recipient_chain = transfer_source.recipient_chain || record.recipient_chain;
+                              transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                              transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                               params.source = transfer_source;
                             }
                             await crud(params);
@@ -705,6 +709,8 @@ exports.handler = async (event, context, callback) => {
                               if (transfer_source) {
                                 transfer_source.sender_chain = normalize_chain(cosmos_chains.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
                                 transfer_source.recipient_chain = transfer_source.recipient_chain || record.recipient_chain;
+                                transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                                transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                                 params.source = transfer_source;
                               }
                               await crud(params);
@@ -758,13 +764,13 @@ exports.handler = async (event, context, callback) => {
                                 size: 1,
                               });
                               const link = _response?.data?.[0];
-                              transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
-                              transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                               if (link) {
                                 transfer_source.sender_chain = link.sender_chain || transfer_source.sender_chain;
                                 transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
                                 transfer_source.denom = transfer_source.denom || link.asset;
                               }
+                              transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                              transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                               if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                                 const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 if (asset_data) {
@@ -920,13 +926,13 @@ exports.handler = async (event, context, callback) => {
                                     size: 1,
                                   });
                                   const link = _response?.data?.[0];
-                                  transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
-                                  transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                                   if (link) {
                                     transfer_source.sender_chain = link.sender_chain || transfer_source.sender_chain;
                                     transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
                                     transfer_source.denom = transfer_source.denom || link.asset;
                                   }
+                                  transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                                  transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                                   if (transfer_source.denom && typeof transfer_source.amount === 'string') {
                                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                     if (asset_data) {
@@ -1688,6 +1694,8 @@ exports.handler = async (event, context, callback) => {
                 transfer.source.recipient_chain = link.recipient_chain || transfer.source.recipient_chain;
                 transfer.source.denom = transfer.source.denom || link.asset;
               }
+              transfer.source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer.source.sender_chain || link?.sender_chain);
+              transfer.source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer.source.recipient_chain || link?.recipient_chain);
               if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
                 const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
                 const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
