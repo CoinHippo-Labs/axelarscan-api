@@ -136,6 +136,7 @@ resource "aws_apigatewayv2_api" "api" {
 resource "aws_apigatewayv2_route" "route" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /"
+  # target    = "integrations/${var.api_gateway_integration_id}"
 }
 
 resource "aws_cloudwatch_event_rule" "schedule" {

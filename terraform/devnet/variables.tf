@@ -28,6 +28,11 @@ variable "indexer_password" {
   default     = "0xAxelarsc@n"
 }
 
+variable "api_gateway_integration_id" {
+  description = "API gateway integration id"
+  default     = ""
+}
+
 variable "log_level" {
   description = "Log level"
   default     = "debug"

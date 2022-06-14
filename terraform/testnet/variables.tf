@@ -38,6 +38,11 @@ variable "transfers_indexer_password" {
   default     = "0xAxelarsc@n"
 }
 
+variable "api_gateway_integration_id" {
+  description = "API gateway integration id"
+  default     = "fu43mfu"
+}
+
 variable "log_level" {
   description = "Log level"
   default     = "debug"

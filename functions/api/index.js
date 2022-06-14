@@ -342,6 +342,12 @@ exports.handler = async (event, context, callback) => {
                   sender_chain,
                   deposit_address,
                 };
+                if (equals_ignore_case(sender_chain, 'axelarnet')) {
+                  const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                  if (chain_data) {
+                    record.sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
+                  }
+                }
                 record.original_sender_chain = normalize_original_chain(record.sender_chain);
                 record.original_recipient_chain = normalize_original_chain(record.recipient_chain);
                 record.id = record.deposit_address || record.txhash;
@@ -502,6 +508,12 @@ exports.handler = async (event, context, callback) => {
                                 if (link) {
                                   record.recipient_chain = link.recipient_chain;
                                   record.denom = record.denom || link.asset;
+                                }
+                                if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
+                                  const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                                  if (chain_data) {
+                                    link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
+                                  }
                                 }
                                 record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
                                 record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
@@ -1072,6 +1084,12 @@ exports.handler = async (event, context, callback) => {
                   sender_chain,
                   deposit_address,
                 };
+                if (equals_ignore_case(sender_chain, 'axelarnet')) {
+                  const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                  if (chain_data) {
+                    sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
+                  }
+                }
                 record.original_sender_chain = normalize_original_chain(record.sender_chain);
                 record.original_recipient_chain = normalize_original_chain(record.recipient_chain);
                 record.id = record.deposit_address || record.txhash;
@@ -1632,6 +1650,12 @@ exports.handler = async (event, context, callback) => {
                               size: 1,
                             });
                             const link = _response?.data?.[0];
+                            if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
+                              const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                              if (chain_data) {
+                                link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
+                              }
+                            }
                             transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                             transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                             if (link) {
