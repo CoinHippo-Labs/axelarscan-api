@@ -527,7 +527,7 @@ module.exports = {
           {
             chainId: '0x13881',
             chainName: 'Polygon Mumbai',
-            rpcUrls: ['https://rpc-mumbai.matic.today', 'https://matic-mumbai.chainstacklabs.com'],
+            rpcUrls: ['https://matic-mumbai.chainstacklabs.com'/*, 'https://rpc-mumbai.matic.today'*/],
             nativeCurrency: {
               name: 'Matic',
               symbol: 'MATIC',
