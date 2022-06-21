@@ -827,6 +827,13 @@ module.exports = {
       image: '/logos/assets/juno.png',
       decimals: 6,
       coingecko_id: 'juno-network',
+      ibc: [
+        {
+          ibc_denom: 'ibc/9E3EB38E5E157AEBFF4A8EAC66E654BC8ECFCB1F758F4D1C0F2D65945E9E2935',
+          chain_id: 'axelarnet',
+          decimals: 6,
+        },
+      ],
     },
     {
       id: 'rai-wei',

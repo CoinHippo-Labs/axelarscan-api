@@ -290,7 +290,7 @@ exports.handler = async (event, context, callback) => {
             res.data.tx_response.tx = res.data.tx;
 
             // index addresses & message type
-            const address_fields = ['signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress', 'voter'];
+            const address_fields = ['signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress', 'voter', 'delegator_address'];
             let addresses = [], types = [];
             if (logs) {
               addresses = _.uniq(_.concat(addresses, logs.flatMap(l => l?.events?.flatMap(e => e?.attributes?.filter(a => address_fields.includes(a.key)).map(a => a.value) || []) || [])).filter(a => typeof a === 'string' && a.startsWith('axelar')));
@@ -419,7 +419,20 @@ exports.handler = async (event, context, callback) => {
                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                     if (asset_data) {
                       const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
+                      const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
+                        params: {
+                          source_chain: record.original_sender_chain,
+                          destination_chain: record.original_recipient_chain,
+                          amount: `${record.amount}${asset_data.id}`,
+                        },
+                      }).catch(error => { return { data: { error } }; });
+                      if (response_fee?.data?.fee?.amount) {
+                        record.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                      }
                       record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                      if (record.fee && record.amount < record.fee) {
+                        record.insufficient_fee = true;
+                      }
                       record.denom = asset_data?.id || record.denom;
                     }
                   }
@@ -459,9 +472,9 @@ exports.handler = async (event, context, callback) => {
                         const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
                         for (let k = 0; k < lcds.length; k++) {
                           // initial lcd
-                          const lcd = axios.create({ baseURL: lcds[k] });
+                          const _lcd = axios.create({ baseURL: lcds[k] });
                           // request lcd
-                          const _response = await lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${_height}`)
+                          const _response = await _lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${_height}`)
                             .catch(error => { return { data: { error } }; });
                           const tx_index = _response?.data?.tx_responses?.findIndex(t => {
                             const event_send_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'send_packet')));
@@ -521,7 +534,20 @@ exports.handler = async (event, context, callback) => {
                                   const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                                   if (asset_data) {
                                     const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data.id)?.decimals || asset_data?.decimals || 6;
+                                    const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
+                                      params: {
+                                        source_chain: record.original_sender_chain,
+                                        destination_chain: record.original_recipient_chain,
+                                        amount: `${record.amount}${asset_data.id}`,
+                                      },
+                                    }).catch(error => { return { data: { error } }; });
+                                    if (response_fee?.data?.fee?.amount) {
+                                      record.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                                    }
                                     record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                                    if (record.fee && record.amount < record.fee) {
+                                      record.insufficient_fee = true;
+                                    }
                                     record.denom = asset_data?.id || record.denom;
                                   }
                                 }
@@ -545,6 +571,177 @@ exports.handler = async (event, context, callback) => {
                         }
                         if (found) {
                           break;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              // RouteIBCTransfersRequest -> ibc_send
+              else if (messages.findIndex(m => _.last(m?.['@type']?.split('.')) === 'RouteIBCTransfersRequest') > -1) {
+                const event_send_packets = logs.map(l => l?.events?.find(e => e?.type === 'send_packet')).filter(e => e?.attributes?.length > 0).map(e => {
+                  const { attributes } = { ...e };
+                  return Object.fromEntries(attributes.filter(a => a?.key && a.value).map(a => [a.key, ['packet_data'].includes(a.key) ? to_json(a.value) : a.value]));
+                }).filter(e => e.packet_data?.amount).map(e => {
+                  const { packet_data } = { ...e };
+                  const { sender, receiver, amount, denom } = { ...packet_data };
+                  const created_at = moment(tx_response.timestamp).utc();
+                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, denom)) > -1);
+                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
+                  const record = {
+                    id: tx_response.txhash,
+                    type: 'RouteIBCTransfersRequest',
+                    status_code: tx_response.code,
+                    status: tx_response.code ? 'failed' : 'success',
+                    height: Number(tx_response.height),
+                    created_at: get_granularity(created_at),
+                    sender_address: sender,
+                    recipient_address: receiver,
+                    amount: Number(utils.formatUnits(BigNumber.from(amount).toString(), decimals)),
+                    denom,
+                  };
+                  return record;
+                });
+                for (let i = 0; i < event_send_packets.length; i++) {
+                  const record = event_send_packets[i];
+                  let query = {
+                    bool: {
+                      must: [
+                        { match: { 'ibc_send.id': record.id } },
+                      ],
+                    },
+                  };
+                  let response = await crud({
+                    collection: 'transfers',
+                    method: 'search',
+                    query,
+                    size: 1,
+                  });
+                  if (response?.data?.length < 1) {
+                    query = {
+                      bool: {
+                        must: [
+                          { match: { 'source.status_code': 0 } },
+                          { match: { 'link.recipient_address': record.recipient_address } },
+                          { range: { 'source.created_at.ms': { lte: record.created_at.ms, gte: moment(record.created_at.ms).subtract(24, 'hours') } } },
+                          { range: { 'source.amount': { lte: record.amount * 1.05, gte: record.amount * 0.95 } } },
+                          { match: { 'source.denom': record.denom } },
+                        ],
+                        should: [
+                          { exists: { field: 'confirm_deposit' } },
+                          { exists: { field: 'vote' } },
+                        ],
+                        minimum_should_match: 1,
+                        must_not: [
+                          { exists: { field: 'ibc_send' } },
+                        ],
+                      },
+                    };
+                    response = await crud({
+                      collection: 'transfers',
+                      method: 'search',
+                      query,
+                      sort: [{ 'source.created_at.ms': 'asc' }],
+                      size: 1,
+                    });
+                    if (response?.data?.length > 0) {
+                      const { source } = { ...response.data[0] };
+                      const { id, recipient_address } = { ...source };
+                      const _id = `${id}_${recipient_address}`.toLowerCase();
+                      const params = {
+                        collection: 'transfers',
+                        method: 'set',
+                        path: `/transfers/_update/${_id}`,
+                        id: _id,
+                        ibc_send: record,
+                      };
+                      await crud(params);
+                    }
+                  }
+                }
+              }
+              // MsgAcknowledgement -> ibc_ack
+              else if (messages.findIndex(m => _.last(m?.['@type']?.split('.')) === 'MsgAcknowledgement') > -1) {
+                const event_ack_packets = logs.map(l => l?.events?.find(e => e?.type === 'acknowledge_packet')).filter(e => e?.attributes?.length > 0).map(e => {
+                  const { attributes } = { ...e };
+                  return Object.fromEntries(attributes.filter(a => a?.key && a.value).map(a => [a.key, a.value]));
+                }).filter(e => e.packet_sequence).map(e => {
+                  return {
+                    ...e,
+                    id: tx_response.txhash,
+                    height: Number(messages.find(m => _.last(m?.['@type']?.split('.')) === 'MsgAcknowledgement')?.proof_height?.revision_height || '0') - 1,
+                  };
+                });
+                for (let i = 0; i < event_ack_packets.length; i++) {
+                  const record = event_ack_packets[i];
+                  const query = {
+                    bool: {
+                      must: [
+                        { match: { 'ibc_send.packet_timeout_height': record.packet_timeout_height } },
+                        { match: { 'ibc_send.packet_sequence': record.packet_sequence } },
+                        { match: { 'ibc_send.packet_src_channel': record.packet_src_channel } },
+                        { match: { 'ibc_send.packet_dst_channel': record.packet_dst_channel } },
+                        { match: { 'ibc_send.packet_connection': record.packet_connection } },
+                      ],
+                      should: [
+                        { match: { 'ibc_send.ack_txhash': record.id } },
+                        {
+                          bool: {
+                            must_not: [
+                              { exists: { field: 'ibc_send.ack_txhash' } },
+                            ],
+                          },
+                        },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  };
+                  const response = await crud({
+                    collection: 'transfers',
+                    method: 'search',
+                    query,
+                    sort: [{ 'source.created_at.ms': 'asc' }],
+                    size: 1,
+                  });
+                  if (response?.data?.length > 0) {
+                    const { source, link, ibc_send } = { ...response.data[0] };
+                    const { id, recipient_address } = { ...source };
+                    const _id = `${id}_${recipient_address}`.toLowerCase();
+                    const params = {
+                      collection: 'transfers',
+                      method: 'set',
+                      path: `/transfers/_update/${_id}`,
+                      id: _id,
+                      ibc_send: {
+                        ...ibc_send,
+                        ack_txhash: record.id,
+                      },
+                    };
+                    await crud(params);
+                    if (record.height && ibc_send?.packet_data_hex && (source?.recipient_chain || link?.recipient_chain)) {
+                      const recipient_chain = source?.recipient_chain || link?.recipient_chain;
+                      const chain_data = cosmos_chains.find(c => equals_ignore_case(c?.id, recipient_chain));
+                      if (chain_data?.endpoints?.lcd) {
+                        const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
+                        for (let k = 0; k < lcds.length; k++) {
+                          // initial lcd
+                          const _lcd = axios.create({ baseURL: lcds[k] });
+                          // request lcd
+                          const _response = await _lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${ibc_send.packet_data_hex}'`)}&events=tx.height=${record.height}`)
+                            .catch(error => { return { data: { error } }; });
+                          const tx_index = _response?.data?.tx_responses?.findIndex(t => {
+                            const event_recv_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'recv_packet')));
+                            const _packet_sequence = event_recv_packet?.attributes?.find(a => a?.key === 'packet_sequence' && a.value)?.value;
+                            return ibc_send.packet_sequence === _packet_sequence;
+                          });
+                          if (tx_index > -1) {
+                            const txHash = _response.data.tx_responses[tx_index]?.txhash;
+                            if (txHash) {
+                              params.ibc_send.recv_txhash = txHash;
+                              await crud(params);
+                            }
+                            break;
+                          }
                         }
                       }
                     }
@@ -788,7 +985,20 @@ exports.handler = async (event, context, callback) => {
                                 const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 if (asset_data) {
                                   const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
+                                  const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
+                                    params: {
+                                      source_chain: transfer_source.original_sender_chain,
+                                      destination_chain: transfer_source.original_recipient_chain,
+                                      amount: `${transfer_source.amount}${asset_data.id}`,
+                                    },
+                                  }).catch(error => { return { data: { error } }; });
+                                  if (response_fee?.data?.fee?.amount) {
+                                    transfer_source.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                                  }
                                   transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                  if (transfer_source.fee && transfer_source.amount < transfer_source.fee) {
+                                    transfer_source.insufficient_fee = true;
+                                  }
                                 }
                               }
                               if (link?.price && typeof transfer_source.amount === 'number') {
@@ -1615,10 +1825,10 @@ exports.handler = async (event, context, callback) => {
                     const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
                     for (let j = 0; j < lcds.length; j++) {
                       // initial lcd
-                      const lcd = axios.create({ baseURL: lcds[j] });
+                      const _lcd = axios.create({ baseURL: lcds[j] });
                       try {
                         // request lcd
-                        let _response = await lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
+                        let _response = await _lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
                           .catch(error => { return { data: { error } }; });
                         const transaction = _response?.data?.tx_response;
                         if (transaction.tx?.body?.messages) {
