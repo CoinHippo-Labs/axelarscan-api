@@ -837,7 +837,7 @@ exports.handler = async (event, context, callback) => {
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
                         confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_COMPLETED'].includes(v?.status)) > -1);
-                        late = !event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1;
+                        late = !event_vote && ((!vote && Array.isArray(vote_results)) || (vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1));
                         break;
                       default:
                         break;
@@ -1151,7 +1151,7 @@ exports.handler = async (event, context, callback) => {
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
                         confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_COMPLETED'].includes(v?.status)) > -1);
-                        late = !event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1;
+                        late = !event_vote && ((!vote && Array.isArray(vote_results)) || (vote_has_enum_status && vote_results.findIndex(v => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(v?.status)) > -1));
                         break;
                       default:
                         break;
