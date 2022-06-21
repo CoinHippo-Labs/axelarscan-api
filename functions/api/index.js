@@ -599,6 +599,7 @@ exports.handler = async (event, context, callback) => {
                     recipient_address: receiver,
                     amount: Number(utils.formatUnits(BigNumber.from(amount).toString(), decimals)),
                     denom,
+                    packet: e,
                   };
                   return record;
                 });
@@ -623,7 +624,7 @@ exports.handler = async (event, context, callback) => {
                         must: [
                           { match: { 'source.status_code': 0 } },
                           { match: { 'link.recipient_address': record.recipient_address } },
-                          { range: { 'source.created_at.ms': { lte: record.created_at.ms, gte: moment(record.created_at.ms).subtract(24, 'hours') } } },
+                          { range: { 'source.created_at.ms': { lte: record.created_at.ms, gte: moment(record.created_at.ms).subtract(24, 'hours').valueOf() } } },
                           { range: { 'source.amount': { lte: record.amount * 1.05, gte: record.amount * 0.95 } } },
                           { match: { 'source.denom': record.denom } },
                         ],
@@ -658,6 +659,22 @@ exports.handler = async (event, context, callback) => {
                       await crud(params);
                     }
                   }
+                  else {
+                    const data = response.data[0];
+                    if (!_.isEqual(data.ibc_send, record)) {
+                      const { source } = { ...data };
+                      const { id, recipient_address } = { ...source };
+                      const _id = `${id}_${recipient_address}`.toLowerCase();
+                      const params = {
+                        collection: 'transfers',
+                        method: 'set',
+                        path: `/transfers/_update/${_id}`,
+                        id: _id,
+                        ibc_send: record,
+                      };
+                      await crud(params);
+                    }
+                  }
                 }
               }
               // MsgAcknowledgement -> ibc_ack
@@ -677,11 +694,11 @@ exports.handler = async (event, context, callback) => {
                   const query = {
                     bool: {
                       must: [
-                        { match: { 'ibc_send.packet_timeout_height': record.packet_timeout_height } },
-                        { match: { 'ibc_send.packet_sequence': record.packet_sequence } },
-                        { match: { 'ibc_send.packet_src_channel': record.packet_src_channel } },
-                        { match: { 'ibc_send.packet_dst_channel': record.packet_dst_channel } },
-                        { match: { 'ibc_send.packet_connection': record.packet_connection } },
+                        { match: { 'ibc_send.packet.packet_timeout_height': record.packet_timeout_height } },
+                        { match: { 'ibc_send.packet.packet_sequence': record.packet_sequence } },
+                        { match: { 'ibc_send.packet.packet_src_channel': record.packet_src_channel } },
+                        { match: { 'ibc_send.packet.packet_dst_channel': record.packet_dst_channel } },
+                        { match: { 'ibc_send.packet.packet_connection': record.packet_connection } },
                       ],
                       should: [
                         { match: { 'ibc_send.ack_txhash': record.id } },
@@ -718,7 +735,7 @@ exports.handler = async (event, context, callback) => {
                       },
                     };
                     await crud(params);
-                    if (record.height && ibc_send?.packet_data_hex && (source?.recipient_chain || link?.recipient_chain)) {
+                    if (record.height && ibc_send?.packet?.packet_data_hex && (source?.recipient_chain || link?.recipient_chain)) {
                       const recipient_chain = source?.recipient_chain || link?.recipient_chain;
                       const chain_data = cosmos_chains.find(c => equals_ignore_case(c?.id, recipient_chain));
                       if (chain_data?.endpoints?.lcd) {
@@ -727,18 +744,28 @@ exports.handler = async (event, context, callback) => {
                           // initial lcd
                           const _lcd = axios.create({ baseURL: lcds[k] });
                           // request lcd
-                          const _response = await _lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${ibc_send.packet_data_hex}'`)}&events=tx.height=${record.height}`)
+                          const _response = await _lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${ibc_send.packet.packet_data_hex}'`)}&events=tx.height=${record.height}`)
                             .catch(error => { return { data: { error } }; });
                           const tx_index = _response?.data?.tx_responses?.findIndex(t => {
                             const event_recv_packet = _.head(t?.logs.flatMap(l => l?.events?.filter(e => e?.type === 'recv_packet')));
                             const _packet_sequence = event_recv_packet?.attributes?.find(a => a?.key === 'packet_sequence' && a.value)?.value;
-                            return ibc_send.packet_sequence === _packet_sequence;
+                            return ibc_send.packet.packet_sequence === _packet_sequence;
                           });
                           if (tx_index > -1) {
-                            const txHash = _response.data.tx_responses[tx_index]?.txhash;
+                            const txHash = _response.data.tx_responses[tx_index].txhash;
                             if (txHash) {
-                              params.ibc_send.recv_txhash = txHash;
-                              await crud(params);
+                              const params = {
+                                collection: 'transfers',
+                                method: 'set',
+                                path: `/transfers/_update/${_id}`,
+                                id: _id,
+                                ibc_send: {
+                                  ...ibc_send,
+                                  ack_txhash: record.id,
+                                  recv_txhash: txHash,
+                                },
+                              };
+                              const x = await crud(params);
                             }
                             break;
                           }
