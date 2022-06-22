@@ -428,7 +428,7 @@ module.exports = {
             rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
             nativeCurrency: {
               name: 'Ropsten Ether',
-              symbol: 'ROP',
+              symbol: 'ETH',
               decimals: 18,
             },
             blockExplorerUrls: ['https://ropsten.etherscan.io'],
@@ -791,7 +791,7 @@ module.exports = {
             rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
             nativeCurrency: {
               name: 'Ropsten Ether',
-              symbol: 'ROP',
+              symbol: 'ETH',
               decimals: 18,
             },
             blockExplorerUrls: ['https://ropsten.etherscan.io'],
@@ -989,7 +989,7 @@ module.exports = {
             rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
             nativeCurrency: {
               name: 'Ropsten Ether',
-              symbol: 'ROP',
+              symbol: 'ETH',
               decimals: 18,
             },
             blockExplorerUrls: ['https://ropsten.etherscan.io'],
