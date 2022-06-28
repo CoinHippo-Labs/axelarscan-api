@@ -20,13 +20,11 @@ const environment = process.env.ENVIRONMENT || config?.environment;
 
 const merge_data = (_data, attributes, initial_data = {}) => {
   const data = initial_data;
-
   if (_data && attributes) {
     attributes.forEach(a => {
       try {
         const from = a.pattern_start ? _data.indexOf(a.pattern_start) + a.pattern_start.length : 0;
         const to = typeof a.pattern_end === 'string' && _data.indexOf(a.pattern_end) > -1 ? _data.indexOf(a.pattern_end) : _data.length;
-
         if ('hard_value' in a) {
           data[a.id] = a.hard_value;
         }
@@ -38,14 +36,12 @@ const merge_data = (_data, attributes, initial_data = {}) => {
             a.type?.startsWith('array') ? data[a.id].replace('[', '').replace(']', '').split('"').join('').split('\\n').join('').split('\\').join('').split(',').map(e => e?.trim()).filter(e => e).map(e => a.type?.includes('number') ? Number(e) : e).filter(e => e) :
             a.type === 'json' ? JSON.parse(data[a.id]) : data[a.id];
         }
-
         if (a.primary_key) {
           data.id = data[a.id];
         }
       } catch (error) {}
     });
   }
-
   return data;
 };
 
@@ -61,7 +57,6 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
           cache_timeout: 5,
         }
       }).catch(error => { return { data: { error } }; });
-
       // handle error
       if (response?.data && !response.data.stdout && response.data.stderr && moment().diff(moment(data.timestamp * 1000), 'day') <= 1) {
         response = await requester.get('', {
@@ -73,7 +68,6 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
           }
         }).catch(error => { return { data: { error } }; });
       }
-
       if (response?.data?.stdout) {
         try {
           const snapshot_data = JSON.parse(response.data.stdout);
@@ -81,11 +75,11 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
             data.height = Number(snapshot_data.height);
           }
           data.id = `${data.key_id}_${data.height}`;
+          data.snapshot = snapshot_data.counter;
           data.snapshot_validators = snapshot_data;
         } catch (error) {}
       }
     }
-
     if (data.key_id) {
       // request api
       const response = await requester.get('', {
@@ -96,7 +90,6 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
           cache_timeout: 15,
         }
       }).catch(error => { return { data: { error } }; });
-
       if (response?.data?.stdout) {
         try {
           const key_data = JSON.parse(response.data.stdout);
@@ -115,7 +108,6 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
         } catch (error) {}
       }
     }
-
     if (data.id) {
       if (is_update) {
         await sleep(delay_sec * 1000);
@@ -237,8 +229,13 @@ module.exports = async () => {
             }
             if (sign.sig_id) {
               // request api
-              const response = await requester.get('', { params: { module: 'lcd', path: '/cosmos/tx/v1beta1/txs', events: `sign.sigID='${sign.sig_id}'` } })
-                .catch(error => { return { data: { error } }; });
+              const response = await requester.get('', {
+                params: {
+                  module: 'lcd',
+                  path: '/cosmos/tx/v1beta1/txs',
+                  events: `sign.sigID='${sign.sig_id}'`,
+                }
+              }).catch(error => { return { data: { error } }; });
               if (response?.data?.tx_responses?.[0]?.height) {
                 sign.height = Number(response.data.tx_responses[0].height);
               }
@@ -302,8 +299,13 @@ module.exports = async () => {
             }
             if (sign.sig_id) {
               // request api
-              const response = await requester.get('', { params: { module: 'cosmos', path: '/cosmos/tx/v1beta1/txs', events: `sign.sigID='${sign.sig_id}'` } })
-                .catch(error => { return { data: { error } }; });
+              const response = await requester.get('', {
+                params: {
+                  module: 'lcd',
+                  path: '/cosmos/tx/v1beta1/txs',
+                  events: `sign.sigID='${sign.sig_id}'`,
+                }
+              }).catch(error => { return { data: { error } }; });
               if (response?.data?.tx_responses?.[0]?.height) {
                 sign.height = Number(response.data.tx_responses[0].height);
               }
@@ -353,8 +355,27 @@ module.exports = async () => {
           log('debug', service_name, 'new keygen');
           const keygen = merge_data(data, attributes);
           keygen.height = height + 1;
-          keygen.snapshot = snapshot;
-          keygen.snapshot_non_participant_validators = { validators: _.uniqBy(exclude_validators[keygen.snapshot] || [], 'validator') };
+          if (!snapshot) {
+            // request api
+            const response = await requester.post('', {
+              module: 'index',
+              collection: 'keygens',
+              method: 'search',
+              query: { range: { height: { lt: keygen.height } } },
+              sort: [{ height: 'desc' }],
+              size: 1,
+            }).catch(error => { return { data: { error } }; });
+            if (response?.data?.data?.[0]) {
+              snapshot = response.data.data[0].snapshot + 1;
+              keygen.snapshot = snapshot;
+            }
+          }
+          else {
+            keygen.snapshot = snapshot;
+            keygen.snapshot_non_participant_validators = {
+              validators: _.uniqBy(exclude_validators[keygen.snapshot] || [], 'validator'),
+            };
+          }
           snapshot++;
           exclude_validators = {};
           await save(keygen, 'keygens', requester);
