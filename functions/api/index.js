@@ -2069,7 +2069,7 @@ exports.handler = async (event, context, callback) => {
             response = transfers || [];
           }
           break;
-        case 'transfers-history':
+        case 'transfers':
           const must = [], should = [], must_not = [];
           if (txHash) {
             must.push({ match: { 'source.id': txHash } });
