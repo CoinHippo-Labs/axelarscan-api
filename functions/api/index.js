@@ -1737,17 +1737,18 @@ exports.handler = async (event, context, callback) => {
       }
       break;
     case '/cross-chain/{function}':
-      // seperate each function
+      let _response;
+      const { txHash, confirmed, status, sourceChain, destinationChain, asset, depositAddress, senderAddress, recipientAddress, from, size, sort } = { ...params };
+      let { query, fromTime, toTime } = { ...params };
       switch (req.params.function?.toLowerCase()) {
-        case 'transfers':
-          const { txHash, sourceChain, destinationAddress, depositAddress, asset } = { ...params };
+        case 'transfers-status':
           if (txHash) {
-            let query = {
+            query = {
               match: {
                 'source.id': txHash,
               },
             };
-            let _response = await crud({
+            _response = await crud({
               collection: 'transfers',
               method: 'search',
               query,
@@ -1855,7 +1856,7 @@ exports.handler = async (event, context, callback) => {
                       const _lcd = axios.create({ baseURL: lcds[j] });
                       try {
                         // request lcd
-                        let _response = await _lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
+                        _response = await _lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
                           .catch(error => { return { data: { error } }; });
                         const transaction = _response?.data?.tx_response;
                         if (transaction.tx?.body?.messages) {
@@ -1875,7 +1876,7 @@ exports.handler = async (event, context, callback) => {
                             denom: amount_denom?.denom,
                           };
                           if (transfer_source.recipient_address?.length >= 65 && transfer_source.id && transfer_source.amount) {
-                            const query = {
+                            query = {
                               match: {
                                 deposit_address: transfer_source.recipient_address,
                               },
@@ -1939,7 +1940,7 @@ exports.handler = async (event, context, callback) => {
             else if (transfer) {
               const evm_chains = chains?.[environment]?.evm || [];
               const cosmos_chains = chains?.[environment]?.cosmos || [];
-              const query = {
+              query = {
                 match: {
                   deposit_address: transfer.source?.recipient_address || depositAddress,
                 },
@@ -2013,17 +2014,17 @@ exports.handler = async (event, context, callback) => {
             }
             response = [transfer].filter(t => t);
           }
-          else if (destinationAddress || depositAddress) {
-            let query = {
+          else if (recipientAddress || depositAddress) {
+            query = {
               bool: {
                 must: [
                   { match: { deposit_address: depositAddress } },
-                  { match: { recipient_address: destinationAddress } },
+                  { match: { recipient_address: recipientAddress } },
                   { match: { asset } },
                 ].filter(m => Object.values(m.match).filter(v => v).length > 0),
               },
             };
-            let _response = await crud({
+            _response = await crud({
               collection: 'deposit_addresses',
               method: 'search',
               query,
@@ -2058,14 +2059,139 @@ exports.handler = async (event, context, callback) => {
                 };
               });
               if (!(transfers?.length > 0)) {
-                transfers = links?.map(l => { return { link: l } });
+                transfers = links?.map(l => {
+                  return {
+                    link: l,
+                  };
+                });
               }
             }
             response = transfers || [];
           }
           break;
+        case 'transfers-history':
+          const must = [], should = [], must_not = [];
+          if (txHash) {
+            must.push({ match: { 'source.id': txHash } });
+          }
+          if (confirmed) {
+            switch (confirmed) {
+              case 'confirmed':
+                should.push({ exists: { field: 'confirm_deposit' } });
+                should.push({ exists: { field: 'vote' } });
+                break;
+              case 'unconfirmed':
+                must_not.push({ exists: { field: 'confirm_deposit' } });
+                must_not.push({ exists: { field: 'vote' } });
+                break;
+              default:
+                break;
+            }
+          }
+          if (status) {
+            switch (status) {
+              case 'completed':
+                should.push({
+                  bool: {
+                    must: [
+                      { exists: { field: 'sign_batch' } },
+                    ],
+                    should: evm_chains_data?.map(c => {
+                      return { match: { 'source.recipient_chain': c?.id } };
+                    }) || [],
+                    minimum_should_match: 1,
+                  },
+                });
+                should.push({
+                  bool: {
+                    must: [
+                      { exists: { field: 'ibc_send' } },
+                    ],
+                    should: cosmos_chains_data?.map(c => {
+                      return { match: { 'source.recipient_chain': c?.id } };
+                    }) || [],
+                    minimum_should_match: 1,
+                  },
+                });
+                break
+              case 'pending':
+                must_not.push({
+                  bool: {
+                    should: [
+                      {
+                        bool: {
+                          must: [
+                            { exists: { field: 'sign_batch' } },
+                          ],
+                          should: evm_chains_data?.map(c => {
+                            return { match: { 'source.recipient_chain': c?.id } };
+                          }) || [],
+                          minimum_should_match: 1,
+                        },
+                      },
+                      {
+                        bool: {
+                          must: [
+                            { exists: { field: 'ibc_send' } },
+                          ],
+                          should: cosmos_chains_data?.map(c => {
+                            return { match: { 'source.recipient_chain': c?.id } };
+                          }) || [],
+                          minimum_should_match: 1,
+                        },
+                      },
+                    ],
+                  },
+                });
+                break;
+              default:
+                break;
+            }
+          }
+          if (sourceChain) {
+            must.push({ match: { 'source.sender_chain': sourceChain } });
+          }
+          if (destinationChain) {
+            must.push({ match: { 'source.recipient_chain': destinationChain } });
+          }
+          if (asset) {
+            must.push({ match_phrase: { 'source.denom': asset } });
+          }
+          if (depositAddress) {
+            must.push({ match: { 'source.recipient_address': depositAddress } });
+          }
+          if (senderAddress) {
+            must.push({ match: { 'source.sender_address': senderAddress } });
+          }
+          if (recipientAddress) {
+            must.push({ match: { 'link.recipient_address': recipientAddress } });
+          }
+          if (fromTime && toTime) {
+            fromTime = Number(fromTime) * 1000;
+            toTime = Number(toTime) * 1000;
+            must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte:toTime } } });
+          }
+          if (!query) {
+            query = {
+              bool: {
+                must,
+                should,
+                must_not,
+                minimum_should_match: should.length > 0 ? 1 : 0,
+              },
+            };
+          }
+          _response = await crud({
+            collection: 'transfers',
+            method: 'search',
+            query,
+            from: typeof from === 'number' ? from : 0,
+            size: typeof size === 'number' ? size : 1000,
+            sort: sort || [{ 'source.created_at.ms': 'desc' }],
+          });
+          response = _response;
+          break;
         case 'transfers-stats':
-          let { query, fromTime, toTime } = { ...params };
           if (!query) {
             if (fromTime && toTime) {
               fromTime = Number(fromTime) * 1000;
@@ -2079,7 +2205,7 @@ exports.handler = async (event, context, callback) => {
               };
             }
           }
-          const _response = await crud({
+          _response = await crud({
             collection: 'transfers',
             method: 'search',
             query,
