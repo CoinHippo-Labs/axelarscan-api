@@ -720,6 +720,28 @@ module.exports = {
         },
       },
       {
+        id: 'kujira',
+        name: 'Kujira',
+        short_name: 'KUJI',
+        explorer: {
+          name: 'Kujira',
+          url: 'https://kujira.explorers.guru',
+          icon: '/logos/explorers/kujira.png',
+          block_path: '/block/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          transaction_path: '/transaction/{tx}',
+        },
+        image: '/logos/chains/kujira.png',
+        color: '#8b1227',
+        website: 'https://kujira.app',
+        prefix_address: 'kujira',
+        endpoints: {
+          lcd: 'https://kujira-testnet-api.polkachu.com',
+        },
+      },
+      {
         id: 'terra',
         name: 'Terra',
         short_name: 'TERRA',

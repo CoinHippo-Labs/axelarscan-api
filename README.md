@@ -1,8 +1,10 @@
 # Axelarscan API
 
 ## Endpoints
-- [https://api.axelarscan.io](https://api.axelarscan.io)
-- [https://testnet.api.axelarscan.io](https://testnet.api.axelarscan.io)
+mainnet: [https://api.axelarscan.io](https://api.axelarscan.io)
+testnet: [https://testnet.api.axelarscan.io](https://testnet.api.axelarscan.io)
+testnet-2: [https://testnet-2.api.axelarscan.io](https://testnet-2.api.axelarscan.io)
+
 
 ## Stacks
 - AWS Opensearch
