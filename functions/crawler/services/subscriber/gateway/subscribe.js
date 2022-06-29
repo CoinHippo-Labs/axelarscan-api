@@ -15,6 +15,9 @@ const environment = process.env.ENVIRONMENT;
 // initial number of block per query
 const num_query_block = config?.[environment]?.past_events_block_per_request || 100;
 
+// initial events
+const events_name = ['TokenSent'];
+
 // subscribe contract
 const subscribe = async (chain_config, data, _environment) => {
   if (chain_config && data) {
@@ -42,9 +45,11 @@ const subscribe = async (chain_config, data, _environment) => {
       try {
         data = JSON.parse(JSON.stringify(data));
       } catch (error) {}
-      log('info', service_name, `event emitted: ${data.event}`, { chain, ...data });
-      // save gmp
-      await saveEvent(data, chain, gateway?.address, _environment);
+      if (events_name.includes(data.event)) {
+        log('info', service_name, `event emitted: ${data.event}`, { chain, ...data });
+        // save event
+        await saveEvent(data, chain, gateway?.address, _environment);
+      }
     } catch (error) {
       log('error', service_name, 'general', { error: { ...error } });
     }
