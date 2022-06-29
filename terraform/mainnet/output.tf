@@ -17,3 +17,11 @@ output "api_gateway" {
 output "event_rule" {
   value = aws_cloudwatch_event_rule.schedule.arn
 }
+
+output "lambda_crawler" {
+  value = aws_lambda_function.crawler.arn
+}
+
+output "event_rule_crawler" {
+  value = aws_cloudwatch_event_rule.schedule_crawler.arn
+}

@@ -89,6 +89,29 @@ const transfer_actions = ['ConfirmDeposit', 'ConfirmERC20Deposit'];
 
 const vote_types = ['VoteConfirmDeposit', 'Vote'];
 
+// get transaction
+const getTransaction = async (provider, tx_hash, chain) => {
+  // initial output
+  let output;
+
+  if (provider && tx_hash) {
+    // initial transaction
+    output = {
+      id: tx_hash,
+      chain,
+    };
+
+    try {
+      // get transaction
+      output.transaction = await provider.getTransaction(tx_hash);
+      // get receipt
+      output.receipt = await provider.getTransactionReceipt(tx_hash);
+    } catch (error) {}
+  }
+
+  return output;
+};
+
 // get block time
 const getBlockTime = async (provider, block_number) => {
   // initial output
@@ -119,5 +142,6 @@ module.exports = {
   normalize_chain,
   transfer_actions,
   vote_types,
+  getTransaction,
   getBlockTime,
 };

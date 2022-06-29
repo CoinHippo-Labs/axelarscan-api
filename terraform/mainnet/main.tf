@@ -84,17 +84,17 @@ resource "aws_opensearch_domain_policy" "main" {
   domain_name = aws_opensearch_domain.domain.domain_name
   access_policies = <<POLICIES
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": ["es:*"],
-            "Principal": {
-                "AWS" : ["*"]
-            },
-            "Effect": "Allow",
-            "Resource": "${aws_opensearch_domain.domain.arn}/*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["es:*"],
+      "Principal": {
+        "AWS" : ["*"]
+      },
+      "Effect": "Allow",
+      "Resource": "${aws_opensearch_domain.domain.arn}/*"
+    }
+  ]
 }
 POLICIES
 }
@@ -138,17 +138,17 @@ resource "aws_opensearch_domain_policy" "main_transfers" {
   domain_name = aws_opensearch_domain.domain_transfers.domain_name
   access_policies = <<POLICIES
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": ["es:*"],
-            "Principal": {
-                "AWS" : ["*"]
-            },
-            "Effect": "Allow",
-            "Resource": "${aws_opensearch_domain.domain_transfers.arn}/*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["es:*"],
+      "Principal": {
+        "AWS" : ["*"]
+      },
+      "Effect": "Allow",
+      "Resource": "${aws_opensearch_domain.domain_transfers.arn}/*"
+    }
+  ]
 }
 POLICIES
 }
@@ -211,4 +211,47 @@ resource "aws_cloudwatch_event_target" "target" {
   rule      = aws_cloudwatch_event_rule.schedule.name
   target_id = aws_lambda_function.function.id
   arn       = aws_lambda_function.function.arn
+}
+
+data "archive_file" "zip_crawler" {
+  type        = "zip"
+  source_dir  = "../../functions/crawler"
+  excludes    = ["package-lock.json", "yarn.lock"]
+  output_path = "${var.package_name}-crawler.zip"
+}
+
+resource "aws_lambda_function" "crawler" {
+  function_name    = "${var.package_name}-crawler-${var.environment}"
+  filename         = data.archive_file.zip_crawler.output_path
+  source_code_hash = data.archive_file.zip_crawler.output_base64sha256
+  role             = aws_iam_role.role.arn
+  handler          = "index.handler"
+  runtime          = "nodejs14.x"
+  timeout          = 600
+  memory_size      = 1024
+  environment {
+    variables = {
+      NODE_NO_WARNINGS = 1
+      ENVIRONMENT      = var.environment
+      LOG_LEVEL        = var.log_level
+    }
+  }
+  kms_key_arn      = ""
+}
+
+resource "aws_apigatewayv2_route" "route_gateway" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /gateway/{function}"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
+resource "aws_cloudwatch_event_rule" "schedule_crawler" {
+  name                = "${var.package_name}-crawler-${var.environment}-rule"
+  schedule_expression = "cron(*/10 * * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "target_crawler" {
+  rule      = aws_cloudwatch_event_rule.schedule_crawler.name
+  target_id = aws_lambda_function.crawler.id
+  arn       = aws_lambda_function.crawler.arn
 }

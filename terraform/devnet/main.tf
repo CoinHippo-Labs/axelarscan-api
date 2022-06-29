@@ -84,17 +84,17 @@ resource "aws_opensearch_domain_policy" "main" {
   domain_name = aws_opensearch_domain.domain.domain_name
   access_policies = <<POLICIES
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": ["es:*"],
-            "Principal": {
-                "AWS" : ["*"]
-            },
-            "Effect": "Allow",
-            "Resource": "${aws_opensearch_domain.domain.arn}/*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["es:*"],
+      "Principal": {
+        "AWS" : ["*"]
+      },
+      "Effect": "Allow",
+      "Resource": "${aws_opensearch_domain.domain.arn}/*"
+    }
+  ]
 }
 POLICIES
 }

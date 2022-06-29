@@ -21,6 +21,69 @@ mainnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_minutes: 15
+  gateway:
+    chains:
+      ethereum:
+        endpoints:
+          rpc:
+            - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+        native_token:
+          name: "Ether"
+          symbol: "ETH"
+          decimals: 18
+      binance:
+        endpoints:
+          rpc:
+            - "https://rpc.ankr.com/bsc"
+        native_token:
+          name: "BNB"
+          symbol: "BNB"
+          decimals: 18
+      avalanche:
+        endpoints:
+          rpc:
+            - "https://api.avax.network/ext/bc/C/rpc"
+        native_token:
+          name: "Avalanche"
+          symbol: "AVAX"
+          decimals: 18
+      polygon:
+        endpoints:
+          rpc:
+            - "https://polygon-rpc.com"
+        native_token:
+          name: "Matic"
+          symbol: "MATIC"
+          decimals: 18
+      fantom:
+        endpoints:
+          rpc:
+            - "https://rpc.ftm.tools"
+        native_token:
+          name: "Fantom"
+          symbol: "FTM"
+          decimals: 18
+      moonbeam:
+        endpoints:
+          rpc:
+            - "https://rpc.api.moonbeam.network"
+        native_token:
+          name: "Glimmer"
+          symbol: "GLMR"
+          decimals: 18
+    contracts:
+      ethereum:
+        address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
+      binance:
+        address: ""
+      avalanche:
+        address: "0x5029C0EFf6C34351a0CEc334542cDb22c7928f78"
+      polygon:
+        address: "0x6f015F16De9fC8791b234eF68D486d2bF203FBA8"
+      fantom:
+        address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
+      moonbeam:
+        address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
 
 testnet:
   endpoints:
@@ -33,6 +96,71 @@ testnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_minutes: 15
+  gateway:
+    chains:
+      ethereum:
+        endpoints:
+          rpc:
+            - "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+        native_token:
+          name: "Ether"
+          symbol: "ETH"
+          decimals: 18
+      binance:
+        endpoints:
+          rpc:
+            - "https://data-seed-prebsc-1-s1.binance.org:8545"
+        native_token:
+          name: "BNB"
+          symbol: "BNB"
+          decimals: 18
+      avalanche:
+        endpoints:
+          rpc:
+            - "https://api.avax-test.network/ext/bc/C/rpc"
+        native_token:
+          name: "Avalanche"
+          symbol: "AVAX"
+          decimals: 18
+      polygon:
+        endpoints:
+          rpc:
+            - "https://matic-mumbai.chainstacklabs.com"
+            # - "https://rpc-mumbai.matic.today"
+        native_token:
+          name: "Matic"
+          symbol: "MATIC"
+          decimals: 18
+      fantom:
+        endpoints:
+          rpc:
+            - "https://rpc.testnet.fantom.network"
+            - "https://xapi.testnet.fantom.network/lachesis"
+        native_token:
+          name: "Fantom"
+          symbol: "FTM"
+          decimals: 18
+      moonbeam:
+        endpoints:
+          rpc:
+            - "https://rpc.api.moonbase.moonbeam.network"
+        native_token:
+          name: "Dev"
+          symbol: "DEV"
+          decimals: 18
+    contracts:
+      ethereum:
+        address: "0xBC6fcce7c5487d43830a219CA6E7B83238B41e71"
+      binance:
+        address: "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0"
+      avalanche:
+        address: "0xC249632c2D40b9001FE907806902f63038B737Ab"
+      polygon:
+        address: "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B"
+      fantom:
+        address: "0x97837985Ec0494E7b9C71f5D3f9250188477ae14"
+      moonbeam:
+        address: "0x5769D84DD62a6fD969856c75c7D321b84d455929"
 
 devnet:
   endpoints:

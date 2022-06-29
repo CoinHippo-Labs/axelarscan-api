@@ -19,7 +19,7 @@ exports.handler = async (event, context, callback) => {
   // import asset price
   const assets_price = require('./services/assets');
   // import utils
-  const { sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getBlockTime } = require('./utils');
+  const { sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getTransaction, getBlockTime } = require('./utils');
   // data
   const { chains, assets } = require('./data');
   // IAxelarGateway
@@ -1725,7 +1725,7 @@ exports.handler = async (event, context, callback) => {
           break;
         default:
           break;
-      };
+      }
 
       // set response
       if (res?.data) {
@@ -2267,14 +2267,154 @@ exports.handler = async (event, context, callback) => {
           break;
         default:
           break;
-      };
+      }
+      break;
+    case '/gateway/{function}':
+      const { contractAddress } = { ...params };
+      let { event, chain } = { ...params };
+      if (chain) {
+        chain = chain.toLowerCase();
+      }
+      switch (req.params.function?.toLowerCase()) {
+        case 'save-events':
+          if (!(event && chain && contractAddress)) {
+            response = {
+              error: true,
+              code: 400,
+              message: 'parameters not valid',
+            };
+          }
+          else if (!(config?.[environment]?.gateway?.chains?.[chain]?.endpoints?.rpc && equals_ignore_case(config[environment].gateway.contracts?.[chain]?.address, contractAddress))) {
+            response = {
+              error: true,
+              code: 500,
+              message: 'wrong api configuration',
+            };
+          }
+          else {
+            try {
+              const { gateway } = { ...config[environment] };
+              // initial provider
+              const rpcs = gateway.chains[chain].endpoints.rpc;
+              const provider = rpcs.length > 1 ? new FallbackProvider(rpcs.map((url, i) => {
+                return {
+                  provider: new JsonRpcProvider(url),
+                  priority: i + 1,
+                  stallTimeout: 1000,
+                };
+              })) : new JsonRpcProvider(rpcs[0]);
+              // initial event name
+              const event_name = event.event;
+              // initial variables
+              let _params, _response, id = event._id || `${event.transactionHash}_${event.transactionIndex}_${event.logIndex}`;
+              event.id = id;
+              event.chain = chain;
+              event.contract_address = contractAddress;
+
+              // save each event
+              switch (event_name) {
+                case 'TokenSent':
+                  event = {
+                    ...(await getTransaction(provider, event.transactionHash, chain)),
+                    block_timestamp: await getBlockTime(provider, event.blockNumber),
+                    ...event,
+                  };
+                  _params = {
+                    method: 'set',
+                    collection: 'token_sent_events',
+                    id,
+                    path: `/token_sent_events/_update/${id}`,
+                    update_only: true,
+                    event,
+                  };
+                  _response = await crud(_params);
+                  response = {
+                    response: _response,
+                    data: {
+                      event,
+                    },
+                  };
+                  break;
+                default:
+                  break;
+              }
+            } catch (error) {
+              response = {
+                error: true,
+                code: 400,
+                message: error?.message,
+              };
+            }
+          }
+          break;
+        case 'latest-event-block':
+          if (!(chain)) {
+            response = {
+              error: true,
+              code: 400,
+              message: 'parameters not valid',
+            };
+          }
+          else {
+            try {
+              // initial variables
+              let _params, _response;
+
+              // token sent
+              _params = {
+                method: 'query',
+                collection: 'token_sent_events',
+                query: {
+                  bool: {
+                    must: [
+                      { match: { 'event.chain': chain } },
+                      { exists: { field: 'event.blockNumber' } },
+                    ],
+                  },
+                },
+                use_raw_data: true,
+                size: 1,
+                sort: [{ 'event.blockNumber': 'desc' }],
+              };
+              _response = await crud(_params);
+              if (_response?.data?.[0]?.event?.blockNumber) {
+                response = {
+                  ...response,
+                  latest: {
+                    ...response?.latest,
+                    token_sent_block: _response.data[0].event.blockNumber,
+                  },
+                };
+              }
+
+              // finalize
+              response = {
+                chain,
+                ...response,
+                latest: {
+                  ...response?.latest,
+                  gateway_block: response?.latest?.token_sent_block,
+                },
+              };
+            } catch (error) {
+              response = {
+                error: true,
+                code: 400,
+                message: error?.message,
+              };
+            }
+          }
+          break;
+        default:
+          break;
+      }
       break;
     default:
       if (!req.url) {
         await require('./services/archiver')();
       }
       break;
-  };
+  }
 
   // return response
   return response;
