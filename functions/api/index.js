@@ -1737,145 +1737,67 @@ exports.handler = async (event, context, callback) => {
       }
       break;
     case '/cross-chain/{function}':
-      let _response;
-      const { txHash, confirmed, status, sourceChain, destinationChain, asset, depositAddress, senderAddress, recipientAddress, from, size, sort } = { ...params };
-      let { query, fromTime, toTime } = { ...params };
-      switch (req.params.function?.toLowerCase()) {
-        case 'transfers-status':
-          if (txHash) {
-            query = {
-              match: {
-                'source.id': txHash,
-              },
-            };
-            _response = await crud({
-              collection: 'transfers',
-              method: 'search',
-              query,
-              size: 1,
-            });
-            let transfer = _response?.data?.[0];
-            const _assets = assets?.[environment] || [];
-            if (!transfer && depositAddress) {
-              let created_at = moment().utc();
-              const evm_chains = chains?.[environment]?.evm || [];
-              const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
-              if (txHash.startsWith('0x')) {
-                if (evm_chains.length > 0) {
-                  const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
-                  for (let i = 0; i < evm_chains.length; i++) {
-                    const chain_data = evm_chains[i];
-                    if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
-                      const rpcs = chains_rpc[chain_data.id];
-                      const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
-                        return {
-                          provider: new JsonRpcProvider(url),
-                          priority: i + 1,
-                          stallTimeout: 1000,
-                        };
-                      }));
-                      try {
-                        // request rpc
-                        const transaction = await provider.getTransaction(txHash);
-                        const height = transaction?.blockNumber;
-                        if (height) {
-                          const block_timestamp = await getBlockTime(provider, height);
-                          if (block_timestamp) {
-                            created_at = block_timestamp * 1000;
-                          }
-                          const transfer_source = {
-                            id: txHash,
-                            type: 'evm_transfer',
-                            status_code: 0,
-                            status: 'success',
-                            height,
-                            created_at: get_granularity(created_at),
-                            sender_chain: chain_data.id,
-                            sender_address: transaction.from,
-                            recipient_address: depositAddress,
-                            amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString(),
-                            denom: _assets?.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id,
+      try {
+        let _response;
+        const { txHash, confirmed, status, sourceChain, destinationChain, asset, depositAddress, senderAddress, recipientAddress, from, size, sort } = { ...params };
+        let { query, fromTime, toTime } = { ...params };
+        switch (req.params.function?.toLowerCase()) {
+          case 'transfers-status':
+            if (txHash) {
+              query = {
+                match: {
+                  'source.id': txHash,
+                },
+              };
+              _response = await crud({
+                collection: 'transfers',
+                method: 'search',
+                query,
+                size: 1,
+              });
+              let transfer = _response?.data?.[0];
+              const _assets = assets?.[environment] || [];
+              if (!transfer && depositAddress) {
+                let created_at = moment().utc();
+                const evm_chains = chains?.[environment]?.evm || [];
+                const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
+                if (txHash.startsWith('0x')) {
+                  if (evm_chains.length > 0) {
+                    const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
+                    for (let i = 0; i < evm_chains.length; i++) {
+                      const chain_data = evm_chains[i];
+                      if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
+                        const rpcs = chains_rpc[chain_data.id];
+                        const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
+                          return {
+                            provider: new JsonRpcProvider(url),
+                            priority: i + 1,
+                            stallTimeout: 1000,
                           };
-                          // get link
-                          query = {
-                            match: {
-                              deposit_address: transfer_source.recipient_address,
-                            },
-                          };
-                          _response = await crud({
-                            collection: 'deposit_addresses',
-                            method: 'search',
-                            query,
-                            size: 1,
-                          });
-                          const link = _response?.data?.[0];
-                          transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
-                          transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
-                          if (link) {
-                            transfer_source.recipient_chain = normalize_chain(link.recipient_chain || transfer_source.recipient_chain);
-                            transfer_source.denom = transfer_source.denom || link.asset;
-                            if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                              const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
-                              if (asset_data) {
-                                const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
-                                transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
-                              }
+                        }));
+                        try {
+                          // request rpc
+                          const transaction = await provider.getTransaction(txHash);
+                          const height = transaction?.blockNumber;
+                          if (height) {
+                            const block_timestamp = await getBlockTime(provider, height);
+                            if (block_timestamp) {
+                              created_at = block_timestamp * 1000;
                             }
-                            if (link?.price && typeof transfer_source.amount === 'number') {
-                              transfer_source.value = transfer_source.amount * link.price;
-                            }
-                            const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
-                            await crud({
-                              collection: 'transfers',
-                              method: 'set',
-                              path: `/transfers/_update/${_id}`,
-                              id: _id,
-                              source: transfer_source,
-                              link,
-                            });
-                          }
-                          transfer = {
-                            source: transfer_source,
-                            link,
-                          };
-                          break;
-                        }
-                      } catch (error) {}
-                    }
-                  }
-                }
-              }
-              else if (cosmos_chains.length > 0) {
-                for (let i = 0; i < cosmos_chains.length; i++) {
-                  const chain_data = cosmos_chains[i];
-                  if ((!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) && chain_data?.endpoints?.lcd) {
-                    let found = false;
-                    const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
-                    for (let j = 0; j < lcds.length; j++) {
-                      // initial lcd
-                      const _lcd = axios.create({ baseURL: lcds[j] });
-                      try {
-                        // request lcd
-                        _response = await _lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
-                          .catch(error => { return { data: { error } }; });
-                        const transaction = _response?.data?.tx_response;
-                        if (transaction.tx?.body?.messages) {
-                          const created_at = moment(transaction.timestamp).utc();
-                          const amount_denom = transaction.tx.body.messages.find(m => m?.token)?.token;
-                          const transfer_source = {
-                            id: transaction.txhash,
-                            type: 'ibc_transfer',
-                            status_code: transaction.code,
-                            status: transaction.code ? 'failed' : 'success',
-                            height: Number(transaction.height),
-                            created_at: get_granularity(created_at),
-                            sender_chain: chain_data.id,
-                            sender_address: transaction.tx.body.messages.find(m => m?.sender)?.sender,
-                            recipient_address: transaction.tx.body.messages.find(m => m?.receiver)?.receiver,
-                            amount: amount_denom?.amount,
-                            denom: amount_denom?.denom,
-                          };
-                          if (transfer_source.recipient_address?.length >= 65 && transfer_source.id && transfer_source.amount) {
+                            const transfer_source = {
+                              id: txHash,
+                              type: 'evm_transfer',
+                              status_code: 0,
+                              status: 'success',
+                              height,
+                              created_at: get_granularity(created_at),
+                              sender_chain: chain_data.id,
+                              sender_address: transaction.from,
+                              recipient_address: depositAddress,
+                              amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString(),
+                              denom: _assets?.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id,
+                            };
+                            // get link
                             query = {
                               match: {
                                 deposit_address: transfer_source.recipient_address,
@@ -1888,23 +1810,16 @@ exports.handler = async (event, context, callback) => {
                               size: 1,
                             });
                             const link = _response?.data?.[0];
-                            if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
-                              const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
-                              if (chain_data) {
-                                link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
-                              }
-                            }
                             transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                             transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                             if (link) {
-                              transfer_source.recipient_chain = normalize_chain(link.recipient_chain);
+                              transfer_source.recipient_chain = normalize_chain(link.recipient_chain || transfer_source.recipient_chain);
                               transfer_source.denom = transfer_source.denom || link.asset;
                               if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 if (asset_data) {
-                                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
+                                  const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
                                   transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
-                                  transfer_source.denom = asset_data?.id || transfer_source.denom;
                                 }
                               }
                               if (link?.price && typeof transfer_source.amount === 'number') {
@@ -1924,303 +1839,390 @@ exports.handler = async (event, context, callback) => {
                               source: transfer_source,
                               link,
                             };
+                            break;
                           }
-                          found = true;
-                          break;
-                        }
-                      } catch (error) {}
+                        } catch (error) {}
+                      }
                     }
-                    if (found) {
-                      break;
+                  }
+                }
+                else if (cosmos_chains.length > 0) {
+                  for (let i = 0; i < cosmos_chains.length; i++) {
+                    const chain_data = cosmos_chains[i];
+                    if ((!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) && chain_data?.endpoints?.lcd) {
+                      let found = false;
+                      const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
+                      for (let j = 0; j < lcds.length; j++) {
+                        // initial lcd
+                        const _lcd = axios.create({ baseURL: lcds[j] });
+                        try {
+                          // request lcd
+                          _response = await _lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
+                            .catch(error => { return { data: { error } }; });
+                          const transaction = _response?.data?.tx_response;
+                          if (transaction.tx?.body?.messages) {
+                            const created_at = moment(transaction.timestamp).utc();
+                            const amount_denom = transaction.tx.body.messages.find(m => m?.token)?.token;
+                            const transfer_source = {
+                              id: transaction.txhash,
+                              type: 'ibc_transfer',
+                              status_code: transaction.code,
+                              status: transaction.code ? 'failed' : 'success',
+                              height: Number(transaction.height),
+                              created_at: get_granularity(created_at),
+                              sender_chain: chain_data.id,
+                              sender_address: transaction.tx.body.messages.find(m => m?.sender)?.sender,
+                              recipient_address: transaction.tx.body.messages.find(m => m?.receiver)?.receiver,
+                              amount: amount_denom?.amount,
+                              denom: amount_denom?.denom,
+                            };
+                            if (transfer_source.recipient_address?.length >= 65 && transfer_source.id && transfer_source.amount) {
+                              query = {
+                                match: {
+                                  deposit_address: transfer_source.recipient_address,
+                                },
+                              };
+                              _response = await crud({
+                                collection: 'deposit_addresses',
+                                method: 'search',
+                                query,
+                                size: 1,
+                              });
+                              const link = _response?.data?.[0];
+                              if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
+                                const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                                if (chain_data) {
+                                  link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
+                                }
+                              }
+                              transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
+                              transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
+                              if (link) {
+                                transfer_source.recipient_chain = normalize_chain(link.recipient_chain);
+                                transfer_source.denom = transfer_source.denom || link.asset;
+                                if (transfer_source.denom && typeof transfer_source.amount === 'string') {
+                                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                                  if (asset_data) {
+                                    const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
+                                    transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                    transfer_source.denom = asset_data?.id || transfer_source.denom;
+                                  }
+                                }
+                                if (link?.price && typeof transfer_source.amount === 'number') {
+                                  transfer_source.value = transfer_source.amount * link.price;
+                                }
+                                const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
+                                await crud({
+                                  collection: 'transfers',
+                                  method: 'set',
+                                  path: `/transfers/_update/${_id}`,
+                                  id: _id,
+                                  source: transfer_source,
+                                  link,
+                                });
+                              }
+                              transfer = {
+                                source: transfer_source,
+                                link,
+                              };
+                            }
+                            found = true;
+                            break;
+                          }
+                        } catch (error) {}
+                      }
+                      if (found) {
+                        break;
+                      }
                     }
                   }
                 }
               }
-            }
-            else if (transfer) {
-              const evm_chains = chains?.[environment]?.evm || [];
-              const cosmos_chains = chains?.[environment]?.cosmos || [];
-              query = {
-                match: {
-                  deposit_address: transfer.source?.recipient_address || depositAddress,
-                },
-              };
-              _response = await crud({
-                collection: 'deposit_addresses',
-                method: 'search',
-                query,
-                size: 1,
-              });
-              let link = _response?.data?.[0];
-              if (transfer.source && link) {
-                transfer.source.sender_chain = link.sender_chain || transfer.source.sender_chain;
-                transfer.source.recipient_chain = link.recipient_chain || transfer.source.recipient_chain;
-                transfer.source.denom = transfer.source.denom || link.asset;
-              }
-              transfer.source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer.source.sender_chain || link?.sender_chain);
-              transfer.source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer.source.recipient_chain || link?.recipient_chain);
-              if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
-                const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
-                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
-                if (chain_data && asset_data) {
-                  const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
-                  transfer.source.amount = Number(utils.formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
-                  transfer.source.denom = asset_data?.id || transfer.source.denom;
-                }
-              }
-              if (link?.txhash && typeof link.price !== 'number' && config?.[environment]?.endpoints?.api) {
-                // initial api
-                const api = axios.create({ baseURL: config[environment].endpoints.api });
-                await api.post('', {
-                  module: 'lcd',
-                  path: `/cosmos/tx/v1beta1/txs/${link.txhash}`,
-                }).catch(error => { return { data: { error } }; });
-                await sleep(0.5 * 1000);
+              else if (transfer) {
+                const evm_chains = chains?.[environment]?.evm || [];
+                const cosmos_chains = chains?.[environment]?.cosmos || [];
+                query = {
+                  match: {
+                    deposit_address: transfer.source?.recipient_address || depositAddress,
+                  },
+                };
                 _response = await crud({
                   collection: 'deposit_addresses',
                   method: 'search',
                   query,
                   size: 1,
                 });
-                link = _response?.data?.[0];
-              }
-              let price;
-              if (!link && (transfer.source?.asset || transfer.source?.denom)) {
-                const created_at = moment(transfer.source.created_at?.ms).utc();
-                const prices_data = await assets_price({
-                  chain: transfer.source.original_sender_chain,
-                  denom: transfer.source.asset || transfer.source.denom,
-                  timestamp: created_at,
-                });
-                if (prices_data?.[0]?.price) {
-                  price = prices_data[0].price;
+                let link = _response?.data?.[0];
+                if (transfer.source && link) {
+                  transfer.source.sender_chain = link.sender_chain || transfer.source.sender_chain;
+                  transfer.source.recipient_chain = link.recipient_chain || transfer.source.recipient_chain;
+                  transfer.source.denom = transfer.source.denom || link.asset;
                 }
-              }
-              if ((link?.price || price) && typeof transfer.source?.amount === 'number') {
-                transfer.source.value = transfer.source.amount * (link?.price || price);
-                const _id = `${transfer.source.id}_${transfer.source.recipient_address}`.toLowerCase();
-                await crud({
-                  collection: 'transfers',
-                  method: 'set',
-                  path: `/transfers/_update/${_id}`,
-                  id: _id,
-                  source: transfer.source,
-                });
-              }
-              transfer = {
-                ...transfer,
-                link,
-              };
-            }
-            response = [transfer].filter(t => t);
-          }
-          else if (recipientAddress || depositAddress) {
-            query = {
-              bool: {
-                must: [
-                  { match: { deposit_address: depositAddress } },
-                  { match: { recipient_address: recipientAddress } },
-                  { match: { asset } },
-                ].filter(m => Object.values(m.match).filter(v => v).length > 0),
-              },
-            };
-            _response = await crud({
-              collection: 'deposit_addresses',
-              method: 'search',
-              query,
-              sort: [{ height: 'desc' }],
-              size: 1000,
-            });
-            const links = _response?.data || [];
-            const should = [];
-            for (let i = 0; i < links.length; i++) {
-              const link = links[i];
-              if (link?.deposit_address && should.findIndex(s => equals_ignore_case(s?.match?.['source.recipient_address'], link.deposit_address)) < 0) {
-                should.push({ match: { 'source.recipient_address': link.deposit_address } });
-              }
-            }
-            let transfers;
-            if (should.length > 0) {
-              query = {
-                bool: {
-                  should,
-                },
-              };
-              _response = await crud({
-                collection: 'transfers',
-                method: 'search',
-                query,
-                size: 1000,
-              });
-              transfers = _response?.data?.filter(t => t).map(t => {
-                return {
-                  ...t,
-                  link: links.find(l => equals_ignore_case(l?.deposit_address, t?.source?.recipient_address)),
+                transfer.source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer.source.sender_chain || link?.sender_chain);
+                transfer.source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer.source.recipient_chain || link?.recipient_chain);
+                if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
+                  const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
+                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
+                  if (chain_data && asset_data) {
+                    const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
+                    transfer.source.amount = Number(utils.formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
+                    transfer.source.denom = asset_data?.id || transfer.source.denom;
+                  }
+                }
+                if (link?.txhash && typeof link.price !== 'number' && config?.[environment]?.endpoints?.api) {
+                  // initial api
+                  const api = axios.create({ baseURL: config[environment].endpoints.api });
+                  await api.post('', {
+                    module: 'lcd',
+                    path: `/cosmos/tx/v1beta1/txs/${link.txhash}`,
+                  }).catch(error => { return { data: { error } }; });
+                  await sleep(0.5 * 1000);
+                  _response = await crud({
+                    collection: 'deposit_addresses',
+                    method: 'search',
+                    query,
+                    size: 1,
+                  });
+                  link = _response?.data?.[0];
+                }
+                let price;
+                if (!link && (transfer.source?.asset || transfer.source?.denom)) {
+                  const created_at = moment(transfer.source.created_at?.ms).utc();
+                  const prices_data = await assets_price({
+                    chain: transfer.source.original_sender_chain,
+                    denom: transfer.source.asset || transfer.source.denom,
+                    timestamp: created_at,
+                  });
+                  if (prices_data?.[0]?.price) {
+                    price = prices_data[0].price;
+                  }
+                }
+                if ((link?.price || price) && typeof transfer.source?.amount === 'number') {
+                  transfer.source.value = transfer.source.amount * (link?.price || price);
+                  const _id = `${transfer.source.id}_${transfer.source.recipient_address}`.toLowerCase();
+                  await crud({
+                    collection: 'transfers',
+                    method: 'set',
+                    path: `/transfers/_update/${_id}`,
+                    id: _id,
+                    source: transfer.source,
+                  });
+                }
+                transfer = {
+                  ...transfer,
+                  link,
                 };
-              });
-              if (!(transfers?.length > 0)) {
-                transfers = links?.map(l => {
-                  return {
-                    link: l,
-                  };
-                });
               }
+              response = [transfer].filter(t => t);
             }
-            response = transfers || [];
-          }
-          break;
-        case 'transfers':
-          const must = [], should = [], must_not = [];
-          if (txHash) {
-            must.push({ match: { 'source.id': txHash } });
-          }
-          if (confirmed) {
-            switch (confirmed) {
-              case 'confirmed':
-                should.push({ exists: { field: 'confirm_deposit' } });
-                should.push({ exists: { field: 'vote' } });
-                break;
-              case 'unconfirmed':
-                must_not.push({ exists: { field: 'confirm_deposit' } });
-                must_not.push({ exists: { field: 'vote' } });
-                break;
-              default:
-                break;
-            }
-          }
-          if (status) {
-            switch (status) {
-              case 'completed':
-                should.push({
-                  bool: {
-                    must: [
-                      { exists: { field: 'sign_batch' } },
-                    ],
-                    should: evm_chains_data?.map(c => {
-                      return { match: { 'source.recipient_chain': c?.id } };
-                    }) || [],
-                    minimum_should_match: 1,
-                  },
-                });
-                should.push({
-                  bool: {
-                    must: [
-                      { exists: { field: 'ibc_send' } },
-                    ],
-                    should: cosmos_chains_data?.map(c => {
-                      return { match: { 'source.recipient_chain': c?.id } };
-                    }) || [],
-                    minimum_should_match: 1,
-                  },
-                });
-                break
-              case 'pending':
-                must_not.push({
-                  bool: {
-                    should: [
-                      {
-                        bool: {
-                          must: [
-                            { exists: { field: 'sign_batch' } },
-                          ],
-                          should: evm_chains_data?.map(c => {
-                            return { match: { 'source.recipient_chain': c?.id } };
-                          }) || [],
-                          minimum_should_match: 1,
-                        },
-                      },
-                      {
-                        bool: {
-                          must: [
-                            { exists: { field: 'ibc_send' } },
-                          ],
-                          should: cosmos_chains_data?.map(c => {
-                            return { match: { 'source.recipient_chain': c?.id } };
-                          }) || [],
-                          minimum_should_match: 1,
-                        },
-                      },
-                    ],
-                  },
-                });
-                break;
-              default:
-                break;
-            }
-          }
-          if (sourceChain) {
-            must.push({ match: { 'source.sender_chain': sourceChain } });
-          }
-          if (destinationChain) {
-            must.push({ match: { 'source.recipient_chain': destinationChain } });
-          }
-          if (asset) {
-            must.push({ match_phrase: { 'source.denom': asset } });
-          }
-          if (depositAddress) {
-            must.push({ match: { 'source.recipient_address': depositAddress } });
-          }
-          if (senderAddress) {
-            must.push({ match: { 'source.sender_address': senderAddress } });
-          }
-          if (recipientAddress) {
-            must.push({ match: { 'link.recipient_address': recipientAddress } });
-          }
-          if (fromTime && toTime) {
-            fromTime = Number(fromTime) * 1000;
-            toTime = Number(toTime) * 1000;
-            must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte:toTime } } });
-          }
-          if (!query) {
-            query = {
-              bool: {
-                must,
-                should,
-                must_not,
-                minimum_should_match: should.length > 0 ? 1 : 0,
-              },
-            };
-          }
-          _response = await crud({
-            collection: 'transfers',
-            method: 'search',
-            query,
-            from: typeof from === 'number' ? from : 0,
-            size: typeof size === 'number' ? size : 1000,
-            sort: sort || [{ 'source.created_at.ms': 'desc' }],
-          });
-          response = _response;
-          break;
-        case 'transfers-stats':
-          if (!query) {
-            if (fromTime && toTime) {
-              fromTime = Number(fromTime) * 1000;
-              toTime = Number(toTime) * 1000;
+            else if (recipientAddress || depositAddress) {
               query = {
                 bool: {
                   must: [
-                    { range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } },
-                  ],
+                    { match: { deposit_address: depositAddress } },
+                    { match: { recipient_address: recipientAddress } },
+                    { match: { asset } },
+                  ].filter(m => Object.values(m.match).filter(v => v).length > 0),
+                },
+              };
+              _response = await crud({
+                collection: 'deposit_addresses',
+                method: 'search',
+                query,
+                sort: [{ height: 'desc' }],
+                size: 1000,
+              });
+              const links = _response?.data || [];
+              const should = [];
+              for (let i = 0; i < links.length; i++) {
+                const link = links[i];
+                if (link?.deposit_address && should.findIndex(s => equals_ignore_case(s?.match?.['source.recipient_address'], link.deposit_address)) < 0) {
+                  should.push({ match: { 'source.recipient_address': link.deposit_address } });
+                }
+              }
+              let transfers;
+              if (should.length > 0) {
+                query = {
+                  bool: {
+                    should,
+                  },
+                };
+                _response = await crud({
+                  collection: 'transfers',
+                  method: 'search',
+                  query,
+                  size: 1000,
+                });
+                transfers = _response?.data?.filter(t => t).map(t => {
+                  return {
+                    ...t,
+                    link: links.find(l => equals_ignore_case(l?.deposit_address, t?.source?.recipient_address)),
+                  };
+                });
+                if (!(transfers?.length > 0)) {
+                  transfers = links?.map(l => {
+                    return {
+                      link: l,
+                    };
+                  });
+                }
+              }
+              response = transfers || [];
+            }
+            break;
+          case 'transfers':
+            const must = [], should = [], must_not = [];
+            if (txHash) {
+              must.push({ match: { 'source.id': txHash } });
+            }
+            if (confirmed) {
+              switch (confirmed) {
+                case 'confirmed':
+                  should.push({ exists: { field: 'confirm_deposit' } });
+                  should.push({ exists: { field: 'vote' } });
+                  break;
+                case 'unconfirmed':
+                  must_not.push({ exists: { field: 'confirm_deposit' } });
+                  must_not.push({ exists: { field: 'vote' } });
+                  break;
+                default:
+                  break;
+              }
+            }
+            if (status) {
+              switch (status) {
+                case 'completed':
+                  should.push({
+                    bool: {
+                      must: [
+                        { exists: { field: 'sign_batch' } },
+                      ],
+                      should: evm_chains_data?.map(c => {
+                        return { match: { 'source.recipient_chain': c?.id } };
+                      }) || [],
+                      minimum_should_match: 1,
+                    },
+                  });
+                  should.push({
+                    bool: {
+                      must: [
+                        { exists: { field: 'ibc_send' } },
+                      ],
+                      should: cosmos_chains_data?.map(c => {
+                        return { match: { 'source.recipient_chain': c?.id } };
+                      }) || [],
+                      minimum_should_match: 1,
+                    },
+                  });
+                  break
+                case 'pending':
+                  must_not.push({
+                    bool: {
+                      should: [
+                        {
+                          bool: {
+                            must: [
+                              { exists: { field: 'sign_batch' } },
+                            ],
+                            should: evm_chains_data?.map(c => {
+                              return { match: { 'source.recipient_chain': c?.id } };
+                            }) || [],
+                            minimum_should_match: 1,
+                          },
+                        },
+                        {
+                          bool: {
+                            must: [
+                              { exists: { field: 'ibc_send' } },
+                            ],
+                            should: cosmos_chains_data?.map(c => {
+                              return { match: { 'source.recipient_chain': c?.id } };
+                            }) || [],
+                            minimum_should_match: 1,
+                          },
+                        },
+                      ],
+                    },
+                  });
+                  break;
+                default:
+                  break;
+              }
+            }
+            if (sourceChain) {
+              must.push({ match: { 'source.sender_chain': sourceChain } });
+            }
+            if (destinationChain) {
+              must.push({ match: { 'source.recipient_chain': destinationChain } });
+            }
+            if (asset) {
+              must.push({ match_phrase: { 'source.denom': asset } });
+            }
+            if (depositAddress) {
+              must.push({ match: { 'source.recipient_address': depositAddress } });
+            }
+            if (senderAddress) {
+              must.push({ match: { 'source.sender_address': senderAddress } });
+            }
+            if (recipientAddress) {
+              must.push({ match: { 'link.recipient_address': recipientAddress } });
+            }
+            if (fromTime && toTime) {
+              fromTime = Number(fromTime) * 1000;
+              toTime = Number(toTime) * 1000;
+              must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte:toTime } } });
+            }
+            if (!query) {
+              query = {
+                bool: {
+                  must,
+                  should,
+                  must_not,
+                  minimum_should_match: should.length > 0 ? 1 : 0,
                 },
               };
             }
-          }
-          _response = await crud({
-            collection: 'transfers',
-            method: 'search',
-            query,
-            aggs: {
-              source_chains: {
-                terms: { field: 'source.sender_chain.keyword', size: 1000 },
-                aggs: {
-                  destination_chains: {
-                    terms: { field: 'source.recipient_chain.keyword', size: 1000 },
-                    aggs: {
-                      assets: {
-                        terms: { field: 'source.denom.keyword', size: 1000 },
-                        aggs: {
-                          volume: {
-                            sum: { field: 'source.value' },
+            _response = await crud({
+              collection: 'transfers',
+              method: 'search',
+              query,
+              from: typeof from === 'number' ? from : 0,
+              size: typeof size === 'number' ? size : 100,
+              sort: sort || [{ 'source.created_at.ms': 'desc' }],
+            });
+            response = _response;
+            break;
+          case 'transfers-stats':
+            if (!query) {
+              if (fromTime && toTime) {
+                fromTime = Number(fromTime) * 1000;
+                toTime = Number(toTime) * 1000;
+                query = {
+                  bool: {
+                    must: [
+                      { range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } },
+                    ],
+                  },
+                };
+              }
+            }
+            _response = await crud({
+              collection: 'transfers',
+              method: 'search',
+              query,
+              aggs: {
+                source_chains: {
+                  terms: { field: 'source.sender_chain.keyword', size: 1000 },
+                  aggs: {
+                    destination_chains: {
+                      terms: { field: 'source.recipient_chain.keyword', size: 1000 },
+                      aggs: {
+                        assets: {
+                          terms: { field: 'source.denom.keyword', size: 1000 },
+                          aggs: {
+                            volume: {
+                              sum: { field: 'source.value' },
+                            },
                           },
                         },
                       },
@@ -2228,186 +2230,231 @@ exports.handler = async (event, context, callback) => {
                   },
                 },
               },
-            },
-            size: 0,
-          });
-          if (_response?.aggs?.source_chains?.buckets) {
-            response = {
-              data: _.orderBy(_response.aggs.source_chains.buckets.flatMap(s => (
-                s.destination_chains?.buckets?.flatMap(d => (
-                  d.assets?.buckets?.map(a => {
-                    return {
-                      id: `${s.key}_${d.key}_${a.key}`,
+              size: 0,
+            });
+            if (_response?.aggs?.source_chains?.buckets) {
+              response = {
+                data: _.orderBy(_response.aggs.source_chains.buckets.flatMap(s => (
+                  s.destination_chains?.buckets?.flatMap(d => (
+                    d.assets?.buckets?.map(a => {
+                      return {
+                        id: `${s.key}_${d.key}_${a.key}`,
+                        source_chain: s.key,
+                        destination_chain: d.key,
+                        asset: a.key,
+                        num_txs: a.doc_count,
+                        volume: a.volume?.value,
+                      };
+                    }) || [{
+                      id: `${s.key}_${d.key}`,
                       source_chain: s.key,
                       destination_chain: d.key,
-                      asset: a.key,
-                      num_txs: a.doc_count,
-                      volume: a.volume?.value,
-                    };
-                  }) || [{
-                    id: `${s.key}_${d.key}`,
+                      num_txs: d.doc_count,
+                      volume: d.volume?.value,
+                    }]
+                  )) || [{
+                    id: `${s.key}`,
                     source_chain: s.key,
-                    destination_chain: d.key,
-                    num_txs: d.doc_count,
-                    volume: d.volume?.value,
+                    num_txs: s.doc_count,
+                    volume: s.volume?.value,
                   }]
-                )) || [{
-                  id: `${s.key}`,
-                  source_chain: s.key,
-                  num_txs: s.doc_count,
-                  volume: s.volume?.value,
-                }]
-              )), ['volume', 'num_txs'], ['desc', 'desc']),
-              total: _response.total,
-            };
-          }
-          else {
-            response = _response;
-          }
-          break;
-        default:
-          break;
-      }
+                )), ['volume', 'num_txs'], ['desc', 'desc']),
+                total: _response.total,
+              };
+            }
+            else {
+              response = _response;
+            }
+            break;
+          default:
+            break;
+        }
+      } catch (error) {}
       break;
     case '/gateway/{function}':
-      const { contractAddress } = { ...params };
-      let { event, chain } = { ...params };
-      if (chain) {
-        chain = chain.toLowerCase();
-      }
-      switch (req.params.function?.toLowerCase()) {
-        case 'save-events':
-          if (!(event && chain && contractAddress)) {
-            response = {
-              error: true,
-              code: 400,
-              message: 'parameters not valid',
-            };
-          }
-          else if (!(config?.[environment]?.gateway?.chains?.[chain]?.endpoints?.rpc && equals_ignore_case(config[environment].gateway.contracts?.[chain]?.address, contractAddress))) {
-            response = {
-              error: true,
-              code: 500,
-              message: 'wrong api configuration',
-            };
-          }
-          else {
-            try {
-              const { gateway } = { ...config[environment] };
-              // initial provider
-              const rpcs = gateway.chains[chain].endpoints.rpc;
-              const provider = rpcs.length > 1 ? new FallbackProvider(rpcs.map((url, i) => {
-                return {
-                  provider: new JsonRpcProvider(url),
-                  priority: i + 1,
-                  stallTimeout: 1000,
-                };
-              })) : new JsonRpcProvider(rpcs[0]);
-              // initial event name
-              const event_name = event.event;
-              // initial variables
-              let _params, _response, id = event._id || `${event.transactionHash}_${event.transactionIndex}_${event.logIndex}`;
-              event.id = id;
-              event.chain = chain;
-              event.contract_address = contractAddress;
-
-              // save each event
-              switch (event_name) {
-                case 'TokenSent':
-                  event = {
-                    ...(await getTransaction(provider, event.transactionHash, chain)),
-                    block_timestamp: await getBlockTime(provider, event.blockNumber),
-                    ...event,
-                  };
-                  _params = {
-                    method: 'set',
-                    collection: 'token_sent_events',
-                    id,
-                    path: `/token_sent_events/_update/${id}`,
-                    update_only: true,
-                    event,
-                  };
-                  _response = await crud(_params);
-                  response = {
-                    response: _response,
-                    data: {
-                      event,
-                    },
-                  };
-                  break;
-                default:
-                  break;
-              }
-            } catch (error) {
+      try {
+        let _params, _response;
+        const { txHash, sourceChain, destinationChain, asset, senderAddress, recipientAddress, fromTime, toTime, from, size, sort } = { ...params };
+        const { contractAddress } = { ...params };
+        let { query, event, chain } = { ...params };
+        if (chain) {
+          chain = chain.toLowerCase();
+        }
+        switch (req.params.function?.toLowerCase()) {
+          case 'save-events':
+            if (!(event && chain && contractAddress)) {
               response = {
                 error: true,
                 code: 400,
-                message: error?.message,
+                message: 'parameters not valid',
               };
             }
-          }
-          break;
-        case 'latest-event-block':
-          if (!(chain)) {
-            response = {
-              error: true,
-              code: 400,
-              message: 'parameters not valid',
-            };
-          }
-          else {
-            try {
-              // initial variables
-              let _params, _response;
-
-              // token sent
-              _params = {
-                method: 'query',
-                collection: 'token_sent_events',
-                query: {
-                  bool: {
-                    must: [
-                      { match: { 'event.chain': chain } },
-                      { exists: { field: 'event.blockNumber' } },
-                    ],
-                  },
-                },
-                use_raw_data: true,
-                size: 1,
-                sort: [{ 'event.blockNumber': 'desc' }],
+            else if (!(config?.[environment]?.gateway?.chains?.[chain]?.endpoints?.rpc && equals_ignore_case(config[environment].gateway.contracts?.[chain]?.address, contractAddress))) {
+              response = {
+                error: true,
+                code: 500,
+                message: 'wrong api configuration',
               };
-              _response = await crud(_params);
-              if (_response?.data?.[0]?.event?.blockNumber) {
+            }
+            else {
+              try {
+                const { gateway } = { ...config[environment] };
+                // initial provider
+                const rpcs = gateway.chains[chain].endpoints.rpc;
+                const provider = rpcs.length > 1 ? new FallbackProvider(rpcs.map((url, i) => {
+                  return {
+                    provider: new JsonRpcProvider(url),
+                    priority: i + 1,
+                    stallTimeout: 1000,
+                  };
+                })) : new JsonRpcProvider(rpcs[0]);
+                // initial event name
+                const event_name = event.event;
+                // initial variables
+                let id = event._id || `${event.transactionHash}_${event.transactionIndex}_${event.logIndex}`;
+                event.id = id;
+                event.chain = chain;
+                event.contract_address = contractAddress;
+
+                // save each event
+                switch (event_name) {
+                  case 'TokenSent':
+                    event = {
+                      ...(await getTransaction(provider, event.transactionHash, chain)),
+                      block_timestamp: await getBlockTime(provider, event.blockNumber),
+                      ...event,
+                    };
+                    _params = {
+                      method: 'set',
+                      collection: 'token_sent_events',
+                      id,
+                      path: `/token_sent_events/_update/${id}`,
+                      update_only: true,
+                      event,
+                    };
+                    _response = await crud(_params);
+                    response = {
+                      response: _response,
+                      data: {
+                        event,
+                      },
+                    };
+                    break;
+                  default:
+                    break;
+                }
+              } catch (error) {
                 response = {
+                  error: true,
+                  code: 400,
+                  message: error?.message,
+                };
+              }
+            }
+            break;
+          case 'latest-event-block':
+            if (!(chain)) {
+              response = {
+                error: true,
+                code: 400,
+                message: 'parameters not valid',
+              };
+            }
+            else {
+              try {
+                // token sent
+                _params = {
+                  method: 'query',
+                  collection: 'token_sent_events',
+                  query: {
+                    bool: {
+                      must: [
+                        { match: { 'event.chain': chain } },
+                        { exists: { field: 'event.blockNumber' } },
+                      ],
+                    },
+                  },
+                  use_raw_data: true,
+                  size: 1,
+                  sort: [{ 'event.blockNumber': 'desc' }],
+                };
+                _response = await crud(_params);
+                if (_response?.data?.[0]?.event?.blockNumber) {
+                  response = {
+                    ...response,
+                    latest: {
+                      ...response?.latest,
+                      token_sent_block: _response.data[0].event.blockNumber,
+                    },
+                  };
+                }
+
+                // finalize
+                response = {
+                  chain,
                   ...response,
                   latest: {
                     ...response?.latest,
-                    token_sent_block: _response.data[0].event.blockNumber,
+                    gateway_block: response?.latest?.token_sent_block,
                   },
                 };
+              } catch (error) {
+                response = {
+                  error: true,
+                  code: 400,
+                  message: error?.message,
+                };
               }
-
-              // finalize
-              response = {
-                chain,
-                ...response,
-                latest: {
-                  ...response?.latest,
-                  gateway_block: response?.latest?.token_sent_block,
+            }
+            break;
+          case 'token-sent':
+            const must = [], should = [], must_not = [];
+            if (txHash) {
+              must.push({ match: { 'event.transactionHash': txHash } });
+            }
+            if (sourceChain) {
+              must.push({ match: { 'event.chain': sourceChain } });
+            }
+            if (destinationChain) {
+              must.push({ match: { 'event.returnValues.destinationChain': destinationChain } });
+            }
+            if (asset) {
+              must.push({ match: { 'event.returnValues.asset': asset } });
+            }
+            if (senderAddress) {
+              should.push({ match: { 'event.transaction.from': senderAddress } });
+              should.push({ match: { 'event.receipt.from': senderAddress } });
+            }
+            if (recipientAddress) {
+              must.push({ match: { 'event.returnValues.destinationAddress': recipientAddress } });
+            }
+            if (fromTime && toTime) {
+              must.push({ range: { 'event.block_timestamp': { gte: fromTime, lte:toTime } } });
+            }
+            if (!query) {
+              query = {
+                bool: {
+                  must,
+                  should,
+                  must_not,
+                  minimum_should_match: should.length > 0 ? 1 : 0,
                 },
               };
-            } catch (error) {
-              response = {
-                error: true,
-                code: 400,
-                message: error?.message,
-              };
             }
-          }
-          break;
-        default:
-          break;
-      }
+            _response = await crud({
+              collection: 'token_sent_events',
+              method: 'search',
+              query,
+              from: typeof from === 'number' ? from : 0,
+              size: typeof size === 'number' ? size : 100,
+              sort: sort || [{ 'event.block_timestamp': 'desc' }],
+            });
+            response = _response;
+            break;
+          default:
+            break;
+        }
+      } catch (error) {}
       break;
     default:
       if (!req.url) {
