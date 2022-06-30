@@ -24,6 +24,8 @@ exports.handler = async (event, context, callback) => {
   const { chains, assets } = require('./data');
   // IAxelarGateway
   const IAxelarGateway = require('./data/contracts/interfaces/IAxelarGateway.json');
+  // ERC20
+  const ERC20 = require('./data/contracts/interfaces/ERC20.json');
 
   // initial environment
   const environment = process.env.ENVIRONMENT || config?.environment;
@@ -1548,7 +1550,22 @@ exports.handler = async (event, context, callback) => {
                 res.data.type = 'proxy';
               }
               else if ((params.cmd?.startsWith('axelard q evm batched-commands ') || params.cmd?.startsWith('axelard q evm latest-batched-commands ')) && params.cmd?.endsWith(' -oj')) {
+                const evm_chains = chains?.[environment]?.evm || [];
+                const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
+                const _assets = assets?.[environment] || [];
                 const chain = params.cmd.split(' ')[4]?.toLowerCase();
+                const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
+                const rpcs = chains_rpc[chain];
+                const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
+                  return {
+                    provider: new JsonRpcProvider(url),
+                    priority: i + 1,
+                    stallTimeout: 1000,
+                  };
+                }));
+                const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, chain));
+                const gateway_address = chain_data?.gateway_address;
+                const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
                 const output = to_json(res.data.stdout);
                 if (output) {
                   const commands = [];
@@ -1565,7 +1582,27 @@ exports.handler = async (event, context, callback) => {
                             cache_timeout: 1,
                           }
                         }).catch(error => { return { data: { error } }; });
-                        commands.push(to_json(_response?.data?.stdout));
+                        const command = to_json(_response?.data?.stdout);
+                        if (command) {
+                          const { salt, symbol } = { ...command.params };
+                          const asset_data = symbol && _assets.find(a => (equals_ignore_case(a?.symbol, symbol) && a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id) > -1) || a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.symbol, symbol)) > -1);
+                          if (gateway) {
+                            try {
+                              command.executed = await gateway.isCommandExecuted(`0x${command_id}`);
+                            } catch (error) {}
+                          }
+                          if (salt) {
+                            try {
+                              const contract_data = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id);
+                              const { contract_address } = { ...contract_data };
+                              const erc20 = contract_address && new Contract(contract_address, ERC20.abi, provider);
+                              if (erc20) {
+                                command.deposit_address = await erc20.depositAddress(salt);
+                              }
+                            } catch (error) {}
+                          }
+                        }
+                        commands.push(command);
                         // sleep before next cmd
                         await sleep(0.5 * 1000);
                       }
@@ -1596,20 +1633,7 @@ exports.handler = async (event, context, callback) => {
                     output.created_at = get_granularity(created_at);
                   }
                   if (['BATCHED_COMMANDS_STATUS_SIGNED'].includes(output.status) && output.command_ids) {
-                    const evm_chains = chains?.[environment]?.evm || [];
-                    const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
-                    const rpcs = chains_rpc[chain];
-                    const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
-                      return {
-                        provider: new JsonRpcProvider(url),
-                        priority: i + 1,
-                        stallTimeout: 1000,
-                      };
-                    }));
-                    const gateway_address = evm_chains?.find(c => c?.id === chain)?.gateway_address;
-                    const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
                     if (gateway) {
-                      const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
                       const command_ids = output.command_ids.filter(c => parseInt(c, 16) >= 1);
                       const sign_batch = {
                         chain,
@@ -1626,7 +1650,7 @@ exports.handler = async (event, context, callback) => {
                               { match: { 'confirm_deposit.transfer_id': transfer_id } },
                               { match: { 'vote.transfer_id': transfer_id } },
                             ],
-                            minimum_should_match: '50%',
+                            minimum_should_match: 1,
                           },
                         };
                         const _response = await crud({
@@ -1636,7 +1660,7 @@ exports.handler = async (event, context, callback) => {
                           size: 100,
                         });
                         if (_response?.data?.length > 0) {
-                          let executed = !!_response.data[0].sign_batch?.executed;
+                          let executed = !!_response.data[0].sign_batch?.executed || output.commands.find(c => c?.id === command_id)?.executed;
                           if (!executed) {
                             try {
                               executed = await gateway.isCommandExecuted(`0x${command_id}`);
