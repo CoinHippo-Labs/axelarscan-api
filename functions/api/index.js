@@ -24,8 +24,8 @@ exports.handler = async (event, context, callback) => {
   const { chains, assets } = require('./data');
   // IAxelarGateway
   const IAxelarGateway = require('./data/contracts/interfaces/IAxelarGateway.json');
-  // ERC20
-  const ERC20 = require('./data/contracts/interfaces/ERC20.json');
+  // IBurnableMintableCappedERC20
+  const IBurnableMintableCappedERC20 = require('./data/contracts/interfaces/IBurnableMintableCappedERC20.json');
 
   // initial environment
   const environment = process.env.ENVIRONMENT || config?.environment;
@@ -1584,8 +1584,7 @@ exports.handler = async (event, context, callback) => {
                         }).catch(error => { return { data: { error } }; });
                         const command = to_json(_response?.data?.stdout);
                         if (command) {
-                          const { salt, symbol } = { ...command.params };
-                          const asset_data = symbol && _assets.find(a => (equals_ignore_case(a?.symbol, symbol) && a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id) > -1) || a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.symbol, symbol)) > -1);
+                          const { salt } = { ...command.params };
                           if (gateway) {
                             try {
                               command.executed = await gateway.isCommandExecuted(`0x${command_id}`);
@@ -1593,9 +1592,10 @@ exports.handler = async (event, context, callback) => {
                           }
                           if (salt) {
                             try {
+                              const asset_data = _assets.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && !c?.is_native) > -1);
                               const contract_data = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id);
                               const { contract_address } = { ...contract_data };
-                              const erc20 = contract_address && new Contract(contract_address, ERC20.abi, provider);
+                              const erc20 = contract_address && new Contract(contract_address, IBurnableMintableCappedERC20.abi, provider);
                               if (erc20) {
                                 command.deposit_address = await erc20.depositAddress(salt);
                               }
