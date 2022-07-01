@@ -33,7 +33,7 @@ mainnet:
     polygon:
       endpoints:
         rpc:
-          - "https://polygon-rpc.com"
+          - "https://rpc.ankr.com/polygon"
       native_token:
         name: "Matic"
         symbol: "MATIC"

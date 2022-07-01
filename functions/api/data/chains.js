@@ -113,7 +113,7 @@ module.exports = {
           {
             chainId: '0x89',
             chainName: 'Polygon',
-            rpcUrls: ['https://polygon-rpc.com', 'https://rpc.ankr.com/polygon'],
+            rpcUrls: ['https://rpc.ankr.com/polygon'],
             nativeCurrency: {
               name: 'Matic',
               symbol: 'MATIC',
