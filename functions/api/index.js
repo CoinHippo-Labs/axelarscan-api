@@ -214,7 +214,7 @@ exports.handler = async (event, context, callback) => {
                   messages[i] = message;
                 }
               }
-              else if (messages.findIndex(m => m?.['@type']?.includes('ConfirmDepositRequest')) > -1) {
+              else if (messages.findIndex(m => m?.['@type']?.includes('ConfirmDepositRequest')) > -1 || messages.findIndex(m => m?.['@type']?.includes('ConfirmTransferKeyRequest')) > -1) {
                 const byte_array_fields = ['tx_id', 'burner_address', 'burn_address'];
                 for (let i = 0; i < messages.length; i++) {
                   const message = messages[i];

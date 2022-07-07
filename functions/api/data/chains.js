@@ -777,12 +777,22 @@ module.exports = {
         id: 'kujira',
         name: 'Kujira',
         short_name: 'KUJI',
+        explorer: {
+          name: 'Kujira',
+          url: 'https://testnets-cosmos.mintthemoon.xyz/kujira',
+          icon: '/logos/explorers/kujira.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          transaction_path: '/tx/{tx}',
+        },
         image: '/logos/chains/kujira.png',
         color: '#8b1227',
         website: 'https://kujira.app',
         prefix_address: 'kujira',
         endpoints: {
-          lcd: 'https://kujira-testnet-api.polkachu.com',
+          lcd: 'https://test-lcd-kujira.mintthemoon.xyz',
         },
       },
       {
