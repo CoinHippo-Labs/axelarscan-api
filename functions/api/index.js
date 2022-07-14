@@ -627,7 +627,7 @@ exports.handler = async (event, context, callback) => {
                           { match: { 'source.status_code': 0 } },
                           { match: { 'link.recipient_address': record.recipient_address } },
                           { range: { 'source.created_at.ms': { lte: record.created_at.ms, gte: moment(record.created_at.ms).subtract(24, 'hours').valueOf() } } },
-                          { range: { 'source.amount': { lte: record.amount * 1.05, gte: record.amount * 0.95 } } },
+                          { range: { 'source.amount': { lte: Math.ceil(record.amount * 1.05), gte: Math.floor(record.amount) } } },
                           { match: { 'source.denom': record.denom } },
                         ],
                         should: [
@@ -780,7 +780,7 @@ exports.handler = async (event, context, callback) => {
               // ConfirmDeposit & ConfirmERC20Deposit
               else if (messages.findIndex(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', ''))) > -1) {
                 const event_message = _.head(logs.flatMap(l => l?.events?.filter(e => e?.type === 'message')));
-                const created_at = moment(tx_response.timestamp).utc();
+                let created_at = moment(tx_response.timestamp).utc();
                 const event = _.head(logs.flatMap(l => l?.events?.filter(e => e?.type === 'depositConfirmation')));
                 const poll_id = to_json(event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
                 const record = {
@@ -976,6 +976,10 @@ exports.handler = async (event, context, callback) => {
                           if (height) {
                             record.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString() || amount;
                             if (equals_ignore_case(transaction.to, token_address) || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1) > -1) {
+                              const block_timestamp = await getBlockTime(provider, height);
+                              if (block_timestamp) {
+                                created_at = block_timestamp * 1000;
+                              }
                               record.denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id || denom;
                               const transfer_source = {
                                 id: transaction_id,
@@ -1143,7 +1147,8 @@ exports.handler = async (event, context, callback) => {
                                 stallTimeout: 1000,
                               };
                             }));
-                            const { created_at, sender_chain, recipient_chain, deposit_address, transaction_id, poll_id } = { ...record };
+                            const { sender_chain, recipient_chain, deposit_address, transaction_id, poll_id } = { ...record };
+                            let { created_at } = { ...record };
                             if (transaction_id) {
                               const transaction = await provider.getTransaction(transaction_id);
                               const height = transaction?.blockNumber;
@@ -1151,6 +1156,10 @@ exports.handler = async (event, context, callback) => {
                                 record.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString() || _.last(poll_id?.split('_'));
                                 const denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id;
                                 if (denom) {
+                                  const block_timestamp = await getBlockTime(provider, height);
+                                  if (block_timestamp) {
+                                    created_at = get_granularity(block_timestamp * 1000);
+                                  }
                                   record.denom = denom;
                                   const transfer_source = {
                                     id: transaction_id,

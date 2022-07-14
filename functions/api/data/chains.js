@@ -819,6 +819,9 @@ module.exports = {
           'osmosis-3': {
 
           },
+          'osmosis-4': {
+
+          },
         },
       },
       {
