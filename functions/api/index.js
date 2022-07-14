@@ -627,7 +627,7 @@ exports.handler = async (event, context, callback) => {
                           { match: { 'source.status_code': 0 } },
                           { match: { 'link.recipient_address': record.recipient_address } },
                           { range: { 'source.created_at.ms': { lte: record.created_at.ms, gte: moment(record.created_at.ms).subtract(24, 'hours').valueOf() } } },
-                          { range: { 'source.amount': { lte: Math.ceil(record.amount * 1.05), gte: Math.floor(record.amount) } } },
+                          { range: { 'source.amount': { lte: Math.ceil(record.amount * 2), gte: Math.floor(record.amount) } } },
                           { match: { 'source.denom': record.denom } },
                         ],
                         should: [
