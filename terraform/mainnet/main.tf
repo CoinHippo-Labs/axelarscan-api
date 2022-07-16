@@ -245,6 +245,18 @@ resource "aws_apigatewayv2_route" "route_gateway" {
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
+resource "aws_apigatewayv2_route" "route_evm_votes" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /evm-votes"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
+resource "aws_apigatewayv2_route" "route_heartbeats" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /heartbeats"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
 resource "aws_cloudwatch_event_rule" "schedule_crawler" {
   name                = "${var.package_name}-crawler-${var.environment}-rule"
   schedule_expression = "cron(*/10 * * * ? *)"

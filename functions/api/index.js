@@ -2203,7 +2203,7 @@ exports.handler = async (event, context, callback) => {
             if (fromTime && toTime) {
               fromTime = Number(fromTime) * 1000;
               toTime = Number(toTime) * 1000;
-              must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte:toTime } } });
+              must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
             }
             if (!query) {
               query = {
@@ -2222,6 +2222,7 @@ exports.handler = async (event, context, callback) => {
               from: typeof from === 'number' ? from : 0,
               size: typeof size === 'number' ? size : 100,
               sort: sort || [{ 'source.created_at.ms': 'desc' }],
+              track_total_hits: true,
             });
             response = _response;
             break;
@@ -2302,6 +2303,103 @@ exports.handler = async (event, context, callback) => {
           default:
             break;
         }
+      } catch (error) {}
+      break;
+    case '/evm-votes':
+      try {
+        const { chain, txHash, pollId, transactionId, voter, vote, from, size, sort } = { ...params };
+        let { query, fromTime, toTime } = { ...params };
+        const must = [], should = [], must_not = [];
+        if (chain) {
+          must.push({ match: { sender_chain: chain } });
+        }
+        if (txHash) {
+          must.push({ match: { txhash: txHash } });
+        }
+        if (pollId) {
+          must.push({ match_phrase: { poll_id: pollId } });
+        }
+        if (transactionId) {
+          must.push({ match: { transaction_id: transactionId } });
+        }
+        if (voter) {
+          must.push({ match: { voter } });
+        }
+        if (vote) {
+          switch (vote) {
+            case 'yes':
+            case 'no':
+              must.push({ match: { vote: vote === 'yes' } });
+              break;
+            default:
+              break;
+          }
+        }
+        if (fromTime && toTime) {
+          fromTime = Number(fromTime) * 1000;
+          toTime = Number(toTime) * 1000;
+          must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
+        }
+        if (!query) {
+          query = {
+            bool: {
+              must,
+              should,
+              must_not,
+              minimum_should_match: should.length > 0 ? 1 : 0,
+            },
+          };
+        }
+        const _response = await crud({
+          collection: 'evm_votes',
+          method: 'search',
+          query,
+          from: typeof from === 'number' ? from : 0,
+          size: typeof size === 'number' ? size : 100,
+          sort: sort || [{ 'created_at.ms': 'desc' }],
+          track_total_hits: true,
+        });
+        response = _response;
+      } catch (error) {}
+      break;
+    case '/heartbeats':
+      try {
+        const { sender, fromBlock, toBlock, from, size, sort } = { ...params };
+        let { query } = { ...params };
+        const must = [], should = [], must_not = [];
+        if (sender) {
+          must.push({ match: { sender } });
+        }
+        if (fromBlock || toBlock) {
+          const range = {};
+          if (fromBlock) {
+            range.gte = fromBlock;
+          }
+          if (toBlock) {
+            range.lte = toBlock;
+          }
+          must.push({ range: { height: range } });
+        }
+        if (!query) {
+          query = {
+            bool: {
+              must,
+              should,
+              must_not,
+              minimum_should_match: should.length > 0 ? 1 : 0,
+            },
+          };
+        }
+        const _response = await crud({
+          collection: 'heartbeats',
+          method: 'search',
+          query,
+          from: typeof from === 'number' ? from : 0,
+          size: typeof size === 'number' ? size : 200,
+          sort: sort || [{ period_height: 'desc' }],
+          track_total_hits: true,
+        });
+        response = _response;
       } catch (error) {}
       break;
     case '/gateway/{function}':
