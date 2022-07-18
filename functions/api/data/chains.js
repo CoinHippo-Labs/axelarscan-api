@@ -706,7 +706,7 @@ module.exports = {
           contract_0_path: '/address/{address}',
           transaction_path: '/tx/{tx}',
         },
-        image: '/logos/chains/moonbeam.png',
+        image: '/logos/chains/moonbase.png',
         color: '#53cbc8',
         website: 'https://moonbeam.network',
         gateway_address: '0x5769D84DD62a6fD969856c75c7D321b84d455929',

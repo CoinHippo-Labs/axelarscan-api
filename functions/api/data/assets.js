@@ -2234,7 +2234,7 @@ module.exports = {
       id: 'wdev-wei',
       symbol: 'WDEV',
       name: 'Dev',
-      image: '/logos/assets/glmr.png',
+      image: '/logos/assets/dev.png',
       decimals: 18,
       coingecko_id: 'moonbeam',
       contracts: [
