@@ -264,6 +264,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://rpc.axelarscan.io:1317',
         },
+        coingecko_id: 'axelar-network',
       },
       {
         id: 'cosmoshub',
@@ -768,6 +769,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://testnet.rpc.axelarscan.io:1317',
         },
+        coingecko_id: 'axelar-network',
       },
       {
         id: 'cosmoshub',
@@ -1165,6 +1167,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://devnet.rpc.axelarscan.io:1317',
         },
+        coingecko_id: 'axelar-network',
       },
     ],
   },
@@ -1261,6 +1264,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://testnet-2.rpc.axelarscan.io:1317',
         },
+        coingecko_id: 'axelar-network',
       },
     ],
   },
