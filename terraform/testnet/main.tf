@@ -239,6 +239,12 @@ resource "aws_lambda_function" "crawler" {
   kms_key_arn      = ""
 }
 
+resource "aws_apigatewayv2_route" "route_transfer_id" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /transfer/{pollId}"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
 resource "aws_apigatewayv2_route" "route_gateway" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /gateway/{function}"

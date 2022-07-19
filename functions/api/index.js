@@ -19,7 +19,7 @@ exports.handler = async (event, context, callback) => {
   // import asset price
   const assets_price = require('./services/assets');
   // import utils
-  const { sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getTransaction, getBlockTime } = require('./utils');
+  const { log, sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getTransaction, getBlockTime } = require('./utils');
   // data
   const { chains, assets } = require('./data');
   // IAxelarGateway
@@ -1658,6 +1658,7 @@ exports.handler = async (event, context, callback) => {
                             should: [
                               { match: { 'confirm_deposit.transfer_id': transfer_id } },
                               { match: { 'vote.transfer_id': transfer_id } },
+                              { match: { transfer_id } },
                             ],
                             minimum_should_match: 1,
                           },
@@ -2303,6 +2304,83 @@ exports.handler = async (event, context, callback) => {
           default:
             break;
         }
+      } catch (error) {}
+      break;
+    case '/transfer/{pollId}':
+      try {
+        let { pollId } = { ...req.params };
+        pollId = pollId.toLowerCase();
+        let { transferId } = { ...params };
+        if (typeof transferId === 'number' || !isNaN(transferId)) {
+          transferId = Number(transferId);
+        }
+
+        log('debug', req.url, 'save transfer id', { pollId, transferId });
+        if (typeof transferId === 'number') {
+          let _response = await crud({
+            collection: 'transfers',
+            method: 'get',
+            id: pollId,
+          });
+          const transfer = _response;
+          if (transfer) {
+            await crud({
+              collection: 'transfers',
+              method: 'set',
+              path: `/transfers/_update/${pollId}`,
+              id: pollId,
+              transfer_id: transferId,
+            });
+            await sleep(0.5 * 1000);
+            response = {
+              code: 200,
+              message: 'save transferId successful',
+            };
+
+            if (config?.[environment]?.endpoints?.api) {
+              const command_id = transferId.toString(16).padStart(64, '0');
+              _response = await crud({
+                collection: 'batches',
+                method: 'search',
+                query: {
+                  match: { command_ids: command_id },
+                },
+              });
+              const batches = _response?.data;
+              if (Array.isArray(batches)) {
+                // initial api
+                const api = axios.create({ baseURL: config[environment].endpoints.api });
+                for (const batch of batches) {
+                  const {
+                    chain,
+                    batch_id,
+                  } = { ...batch };
+                  if (chain && batch_id) {
+                    await api.post('', {
+                      module: 'cli',
+                      cmd: `axelard q evm batched-commands ${chain} ${batch_id} -oj`,
+                    }).catch(error => { return { data: { error } }; });
+                  }
+                }
+              }
+            }
+          }
+          else {
+            response = {
+              error: true,
+              code: 404,
+              message: 'transfer not found',
+            };
+          }
+        }
+        else {
+          response = {
+            error: true,
+            code: 400,
+            message: 'transferId is not a number',
+          };
+        }
+        log('debug', req.url, 'save transfer id output', { ...response });
       } catch (error) {}
       break;
     case '/evm-votes':
