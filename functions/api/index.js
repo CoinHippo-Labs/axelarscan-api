@@ -18,6 +18,11 @@ exports.handler = async (event, context, callback) => {
   const { crud } = require('./services/index');
   // import asset price
   const assets_price = require('./services/assets');
+  // import tvl
+  const {
+    getContractSupply,
+    getBalance,
+  } = require('./services/tvl');
   // import utils
   const { log, sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getTransaction, getBlockTime } = require('./utils');
   // data
@@ -1772,9 +1777,29 @@ exports.handler = async (event, context, callback) => {
       break;
     case '/cross-chain/{function}':
       try {
-        let _response;
-        const { txHash, confirmed, status, sourceChain, destinationChain, asset, depositAddress, senderAddress, recipientAddress, from, size, sort } = { ...params };
-        let { query, fromTime, toTime } = { ...params };
+        const evm_chains_data = chains?.[environment]?.evm || [];
+        const assets_data = assets?.[environment] || [];
+
+        let _response, data;
+        const {
+          txHash,
+          confirmed,
+          status,
+          sourceChain,
+          destinationChain,
+          asset,
+          depositAddress,
+          senderAddress,
+          recipientAddress,
+          from,
+          size,
+          sort,
+        } = { ...params };
+        let {
+          query,
+          fromTime,
+          toTime,
+        } = { ...params };
         switch (req.params.function?.toLowerCase()) {
           case 'transfers-status':
             if (txHash) {
@@ -1790,7 +1815,6 @@ exports.handler = async (event, context, callback) => {
                 size: 1,
               });
               let transfer = _response?.data?.[0];
-              const _assets = assets?.[environment] || [];
               if (!transfer && depositAddress) {
                 let created_at = moment().utc();
                 const evm_chains = chains?.[environment]?.evm || [];
@@ -1829,7 +1853,7 @@ exports.handler = async (event, context, callback) => {
                               sender_address: transaction.from,
                               recipient_address: depositAddress,
                               amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString(),
-                              denom: _assets?.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id,
+                              denom: assets_data?.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id,
                             };
                             // get link
                             query = {
@@ -1850,7 +1874,7 @@ exports.handler = async (event, context, callback) => {
                               transfer_source.recipient_chain = normalize_chain(link.recipient_chain || transfer_source.recipient_chain);
                               transfer_source.denom = transfer_source.denom || link.asset;
                               if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
+                                const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 if (asset_data) {
                                   const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
                                   transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
@@ -1935,7 +1959,7 @@ exports.handler = async (event, context, callback) => {
                                 transfer_source.recipient_chain = normalize_chain(link.recipient_chain);
                                 transfer_source.denom = transfer_source.denom || link.asset;
                                 if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                                  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                                   if (asset_data) {
                                     const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
                                     transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
@@ -1996,7 +2020,7 @@ exports.handler = async (event, context, callback) => {
                 transfer.source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer.source.recipient_chain || link?.recipient_chain);
                 if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
                   const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
-                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
+                  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
                   if (chain_data && asset_data) {
                     const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
                     transfer.source.amount = Number(utils.formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
@@ -2300,6 +2324,103 @@ exports.handler = async (event, context, callback) => {
             else {
               response = _response;
             }
+            break;
+          case 'assets':
+            response = assets_data;
+            break;
+          case 'tvl':
+            let _assets = params.assets || asset;
+            _assets = Array.isArray(_assets) ? _assets : (_assets?.split(',') || []);
+            if (_assets.length < 1) {
+              _assets = assets_data.map(a => a?.id);
+            }
+            else {
+              _assets = _assets.map(a => {
+                const asset_data = assets_data.find(_a => equals_ignore_case(_a?.id, a) || equals_ignore_case(_a?.symbol, a) || _a?.contracts?.findIndex(c => equals_ignore_case(c?.symbol, a)) > -1 || _a?.ibc?.findIndex(i => equals_ignore_case(i?.symbol, a)) > -1);
+                return asset_data?.id || a;
+              });
+              _assets = _assets.filter(a => assets_data.findIndex(_a => _a?.id === a) > -1);
+            }
+
+            const providers = Object.fromEntries(evm_chains_data.map(c => {
+              const {
+                id,
+                provider_params,
+              } = { ...c };
+
+              const rpcs = provider_params?.[0]?.rpcUrls?.filter(url => url) || [];
+              const provider = rpcs.length === 1 ?
+                new JsonRpcProvider(rpcs[0]) :
+                new FallbackProvider(rpcs.map((url, i) => {
+                  return {
+                    provider: new JsonRpcProvider(url),
+                    priority: i + 1,
+                    stallTimeout: 1000,
+                  };
+                }));
+              return [id, provider];
+            }));
+
+            data = [];
+            for (const asset of _assets) {
+              const asset_data = assets_data.find(a => a?.id === asset);
+              const {
+                contracts,
+              } = { ...asset_data };
+
+              // get tvl from rpc
+              const tvl = await evm_chains_data.reduce(async (acc, c) => {
+                const {
+                  id,
+                  chain_id,
+                  gateway_address,
+                } = { ...c };
+                const provider = providers[id];
+
+                const contract_data = contracts?.find(_c => _c?.chain_id === chain_id);
+                const {
+                  is_native,
+                } = { ...contract_data };
+
+                let result;
+                if (contract_data && provider) {
+                  const supply = !is_native ? await getContractSupply(contract_data, provider) : 0;
+                  const balance = await getBalance(gateway_address, contract_data, provider);
+                  result = {
+                    supply,
+                    gateway_balance: balance,
+                    total: supply + balance,
+                  };
+                }
+
+                return {
+                  ...await acc,
+                  [`${id}`]: result,
+                };
+              }, {});
+
+              // query price
+              const prices_data = await assets_price({
+                denom: asset,
+              });
+              const price = prices_data?.[0]?.price;
+
+              data.push({
+                asset,
+                price,
+                tvl,
+                total: _.sum(Object.values(tvl).map(t => {
+                  const {
+                    gateway_balance,
+                    total,
+                  } = { ...t };
+                  return contracts?.findIndex(c => c?.is_native) > -1 ?
+                    gateway_balance :
+                    total;
+                })),
+              });
+            }
+            response = data;
             break;
           default:
             break;
