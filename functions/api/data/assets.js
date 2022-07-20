@@ -1638,7 +1638,7 @@ module.exports = {
       coingecko_id: 'axelar-network',
       contracts: [
         {
-          contract_address: '0x321c017c08b681b1a34909eb159ed128772a5bbe',
+          contract_address: '0x08006a6C38AA63F22Da7694FDA6A8272f89c4c6b',
           chain_id: 3,
           decimals: 6,
         },
@@ -1648,22 +1648,22 @@ module.exports = {
           decimals: 6,
         },
         {
-          contract_address: '0x46cc87ea84586c03bb2109ed9b33f998d40b7623',
+          contract_address: '0xa8B51e6517f9A6Ab7b247bF10b71b1A738eD8E50',
           chain_id: 43113,
           decimals: 6,
         },
         {
-          contract_address: '0x6ff1fa8cfb26551aa13e3d5dbf077f0a98ecd232',
+          contract_address: '0x9c79782d2B13CAC0Fa2FB00D188104fe6f98E533',
           chain_id: 80001,
           decimals: 6,
         },
         {
-          contract_address: '0xc1ff1364f7a263a535e3caf60d424b78bb5b7c19',
+          contract_address: '0x66A5df72619982a2Ef49e8317079b6806d56f66B',
           chain_id: 4002,
           decimals: 6,
         },
         {
-          contract_address: '0x8a6614f33ec72fb70084b22b2effb643424e9cc9',
+          contract_address: '0xB4D56B6AD4DD2B48e68D2a26C25A04dC1c0eE393',
           chain_id: 1287,
           decimals: 6,
         },
@@ -1791,31 +1791,37 @@ module.exports = {
           contract_address: '0xc2fA98faB811B785b81c64Ac875b31CC9E40F9D2',
           chain_id: 97,
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           contract_address: '0x57f1c63497aee0be305b8852b354cec793da43bb',
           chain_id: 43113,
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           contract_address: '0x2c852e740b62308c46dd29b982fbb650d063bd07',
           chain_id: 80001,
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           contract_address: '0x75cc4fdf1ee3e781c1a3ee9151d5c6ce34cf5c61',
           chain_id: 4002,
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           contract_address: '0xd1633f7fb3d716643125d6415d4177bc36b7186b',
           chain_id: 1287,
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           contract_address: '0xFfB4749710EC6286b3A0dC2F24165DA622dA2ff5',
           chain_id: 1313161555,
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
       ],
       ibc: [
@@ -1823,16 +1829,25 @@ module.exports = {
           ibc_denom: 'ibc/3DC20E9A12C8F19A92CDEBC37116C26EADF4C65E7498193791A3DAAD0B263556',
           chain_id: 'cosmoshub',
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           ibc_denom: 'ibc/423FB88C7D1D4FCA2F7E67F07473DB4BB14282AE6F7B1A41B220A1AD9A762254',
           chain_id: 'osmosis',
           decimals: 6,
+          symbol: 'axlaUSDC',
         },
         {
           ibc_denom: 'ibc/6F34E1BD664C36CE49ACC28E60D62559A5F96C4F9A6CCE4FC5A67B2852E24CFE',
           chain_id: 'crescent',
           decimals: 6,
+          symbol: 'axlaUSDC',
+        },
+        {
+          ibc_denom: 'ibc/6D45A5CD1AADE4B527E459025AC1A5AEF41AE99091EF3069F3FEAACAFCECCD21',
+          chain_id: 'sei',
+          decimals: 6,
+          symbol: 'axlaUSDC',
         },
       ],
     },
@@ -1852,8 +1867,26 @@ module.exports = {
       ],
       ibc: [
         {
+          ibc_denom: 'ibc/9172E8B854F0E25A9D075272CE71A9534B91A0A2C581B747BB4CCD35F77E4C76',
+          chain_id: 'terra',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/8DF7319B304D91E491408FAEECB205E6E7043E3FE759553EAD07566CE1822FE0',
           chain_id: 'osmosis',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          ibc_denom: 'ibc/9172E8B854F0E25A9D075272CE71A9534B91A0A2C581B747BB4CCD35F77E4C76',
+          chain_id: 'kujira',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          ibc_denom: 'ibc/42BCC21A2B784E813F8878739FD32B4AA2D0A68CAD94F4C88B9EA98609AB0CCD',
+          chain_id: 'sei',
           decimals: 8,
           symbol: 'axlWBTC',
         },
@@ -1941,6 +1974,12 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWETH',
         },
+        {
+          ibc_denom: 'ibc/C2A89D98873BB55B62CE86700DFACA646EC80352E8D03CC6CF34DD44E46DC75D',
+          chain_id: 'sei',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
       ],
     },
     {
@@ -1994,7 +2033,14 @@ module.exports = {
           symbol: 'axlWBNB',
         },
       ],
-      ibc: [],
+      ibc: [
+        {
+          ibc_denom: 'ibc/0B164939D1D7F9EF608C2BF98BEE34396DFDD5EF71F021B5CB63DA9159BD7E81',
+          chain_id: 'sei',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+      ],
     },
     {
       id: 'wavax-wei',
@@ -2072,6 +2118,12 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWAVAX',
         },
+        {
+          ibc_denom: 'ibc/2B1862B1CBE5ABC2E9457A21F2289024853AF12AEF8BC5EF8E4C3FB8B754BE2A',
+          chain_id: 'sei',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
       ],
     },
     {
@@ -2083,7 +2135,7 @@ module.exports = {
       coingecko_id: 'matic-network',
       contracts: [
         {
-          contract_address: '0xeae61fd42a56f435a913d1570ff301a532d027b2',
+          contract_address: '0xEAE61FD42A56F435a913d1570fF301a532d027b2',
           chain_id: 3,
           decimals: 18,
           symbol: 'axlWMATIC',
@@ -2095,25 +2147,25 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
-          contract_address: '0xb923e2374639d0605388d91cfedafcece03cfd8f',
+          contract_address: '0xB923E2374639D0605388D91CFedAfCeCE03Cfd8f',
           chain_id: 43113,
           decimals: 18,
           symbol: 'axlWMATIC',
         },
         {
-          contract_address: '0x9c3c9283d3e44854697cd22d3faa240cfb032889',
+          contract_address: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
           chain_id: 80001,
           decimals: 18,
           is_native: true,
         },
         {
-          contract_address: '0x3c12d813bb36295a8361c4740a732bb700df6db0',
+          contract_address: '0x3C12d813bb36295A8361C4740A732Bb700df6Db0',
           chain_id: 4002,
           decimals: 18,
           symbol: 'axlWMATIC',
         },
         {
-          contract_address: '0xde3db4fd7d7a5cc7d8811b7bafa4103fd90282f3',
+          contract_address: '0xde3dB4FD7D7A5Cc7D8811b7BaFA4103FD90282f3',
           chain_id: 1287,
           decimals: 18,
           symbol: 'axlWMATIC',
@@ -2147,6 +2199,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/4E84944734F09DEAEC84882F5CF6ECD0F48CA9400F07ED355F6502C67930A3DD',
           chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/945B918E535DCCA5EA4B94FC65589787572C8D2B06E5F9C8927F3FA94AE8EB5F',
+          chain_id: 'sei',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -2228,6 +2286,12 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWFTM',
         },
+        {
+          ibc_denom: 'ibc/55E9FAD184A9FE483EEA63FD0DDBADFDED7F2A062B6329224F81CAAC722B6401',
+          chain_id: 'sei',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
       ],
     },
     {
@@ -2303,6 +2367,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/BDEB81D8E81910D832AFCDEE9822923DB84ECD8981D10A2282D202EAAD2A6C0C',
           chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          ibc_denom: 'ibc/DF0CB572FFA519B1AA2DEE4A396FBAADE373B5ABB76CF5BD33E0619612B60B38',
+          chain_id: 'sei',
           decimals: 18,
           symbol: 'axlWDEV',
         },

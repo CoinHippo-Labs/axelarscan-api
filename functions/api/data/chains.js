@@ -916,6 +916,28 @@ module.exports = {
         },
       },
       {
+        id: 'sei',
+        name: 'Sei',
+        short_name: 'SEI',
+        explorer: {
+          name: 'Kujira',
+          url: 'https://sei.explorers.guru',
+          icon: '/logos/explorers/sei.png',
+          block_path: '/block/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          transaction_path: '/transaction/{tx}',
+        },
+        image: '/logos/chains/sei.png',
+        color: '#b5354f',
+        website: 'https://www.seinetwork.io',
+        prefix_address: 'sei',
+        endpoints: {
+          lcd: 'https://rest-sei-test.ecostake.com',
+        },
+      },
+      {
         id: 'terra',
         name: 'Terra',
         short_name: 'TERRA',
