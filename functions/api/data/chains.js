@@ -917,10 +917,10 @@ module.exports = {
       },
       {
         id: 'sei',
-        name: 'Sei',
+        name: 'Sei Network',
         short_name: 'SEI',
         explorer: {
-          name: 'Kujira',
+          name: 'Sei',
           url: 'https://sei.explorers.guru',
           icon: '/logos/explorers/sei.png',
           block_path: '/block/{block}',
