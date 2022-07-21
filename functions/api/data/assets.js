@@ -1002,6 +1002,21 @@ module.exports = {
       ],
     },
     {
+      id: 'uxki',
+      symbol: 'XKI',
+      name: 'KI',
+      image: '/logos/assets/xki.png',
+      decimals: 6,
+      coingecko_id: 'ki',
+      ibc: [
+        {
+          ibc_denom: 'ibc/33C0B536F10138B8F2F7485F0A48F53C4F5A7004DFAB00EA750312731209293F',
+          chain_id: 'ki',
+          decimals: 6,
+        },
+      ],
+    },
+    {
       id: 'rai-wei',
       symbol: 'RAI',
       name: 'Rai',
@@ -2395,6 +2410,21 @@ module.exports = {
         {
           ibc_denom: 'ibc/13B2C536BB057AC79D5616B8EA1B9540EC1F2170718CAFF6F0083C966FFFED0B',
           chain_id: 'axelarnet',
+          decimals: 6,
+        },
+      ],
+    },
+    {
+      id: 'usei',
+      symbol: 'SEI',
+      name: 'Sei',
+      image: '/logos/assets/sei.png',
+      decimals: 6,
+      coingecko_id: '',
+      ibc: [
+        {
+          ibc_denom: 'ibc/7E47E7ADFF4B89F9D8ABD52016697501A3041F4C6BFD2C3CCFE7A6EB3024269A',
+          chain_id: 'sei',
           decimals: 6,
         },
       ],
