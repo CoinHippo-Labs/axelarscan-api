@@ -107,6 +107,12 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F',
+          chain_id: 'kujira',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/CD7B6B7D85FDF5F72A78E806BCFB8060B561EEF27677B111E0A610626056451E',
           chain_id: 'secret',
           decimals: 6,
