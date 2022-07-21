@@ -2172,6 +2172,18 @@ exports.handler = async (event, context, callback) => {
                       minimum_should_match: 1,
                     },
                   });
+                  should.push({
+                    bool: {
+                      must: [
+                        { match: { 'source.recipient_chain': 'axelarnet' } },
+                      ],
+                      should: [
+                        { exists: { field: 'confirm_deposit' } },
+                        { exists: { field: 'vote' } },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  });
                   break
                 case 'pending':
                   must_not.push({
@@ -2196,6 +2208,18 @@ exports.handler = async (event, context, callback) => {
                             should: cosmos_chains_data?.map(c => {
                               return { match: { 'source.recipient_chain': c?.id } };
                             }) || [],
+                            minimum_should_match: 1,
+                          },
+                        },
+                        {
+                          bool: {
+                            must: [
+                              { match: { 'source.recipient_chain': 'axelarnet' } },
+                            ],
+                            should: [
+                              { exists: { field: 'confirm_deposit' } },
+                              { exists: { field: 'vote' } },
+                            ],
                             minimum_should_match: 1,
                           },
                         },
