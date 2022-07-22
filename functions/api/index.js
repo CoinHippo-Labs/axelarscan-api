@@ -437,8 +437,13 @@ exports.handler = async (event, context, callback) => {
                         record.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
                       }
                       record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
-                      if (record.fee && record.amount < record.fee) {
-                        record.insufficient_fee = true;
+                      if (record.fee) {
+                        if (record.amount < record.fee) {
+                          record.insufficient_fee = true;
+                        }
+                        else {
+                          record.amount_received = record.amount - record.fee;
+                        }
                       }
                       record.denom = asset_data?.id || record.denom;
                     }
@@ -552,8 +557,13 @@ exports.handler = async (event, context, callback) => {
                                       record.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
                                     }
                                     record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
-                                    if (record.fee && record.amount < record.fee) {
-                                      record.insufficient_fee = true;
+                                    if (record.fee) {
+                                      if (record.amount < record.fee) {
+                                        record.insufficient_fee = true;
+                                      }
+                                      else {
+                                        record.amount_received = record.amount - record.fee;
+                                      }
                                     }
                                     record.denom = asset_data?.id || record.denom;
                                   }
@@ -644,14 +654,32 @@ exports.handler = async (event, context, callback) => {
                     query,
                     size: 1,
                   });
-                  if (response?.data?.length < 1) {
+                  if (response?.data?.filter(d => typeof d?.source?.amount_received === 'number').length < 1) {
                     query = {
                       bool: {
                         must: [
                           { match: { 'source.status_code': 0 } },
                           { match: { 'link.recipient_address': record.recipient_address } },
                           { range: { 'source.created_at.ms': { lte: record.created_at.ms, gte: moment(record.created_at.ms).subtract(24, 'hours').valueOf() } } },
-                          { range: { 'source.amount': { lte: Math.ceil(record.amount * 2), gte: Math.floor(record.amount) } } },
+                          { range: { 'source.amount': { gte: Math.floor(record.amount) } } },
+                          {
+                            bool: {
+                              should: [
+                                { match: { 'source.amount_received': record.amount } },
+                                {
+                                  bool: {
+                                    must: [
+                                      { range: { 'source.amount': { lte: Math.ceil(record.amount * 2) } } },
+                                    ],
+                                    must_not: [
+                                      { exists: { field: 'source.amount_received' } },
+                                    ],
+                                  },
+                                },
+                              ],
+                              minimum_should_match: 1,
+                            },
+                          },
                           { match: { 'source.denom': record.denom } },
                         ],
                         should: [
@@ -1053,8 +1081,13 @@ exports.handler = async (event, context, callback) => {
                                     transfer_source.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
                                   }
                                   transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
-                                  if (transfer_source.fee && transfer_source.amount < transfer_source.fee) {
-                                    transfer_source.insufficient_fee = true;
+                                  if (transfer_source.fee) {
+                                    if (transfer_source.amount < transfer_source.fee) {
+                                      transfer_source.insufficient_fee = true;
+                                    }
+                                    else {
+                                      transfer_source.amount_received = transfer_source.amount - transfer_source.fee;
+                                    }
                                   }
                                 }
                               }
