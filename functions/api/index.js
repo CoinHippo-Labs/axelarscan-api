@@ -586,9 +586,26 @@ exports.handler = async (event, context, callback) => {
               }
               // RouteIBCTransfersRequest -> ibc_send
               else if (messages.findIndex(m => _.last(m?.['@type']?.split('.')) === 'RouteIBCTransfersRequest') > -1) {
-                const event_send_packets = logs.map(l => l?.events?.find(e => e?.type === 'send_packet')).filter(e => e?.attributes?.length > 0).map(e => {
-                  const { attributes } = { ...e };
-                  return Object.fromEntries(attributes.filter(a => a?.key && a.value).map(a => [a.key, ['packet_data'].includes(a.key) ? to_json(a.value) : a.value]));
+                const event_send_packets = logs.map(l => l?.events?.find(e => e?.type === 'send_packet')).filter(e => e?.attributes?.length > 0).flatMap(e => {
+                  let {
+                    attributes,
+                  } = { ...e };
+                  attributes = attributes.filter(a => a?.key && a.value);
+                  const events = [];
+                  let event;
+                  attributes.forEach((a, i) => {
+                    if (['packet_data'].includes(a.key) || i === attributes.length - 1) {
+                      if (event) {
+                        events.push(event);
+                      }
+                      event = {};
+                    }
+                    event = {
+                      ...event,
+                      [a.key]: ['packet_data'].includes(a.key) ? to_json(a.value) : a.value,
+                    };
+                  });
+                  return events;
                 }).filter(e => e.packet_data?.amount).map(e => {
                   const { packet_data } = { ...e };
                   const { sender, receiver, amount, denom } = { ...packet_data };
@@ -616,6 +633,8 @@ exports.handler = async (event, context, callback) => {
                     bool: {
                       must: [
                         { match: { 'ibc_send.id': record.id } },
+                        { match: { 'ibc_send.recipient_address': record.recipient_address } },
+                        { match: { 'ibc_send.denom': record.denom } },
                       ],
                     },
                   };
