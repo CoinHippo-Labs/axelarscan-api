@@ -197,6 +197,12 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
+          ibc_denom: 'ibc/F2331645B9683116188EF36FC04A809C28BD36B54555E8705A37146D0182F045',
+          chain_id: 'kujira',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
           ibc_denom: 'ibc/BFB5BBB93D43AC6458BA9C8871B3F3FE5D4B81301A1BEA2BDA2297C1D6A5D47F',
           chain_id: 'secret',
           decimals: 6,
@@ -281,6 +287,12 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
+          ibc_denom: 'ibc/3914BDEF46F429A26917E4D8D434620EC4817DC6B6E68FB327E190902F1E9242',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
           ibc_denom: 'ibc/8161CB553A9AF7494CA20237CD7A52027409AA1A3B55A37F968CCE99C7C5BDF2',
           chain_id: 'secret',
           decimals: 18,
@@ -331,6 +343,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/7FFC60524C4513A3A8E0A407CC89BFF5A861EC624209D72EB26FC10ADAEBA70E',
           chain_id: 'crescent',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          ibc_denom: 'ibc/301DAF9CB0A9E247CD478533EF0E21F48FF8118C4A51F77C8BC3EB70E5566DBC',
+          chain_id: 'kujira',
           decimals: 8,
           symbol: 'axlWBTC',
         },
@@ -389,6 +407,12 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
+          ibc_denom: 'ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
           ibc_denom: 'ibc/3665ACBA97B115133C35F060DB67E9671035E9ED48B2FC9140260C122D0C4E03',
           chain_id: 'secret',
           decimals: 18,
@@ -439,6 +463,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/3D4499D811B055223D0EFB06D2211F84772CAEF0FB987F71BAE716191714B391',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -551,6 +581,12 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/044FB7DDE7236498107023152F9F235E5DB50D9E999761CB3D4CF8C217F938F6',
           chain_id: 'secret',
           decimals: 18,
@@ -601,6 +637,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/23B62EFD1B9444733889B42362570C774801430A1C656A0A3F8D6D69AE93ED8B',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -665,6 +707,12 @@ module.exports = {
           symbol: 'axlWGLMR',
         },
         {
+          ibc_denom: 'ibc/C8D63703F5805CE6A2B20555139CF6ED9CDFA870389648EB08D688B94B0AE2C1',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
           ibc_denom: 'ibc/A79A703A34F0F6F3316FBF80D31F2D1070C0B61F0945DA91D89D0F0923243B60',
           chain_id: 'secret',
           decimals: 18,
@@ -722,6 +770,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/624BA9DD171915A2B9EA70F69638B2CEA179959850C1A586F6C485498F29EDD4',
           chain_id: 'injective',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
+          ibc_denom: 'ibc/B37E4D9FB5B30F3E1E20A4B2DE2A005E584C5C822C44527546556AE2470B4539',
+          chain_id: 'kujira',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -806,6 +860,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/21DB3093824F38A29399E7466B5870559AEC683D0D09D746F9EC47BB8505CBF7',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/7B11FE7D6385B46B9F3598B298B81A773CB20A8BA12001D87A78580314218364',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1057,6 +1117,12 @@ module.exports = {
           symbol: 'axlRAI',
         },
         {
+          ibc_denom: 'ibc/4CA23432A78B272A9EB7010CB72A15A199066D239F1B13BB583F3945EB8A315C',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
           ibc_denom: 'ibc/18EF59597C5230BFAE79EBEE4248556298A4FDB5B0DA8AAAD54C247B0011998B',
           chain_id: 'secret',
           decimals: 18,
@@ -1107,6 +1173,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/1AD2DD08D1AADAE7F667F82767425FEC119BAFEA5F514FCEA22E6E4E446BEADA',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
+          ibc_denom: 'ibc/FC59D6840A41252352263CEA2B832BB86D68D03CBA194263CB9F3C15946796FB',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -1165,6 +1237,12 @@ module.exports = {
           symbol: 'axlAAVE',
         },
         {
+          ibc_denom: 'ibc/5E6061C9FE6FC8E5E4E0B7A9313561D28BA6D2A246877DF0FB6636EEEA055131',
+          chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlAAVE',
+        },
+        {
           ibc_denom: 'ibc/C59C40DF5B210194B7E6E0652978967975374A0849DD30583006BDEFFB59312B',
           chain_id: 'secret',
           decimals: 18,
@@ -1215,6 +1293,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/B74E78325EB51CABBA812618947F04941B564F137C6A9C19E2626CE3EB5E1F8D',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlstETH',
+        },
+        {
+          ibc_denom: 'ibc/CA856BEC686F1F2DCFA410D282B1325D98B8AB81436A626F4214B7BF441AAA98',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlstETH',
         },
@@ -1273,6 +1357,12 @@ module.exports = {
           symbol: 'axlAPE',
         },
         {
+          ibc_denom: 'ibc/1C9CC36F8E961719EAF52D4A2ECAB84538D0425C63CAC77D516BF07FFAF931D5',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlAPE',
+        },
+        {
           ibc_denom: 'ibc/DFE7E0AE42D8D58D7D06D9D6538C66F4090B793CC3766B69A6A0F0DE25F00413',
           chain_id: 'secret',
           decimals: 18,
@@ -1323,6 +1413,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/392F7936508B675F7F794504F4829D6F459C0E7488EDE6B2C4E9192037E3F03F',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
+          ibc_denom: 'ibc/0A88A08F3E9573DB9D8CB74AA3746F6D23C41C3EE7B6CC5AA4695A1DD74FF86B',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlUNI',
         },
@@ -1381,6 +1477,12 @@ module.exports = {
           symbol: 'axlSHIB',
         },
         {
+          ibc_denom: 'ibc/43BF3152103ED706E207005E7C433AB3440572C1D444FFE49321A0EF6A8EFC82',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
           ibc_denom: 'ibc/32D4AEE974D7B47A96BC539C796A38AA6CF65B3B2C36FDA621A326DC08E736D5',
           chain_id: 'secret',
           decimals: 18,
@@ -1431,6 +1533,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/D34DC22F291BC5E508968530D0E5DA46A694C1515FA940533858CB9470E8A846',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlAXS',
+        },
+        {
+          ibc_denom: 'ibc/5181AFC5D9858E80212EE5C9F35D52DAE4E26AD5F55B19DD633206C51DECB6AF',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlAXS',
         },
@@ -1489,6 +1597,12 @@ module.exports = {
           symbol: 'axlXCN',
         },
         {
+          ibc_denom: 'ibc/7558FFC9B72318EC0510FC99970F079AA28CE1D96B3C34A775A0CCDBE5A2D500',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlXCN',
+        },
+        {
           ibc_denom: 'ibc/8EEF67E351D187781488147142FE79C947E28715CB659038F4071F3D5D483354',
           chain_id: 'secret',
           decimals: 18,
@@ -1539,6 +1653,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/1E8149AC74041CF61448A57858887B2D2C221B9B194509120BD3AD6E4278AAB0',
           chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
+          ibc_denom: 'ibc/31A4E6623063E702FB9CF2E7B616DFCCDE319CA2FC4775CDFF26F29F628E7ACF',
+          chain_id: 'kujira',
           decimals: 18,
           symbol: 'axlMKR',
         },
