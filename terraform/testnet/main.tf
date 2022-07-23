@@ -202,6 +202,24 @@ resource "aws_apigatewayv2_route" "route_cross-chain" {
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
+resource "aws_apigatewayv2_route" "route_transfer_id" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /transfer/{pollId}"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
+resource "aws_apigatewayv2_route" "route_evm_votes" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /evm-votes"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
+resource "aws_apigatewayv2_route" "route_heartbeats" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /heartbeats"
+  target    = "integrations/${var.api_gateway_integration_id}"
+}
+
 resource "aws_cloudwatch_event_rule" "schedule" {
   name                = "${var.package_name}-${var.environment}-rule"
   schedule_expression = "cron(*/15 * * * ? *)"
@@ -239,27 +257,9 @@ resource "aws_lambda_function" "crawler" {
   kms_key_arn      = ""
 }
 
-resource "aws_apigatewayv2_route" "route_transfer_id" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /transfer/{pollId}"
-  target    = "integrations/${var.api_gateway_integration_id}"
-}
-
 resource "aws_apigatewayv2_route" "route_gateway" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /gateway/{function}"
-  target    = "integrations/${var.api_gateway_integration_id}"
-}
-
-resource "aws_apigatewayv2_route" "route_evm_votes" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /evm-votes"
-  target    = "integrations/${var.api_gateway_integration_id}"
-}
-
-resource "aws_apigatewayv2_route" "route_heartbeats" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /heartbeats"
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
