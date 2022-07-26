@@ -960,6 +960,28 @@ module.exports = {
         },
       },
       {
+        id: 'fetch',
+        name: 'Fetch.ai',
+        short_name: 'FET',
+        explorer: {
+          name: 'Fetch',
+          url: ' https://explore-dorado.fetch.ai',
+          icon: '/logos/explorers/fetch.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          transaction_path: '/transactions/{tx}',
+        },
+        image: '/logos/chains/fetch.png',
+        color: '#202944',
+        website: 'https://fetch.ai',
+        prefix_address: 'fetch',
+        endpoints: {
+          lcd: 'https://rest-dorado.fetch.ai:443',
+        },
+      },
+      {
         id: 'terra',
         name: 'Terra',
         short_name: 'TERRA',
