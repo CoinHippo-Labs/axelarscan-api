@@ -68,7 +68,6 @@ module.exports = {
         color: '#e8b30b',
         website: 'https://bnbchain.world',
         gateway_address: '0x304acf330bbE08d1e512eefaa92F6a57871fD895',
-        is_staging: true,
       },
       {
         id: 'avalanche',
