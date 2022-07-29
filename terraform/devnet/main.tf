@@ -47,7 +47,7 @@ resource "aws_iam_policy_attachment" "attachment" {
 
 resource "aws_opensearch_domain" "domain" {
   domain_name     = "${var.package_name}-general-${var.environment}"
-  engine_version  = "OpenSearch_1.2"
+  engine_version  = "OpenSearch_1.3"
   cluster_config {
     instance_type            = "m6g.4xlarge.search"
     instance_count           = 1
