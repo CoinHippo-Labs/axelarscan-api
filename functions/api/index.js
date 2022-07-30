@@ -1830,6 +1830,7 @@ exports.handler = async (event, context, callback) => {
     case '/cross-chain/{function}':
       try {
         const evm_chains_data = chains?.[environment]?.evm || [];
+        const cosmos_chains_data = chains?.[environment]?.cosmos || [];
         const assets_data = assets?.[environment] || [];
 
         let _response, data;
@@ -2179,6 +2180,30 @@ exports.handler = async (event, context, callback) => {
               }
               response = transfers || [];
             }
+            if (Array.isArray(response)) {
+              response = response.map(d => {
+                const {
+                  confirm_deposit,
+                  vote,
+                  sign_batch,
+                  ibc_send,
+                } = { ...d }
+                return {
+                  ...d,
+                  status: ibc_send ?
+                    'ibc_sent' :
+                    sign_batch?.executed ?
+                      'executed' :
+                       sign_batch ?
+                        'sign_batch' :
+                        vote ?
+                          'voted' :
+                          confirm_deposit ?
+                            'deposit_confirmed' :
+                            'asset_sent',
+                };
+              });
+            }
             break;
           case 'transfers':
             const must = [], should = [], must_not = [];
@@ -2325,6 +2350,30 @@ exports.handler = async (event, context, callback) => {
               sort: sort || [{ 'source.created_at.ms': 'desc' }],
               track_total_hits: true,
             });
+            if (Array.isArray(_response?.data)) {
+              _response.data = _response.data.map(d => {
+                const {
+                  confirm_deposit,
+                  vote,
+                  sign_batch,
+                  ibc_send,
+                } = { ...d }
+                return {
+                  ...d,
+                  status: ibc_send ?
+                    'ibc_sent' :
+                    sign_batch?.executed ?
+                      'executed' :
+                       sign_batch ?
+                        'sign_batch' :
+                        vote ?
+                          'voted' :
+                          confirm_deposit ?
+                            'deposit_confirmed' :
+                            'asset_sent',
+                };
+              });
+            }
             response = _response;
             break;
           case 'transfers-stats':
