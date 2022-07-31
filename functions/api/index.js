@@ -2183,13 +2183,29 @@ exports.handler = async (event, context, callback) => {
             if (Array.isArray(response)) {
               response = response.map(d => {
                 const {
+                  source,
+                  link,
                   confirm_deposit,
                   vote,
                   sign_batch,
                   ibc_send,
-                } = { ...d }
+                } = { ...d };
+                const {
+                  amount,
+                  value,
+                } = { ...source };
+                let {
+                  price,
+                } = { ...link };
+                if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
+                  price = value / amount;
+                }
                 return {
                   ...d,
+                  link: link && {
+                    ...link,
+                    price,
+                  },
                   status: ibc_send ?
                     'ibc_sent' :
                     sign_batch?.executed ?
@@ -2353,13 +2369,29 @@ exports.handler = async (event, context, callback) => {
             if (Array.isArray(_response?.data)) {
               _response.data = _response.data.map(d => {
                 const {
+                  source,
+                  link,
                   confirm_deposit,
                   vote,
                   sign_batch,
                   ibc_send,
-                } = { ...d }
+                } = { ...d };
+                const {
+                  amount,
+                  value,
+                } = { ...source };
+                let {
+                  price,
+                } = { ...link };
+                if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
+                  price = value / amount;
+                }
                 return {
                   ...d,
+                  link: link && {
+                    ...link,
+                    price,
+                  },
                   status: ibc_send ?
                     'ibc_sent' :
                     sign_batch?.executed ?
