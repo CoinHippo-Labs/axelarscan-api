@@ -372,10 +372,20 @@ exports.handler = async (event, context, callback) => {
                   const prices_data = await assets_price({
                     chain: record.original_sender_chain,
                     denom: record.asset || record.denom,
-                    timestamp: created_at,
+                    timestamp: created_at.valueOf(),
                   });
                   if (prices_data?.[0]?.price) {
                     record.price = prices_data[0].price;
+                  }
+                  else {
+                    const _response = await crud({
+                      collection: 'deposit_addresses',
+                      method: 'get',
+                      id: record.id,
+                    });
+                    if (_response?.price) {
+                      record.price = _response.price;
+                    }
                   }
                 }
                 await crud({
@@ -415,6 +425,22 @@ exports.handler = async (event, context, callback) => {
                     size: 1,
                   });
                   const link = _response?.data?.[0];
+                  if (link && !link.price) {
+                    const prices_data = await assets_price({
+                      chain: link.original_sender_chain,
+                      denom: link.asset || link.denom,
+                      timestamp: record.created_at?.ms,
+                    });
+                    if (prices_data?.[0]?.price) {
+                      link.price = prices_data[0].price;
+                      await crud({
+                        collection: 'deposit_addresses',
+                        method: 'set',
+                        path: `/deposit_addresses/_update/${link.id}`,
+                        ...link,
+                      });
+                    }
+                  }
                   if (link) {
                     record.sender_chain = link.sender_chain || record.sender_chain;
                     record.recipient_chain = link.recipient_chain || record.recipient_chain;
@@ -452,14 +478,17 @@ exports.handler = async (event, context, callback) => {
                     record.value = record.amount * link.price;
                   }
                   const _id = `${record.id}_${record.recipient_address}`.toLowerCase();
-                  await crud({
+                  const params = {
                     collection: 'transfers',
                     method: 'set',
                     path: `/transfers/_update/${_id}`,
                     id: _id,
                     source: record,
-                    link,
-                  });
+                  };
+                  if (link) {
+                    params.link = link;
+                  }
+                  await crud(params);
                 }
               }
               // MsgRecvPacket -> MsgTransfer
@@ -530,6 +559,22 @@ exports.handler = async (event, context, callback) => {
                                   size: 1,
                                 });
                                 const link = _response?.data?.[0];
+                                if (link && !link.price) {
+                                  const prices_data = await assets_price({
+                                    chain: link.original_sender_chain,
+                                    denom: link.asset || link.denom,
+                                    timestamp: record.created_at?.ms,
+                                  });
+                                  if (prices_data?.[0]?.price) {
+                                    link.price = prices_data[0].price;
+                                    await crud({
+                                      collection: 'deposit_addresses',
+                                      method: 'set',
+                                      path: `/deposit_addresses/_update/${link.id}`,
+                                      ...link,
+                                    });
+                                  }
+                                }
                                 if (link) {
                                   record.recipient_chain = link.recipient_chain;
                                   record.denom = record.denom || link.asset;
@@ -572,14 +617,17 @@ exports.handler = async (event, context, callback) => {
                                   record.value = record.amount * link.price;
                                 }
                                 const _id = `${record.id}_${record.recipient_address}`.toLowerCase();
-                                await crud({
+                                const params = {
                                   collection: 'transfers',
                                   method: 'set',
                                   path: `/transfers/_update/${_id}`,
                                   id: _id,
                                   source: record,
-                                  link,
-                                });
+                                };
+                                if (link) {
+                                  params.link = link;
+                                }
+                                await crud(params);
                                 found = true;
                                 break;
                               }
@@ -1059,6 +1107,22 @@ exports.handler = async (event, context, callback) => {
                                 size: 1,
                               });
                               const link = _response?.data?.[0];
+                              if (link && !link.price) {
+                                const prices_data = await assets_price({
+                                  chain: link.original_sender_chain,
+                                  denom: link.asset || link.denom,
+                                  timestamp: transfer_source.created_at?.ms,
+                                });
+                                if (prices_data?.[0]?.price) {
+                                  link.price = prices_data[0].price;
+                                  await crud({
+                                    collection: 'deposit_addresses',
+                                    method: 'set',
+                                    path: `/deposit_addresses/_update/${link.id}`,
+                                    ...link,
+                                  });
+                                }
+                              }
                               if (link) {
                                 transfer_source.sender_chain = link.sender_chain || transfer_source.sender_chain;
                                 transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
@@ -1095,15 +1159,18 @@ exports.handler = async (event, context, callback) => {
                                 transfer_source.value = transfer_source.amount * link.price;
                               }
                               const _id = `${transfer_source.id}_${transfer_source.recipient_address}`.toLowerCase();
-                              await crud({
+                              const params = {
                                 collection: 'transfers',
                                 method: 'set',
                                 path: `/transfers/_update/${_id}`,
                                 id: _id,
                                 source: transfer_source,
                                 confirm_deposit: record,
-                                link,
-                              });
+                              };
+                              if (link) {
+                                params.link = link;
+                              }
+                              await crud(params);
                             }
                           }
                         }
@@ -1244,6 +1311,22 @@ exports.handler = async (event, context, callback) => {
                                     size: 1,
                                   });
                                   const link = _response?.data?.[0];
+                                  if (link && !link.price) {
+                                    const prices_data = await assets_price({
+                                      chain: link.original_sender_chain,
+                                      denom: link.asset || link.denom,
+                                      timestamp: transfer_source.created_at?.ms,
+                                    });
+                                    if (prices_data?.[0]?.price) {
+                                      link.price = prices_data[0].price;
+                                      await crud({
+                                        collection: 'deposit_addresses',
+                                        method: 'set',
+                                        path: `/deposit_addresses/_update/${link.id}`,
+                                        ...link,
+                                      });
+                                    }
+                                  }
                                   if (link) {
                                     transfer_source.sender_chain = link.sender_chain || transfer_source.sender_chain;
                                     transfer_source.recipient_chain = link.recipient_chain || transfer_source.recipient_chain;
@@ -1412,10 +1495,20 @@ exports.handler = async (event, context, callback) => {
                   const prices_data = await assets_price({
                     chain: record.original_sender_chain,
                     denom: record.asset || record.denom,
-                    timestamp: created_at,
+                    timestamp: created_at.valueOf(),
                   });
                   if (prices_data?.[0]?.price) {
                     record.price = prices_data[0].price;
+                  }
+                  else {
+                    const _response = await crud({
+                      collection: 'deposit_addresses',
+                      method: 'get',
+                      id: record.id,
+                    });
+                    if (_response?.price) {
+                      record.price = _response.price;
+                    }
                   }
                 }
                 return record;
@@ -1921,6 +2014,22 @@ exports.handler = async (event, context, callback) => {
                               size: 1,
                             });
                             const link = _response?.data?.[0];
+                            if (link && !link.price) {
+                              const prices_data = await assets_price({
+                                chain: link.original_sender_chain,
+                                denom: link.asset || link.denom,
+                                timestamp: transfer_source.created_at?.ms,
+                              });
+                              if (prices_data?.[0]?.price) {
+                                link.price = prices_data[0].price;
+                                await crud({
+                                  collection: 'deposit_addresses',
+                                  method: 'set',
+                                  path: `/deposit_addresses/_update/${link.id}`,
+                                  ...link,
+                                });
+                              }
+                            }
                             transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                             transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                             if (link) {
@@ -2000,6 +2109,22 @@ exports.handler = async (event, context, callback) => {
                                 size: 1,
                               });
                               const link = _response?.data?.[0];
+                              if (link && !link.price) {
+                                const prices_data = await assets_price({
+                                  chain: link.original_sender_chain,
+                                  denom: link.asset || link.denom,
+                                  timestamp: transfer_source.created_at?.ms,
+                                });
+                                if (prices_data?.[0]?.price) {
+                                  link.price = prices_data[0].price;
+                                  await crud({
+                                    collection: 'deposit_addresses',
+                                    method: 'set',
+                                    path: `/deposit_addresses/_update/${link.id}`,
+                                    ...link,
+                                  });
+                                }
+                              }
                               if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
                                 const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
                                 if (chain_data) {
@@ -2102,7 +2227,7 @@ exports.handler = async (event, context, callback) => {
                   const prices_data = await assets_price({
                     chain: transfer.source.original_sender_chain,
                     denom: transfer.source.asset || transfer.source.denom,
-                    timestamp: created_at,
+                    timestamp: created_at.valueOf(),
                   });
                   if (prices_data?.[0]?.price) {
                     price = prices_data[0].price;
