@@ -2494,19 +2494,18 @@ exports.handler = async (event, context, callback) => {
             const __params = _.cloneDeep(_params);
             _response = await crud(_params);
             if (Array.isArray(_response?.data)) {
-              const _transfers = _response.data.filter(d => d?.source?.id && typeof d.source.value !== 'number');
+              const _transfers = _response.data.filter(d => d?.source?.id && !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number'));
               if (_transfers.length > 0) {
                 try {
                   // initial api
                   const api = axios.create({ baseURL: config[environment].endpoints.api });
                   for (const transfer of _transfers) {
-                    api.get('/cross-chain/transfers-status', {
-                      params: {
-                        txHash: transfer.source.id,
-                      },
+                    api.post('/cross-chain/transfers-status', {
+                      txHash: transfer.source.id,
+                      sourceChain: transfer.source.sender_chain,
                     }).catch(error => { return { data: { error } }; });
                   }
-                  await sleep(3 * 1000);
+                  await sleep(5 * 1000);
                   _response = await crud(__params);
                 } catch (error) {}
               }
