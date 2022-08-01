@@ -6,7 +6,7 @@ exports.handler = async (event, context, callback) => {
     BigNumber,
     Contract,
     providers: { FallbackProvider, JsonRpcProvider },
-    utils,
+    utils: { formatUnits },
   } = require('ethers');
   // import module for date time
   const moment = require('moment');
@@ -460,9 +460,9 @@ exports.handler = async (event, context, callback) => {
                         },
                       }).catch(error => { return { data: { error } }; });
                       if (response_fee?.data?.fee?.amount) {
-                        record.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                        record.fee = Number(formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
                       }
-                      record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                      record.amount = Number(formatUnits(BigNumber.from(record.amount).toString(), decimals));
                       if (record.fee) {
                         if (record.amount < record.fee) {
                           record.insufficient_fee = true;
@@ -599,9 +599,9 @@ exports.handler = async (event, context, callback) => {
                                       },
                                     }).catch(error => { return { data: { error } }; });
                                     if (response_fee?.data?.fee?.amount) {
-                                      record.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                                      record.fee = Number(formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
                                     }
-                                    record.amount = Number(utils.formatUnits(BigNumber.from(record.amount).toString(), decimals));
+                                    record.amount = Number(formatUnits(BigNumber.from(record.amount).toString(), decimals));
                                     if (record.fee) {
                                       if (record.amount < record.fee) {
                                         record.insufficient_fee = true;
@@ -679,7 +679,7 @@ exports.handler = async (event, context, callback) => {
                     created_at: get_granularity(created_at),
                     sender_address: sender,
                     recipient_address: receiver,
-                    amount: Number(utils.formatUnits(BigNumber.from(amount).toString(), decimals)),
+                    amount: Number(formatUnits(BigNumber.from(amount).toString(), decimals)),
                     denom,
                     packet: e,
                   };
@@ -1142,9 +1142,9 @@ exports.handler = async (event, context, callback) => {
                                     },
                                   }).catch(error => { return { data: { error } }; });
                                   if (response_fee?.data?.fee?.amount) {
-                                    transfer_source.fee = Number(utils.formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                                    transfer_source.fee = Number(formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
                                   }
-                                  transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                  transfer_source.amount = Number(formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
                                   if (transfer_source.fee) {
                                     if (transfer_source.amount < transfer_source.fee) {
                                       transfer_source.insufficient_fee = true;
@@ -1338,7 +1338,7 @@ exports.handler = async (event, context, callback) => {
                                     const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                     if (asset_data) {
                                       const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
-                                      transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                      transfer_source.amount = Number(formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
                                     }
                                   }
                                   if (link?.price && typeof transfer_source.amount === 'number') {
@@ -1930,7 +1930,7 @@ exports.handler = async (event, context, callback) => {
         const {
           txHash,
           confirmed,
-          status,
+          state,
           sourceChain,
           destinationChain,
           asset,
@@ -2039,7 +2039,7 @@ exports.handler = async (event, context, callback) => {
                                 const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 if (asset_data) {
                                   const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
-                                  transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                  transfer_source.amount = Number(formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
                                 }
                               }
                               if (link?.price && typeof transfer_source.amount === 'number') {
@@ -2140,7 +2140,7 @@ exports.handler = async (event, context, callback) => {
                                   const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer_source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                                   if (asset_data) {
                                     const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
-                                    transfer_source.amount = Number(utils.formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
+                                    transfer_source.amount = Number(formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
                                     transfer_source.denom = asset_data?.id || transfer_source.denom;
                                   }
                                 }
@@ -2201,7 +2201,7 @@ exports.handler = async (event, context, callback) => {
                   const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
                   if (chain_data && asset_data) {
                     const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
-                    transfer.source.amount = Number(utils.formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
+                    transfer.source.amount = Number(formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
                     transfer.source.denom = asset_data?.id || transfer.source.denom;
                   }
                 }
@@ -2365,8 +2365,8 @@ exports.handler = async (event, context, callback) => {
                   break;
               }
             }
-            if (status) {
-              switch (status) {
+            if (state) {
+              switch (state) {
                 case 'completed':
                   should.push({
                     bool: {
@@ -2467,9 +2467,9 @@ exports.handler = async (event, context, callback) => {
             if (recipientAddress) {
               must.push({ match: { 'link.recipient_address': recipientAddress } });
             }
-            if (fromTime && toTime) {
+            if (fromTime) {
               fromTime = Number(fromTime) * 1000;
-              toTime = Number(toTime) * 1000;
+              toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
               must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
             }
             if (!query) {
@@ -2482,7 +2482,7 @@ exports.handler = async (event, context, callback) => {
                 },
               };
             }
-            _response = await crud({
+            const _params = {
               collection: 'transfers',
               method: 'search',
               query,
@@ -2490,7 +2490,27 @@ exports.handler = async (event, context, callback) => {
               size: typeof size === 'number' ? size : 100,
               sort: sort || [{ 'source.created_at.ms': 'desc' }],
               track_total_hits: true,
-            });
+            };
+            const __params = _.cloneDeep(_params);
+            _response = await crud(_params);
+            if (Array.isArray(_response?.data)) {
+              const _transfers = _response.data.filter(d => d?.source?.id && typeof d.source.value !== 'number');
+              if (_transfers.length > 0) {
+                try {
+                  // initial api
+                  const api = axios.create({ baseURL: config[environment].endpoints.api });
+                  for (const transfer of _transfers) {
+                    api.get('/cross-chain/transfers-status', {
+                      params: {
+                        txHash: transfer.source.id,
+                      },
+                    }).catch(error => { return { data: { error } }; });
+                  }
+                  await sleep(3 * 1000);
+                  _response = await crud(__params);
+                } catch (error) {}
+              }
+            }
             if (Array.isArray(_response?.data)) {
               _response.data = _response.data.map(d => {
                 const {
@@ -2535,9 +2555,9 @@ exports.handler = async (event, context, callback) => {
             break;
           case 'transfers-stats':
             if (!query) {
-              if (fromTime && toTime) {
+              if (fromTime) {
                 fromTime = Number(fromTime) * 1000;
-                toTime = Number(toTime) * 1000;
+                toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
                 query = {
                   bool: {
                     must: [
