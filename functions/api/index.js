@@ -1428,7 +1428,10 @@ exports.handler = async (event, context, callback) => {
           }
           else if (path.startsWith('/cosmos/tx/v1beta1/txs') && !path.endsWith('/') && res?.data?.tx_responses?.length > 0) {
             if (!no_index) {
-              const { tx_responses, txs } = { ...res.data };
+              const {
+                tx_responses,
+                txs,
+              } = { ...res.data };
               // Heartbeat
               let records = tx_responses.map((t, i) => {
                 const tx = txs?.[i];
@@ -1651,6 +1654,18 @@ exports.handler = async (event, context, callback) => {
                     path: `/evm_votes/_update/${vote_record.id}`,
                     ...vote_record,
                   });
+                }
+              }
+              // RouteIBCTransfersRequest
+              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes('RouteIBCTransfersRequest')) > -1).map(t => t.txhash);
+              if (records.length > 0) {
+                // initial api
+                const api = axios.create({ baseURL: config[environment].endpoints.api });
+                for (const hash of records) {
+                  api.post('', {
+                    module: 'lcd',
+                    path: `/cosmos/tx/v1beta1/txs/${hash}`,
+                  }).catch(error => { return { data: { error } }; });
                 }
               }
             }
@@ -2344,6 +2359,31 @@ exports.handler = async (event, context, callback) => {
                             'asset_sent',
                 };
               });
+              for (const d of response) {
+                const {
+                  source,
+                  confirm_deposit,
+                  vote,
+                  status,
+                } = { ...d };
+                const {
+                  recipient_chain,
+                } = { ...source };
+                if (cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 && ['voted', 'deposit_confirmed'].includes(status)) {
+                  const height = vote?.height || confirm_deposit?.height;
+                  if (height) {
+                    // initial api
+                    const api = axios.create({ baseURL: config[environment].endpoints.api });
+                    for (let i = 1; i < 4; i++) {
+                      api.post('', {
+                        module: 'lcd',
+                        path: '/cosmos/tx/v1beta1/txs',
+                        events: `tx.height=${height + i}`,
+                      }).catch(error => { return { data: { error } }; });
+                    }
+                  }
+                }
+              }
             }
             break;
           case 'transfers':
@@ -2494,7 +2534,10 @@ exports.handler = async (event, context, callback) => {
             const __params = _.cloneDeep(_params);
             _response = await crud(_params);
             if (Array.isArray(_response?.data)) {
-              const _transfers = _response.data.filter(d => d?.source?.id && !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number'));
+              const _transfers = _response.data.filter(d => d?.source?.id && (
+                !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number') ||
+                cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
+              ));
               if (_transfers.length > 0) {
                 try {
                   // initial api
