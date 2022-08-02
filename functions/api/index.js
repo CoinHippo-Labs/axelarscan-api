@@ -1462,7 +1462,7 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               // Link
-              records = tx_responses.filter(t => !t?.code && t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes('LinkRequest')) > -1).map(async t => {
+              records = tx_responses.filter(t => !t?.code && t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes('LinkRequest')) > -1).map(t => {
                 const { logs } = { ...t };
                 const { messages } = { ...t?.tx?.body };
                 const event = _.head(logs?.flatMap(l => l?.events?.filter(e => e?.type === 'link')));
@@ -1472,6 +1472,7 @@ exports.handler = async (event, context, callback) => {
                   ...messages[0],
                   txhash: t.txhash,
                   height: Number(t.height),
+                  created_at: get_granularity(moment(t.timestamp).utc()),
                   sender_chain,
                   deposit_address,
                 };
@@ -1493,32 +1494,37 @@ exports.handler = async (event, context, callback) => {
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
                 record.recipient_chain = normalize_chain(record.recipient_chain);
-                if (record.asset || record.denom) {
-                  const created_at = moment(t.timestamp).utc();
-                  const prices_data = await assets_price({
-                    chain: record.original_sender_chain,
-                    denom: record.asset || record.denom,
-                    timestamp: created_at.valueOf(),
-                  });
-                  if (prices_data?.[0]?.price) {
-                    record.price = prices_data[0].price;
-                  }
-                  else {
-                    const _response = await crud({
-                      collection: 'deposit_addresses',
-                      method: 'get',
-                      id: record.id,
-                    });
-                    if (_response?.price) {
-                      record.price = _response.price;
-                    }
-                  }
-                }
                 return record;
               });
               if (records.length > 0) {
-                for (let i = 0; i < records.length; i++) {
-                  const record = records[i];
+                for (const record of records) {
+                  const {
+                    id,
+                    created_at,
+                    original_sender_chain,
+                    asset,
+                    denom,
+                  } = { ...record };
+                  if (asset || denom) {
+                    const prices_data = await assets_price({
+                      chain: original_sender_chain,
+                      denom: asset || denom,
+                      timestamp: created_at?.ms,
+                    });
+                    if (prices_data?.[0]?.price) {
+                      record.price = prices_data[0].price;
+                    }
+                    else {
+                      const _response = await crud({
+                        collection: 'deposit_addresses',
+                        method: 'get',
+                        id,
+                      });
+                      if (_response?.price) {
+                        record.price = _response.price;
+                      }
+                    }
+                  }
                   crud({
                     collection: 'deposit_addresses',
                     method: 'set',
@@ -1527,7 +1533,7 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               // VoteConfirmDeposit & Vote
-              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => vote_types.includes(_.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(async t => {
+              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => vote_types.includes(_.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(t => {
                 const { logs } = { ...t };
                 const { messages } = { ...t?.tx?.body };
                 const _records = [];
@@ -1576,38 +1582,6 @@ exports.handler = async (event, context, callback) => {
                       late,
                       unconfirmed: logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1,
                     };
-                    if (!record.status_code) {
-                      if (!record.sender_chain && record.deposit_address) {
-                        const query = {
-                          bool: {
-                            must: [
-                              { match: { deposit_address: record.deposit_address } },
-                            ],
-                          },
-                        };
-                        const _response = await crud({
-                          collection: 'deposit_addresses',
-                          method: 'search',
-                          query,
-                          size: 1,
-                        });
-                        const link = _response?.data?.[0];
-                        if (link?.sender_chain) {
-                          record.sender_chain = link.sender_chain;
-                        }
-                      }
-                      if (!record.sender_chain && record.poll_id) {
-                        const _response = await crud({
-                          collection: 'evm_polls',
-                          method: 'get',
-                          id: record.poll_id,
-                        });
-                        const poll = _response;
-                        if (poll?.sender_chain) {
-                          record.sender_chain = poll.sender_chain;
-                        }
-                      }
-                    }
                     _records.push(record);
                   }
                 }
@@ -1615,9 +1589,56 @@ exports.handler = async (event, context, callback) => {
               }).flatMap(r => r).filter(r => r?.poll_id && r.voter);
               if (records.length > 0) {
                 await sleep(1 * 1000);
-                for (let i = 0; i < records.length; i++) {
-                  const record = records[i];
-                  const { id, height, created_at, sender_chain, poll_id, transaction_id, voter, vote, confirmation, late, unconfirmed } = { ...record };
+                for (const record of records) {
+                  const {
+                    id,
+                    status_code,
+                    height,
+                    created_at,
+                    deposit_address,
+                    poll_id,
+                    transaction_id,
+                    voter,
+                    vote,
+                    confirmation,
+                    late,
+                    unconfirmed,
+                  } = { ...record };
+                  let {
+                    sender_chain,
+                  } = { ...record };
+                  if (!status_code) {
+                    if (!sender_chain && deposit_address) {
+                      const query = {
+                        bool: {
+                          must: [
+                            { match: { deposit_address } },
+                          ],
+                        },
+                      };
+                      const _response = await crud({
+                        collection: 'deposit_addresses',
+                        method: 'search',
+                        query,
+                        size: 1,
+                      });
+                      const link = _response?.data?.[0];
+                      if (link?.sender_chain) {
+                        sender_chain = link.sender_chain;
+                      }
+                    }
+                    if (!sender_chain && poll_id) {
+                      const _response = await crud({
+                        collection: 'evm_polls',
+                        method: 'get',
+                        id: poll_id,
+                      });
+                      const poll = _response;
+                      if (poll?.sender_chain) {
+                        sender_chain = poll.sender_chain;
+                      }
+                    }
+                  }
                   if (confirmation || unconfirmed) {
                     const poll_record = {
                       id: poll_id,
