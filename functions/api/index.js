@@ -2691,7 +2691,7 @@ exports.handler = async (event, context, callback) => {
             }
             break;
           case 'assets':
-            response = assets_data;
+            response = assets_data?.map(a => Object.fromEntries(Object.entries({ ...a }).filter(([k, v]) => !['coingecko_id'].includes(k))));
             break;
           case 'tvl':
             let _assets = params.assets || asset;
