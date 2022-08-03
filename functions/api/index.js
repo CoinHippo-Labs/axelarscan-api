@@ -1983,6 +1983,215 @@ exports.handler = async (event, context, callback) => {
           toTime,
         } = { ...params };
         switch (req.params.function?.toLowerCase()) {
+          case 'transfers':
+            const must = [], should = [], must_not = [];
+            if (txHash) {
+              must.push({ match: { 'source.id': txHash } });
+            }
+            if (confirmed) {
+              switch (confirmed) {
+                case 'confirmed':
+                  should.push({ exists: { field: 'confirm_deposit' } });
+                  should.push({ exists: { field: 'vote' } });
+                  break;
+                case 'unconfirmed':
+                  must_not.push({ exists: { field: 'confirm_deposit' } });
+                  must_not.push({ exists: { field: 'vote' } });
+                  break;
+                default:
+                  break;
+              }
+            }
+            if (state) {
+              switch (state) {
+                case 'completed':
+                  should.push({
+                    bool: {
+                      must: [
+                        { exists: { field: 'sign_batch' } },
+                      ],
+                      should: evm_chains_data?.map(c => {
+                        return { match: { 'source.recipient_chain': c?.id } };
+                      }) || [],
+                      minimum_should_match: 1,
+                    },
+                  });
+                  should.push({
+                    bool: {
+                      must: [
+                        { exists: { field: 'ibc_send' } },
+                      ],
+                      should: cosmos_chains_data?.map(c => {
+                        return { match: { 'source.recipient_chain': c?.id } };
+                      }) || [],
+                      minimum_should_match: 1,
+                    },
+                  });
+                  should.push({
+                    bool: {
+                      must: [
+                        { match: { 'source.recipient_chain': 'axelarnet' } },
+                      ],
+                      should: [
+                        { exists: { field: 'confirm_deposit' } },
+                        { exists: { field: 'vote' } },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  });
+                  break
+                case 'pending':
+                  must_not.push({
+                    bool: {
+                      should: [
+                        {
+                          bool: {
+                            must: [
+                              { exists: { field: 'sign_batch' } },
+                            ],
+                            should: evm_chains_data?.map(c => {
+                              return { match: { 'source.recipient_chain': c?.id } };
+                            }) || [],
+                            minimum_should_match: 1,
+                          },
+                        },
+                        {
+                          bool: {
+                            must: [
+                              { exists: { field: 'ibc_send' } },
+                            ],
+                            should: cosmos_chains_data?.map(c => {
+                              return { match: { 'source.recipient_chain': c?.id } };
+                            }) || [],
+                            minimum_should_match: 1,
+                          },
+                        },
+                        {
+                          bool: {
+                            must: [
+                              { match: { 'source.recipient_chain': 'axelarnet' } },
+                            ],
+                            should: [
+                              { exists: { field: 'confirm_deposit' } },
+                              { exists: { field: 'vote' } },
+                            ],
+                            minimum_should_match: 1,
+                          },
+                        },
+                      ],
+                    },
+                  });
+                  break;
+                default:
+                  break;
+              }
+            }
+            if (sourceChain) {
+              must.push({ match: { 'source.sender_chain': sourceChain } });
+            }
+            if (destinationChain) {
+              must.push({ match: { 'source.recipient_chain': destinationChain } });
+            }
+            if (asset) {
+              must.push({ match_phrase: { 'source.denom': asset } });
+            }
+            if (depositAddress) {
+              must.push({ match: { 'source.recipient_address': depositAddress } });
+            }
+            if (senderAddress) {
+              must.push({ match: { 'source.sender_address': senderAddress } });
+            }
+            if (recipientAddress) {
+              must.push({ match: { 'link.recipient_address': recipientAddress } });
+            }
+            if (fromTime) {
+              fromTime = Number(fromTime) * 1000;
+              toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
+              must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
+            }
+            if (!query) {
+              query = {
+                bool: {
+                  must,
+                  should,
+                  must_not,
+                  minimum_should_match: should.length > 0 ? 1 : 0,
+                },
+              };
+            }
+            const _params = {
+              collection: 'transfers',
+              method: 'search',
+              query,
+              from: typeof from === 'number' ? from : 0,
+              size: typeof size === 'number' ? size : 100,
+              sort: sort || [{ 'source.created_at.ms': 'desc' }],
+              track_total_hits: true,
+            };
+            const __params = _.cloneDeep(_params);
+            _response = await crud(_params);
+            if (Array.isArray(_response?.data)) {
+              const _transfers = _response.data.filter(d => d?.source?.id && (
+                !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number') ||
+                cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
+              ));
+              if (_transfers.length > 0) {
+                try {
+                  // initial api
+                  const api = axios.create({ baseURL: config[environment].endpoints.api });
+                  for (const transfer of _transfers) {
+                    api.post('/cross-chain/transfers-status', {
+                      txHash: transfer.source.id,
+                      sourceChain: transfer.source.sender_chain,
+                    }).catch(error => { return { data: { error } }; });
+                  }
+                  await sleep(5 * 1000);
+                  _response = await crud(__params);
+                } catch (error) {}
+              }
+            }
+            if (Array.isArray(_response?.data)) {
+              _response.data = _response.data.map(d => {
+                const {
+                  source,
+                  link,
+                  confirm_deposit,
+                  vote,
+                  sign_batch,
+                  ibc_send,
+                } = { ...d };
+                const {
+                  amount,
+                  value,
+                } = { ...source };
+                let {
+                  price,
+                } = { ...link };
+                if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
+                  price = value / amount;
+                }
+                return {
+                  ...d,
+                  link: link && {
+                    ...link,
+                    price,
+                  },
+                  status: ibc_send ?
+                    'ibc_sent' :
+                    sign_batch?.executed ?
+                      'executed' :
+                       sign_batch ?
+                        'sign_batch' :
+                        vote ?
+                          'voted' :
+                          confirm_deposit ?
+                            'deposit_confirmed' :
+                            'asset_sent',
+                };
+              });
+            }
+            response = _response;
+            break;
           case 'transfers-status':
             if (txHash) {
               query = {
@@ -2407,215 +2616,6 @@ exports.handler = async (event, context, callback) => {
               }
             }
             break;
-          case 'transfers':
-            const must = [], should = [], must_not = [];
-            if (txHash) {
-              must.push({ match: { 'source.id': txHash } });
-            }
-            if (confirmed) {
-              switch (confirmed) {
-                case 'confirmed':
-                  should.push({ exists: { field: 'confirm_deposit' } });
-                  should.push({ exists: { field: 'vote' } });
-                  break;
-                case 'unconfirmed':
-                  must_not.push({ exists: { field: 'confirm_deposit' } });
-                  must_not.push({ exists: { field: 'vote' } });
-                  break;
-                default:
-                  break;
-              }
-            }
-            if (state) {
-              switch (state) {
-                case 'completed':
-                  should.push({
-                    bool: {
-                      must: [
-                        { exists: { field: 'sign_batch' } },
-                      ],
-                      should: evm_chains_data?.map(c => {
-                        return { match: { 'source.recipient_chain': c?.id } };
-                      }) || [],
-                      minimum_should_match: 1,
-                    },
-                  });
-                  should.push({
-                    bool: {
-                      must: [
-                        { exists: { field: 'ibc_send' } },
-                      ],
-                      should: cosmos_chains_data?.map(c => {
-                        return { match: { 'source.recipient_chain': c?.id } };
-                      }) || [],
-                      minimum_should_match: 1,
-                    },
-                  });
-                  should.push({
-                    bool: {
-                      must: [
-                        { match: { 'source.recipient_chain': 'axelarnet' } },
-                      ],
-                      should: [
-                        { exists: { field: 'confirm_deposit' } },
-                        { exists: { field: 'vote' } },
-                      ],
-                      minimum_should_match: 1,
-                    },
-                  });
-                  break
-                case 'pending':
-                  must_not.push({
-                    bool: {
-                      should: [
-                        {
-                          bool: {
-                            must: [
-                              { exists: { field: 'sign_batch' } },
-                            ],
-                            should: evm_chains_data?.map(c => {
-                              return { match: { 'source.recipient_chain': c?.id } };
-                            }) || [],
-                            minimum_should_match: 1,
-                          },
-                        },
-                        {
-                          bool: {
-                            must: [
-                              { exists: { field: 'ibc_send' } },
-                            ],
-                            should: cosmos_chains_data?.map(c => {
-                              return { match: { 'source.recipient_chain': c?.id } };
-                            }) || [],
-                            minimum_should_match: 1,
-                          },
-                        },
-                        {
-                          bool: {
-                            must: [
-                              { match: { 'source.recipient_chain': 'axelarnet' } },
-                            ],
-                            should: [
-                              { exists: { field: 'confirm_deposit' } },
-                              { exists: { field: 'vote' } },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        },
-                      ],
-                    },
-                  });
-                  break;
-                default:
-                  break;
-              }
-            }
-            if (sourceChain) {
-              must.push({ match: { 'source.sender_chain': sourceChain } });
-            }
-            if (destinationChain) {
-              must.push({ match: { 'source.recipient_chain': destinationChain } });
-            }
-            if (asset) {
-              must.push({ match_phrase: { 'source.denom': asset } });
-            }
-            if (depositAddress) {
-              must.push({ match: { 'source.recipient_address': depositAddress } });
-            }
-            if (senderAddress) {
-              must.push({ match: { 'source.sender_address': senderAddress } });
-            }
-            if (recipientAddress) {
-              must.push({ match: { 'link.recipient_address': recipientAddress } });
-            }
-            if (fromTime) {
-              fromTime = Number(fromTime) * 1000;
-              toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
-              must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
-            }
-            if (!query) {
-              query = {
-                bool: {
-                  must,
-                  should,
-                  must_not,
-                  minimum_should_match: should.length > 0 ? 1 : 0,
-                },
-              };
-            }
-            const _params = {
-              collection: 'transfers',
-              method: 'search',
-              query,
-              from: typeof from === 'number' ? from : 0,
-              size: typeof size === 'number' ? size : 100,
-              sort: sort || [{ 'source.created_at.ms': 'desc' }],
-              track_total_hits: true,
-            };
-            const __params = _.cloneDeep(_params);
-            _response = await crud(_params);
-            if (Array.isArray(_response?.data)) {
-              const _transfers = _response.data.filter(d => d?.source?.id && (
-                !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number') ||
-                cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
-              ));
-              if (_transfers.length > 0) {
-                try {
-                  // initial api
-                  const api = axios.create({ baseURL: config[environment].endpoints.api });
-                  for (const transfer of _transfers) {
-                    api.post('/cross-chain/transfers-status', {
-                      txHash: transfer.source.id,
-                      sourceChain: transfer.source.sender_chain,
-                    }).catch(error => { return { data: { error } }; });
-                  }
-                  await sleep(5 * 1000);
-                  _response = await crud(__params);
-                } catch (error) {}
-              }
-            }
-            if (Array.isArray(_response?.data)) {
-              _response.data = _response.data.map(d => {
-                const {
-                  source,
-                  link,
-                  confirm_deposit,
-                  vote,
-                  sign_batch,
-                  ibc_send,
-                } = { ...d };
-                const {
-                  amount,
-                  value,
-                } = { ...source };
-                let {
-                  price,
-                } = { ...link };
-                if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
-                  price = value / amount;
-                }
-                return {
-                  ...d,
-                  link: link && {
-                    ...link,
-                    price,
-                  },
-                  status: ibc_send ?
-                    'ibc_sent' :
-                    sign_batch?.executed ?
-                      'executed' :
-                       sign_batch ?
-                        'sign_batch' :
-                        vote ?
-                          'voted' :
-                          confirm_deposit ?
-                            'deposit_confirmed' :
-                            'asset_sent',
-                };
-              });
-            }
-            response = _response;
-            break;
           case 'transfers-stats':
             if (!query) {
               if (fromTime) {
@@ -2689,6 +2689,9 @@ exports.handler = async (event, context, callback) => {
             else {
               response = _response;
             }
+            break;
+          case 'chains':
+            response = { ...chains?.[environment] };
             break;
           case 'assets':
             response = assets_data?.map(a => Object.fromEntries(Object.entries({ ...a }).filter(([k, v]) => !['coingecko_id'].includes(k))));
