@@ -1790,16 +1790,16 @@ exports.handler = async (event, context, callback) => {
                           }).catch(error => { return { data: { error } }; });
                           command = to_json(_response?.data?.stdout);
                           // sleep before next cmd
-                          await sleep(0.05 * 1000);
+                          // await sleep(0.05 * 1000);
                         }
                         if (command) {
                           const { salt } = { ...command.params };
-                          if (!command.executed && gateway) {
+                          if (!command.executed) {
                             try {
                               command.executed = await gateway.isCommandExecuted(`0x${command_id}`);
                             } catch (error) {}
                           }
-                          if (!command.deposit_address && salt) {
+                          if (!command.deposit_address && salt && (output.command_ids.length < 15 || _commands?.filter(c => c?.salt && !c.deposit_address).length < 15 || Math.random(0, 1) < 0.3)) {
                             try {
                               const asset_data = _assets.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && !c?.is_native) > -1);
                               const contract_data = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id);
