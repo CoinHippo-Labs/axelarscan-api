@@ -1763,29 +1763,43 @@ exports.handler = async (event, context, callback) => {
                 const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
                 const output = to_json(res.data.stdout);
                 if (output) {
+                  // get data from index
+                  const _response = await crud({
+                    collection: 'batches',
+                    method: 'search',
+                    query: { match_phrase: { 'batch_id': output.batch_id } },
+                    size: 1,
+                  });
+                  const _commands = _response?.data?.[0]?.commands;
+
                   const commands = [];
                   if (output.command_ids) {
                     for (let i = 0; i < output.command_ids.length; i++) {
                       const command_id = output.command_ids[i];
                       if (command_id) {
-                        const cmd = `axelard q evm command ${chain} ${command_id} -oj`;
-                        // request cli
-                        const _response = await cli.get(path, {
-                          params: {
-                            cmd,
-                            cache: true,
-                            cache_timeout: 1,
-                          }
-                        }).catch(error => { return { data: { error } }; });
-                        const command = to_json(_response?.data?.stdout);
+                        let command = _commands?.find(c => equals_ignore_case(c?.id, command_id));
+                        if (!command) {
+                          const cmd = `axelard q evm command ${chain} ${command_id} -oj`;
+                          // request cli
+                          const _response = await cli.get(path, {
+                            params: {
+                              cmd,
+                              cache: true,
+                              cache_timeout: 1,
+                            }
+                          }).catch(error => { return { data: { error } }; });
+                          command = to_json(_response?.data?.stdout);
+                          // sleep before next cmd
+                          await sleep(0.05 * 1000);
+                        }
                         if (command) {
                           const { salt } = { ...command.params };
-                          if (gateway) {
+                          if (!command.executed && gateway) {
                             try {
                               command.executed = await gateway.isCommandExecuted(`0x${command_id}`);
                             } catch (error) {}
                           }
-                          if (salt) {
+                          if (!command.deposit_address && salt) {
                             try {
                               const asset_data = _assets.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && !c?.is_native) > -1);
                               const contract_data = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id);
@@ -1798,8 +1812,6 @@ exports.handler = async (event, context, callback) => {
                           }
                         }
                         commands.push(command);
-                        // sleep before next cmd
-                        await sleep(0.05 * 1000);
                       }
                     }
                   }
