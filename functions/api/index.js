@@ -1799,7 +1799,7 @@ exports.handler = async (event, context, callback) => {
                         }
                         commands.push(command);
                         // sleep before next cmd
-                        await sleep(0.5 * 1000);
+                        await sleep(0.05 * 1000);
                       }
                     }
                   }
