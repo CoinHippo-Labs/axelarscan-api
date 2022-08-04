@@ -238,7 +238,6 @@ module.exports = {
         color: '#88d060',
         website: 'https://aurora.dev',
         gateway_address: '',
-        is_staging: true,
       },
     ],
     cosmos: [
