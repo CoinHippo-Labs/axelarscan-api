@@ -237,7 +237,7 @@ module.exports = {
         image: '/logos/chains/aurora.png',
         color: '#88d060',
         website: 'https://aurora.dev',
-        gateway_address: '',
+        gateway_address: '0x304acf330bbE08d1e512eefaa92F6a57871fD895',
       },
     ],
     cosmos: [

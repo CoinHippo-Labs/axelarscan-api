@@ -80,6 +80,12 @@ module.exports = {
           decimals: 6,
           symbol: 'axlUSDC',
         },
+        {
+          contract_address: '0x4268B8F0B87b6Eae5d897996E6b845ddbD99Adf3',
+          chain_id: 1313161554,
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
       ],
       ibc: [
         {
@@ -170,6 +176,12 @@ module.exports = {
           decimals: 6,
           symbol: 'axlUSDT',
         },
+        {
+          contract_address: '0x4818B684a810fC023C32bB6292da8D508Bd906EF',
+          chain_id: 1313161554,
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
       ],
       ibc: [
         {
@@ -257,6 +269,12 @@ module.exports = {
         {
           contract_address: '0x14dF360966a1c4582d2b18EDbdae432EA0A27575',
           chain_id: 1284,
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          contract_address: '0xF02eaeEa1350DAD8fc7A66d6BddB25876243ed1F',
+          chain_id: 1313161554,
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -837,6 +855,12 @@ module.exports = {
           decimals: 18,
           symbol: 'axlFRAX',
         },
+        {
+          contract_address: '0x3FF4cb8EC5EC5eBBfD3424401D962F0627a67Cac',
+          chain_id: 1313161554,
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
       ],
       ibc: [
         {
@@ -1053,6 +1077,38 @@ module.exports = {
       image: '/logos/assets/juno.png',
       decimals: 6,
       coingecko_id: 'juno-network',
+      contracts: [
+        {
+          contract_address: '0xEBD3a5c8b759BD0C24518e0CD25E18cCBdd724aC',
+          chain_id: 1,
+          decimals: 6,
+          symbol: 'axlJUNO',
+        },
+        {
+          contract_address: '0x64b5A03db299F119889DEAC3211d80503E6cFfa2',
+          chain_id: 43114,
+          decimals: 6,
+          symbol: 'axlJUNO',
+        },
+        {
+          contract_address: '0xD9306A03dE967F6f0B3787993b505f80Ac5fF0A2',
+          chain_id: 137,
+          decimals: 6,
+          symbol: 'axlJUNO',
+        },
+        {
+          contract_address: '0x6313874dE49737f22911c89A528282Fd8672BdAC',
+          chain_id: 250,
+          decimals: 6,
+          symbol: 'axlJUNO',
+        },
+        {
+          contract_address: '0xEBD3a5c8b759BD0C24518e0CD25E18cCBdd724aC',
+          chain_id: 1284,
+          decimals: 6,
+          symbol: 'axlJUNO',
+        },
+      ],
       ibc: [
         {
           ibc_denom: 'ibc/9E3EB38E5E157AEBFF4A8EAC66E654BC8ECFCB1F758F4D1C0F2D65945E9E2935',
@@ -1329,6 +1385,18 @@ module.exports = {
           chain_id: 1,
           decimals: 18,
           is_native: true,
+        },
+        {
+          contract_address: '0x651fcA96C77f5f988E2Ca449B6e3a445399e2492',
+          chain_id: 56,
+          decimals: 18,
+          symbol: 'axlAPE',
+        },
+        {
+          contract_address: '0x651fcA96C77f5f988E2Ca449B6e3a445399e2492',
+          chain_id: 1313161554,
+          decimals: 18,
+          symbol: 'axlAPE',
         },
       ],
       ibc: [
