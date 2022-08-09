@@ -66,12 +66,18 @@ exports.handler = async (event, context, callback) => {
 
   const evm_chains_data = chains?.[environment]?.evm || [];
   const cosmos_chains_data = chains?.[environment]?.cosmos || [];
-  const non_axelar_cosmos_chains_data = cosmos_chains_data.filter(c => c?.id !== 'axelarnet');
+  const axelarnet_chain_data = {
+    ...cosmos_chains_data.find(c => c?.id === 'axelarnet'),
+  };
+  const non_axelarnet_cosmos_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet_chain_data.id);
   const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
   const assets_data = assets?.[environment] || [];
   const chains_rpc = Object.fromEntries(evm_chains_data.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
   const {
     endpoints,
+    num_blocks_per_heartbeat,
+    fraction_heartbeat_block,
+    percent_diff_supply_threshold,
   } = { ...config?.[environment] };
 
   // handle api routes
@@ -188,8 +194,6 @@ exports.handler = async (event, context, callback) => {
               data: response_cache,
             };
           }
-          const num_blocks_per_heartbeat = config?.[environment]?.num_blocks_per_heartbeat || 50;
-          const fraction_heartbeat_block = config?.[environment]?.fraction_heartbeat_block || 1;
           if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && res?.data?.tx_response?.txhash) {
             const {
               tx_response,
@@ -205,7 +209,7 @@ exports.handler = async (event, context, callback) => {
               const token_address = event?.attributes?.find(a => a?.key === 'tokenAddress' && a.value)?.value;
               if (chain && token_address) {
                 const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
-                const denom = assets_data?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, token_address)) > -1)?.id;
+                const denom = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, token_address)) > -1)?.id;
                 if (denom) {
                   tx_response.denom = denom;
                 }
@@ -256,7 +260,8 @@ exports.handler = async (event, context, callback) => {
               }
               else if (messages.findIndex(m => m?.['@type']?.includes('ConfirmDepositRequest')) > -1 || messages.findIndex(m => m?.['@type']?.includes('ConfirmTransferKeyRequest')) > -1) {
                 const byte_array_fields = ['tx_id', 'burner_address', 'burn_address'];
-                for (const message of messages) {
+                for (let i = 0; i < messages.length; i++) {
+                  const message = messages[i];
                   if (typeof message?.amount === 'string') {
                     const event = _.head(logs.flatMap(l => l?.events?.filter(e => e?.type === 'depositConfirmation')));
                     const amount = event?.attributes?.find(a => a?.key === 'amount' && a.value)?.value;
@@ -333,10 +338,10 @@ exports.handler = async (event, context, callback) => {
             const address_fields = ['signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress', 'voter', 'delegator_address'];
             let addresses = [], types = [];
             if (logs) {
-              addresses = _.uniq(_.concat(addresses, logs.flatMap(l => l?.events?.flatMap(e => e?.attributes?.filter(a => address_fields.includes(a.key)).map(a => a.value) || []) || [])).filter(a => typeof a === 'string' && a.startsWith('axelar')));
+              addresses = _.uniq(_.concat(addresses, logs.flatMap(l => l?.events?.flatMap(e => e?.attributes?.filter(a => address_fields.includes(a.key)).map(a => a.value) || []) || [])).filter(a => typeof a === 'string' && a.startsWith(axelarnet_chain_data.prefix_address)));
             }
             if (messages) {
-              addresses = _.uniq(_.concat(addresses, messages.flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f])))).filter(a => typeof a === 'string' && a.startsWith('axelar')));
+              addresses = _.uniq(_.concat(addresses, messages.flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f])))).filter(a => typeof a === 'string' && a.startsWith(axelarnet_chain_data.prefix_address)));
               types = _.uniq(_.concat(types, messages.flatMap(m => [_.last(m?.['@type']?.split('.')), _.last(m?.inner_message?.['@type']?.split('.'))])).filter(t => t));
             }
             data.addresses = addresses;
@@ -384,8 +389,8 @@ exports.handler = async (event, context, callback) => {
                   sender_chain,
                   deposit_address,
                 };
-                if (equals_ignore_case(sender_chain, 'axelarnet')) {
-                  const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                if (equals_ignore_case(sender_chain, axelarnet_chain_data.id)) {
+                  const chain_data = non_axelarnet_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                   if (chain_data) {
                     record.sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                   }
@@ -397,7 +402,7 @@ exports.handler = async (event, context, callback) => {
                 delete record['@type'];
                 record.sender_address = record.sender;
                 delete record.sender;
-                record.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
+                record.sender_chain = normalize_chain(non_axelarnet_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
                 delete record.chain;
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
@@ -441,7 +446,7 @@ exports.handler = async (event, context, callback) => {
                   status: tx_response.code ? 'failed' : 'success',
                   height: Number(tx_response.height),
                   created_at: get_granularity(created_at),
-                  sender_chain: 'axelarnet',
+                  sender_chain: axelarnet_chain_data.id,
                   sender_address: messages.find(m => m?.from_address)?.from_address,
                   recipient_address: messages.find(m => m?.to_address)?.to_address,
                   amount: amount_denom?.amount,
@@ -485,9 +490,9 @@ exports.handler = async (event, context, callback) => {
                   record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
                   record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
                   if (record.denom) {
-                    const asset_data = assets_data.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                    const asset_data = assets_data.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === axelarnet_chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                     if (asset_data) {
-                      const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
+                      const decimals = asset_data?.ibc?.find(i => i?.chain_id === axelarnet_chain_data.id)?.decimals || asset_data?.decimals || 6;
                       const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
                         params: {
                           source_chain: record.original_sender_chain,
@@ -614,8 +619,8 @@ exports.handler = async (event, context, callback) => {
                                   record.recipient_chain = link.recipient_chain;
                                   record.denom = record.denom || link.asset;
                                 }
-                                if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
-                                  const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                                if (equals_ignore_case(link?.original_sender_chain, axelarnet_chain_data.id)) {
+                                  const chain_data = non_axelarnet_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                                   if (chain_data) {
                                     link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                                   }
@@ -710,8 +715,8 @@ exports.handler = async (event, context, callback) => {
                     denom,
                   } = { ...packet_data };
                   const created_at = moment(tx_response.timestamp).utc();
-                  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, denom)) > -1);
-                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
+                  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, denom) || a?.ibc?.findIndex(i => i?.chain_id === axelarnet_chain_data.id && equals_ignore_case(i?.ibc_denom, denom)) > -1);
+                  const decimals = asset_data?.ibc?.find(i => i?.chain_id === axelarnet_chain_data.id)?.decimals || asset_data?.decimals || 6;
                   const record = {
                     id: tx_response.txhash,
                     type: 'RouteIBCTransfersRequest',
@@ -895,7 +900,7 @@ exports.handler = async (event, context, callback) => {
                     );
                     if (record.height && ibc_send?.packet?.packet_data_hex && (source?.recipient_chain || link?.recipient_chain)) {
                       const recipient_chain = source?.recipient_chain || link?.recipient_chain;
-                      const chain_data = non_axelar_cosmos_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
+                      const chain_data = non_axelarnet_cosmos_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
                       if (chain_data?.endpoints?.lcd) {
                         const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
                         for (const lcd of lcds) {
@@ -945,7 +950,7 @@ exports.handler = async (event, context, callback) => {
                   height: Number(tx_response.height),
                   created_at: get_granularity(created_at),
                   user: messages.find(m => m?.sender)?.sender,
-                  module: event?.attributes?.find(a => a?.key === 'module' && a.value)?.value || (type === 'ConfirmDeposit' ? 'axelarnet' : 'evm'),
+                  module: event?.attributes?.find(a => a?.key === 'module' && a.value)?.value || (type === 'ConfirmDeposit' ? axelarnet_chain_data.id : 'evm'),
                   sender_chain: normalize_chain(messages.find(m => m?.chain)?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value),
                   recipient_chain: normalize_chain(event?.attributes?.find(a => ['destinationChain'].includes(a?.key) && a.value)?.value),
                   amount: event?.attributes?.find(a => a?.key === 'amount' && a.value)?.value,
@@ -1057,7 +1062,7 @@ exports.handler = async (event, context, callback) => {
                               data.sign_batch = sign_batch;
                             }
                             if (transfer_source) {
-                              transfer_source.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
+                              transfer_source.sender_chain = normalize_chain(non_axelarnet_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
                               transfer_source.recipient_chain = transfer_source.recipient_chain || record.recipient_chain;
                               transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                               transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
@@ -1097,7 +1102,7 @@ exports.handler = async (event, context, callback) => {
                                 sign_batch,
                               };
                               if (transfer_source) {
-                                transfer_source.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
+                                transfer_source.sender_chain = normalize_chain(non_axelarnet_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
                                 transfer_source.recipient_chain = transfer_source.recipient_chain || record.recipient_chain;
                                 transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                                 transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
@@ -1242,7 +1247,7 @@ exports.handler = async (event, context, callback) => {
                       break;
                     default:
                       break;
-                  };
+                  }
                 }
               }
               // VoteConfirmDeposit & Vote
@@ -1272,7 +1277,7 @@ exports.handler = async (event, context, callback) => {
                         break;
                       default:
                         break;
-                    };
+                    }
                     const record = {
                       id: tx_response.txhash,
                       type,
@@ -1563,8 +1568,8 @@ exports.handler = async (event, context, callback) => {
                   sender_chain,
                   deposit_address,
                 };
-                if (equals_ignore_case(sender_chain, 'axelarnet')) {
-                  const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                if (equals_ignore_case(sender_chain, axelarnet_chain_data.id)) {
+                  const chain_data = non_axelarnet_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                   if (chain_data) {
                     sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                   }
@@ -1576,7 +1581,7 @@ exports.handler = async (event, context, callback) => {
                 delete record['@type'];
                 record.sender_address = record.sender;
                 delete record.sender;
-                record.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
+                record.sender_chain = normalize_chain(non_axelarnet_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
                 delete record.chain;
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
@@ -1652,7 +1657,7 @@ exports.handler = async (event, context, callback) => {
                         break;
                       default:
                         break;
-                    };
+                    }
                     const record = {
                       id: t.txhash,
                       type,
@@ -2080,7 +2085,7 @@ exports.handler = async (event, context, callback) => {
                               sign_batch,
                             };
                             if (transfer_source) {
-                              transfer_source.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || transfer_source.sender_chain);
+                              transfer_source.sender_chain = normalize_chain(non_axelarnet_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || transfer_source.sender_chain);
                               data.source = transfer_source;
                             }
                             await write(
@@ -2235,7 +2240,7 @@ exports.handler = async (event, context, callback) => {
                   should.push({
                     bool: {
                       must: [
-                        { match: { 'source.recipient_chain': 'axelarnet' } },
+                        { match: { 'source.recipient_chain': axelarnet_chain_data.id } },
                       ],
                       should: [
                         { exists: { field: 'confirm_deposit' } },
@@ -2274,7 +2279,7 @@ exports.handler = async (event, context, callback) => {
                         {
                           bool: {
                             must: [
-                              { match: { 'source.recipient_chain': 'axelarnet' } },
+                              { match: { 'source.recipient_chain': axelarnet_chain_data.id } },
                             ],
                             should: [
                               { exists: { field: 'confirm_deposit' } },
@@ -2337,7 +2342,7 @@ exports.handler = async (event, context, callback) => {
             if (Array.isArray(_response?.data)) {
               const _transfers = _response.data.filter(d => d?.source?.id && (
                 !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number') ||
-                non_axelar_cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
+                non_axelarnet_cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
               ));
               if (_transfers.length > 0) {
                 try {
@@ -2517,7 +2522,7 @@ exports.handler = async (event, context, callback) => {
                   }
                 }
                 else {
-                  for (const chain_data of non_axelar_cosmos_chains_data) {
+                  for (const chain_data of non_axelarnet_cosmos_chains_data) {
                     if ((!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) && chain_data?.endpoints?.lcd) {
                       let found = false;
                       const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
@@ -2572,8 +2577,8 @@ exports.handler = async (event, context, callback) => {
                                   );
                                 }
                               }
-                              if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
-                                const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                              if (equals_ignore_case(link?.original_sender_chain, axelarnet_chain_data.id)) {
+                                const chain_data = non_axelarnet_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                                 if (chain_data) {
                                   link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                                 }
@@ -2651,6 +2656,7 @@ exports.handler = async (event, context, callback) => {
                   }
                 }
                 if (link?.txhash && typeof link.price !== 'number' && endpoints?.api) {
+                  const api = axios.create({ baseURL: endpoints.api });
                   await api.post('', {
                     module: 'lcd',
                     path: `/cosmos/tx/v1beta1/txs/${link.txhash}`,
@@ -2801,7 +2807,7 @@ exports.handler = async (event, context, callback) => {
                 const {
                   recipient_chain,
                 } = { ...source };
-                if (cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 && ['voted', 'deposit_confirmed'].includes(status)) {
+                if (cosmos_chains_data.filter(c => ![axelarnet_chain_data.id].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 && ['voted', 'deposit_confirmed'].includes(status)) {
                   const height = vote?.height || confirm_deposit?.height;
                   if (height) {
                     for (let i = 1; i < 4; i++) {
@@ -2923,7 +2929,7 @@ exports.handler = async (event, context, callback) => {
                 const chain_data = chains_data.find(_c => equals_ignore_case(_c?.id, c) || equals_ignore_case(_c?.name, c) || equals_ignore_case(_c?.short_name, c));
                 return chain_data?.id || c;
               });
-              _chains = _.uniq(_.concat(['axelarnet'], _chains.filter(c => chains_data.findIndex(_c => _c?.id === c) > -1)));
+              _chains = _.uniq(_.concat([axelarnet_chain_data.id], _chains.filter(c => chains_data.findIndex(_c => _c?.id === c) > -1)));
             }
 
             // filter chains
@@ -2979,12 +2985,14 @@ exports.handler = async (event, context, callback) => {
                 const {
                   id,
                   chain_id,
+                  explorer,
                   gateway_address,
                 } = { ...c };
                 const provider = providers[id];
 
                 const contract_data = contracts?.find(_c => _c?.chain_id === chain_id);
                 const {
+                  contract_address,
                   is_native,
                 } = { ...contract_data };
 
@@ -3006,6 +3014,7 @@ exports.handler = async (event, context, callback) => {
                     gateway_address,
                     gateway_balance: balance,
                     total: supply + balance,
+                    url: explorer?.url && `${explorer.url}${explorer.contract_path?.replace('{address}', contract_address)}${is_native && gateway_address ? `?a=${gateway_address}` : ''}`,
                   };
                 }
 
@@ -3069,8 +3078,8 @@ exports.handler = async (event, context, callback) => {
                       escrow_addresses = data.map(d => d?.escrow_address).filter(a => a);
                       break;
                     }
-                    else {
-                      const api = axios.create({ baseURL: endpoints?.api });
+                    else if (endpoints?.api) {
+                      const api = axios.create({ baseURL: endpoints.api });
                       await api.post('', {
                         module: 'lcd',
                         path: '/ibc/core/channel/v1/channels',
@@ -3087,16 +3096,24 @@ exports.handler = async (event, context, callback) => {
                     );
                   }
                 }
-                const total = id === 'axelarnet' ?
+                const total = id === axelarnet_chain_data.id ?
                   await getCosmosSupply(
                     denom_data,
                     cli,
                   ) : 0;
+                const {
+                  explorer,
+                } = { ...axelarnet_chain_data };
                 result = {
                   denom_data,
                   escrow_addresses,
                   escrow_balance: balance,
                   total,
+                  url: explorer?.url && (
+                    escrow_addresses?.length > 0 ?
+                      `${explorer.url}${explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
+                      `${explorer.url}`
+                  ),
                 };
 
                 return {
@@ -3120,6 +3137,17 @@ exports.handler = async (event, context, callback) => {
 
               const total_on_evm = _.sumBy(Object.values(evm_tvl), 'supply');
               const total_on_cosmos = _.sumBy(Object.values(cosmos_tvl), _cosmos_chains_data.length === cosmos_chains_data.length ? 'total' : 'escrow_balance');
+              const total = _.sum(Object.values(tvl).map(t => {
+                const {
+                  gateway_balance,
+                  total,
+                } = { ...t };
+                return (contracts?.findIndex(c => c?.is_native) > -1 ?
+                  gateway_balance :
+                  total
+                ) || 0;
+              }));
+              const percent_diff_supply = Math.abs(total - (total_on_evm + total_on_cosmos)) * 100 / total;
 
               data.push({
                 asset,
@@ -3127,16 +3155,9 @@ exports.handler = async (event, context, callback) => {
                 tvl,
                 total_on_evm,
                 total_on_cosmos,
-                total: _.sum(Object.values(tvl).map(t => {
-                  const {
-                    gateway_balance,
-                    total,
-                  } = { ...t };
-                  return (contracts?.findIndex(c => c?.is_native) > -1 ?
-                    gateway_balance :
-                    total
-                  ) || 0;
-                })),
+                total,
+                percent_diff_supply,
+                is_abnormal_supply: typeof percent_diff_supply_threshold === 'number' && percent_diff_supply > percent_diff_supply_threshold,
               });
             }
             response = data;
@@ -3197,7 +3218,7 @@ exports.handler = async (event, context, callback) => {
               message: 'save transferId successful',
             };
 
-            if (config?.[environment]?.endpoints?.api) {
+            if (endpoints?.api) {
               const command_id = transferId.toString(16).padStart(64, '0');
               _response = await read(
                 'batches',
@@ -3207,6 +3228,7 @@ exports.handler = async (event, context, callback) => {
               );
               const batches = _response?.data;
               if (Array.isArray(batches)) {
+                const api = axios.create({ baseURL: endpoints.api });
                 for (const batch of batches) {
                   const {
                     chain,
@@ -3276,7 +3298,14 @@ exports.handler = async (event, context, callback) => {
                 message: 'parameters not valid',
               };
             }
-            else if (!(config?.[environment]?.gateway?.chains?.[chain]?.endpoints?.rpc && equals_ignore_case(config[environment].gateway.contracts?.[chain]?.address, contractAddress))) {
+            else if (!config?.[environment]?.gateway?.chains?.[chain]) {
+              response = {
+                error: true,
+                code: 400,
+                message: 'chain not valid',
+              };
+            }
+            else if (!(config[environment].gateway.chains[chain].endpoints?.rpc && equals_ignore_case(config[environment].gateway.contracts?.[chain]?.address, contractAddress))) {
               response = {
                 error: true,
                 code: 500,
