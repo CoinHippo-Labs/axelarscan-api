@@ -2,7 +2,10 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
-const { crud } = require('./index');
+const {
+  read,
+  write,
+} = require('./index');
 const { assets } = require('../data');
 const { equals_ignore_case } = require('../utils');
 
@@ -24,8 +27,14 @@ module.exports = async (params = {}) => {
   const current_time = moment();
 
   // initial parameters
-  const { chain, denom, timestamp } = { ...params };
-  let { denoms } = { ...params };
+  const {
+    chain,
+    denom,
+    timestamp,
+  } = { ...params };
+  let {
+    denoms,
+  } = { ...params };
   denoms = _.uniq((Array.isArray(denoms) ? denoms : (denoms || denom)?.split(',') || []).map(d => {
     if (typeof d === 'object') {
       return d;
@@ -35,30 +44,36 @@ module.exports = async (params = {}) => {
 
   if (denoms.length > 0) {
     const price_timestamp = moment(Number(timestamp) || current_time.valueOf()).startOf('day').valueOf();
-    const query = {
-      bool: {
-        must: [
-          { match: { price_timestamp } },
-        ],
-        should: denoms.map(d => {
-          return {
-            match: { denoms: typeof d === 'object' ? d?.denom : d },
-          };
-        }),
-      },
-    };
-    const response_cache = current_time.diff(moment(price_timestamp), 'hours') > 4 && await crud({
-      collection,
-      method: 'search',
-      query,
-      size: denoms.length,
-    });
+    const response_cache = current_time.diff(moment(price_timestamp), 'hours') > 4 &&
+      await read(
+        collection,
+        {
+          bool: {
+            must: [
+              { match: { price_timestamp } },
+            ],
+            should: denoms.map(d => {
+              return {
+                match: { denoms: typeof d === 'object' ? d?.denom : d },
+              };
+            }),
+            minimum_should_match: 1,
+          },
+        },
+        {
+          size: denoms.length,
+        },
+      );
     const data = denoms.map(d => {
       const denom_data = typeof d === 'object' ? d : { denom: d };
       const _denom = denom_data?.denom || d;
       const _chain = _denom === 'uluna' && !['terra-2'].includes(chain) ? 'terra' : denom_data?.chain || chain;
       const asset_data = _assets?.find(a => equals_ignore_case(a?.id, _denom));
-      const { coingecko_id, coingecko_ids, is_stablecoin } = { ...asset_data };
+      const {
+        coingecko_id,
+        coingecko_ids,
+        is_stablecoin,
+      } = { ...asset_data };
       const _d = {
         denom: _denom,
         coingecko_id: coingecko_ids?.[_chain] || coingecko_id,
@@ -69,7 +84,10 @@ module.exports = async (params = {}) => {
     response_cache?.data?.filter(a => a).forEach(a => {
       const data_index = data.findIndex(d => equals_ignore_case(d.denom, a?.denom));
       if (data_index > -1) {
-        data[data_index] = { ...data[data_index], ...a };
+        data[data_index] = {
+          ...data[data_index],
+          ...a,
+        };
       }
     });
 
@@ -81,27 +99,24 @@ module.exports = async (params = {}) => {
       // initial assets data
       let assets_data;
       if (timestamp) {
-        for (let i = 0; i < coingecko_ids.length; i++) {
-          const coingecko_id = coingecko_ids[i];
-          // request coingecko
+        for (const coingecko_id of coingecko_ids) {
           const _response = await coingecko.get(`/coins/${coingecko_id}/history`, {
             params: {
               id: coingecko_id,
               date: moment(Number(timestamp)).format('DD-MM-YYYY'),
               localization: 'false',
-            }
+            },
           }).catch(error => { return { data: { error } }; });
           assets_data = _.concat(assets_data || [], [_response?.data]);
         }
       }
       else {
-        // request coingecko
         const _response = await coingecko.get('/coins/markets', {
           params: {
             vs_currency: currency,
             ids: coingecko_ids.join(','),
             per_page: 250,
-          }
+          },
         }).catch(error => { return { data: { error } }; });
         assets_data = _response?.data || [];
       }
@@ -118,7 +133,10 @@ module.exports = async (params = {}) => {
       }).forEach(a => {
         const data_index = data.findIndex(d => equals_ignore_case(d.denom, a?.denom));
         if (data_index > -1) {
-          data[data_index] = { ...data[data_index], ...a };
+          data[data_index] = {
+            ...data[data_index],
+            ...a,
+          };
         }
       });
     }
@@ -130,13 +148,13 @@ module.exports = async (params = {}) => {
       d.price_timestamp = price_timestamp;
       const id = `${d?.denom}_${price_timestamp}`;
       // save asset
-      crud({
+      write(
         collection,
-        method: 'set',
-        path: `/${collection}/_update/${id}`,
-        ...d,
         id,
-      });
+        {
+          ...d,
+        },
+      );
     });
     response = data.map(d => {
       return {

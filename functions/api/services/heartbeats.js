@@ -1,4 +1,6 @@
-const { crud } = require('./index');
+const {
+  read,
+} = require('./index');
 
 module.exports = async (params = {}) => {
   const {
@@ -41,13 +43,14 @@ module.exports = async (params = {}) => {
     };
   }
 
-  return await crud({
-    collection: 'heartbeats',
-    method: 'search',
+  return await read(
+    'heartbeats',
     query,
-    from: typeof from === 'number' ? from : 0,
-    size: typeof size === 'number' ? size : 200,
-    sort: sort || [{ period_height: 'desc' }],
-    track_total_hits: true,
-  });
+    {
+      from: typeof from === 'number' ? from : 0,
+      size: typeof size === 'number' ? size : 200,
+      sort: sort || [{ period_height: 'desc' }],
+      track_total_hits: true,
+    },
+  );
 };
