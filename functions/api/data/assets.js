@@ -330,7 +330,7 @@ module.exports = {
       name: 'Bitcoin',
       image: '/logos/assets/wbtc.png',
       decimals: 8,
-      coingecko_id: 'bitcoin',
+      coingecko_id: 'wrapped-bitcoin',
       contracts: [
         {
           contract_address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
@@ -2078,7 +2078,7 @@ module.exports = {
       name: 'Bitcoin',
       image: '/logos/assets/wbtc.png',
       decimals: 8,
-      coingecko_id: 'bitcoin',
+      coingecko_id: 'wrapped-bitcoin',
       contracts: [
         {
           contract_address: '0x5db5f7d211FA88266Fb316948da0D45798e5a22f',

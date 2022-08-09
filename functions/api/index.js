@@ -18,10 +18,11 @@ exports.handler = async (event, context, callback) => {
   const assets_price = require('./services/assets-price');
   const evm_votes = require('./services/evm-votes');
   const heartbeats = require('./services/heartbeats');
-  const cosmos_minted_assets = require('./services/cosmos-minted-assets');
   const {
     getContractSupply,
-    getBalance,
+    getEVMBalance,
+    getCosmosBalance,
+    getCosmosSupply,
   } = require('./services/tvl');
   const {
     log,
@@ -63,6 +64,16 @@ exports.handler = async (event, context, callback) => {
   // initial params
   const params = get_params(req);
 
+  const evm_chains_data = chains?.[environment]?.evm || [];
+  const cosmos_chains_data = chains?.[environment]?.cosmos || [];
+  const non_axelar_cosmos_chains_data = cosmos_chains_data.filter(c => c?.id !== 'axelarnet');
+  const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
+  const assets_data = assets?.[environment] || [];
+  const chains_rpc = Object.fromEntries(evm_chains_data.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
+  const {
+    endpoints,
+  } = { ...config?.[environment] };
+
   // handle api routes
   switch (req.url) {
     case '/':
@@ -85,16 +96,22 @@ exports.handler = async (event, context, callback) => {
       delete params.no_index;
 
       // initial lcd
-      const lcd = axios.create({ baseURL: config?.[environment]?.endpoints?.lcd });
+      const lcd = axios.create({ baseURL: endpoints?.lcd });
+      // initial cli
+      const cli = axios.create({ baseURL: endpoints?.cli });
+      // initial api
+      const api = axios.create({ baseURL: endpoints?.api });
 
-      // initial variables
-      let res, response_cache, cache_id, cache_hit;
+      let res,
+        response_cache,
+        cache_id,
+        cache_hit;
 
       // run each module
       switch (_module) {
         case 'rpc':
-          if (config?.[environment]?.endpoints?.rpc) {
-            const rpc = axios.create({ baseURL: config[environment].endpoints.rpc });
+          if (endpoints?.rpc) {
+            const rpc = axios.create({ baseURL: endpoints.rpc });
             // request rpc
             res = await rpc.get(path, { params })
               .catch(error => { return { data: { results: null, error } }; });
@@ -171,11 +188,6 @@ exports.handler = async (event, context, callback) => {
               data: response_cache,
             };
           }
-          // process
-          const evm_chains = chains?.[environment]?.evm || [];
-          const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
-          const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
-          const _assets = assets?.[environment] || [];
           const num_blocks_per_heartbeat = config?.[environment]?.num_blocks_per_heartbeat || 50;
           const fraction_heartbeat_block = config?.[environment]?.fraction_heartbeat_block || 1;
           if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && res?.data?.tx_response?.txhash) {
@@ -192,8 +204,8 @@ exports.handler = async (event, context, callback) => {
               const chain = event?.attributes?.find(a => a?.key === 'chain' && a.value)?.value;
               const token_address = event?.attributes?.find(a => a?.key === 'tokenAddress' && a.value)?.value;
               if (chain && token_address) {
-                const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, chain));
-                const denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, token_address)) > -1)?.id;
+                const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
+                const denom = assets_data?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, token_address)) > -1)?.id;
                 if (denom) {
                   tx_response.denom = denom;
                 }
@@ -373,7 +385,7 @@ exports.handler = async (event, context, callback) => {
                   deposit_address,
                 };
                 if (equals_ignore_case(sender_chain, 'axelarnet')) {
-                  const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                  const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                   if (chain_data) {
                     record.sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                   }
@@ -385,7 +397,7 @@ exports.handler = async (event, context, callback) => {
                 delete record['@type'];
                 record.sender_address = record.sender;
                 delete record.sender;
-                record.sender_chain = normalize_chain(cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
+                record.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
                 delete record.chain;
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
@@ -473,7 +485,7 @@ exports.handler = async (event, context, callback) => {
                   record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
                   record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
                   if (record.denom) {
-                    const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                    const asset_data = assets_data.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                     if (asset_data) {
                       const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
                       const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
@@ -603,7 +615,7 @@ exports.handler = async (event, context, callback) => {
                                   record.denom = record.denom || link.asset;
                                 }
                                 if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
-                                  const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                                  const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                                   if (chain_data) {
                                     link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                                   }
@@ -611,7 +623,7 @@ exports.handler = async (event, context, callback) => {
                                 record.original_sender_chain = link?.original_sender_chain || normalize_original_chain(record.sender_chain || link?.sender_chain);
                                 record.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(record.recipient_chain || link?.recipient_chain);
                                 if (record.denom) {
-                                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
+                                  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, record.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data.id && equals_ignore_case(i?.ibc_denom, record.denom)) > -1);
                                   if (asset_data) {
                                     const decimals = asset_data?.ibc?.find(i => i?.chain_id === chain_data.id)?.decimals || asset_data?.decimals || 6;
                                     const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
@@ -698,7 +710,7 @@ exports.handler = async (event, context, callback) => {
                     denom,
                   } = { ...packet_data };
                   const created_at = moment(tx_response.timestamp).utc();
-                  const asset_data = _assets.find(a => equals_ignore_case(a?.id, denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, denom)) > -1);
+                  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, denom) || a?.ibc?.findIndex(i => i?.chain_id === 'axelarnet' && equals_ignore_case(i?.ibc_denom, denom)) > -1);
                   const decimals = asset_data?.ibc?.find(i => i?.chain_id === 'axelarnet')?.decimals || asset_data?.decimals || 6;
                   const record = {
                     id: tx_response.txhash,
@@ -883,7 +895,7 @@ exports.handler = async (event, context, callback) => {
                     );
                     if (record.height && ibc_send?.packet?.packet_data_hex && (source?.recipient_chain || link?.recipient_chain)) {
                       const recipient_chain = source?.recipient_chain || link?.recipient_chain;
-                      const chain_data = cosmos_chains.find(c => equals_ignore_case(c?.id, recipient_chain));
+                      const chain_data = non_axelar_cosmos_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
                       if (chain_data?.endpoints?.lcd) {
                         const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
                         for (const lcd of lcds) {
@@ -998,7 +1010,7 @@ exports.handler = async (event, context, callback) => {
                                 stallTimeout: 1000,
                               };
                             }));
-                            const gateway_address = evm_chains?.find(c => c?.id === recipient_chain)?.gateway_address;
+                            const gateway_address = evm_chains_data.find(c => c?.id === recipient_chain)?.gateway_address;
                             const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
                             if (gateway) {
                               try {
@@ -1045,7 +1057,7 @@ exports.handler = async (event, context, callback) => {
                               data.sign_batch = sign_batch;
                             }
                             if (transfer_source) {
-                              transfer_source.sender_chain = normalize_chain(cosmos_chains.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
+                              transfer_source.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
                               transfer_source.recipient_chain = transfer_source.recipient_chain || record.recipient_chain;
                               transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                               transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
@@ -1085,7 +1097,7 @@ exports.handler = async (event, context, callback) => {
                                 sign_batch,
                               };
                               if (transfer_source) {
-                                transfer_source.sender_chain = normalize_chain(cosmos_chains.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
+                                transfer_source.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain);
                                 transfer_source.recipient_chain = transfer_source.recipient_chain || record.recipient_chain;
                                 transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                                 transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
@@ -1103,7 +1115,7 @@ exports.handler = async (event, context, callback) => {
                       break;
                     case 'ConfirmERC20Deposit':
                       try {
-                        const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, record.sender_chain));
+                        const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, record.sender_chain));
                         const rpcs = chains_rpc[record.sender_chain];
                         const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
                           return {
@@ -1126,12 +1138,12 @@ exports.handler = async (event, context, callback) => {
                           const height = transaction?.blockNumber;
                           if (height) {
                             record.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString() || amount;
-                            if (equals_ignore_case(transaction.to, token_address) || _assets?.findIndex(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1) > -1) {
+                            if (equals_ignore_case(transaction.to, token_address) || assets_data?.findIndex(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1) > -1) {
                               const block_timestamp = await getBlockTime(provider, height);
                               if (block_timestamp) {
                                 created_at = block_timestamp * 1000;
                               }
-                              record.denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id || denom;
+                              record.denom = assets_data?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id || denom;
                               const transfer_source = {
                                 id: transaction_id,
                                 type: 'evm_transfer',
@@ -1183,7 +1195,7 @@ exports.handler = async (event, context, callback) => {
                               transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                               transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                               if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                                const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
+                                const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                 if (asset_data) {
                                   const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
                                   const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
@@ -1251,7 +1263,7 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains_data.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
@@ -1313,7 +1325,7 @@ exports.handler = async (event, context, callback) => {
                       if (record.poll_id) {
                         if (record.id && record.vote && (record.confirmation || !record.unconfirmed)) {
                           try {
-                            const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, record.sender_chain));
+                            const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, record.sender_chain));
                             const rpcs = chains_rpc[record.sender_chain];
                             const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
                               return {
@@ -1337,7 +1349,7 @@ exports.handler = async (event, context, callback) => {
                               const height = transaction?.blockNumber;
                               if (height) {
                                 record.amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString() || _.last(poll_id?.split('_'));
-                                const denom = _assets?.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id;
+                                const denom = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id;
                                 if (denom) {
                                   const block_timestamp = await getBlockTime(provider, height);
                                   if (block_timestamp) {
@@ -1395,7 +1407,7 @@ exports.handler = async (event, context, callback) => {
                                   transfer_source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer_source.sender_chain || link?.sender_chain);
                                   transfer_source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer_source.recipient_chain || link?.recipient_chain);
                                   if (transfer_source.denom && typeof transfer_source.amount === 'string') {
-                                    const asset_data = _assets.find(a => equals_ignore_case(a?.id, transfer_source.denom));
+                                    const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer_source.denom));
                                     if (asset_data) {
                                       const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.decimals || 6;
                                       transfer_source.amount = Number(formatUnits(BigNumber.from(transfer_source.amount).toString(), decimals));
@@ -1552,7 +1564,7 @@ exports.handler = async (event, context, callback) => {
                   deposit_address,
                 };
                 if (equals_ignore_case(sender_chain, 'axelarnet')) {
-                  const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                  const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                   if (chain_data) {
                     sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                   }
@@ -1564,7 +1576,7 @@ exports.handler = async (event, context, callback) => {
                 delete record['@type'];
                 record.sender_address = record.sender;
                 delete record.sender;
-                record.sender_chain = normalize_chain(cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
+                record.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address))?.id || record.sender_chain || record.chain);
                 delete record.chain;
                 record.recipient_address = record.recipient_addr;
                 delete record.recipient_addr;
@@ -1631,7 +1643,7 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains_data.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
                         const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
@@ -1755,8 +1767,6 @@ exports.handler = async (event, context, callback) => {
               // RouteIBCTransfersRequest
               records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes('RouteIBCTransfersRequest')) > -1).map(t => t.txhash);
               if (records.length > 0) {
-                // initial api
-                const api = axios.create({ baseURL: config[environment].endpoints.api });
                 for (const hash of records) {
                   api.post('', {
                     module: 'lcd',
@@ -1795,11 +1805,103 @@ exports.handler = async (event, context, callback) => {
               );
             }
           }
+          else if (path === '/ibc/core/channel/v1/channels' && res?.data?.channels) {
+            let all_channels = [];
+            let {
+              channels,
+              pagination,
+            } = { ...res.data };
+            let {
+              next_key,
+            } = { ...pagination };
+            all_channels = _.uniqBy(_.concat(all_channels, channels), 'channel_id');
+
+            while (next_key) {
+              const _res = await lcd.get(path, {
+                params: {
+                  'pagination.key': next_key,
+                },
+              }).catch(error => { return { data: { error } }; });
+              channels = _res?.data?.channels;
+              pagination = _res?.data?.pagination;
+              next_key = pagination?.next_key;
+
+              if (channels) {
+                all_channels = _.uniqBy(_.concat(all_channels, channels), 'channel_id');
+              }              
+            }
+
+            const _response = await read(
+              'ibc_channels',
+              {
+                match_all: {},
+              },
+              {
+                size: 1000,
+              },
+            );
+            const {
+              data,
+            } = { ..._response };
+
+            all_channels = all_channels.map(c => {
+              const {
+                channel_id,
+              } = { ...c };
+              return {
+                ...(data?.find(_c => _c?.channel_id === channel_id)),
+                ...c,
+              };
+            });
+
+            for (const channel of all_channels) {
+              const {
+                channel_id,
+                port_id,
+                updated_at,
+              } = { ...channel };
+              let {
+                chain_id,
+                escrow_address,
+              } = { ...channel };
+
+              if (!chain_id || !escrow_address || moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 240) {
+                let _res = await lcd.get(`/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`)
+                  .catch(error => { return { data: { error } }; });
+                const {
+                  client_state,
+                } = { ..._res?.data?.identified_client_state };
+                chain_id = client_state?.chain_id || chain_id;
+
+                if (chain_id) {
+                  _res = await cli.get('', {
+                    params: {
+                      cmd: `axelard q ibc-transfer escrow-address ${port_id} ${channel_id} -oj`,
+                    },
+                  }).catch(error => { return { data: { error } }; });
+                  const {
+                    stdout,
+                  } = { ..._res?.data };
+                  escrow_address = stdout?.trim() || escrow_address;
+
+                  await write(
+                    'ibc_channels',
+                    channel_id,
+                    {
+                      ...channel,
+                      chain_id,
+                      escrow_address,
+                      updated_at: moment().unix(),
+                    },
+                  );
+                }
+              }
+            }
+          }
           res.data.cache_hit = cache_hit;
           break;
         case 'cli':
-          if (config?.[environment]?.endpoints?.cli) {
-            const cli = axios.create({ baseURL: config[environment].endpoints.cli });
+          if (endpoints?.cli) {
             // set id
             cache_id = params.cmd;
             // get from cache
@@ -1828,11 +1930,7 @@ exports.handler = async (event, context, callback) => {
                 res.data.type = 'proxy';
               }
               else if ((params.cmd?.startsWith('axelard q evm batched-commands ') || params.cmd?.startsWith('axelard q evm latest-batched-commands ')) && params.cmd?.endsWith(' -oj')) {
-                const evm_chains = chains?.[environment]?.evm || [];
-                const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
-                const _assets = assets?.[environment] || [];
                 const chain = params.cmd.split(' ')[4]?.toLowerCase();
-                const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
                 const rpcs = chains_rpc[chain];
                 const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
                   return {
@@ -1841,7 +1939,7 @@ exports.handler = async (event, context, callback) => {
                     stallTimeout: 1000,
                   };
                 }));
-                const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, chain));
+                const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
                 const gateway_address = chain_data?.gateway_address;
                 const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
                 const output = to_json(res.data.stdout);
@@ -1890,7 +1988,7 @@ exports.handler = async (event, context, callback) => {
                           }
                           if (!command.deposit_address && salt && (output.command_ids.length < 15 || _commands?.filter(c => c?.salt && !c.deposit_address).length < 15 || Math.random(0, 1) < 0.3)) {
                             try {
-                              const asset_data = _assets.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && !c?.is_native) > -1);
+                              const asset_data = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && !c?.is_native) > -1);
                               const contract_data = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id);
                               const {
                                 contract_address,
@@ -1982,7 +2080,7 @@ exports.handler = async (event, context, callback) => {
                               sign_batch,
                             };
                             if (transfer_source) {
-                              transfer_source.sender_chain = normalize_chain(cosmos_chains.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || transfer_source.sender_chain);
+                              transfer_source.sender_chain = normalize_chain(non_axelar_cosmos_chains_data.find(c => transfer_source.sender_address?.startsWith(c?.prefix_address))?.id || transfer_source.sender_chain);
                               data.source = transfer_source;
                             }
                             await write(
@@ -2068,10 +2166,6 @@ exports.handler = async (event, context, callback) => {
       break;
     case '/cross-chain/{function}':
       try {
-        const evm_chains_data = chains?.[environment]?.evm || [];
-        const cosmos_chains_data = chains?.[environment]?.cosmos || [];
-        const assets_data = assets?.[environment] || [];
-
         let _response, data;
         const {
           txHash,
@@ -2079,6 +2173,7 @@ exports.handler = async (event, context, callback) => {
           state,
           sourceChain,
           destinationChain,
+          chain,
           asset,
           depositAddress,
           senderAddress,
@@ -2242,12 +2337,10 @@ exports.handler = async (event, context, callback) => {
             if (Array.isArray(_response?.data)) {
               const _transfers = _response.data.filter(d => d?.source?.id && (
                 !(d.source.recipient_chain && typeof d.source.amount === 'number' && typeof d.source.value === 'number') ||
-                cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
+                non_axelar_cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, d.source.recipient_chain)) > -1 && (d.vote || d.confirm_deposit)
               ));
               if (_transfers.length > 0) {
                 try {
-                  // initial api
-                  const api = axios.create({ baseURL: config[environment].endpoints.api });
                   for (const transfer of _transfers) {
                     api.post('/cross-chain/transfers-status', {
                       txHash: transfer.source.id,
@@ -2326,10 +2419,8 @@ exports.handler = async (event, context, callback) => {
               let transfer = _response?.data?.[0];
               if (!transfer && depositAddress) {
                 let created_at = moment().utc();
-                const _cosmos_chains_data = cosmos_chains_data.filter(c => c?.id !== 'axelarnet');
                 if (txHash.startsWith('0x')) {
                   if (evm_chains_data.length > 0) {
-                    const chains_rpc = Object.fromEntries(evm_chains_data.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
                     for (const chain_data of evm_chains_data) {
                       if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
                         const rpcs = chains_rpc[chain_data.id];
@@ -2360,7 +2451,7 @@ exports.handler = async (event, context, callback) => {
                               sender_address: transaction.from,
                               recipient_address: depositAddress,
                               amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || transaction.input?.substring(10 + 64) || '0'}`).toString(),
-                              denom: assets_data?.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id,
+                              denom: assets_data.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, transaction.to)) > -1)?.id,
                             };
                             _response = await read(
                               'deposit_addresses',
@@ -2425,8 +2516,8 @@ exports.handler = async (event, context, callback) => {
                     }
                   }
                 }
-                else if (_cosmos_chains_data.length > 0) {
-                  for (const chain_data of _cosmos_chains_data) {
+                else {
+                  for (const chain_data of non_axelar_cosmos_chains_data) {
                     if ((!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) && chain_data?.endpoints?.lcd) {
                       let found = false;
                       const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
@@ -2482,7 +2573,7 @@ exports.handler = async (event, context, callback) => {
                                 }
                               }
                               if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
-                                const chain_data = _cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                                const chain_data = non_axelar_cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                                 if (chain_data) {
                                   link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                                 }
@@ -2559,9 +2650,7 @@ exports.handler = async (event, context, callback) => {
                     transfer.source.denom = asset_data?.id || transfer.source.denom;
                   }
                 }
-                if (link?.txhash && typeof link.price !== 'number' && config?.[environment]?.endpoints?.api) {
-                  // initial api
-                  const api = axios.create({ baseURL: config[environment].endpoints.api });
+                if (link?.txhash && typeof link.price !== 'number' && endpoints?.api) {
                   await api.post('', {
                     module: 'lcd',
                     path: `/cosmos/tx/v1beta1/txs/${link.txhash}`,
@@ -2715,8 +2804,6 @@ exports.handler = async (event, context, callback) => {
                 if (cosmos_chains_data.filter(c => !['axelarnet'].includes(c?.id)).findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 && ['voted', 'deposit_confirmed'].includes(status)) {
                   const height = vote?.height || confirm_deposit?.height;
                   if (height) {
-                    // initial api
-                    const api = axios.create({ baseURL: config[environment].endpoints.api });
                     for (let i = 1; i < 4; i++) {
                       api.post('', {
                         module: 'lcd',
@@ -2805,10 +2892,12 @@ exports.handler = async (event, context, callback) => {
             }
             break;
           case 'chains':
-            response = { ...chains?.[environment] };
+            response = {
+              ...chains?.[environment],
+            };
             break;
           case 'assets':
-            response = assets_data?.map(a => Object.fromEntries(Object.entries({ ...a }).filter(([k, v]) => !['coingecko_id'].includes(k))));
+            response = assets_data.map(a => Object.fromEntries(Object.entries({ ...a }).filter(([k, v]) => !['coingecko_id'].includes(k))));
             break;
           case 'tvl':
             let _assets = params.assets || asset;
@@ -2824,7 +2913,25 @@ exports.handler = async (event, context, callback) => {
               _assets = _assets.filter(a => assets_data.findIndex(_a => _a?.id === a) > -1);
             }
 
-            const providers = Object.fromEntries(evm_chains_data.map(c => {
+            let _chains = params.chains || chain;
+            _chains = Array.isArray(_chains) ? _chains : (_chains?.split(',') || []);
+            if (_chains.length < 1) {
+              _chains = chains_data.map(c => c?.id);
+            }
+            else {
+              _chains = _chains.map(c => {
+                const chain_data = chains_data.find(_c => equals_ignore_case(_c?.id, c) || equals_ignore_case(_c?.name, c) || equals_ignore_case(_c?.short_name, c));
+                return chain_data?.id || c;
+              });
+              _chains = _.uniq(_.concat(['axelarnet'], _chains.filter(c => chains_data.findIndex(_c => _c?.id === c) > -1)));
+            }
+
+            // filter chains
+            const _evm_chains_data = evm_chains_data.filter(c => _chains.includes(c?.id));
+            const _cosmos_chains_data = cosmos_chains_data.filter(c => _chains.includes(c?.id));
+
+            // evm providers
+            const providers = Object.fromEntries(_evm_chains_data.map(c => {
               const {
                 id,
                 provider_params,
@@ -2842,16 +2949,33 @@ exports.handler = async (event, context, callback) => {
                 }));
               return [id, provider];
             }));
+            // cosmos lcds
+            const lcds = Object.fromEntries(_cosmos_chains_data.map(c => {
+              const {
+                id,
+                endpoints,
+              } = { ...c };
+              const {
+                lcd,
+                lcds,
+              } = { ...endpoints };
+              const _lcd = axios.create({ baseURL: lcd || _.head(lcds) });
+              return [id, _lcd];
+            }));
+            // axelar lcd
+            const axelar_lcd = axios.create({ baseURL: endpoints?.lcd });
+            const cli = axios.create({ baseURL: endpoints?.cli });
 
             data = [];
             for (const asset of _assets) {
               const asset_data = assets_data.find(a => a?.id === asset);
               const {
                 contracts,
+                ibc,
               } = { ...asset_data };
 
               // get tvl from rpc
-              const tvl = await evm_chains_data.reduce(async (acc, c) => {
+              const evm_tvl = await _evm_chains_data.reduce(async (acc, c) => {
                 const {
                   id,
                   chain_id,
@@ -2866,10 +2990,20 @@ exports.handler = async (event, context, callback) => {
 
                 let result;
                 if (contract_data && provider) {
-                  const supply = !is_native ? await getContractSupply(contract_data, provider) : 0;
-                  const balance = await getBalance(gateway_address, contract_data, provider);
+                  const supply = !is_native ?
+                    await getContractSupply(
+                      contract_data,
+                      provider,
+                    ) : 0;
+                  const balance = await getEVMBalance(
+                    gateway_address,
+                    contract_data,
+                    provider,
+                  );
                   result = {
+                    contract_data,
                     supply,
+                    gateway_address,
                     gateway_balance: balance,
                     total: supply + balance,
                   };
@@ -2881,24 +3015,127 @@ exports.handler = async (event, context, callback) => {
                 };
               }, {});
 
+              // get tvl from lcd
+              const cosmos_tvl = await _cosmos_chains_data.reduce(async (acc, c) => {
+                const {
+                  id,
+                  prefix_chain_ids,
+                } = { ...c };
+                const lcd = lcds[id];
+
+                const ibc_data = ibc?.find(i => i?.chain_id === id);
+                const {
+                  ibc_denom,
+                } = { ...ibc_data };
+                let {
+                  decimals,
+                } = { ...ibc_data };
+                decimals = decimals || asset_data.decimals;
+
+                let result;
+                const denom_data = {
+                  base_denom: asset_data.id,
+                  denom: ibc_denom,
+                  decimals,
+                };
+                let balance = 0,
+                  escrow_addresses;
+                if (prefix_chain_ids?.length > 0) {
+                  for (let i = 0; i < 2; i++) {
+                    const _response = await read(
+                      'ibc_channels',
+                      {
+                        bool: {
+                          must: [
+                            { match: { state: 'STATE_OPEN' } },
+                          ],
+                          should: prefix_chain_ids.map(p => {
+                            return {
+                              match_phrase_prefix: { chain_id: p },
+                            };
+                          }) || [],
+                          minimum_should_match: 1,
+                        },
+                      },
+                      {
+                        size: 100,
+                      },
+                    );
+
+                    const {
+                      data,
+                    } = { ..._response };
+                    if (data?.length > 0 && data.filter(d => moment().diff(moment((d?.updated_at || 0) * 1000), 'minutes', true) > 240).length < 1) {
+                      escrow_addresses = data.map(d => d?.escrow_address).filter(a => a);
+                      break;
+                    }
+                    else {
+                      const api = axios.create({ baseURL: endpoints?.api });
+                      await api.post('', {
+                        module: 'lcd',
+                        path: '/ibc/core/channel/v1/channels',
+                      }).catch(error => { return { data: { error } }; });
+                    }
+                  }
+                }
+                if (escrow_addresses) {
+                  for (const escrow_address of escrow_addresses) {
+                    balance += await getCosmosBalance(
+                      escrow_address,
+                      denom_data,
+                      axelar_lcd,
+                    );
+                  }
+                }
+                const total = id === 'axelarnet' ?
+                  await getCosmosSupply(
+                    denom_data,
+                    cli,
+                  ) : 0;
+                result = {
+                  denom_data,
+                  escrow_addresses,
+                  escrow_balance: balance,
+                  total,
+                };
+
+                return {
+                  ...await acc,
+                  [`${id}`]: result,
+                };
+              }, {});
+
+              const tvl = Object.fromEntries(
+                _.concat(
+                  Object.entries(evm_tvl),
+                  Object.entries(cosmos_tvl),
+                )
+              );
+
               // query price
               const prices_data = await assets_price({
                 denom: asset,
               });
               const price = prices_data?.[0]?.price;
 
+              const total_on_evm = _.sumBy(Object.values(evm_tvl), 'supply');
+              const total_on_cosmos = _.sumBy(Object.values(cosmos_tvl), _cosmos_chains_data.length === cosmos_chains_data.length ? 'total' : 'escrow_balance');
+
               data.push({
                 asset,
                 price,
                 tvl,
+                total_on_evm,
+                total_on_cosmos,
                 total: _.sum(Object.values(tvl).map(t => {
                   const {
                     gateway_balance,
                     total,
                   } = { ...t };
-                  return contracts?.findIndex(c => c?.is_native) > -1 ?
+                  return (contracts?.findIndex(c => c?.is_native) > -1 ?
                     gateway_balance :
-                    total;
+                    total
+                  ) || 0;
                 })),
               });
             }
@@ -2919,11 +3156,6 @@ exports.handler = async (event, context, callback) => {
         case 'heartbeats':
           try {
             response = await heartbeats(params);
-          } catch (error) {}
-          break;
-        case 'cosmos-minted-assets':
-          try {
-            response = await cosmos_minted_assets(params);
           } catch (error) {}
           break;
         default:
@@ -2975,8 +3207,6 @@ exports.handler = async (event, context, callback) => {
               );
               const batches = _response?.data;
               if (Array.isArray(batches)) {
-                // initial api
-                const api = axios.create({ baseURL: config[environment].endpoints.api });
                 for (const batch of batches) {
                   const {
                     chain,

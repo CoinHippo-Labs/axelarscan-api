@@ -259,6 +259,9 @@ module.exports = {
         color: '#cbcaca',
         website: 'https://axelar.network',
         prefix_address: 'axelar',
+        prefix_chain_ids: [
+          'axelar-',
+        ],
         endpoints: {
           lcd: 'http://rpc.axelarscan.io:1317',
         },
@@ -282,8 +285,12 @@ module.exports = {
         color: '#2e3148',
         website: 'https://cosmos.network',
         prefix_address: 'cosmos',
+        prefix_chain_ids: [
+          'cosmoshub-',
+        ],
         endpoints: {
-          lcd: 'https://lcd-cosmoshub.blockapsis.com',
+          lcd: 'https://lcd-cosmoshub.whispernode.com',
+          lcds: ['https://cosmos-lcd.quickapi.com', 'https://rest-cosmoshub.ecostake.com'],
         },
       },
       {
@@ -304,6 +311,9 @@ module.exports = {
         color: '#d705cc',
         website: 'https://osmosis.zone',
         prefix_address: 'osmo',
+        prefix_chain_ids: [
+          'osmosis-',
+        ],
         endpoints: {
           lcd: 'https://lcd-osmosis.blockapsis.com',
         },
@@ -326,6 +336,9 @@ module.exports = {
         color: '#f0827d',
         website: 'https://junonetwork.io',
         prefix_address: 'juno',
+        prefix_chain_ids: [
+          'juno-',
+        ],
         endpoints: {
           lcd: 'https://lcd-juno.itastakers.com',
         },
@@ -348,6 +361,9 @@ module.exports = {
         color: '#002e33',
         website: 'https://e-money.com',
         prefix_address: 'emoney',
+        prefix_chain_ids: [
+          'emoney-',
+        ],
         endpoints: {
           lcd: 'https://lcd-emoney.keplr.app',
         },
@@ -375,6 +391,9 @@ module.exports = {
         color: '#00a3ba',
         website: 'https://injective.com',
         prefix_address: 'inj',
+        prefix_chain_ids: [
+          'injective-',
+        ],
         endpoints: {
           lcd: 'https://public.lcd.injective.network',
         },
@@ -397,6 +416,9 @@ module.exports = {
         color: '#bf7c5e',
         website: 'https://crescent.network',
         prefix_address: 'cre',
+        prefix_chain_ids: [
+          'crescent-',
+        ],
         endpoints: {
           lcd: 'https://mainnet.crescent.network:1317',
         },
@@ -419,6 +441,9 @@ module.exports = {
         color: '#8b1227',
         website: 'https://kujira.app',
         prefix_address: 'kujira',
+        prefix_chain_ids: [
+          'kaiyo-',
+        ],
         endpoints: {
           lcd: 'https://rest.kujira.ccvalidators.com',
           lcds: ['https://lcd-kujira.synergynodes.com'],
@@ -442,6 +467,9 @@ module.exports = {
         color: '#000000',
         website: 'https://scrt.network',
         prefix_address: 'secret',
+        prefix_chain_ids: [
+          'secret-',
+        ],
         endpoints: {
           lcd: 'https://api.roninventures.io',
           lcds: ['https://api.secret.forbole.com', 'https://secret.api.consensus.one', 'https://secretnetwork-lcd.stakely.io'],
@@ -465,6 +493,9 @@ module.exports = {
         color: '#2a4bfb',
         website: 'https://foundation.ki',
         prefix_address: 'ki',
+        prefix_chain_ids: [
+          'kichain-',
+        ],
         endpoints: {
           lcd: 'https://api-mainnet.blockchain.ki',
           lcds: ['https://lcd.kichain.ezstaking.io', 'https://api-kichain-ia.notional.ventures'],
@@ -488,6 +519,9 @@ module.exports = {
         color: '#ffd83d',
         website: 'https://terra.money',
         prefix_address: 'terra',
+        prefix_chain_ids: [
+          'phoenix-',
+        ],
         endpoints: {
           lcd: 'https://phoenix-lcd.terra.dev',
           lcds: ['https://blockdaemon-terra-lcd.api.bdnodes.net:1317', 'https://terra-lcd.quickapi.com', 'https://lcd.terra.dev', 'https://columbus-lcd.terra.dev'],
@@ -787,6 +821,9 @@ module.exports = {
         color: '#cbcaca',
         website: 'https://axelar.network',
         prefix_address: 'axelar',
+        prefix_chain_ids: [
+          'axelar-',
+        ],
         endpoints: {
           lcd: 'http://testnet.rpc.axelarscan.io:1317',
         },
@@ -810,6 +847,9 @@ module.exports = {
         color: '#2e3148',
         website: 'https://cosmos.network',
         prefix_address: 'cosmos',
+        prefix_chain_ids: [
+          'theta-testnet-',
+        ],
         endpoints: {
           lcd: 'https://rest.sentry-01.theta-testnet.polypore.xyz',
         },
@@ -832,6 +872,10 @@ module.exports = {
         color: '#d705cc',
         website: 'https://osmosis.zone',
         prefix_address: 'osmo',
+        prefix_chain_ids: [
+          'osmo-test-',
+          'osmosis-',
+        ],
         endpoints: {
           lcd: 'https://testnet-rest.osmosis.zone',
         },
@@ -865,6 +909,9 @@ module.exports = {
         color: '#f0827d',
         website: 'https://junonetwork.io',
         prefix_address: 'juno',
+        prefix_chain_ids: [
+          'uni-',
+        ],
         endpoints: {
           lcd: 'https://lcd.uni.juno.deuslabs.fi',
         },
@@ -887,6 +934,9 @@ module.exports = {
         color: '#bf7c5e',
         website: 'https://crescent.network',
         prefix_address: 'cre',
+        prefix_chain_ids: [
+          'mooncat-',
+        ],
         endpoints: {
           lcd: 'https://testnet-endpoint.crescent.network/api/crescent',
         },
@@ -909,6 +959,9 @@ module.exports = {
         color: '#8b1227',
         website: 'https://kujira.app',
         prefix_address: 'kujira',
+        prefix_chain_ids: [
+          'harpoon-',
+        ],
         endpoints: {
           lcd: 'https://test-lcd-kujira.mintthemoon.xyz',
         },
@@ -931,6 +984,9 @@ module.exports = {
         color: '#000000',
         website: 'https://scrt.network',
         prefix_address: 'secret',
+        prefix_chain_ids: [
+          'pulsar-',
+        ],
         endpoints: {
           lcd: 'https://testnet-api.roninventures.io',
           lcds: ['http://testnet.securesecrets.org:1317', 'https://lcd.testnet.secretsaturn.net', 'https://api.pulsar.scrttestnet.com'],
@@ -954,6 +1010,10 @@ module.exports = {
         color: '#b5354f',
         website: 'https://www.seinetwork.io',
         prefix_address: 'sei',
+        prefix_chain_ids: [
+          'sei-testnet-',
+          'atlantic-',
+        ],
         endpoints: {
           lcd: 'https://rest-sei-test.ecostake.com',
         },
@@ -976,6 +1036,9 @@ module.exports = {
         color: '#202944',
         website: 'https://fetch.ai',
         prefix_address: 'fetch',
+        prefix_chain_ids: [
+          'dorado-1',
+        ],
         endpoints: {
           lcd: 'https://rest-dorado.fetch.ai:443',
         },
@@ -998,6 +1061,9 @@ module.exports = {
         color: '#ffd83d',
         website: 'https://terra.money',
         prefix_address: 'terra',
+        prefix_chain_ids: [
+          'pisco-',
+        ],
         endpoints: {
           lcd: 'https://pisco-lcd.terra.dev',
           lcds: ['https://bombay-lcd.terra.dev'],
@@ -1229,6 +1295,9 @@ module.exports = {
         color: '#cbcaca',
         website: 'https://axelar.network',
         prefix_address: 'axelar',
+        prefix_chain_ids: [
+          'axelar-',
+        ],
         endpoints: {
           lcd: 'http://devnet.rpc.axelarscan.io:1317',
         },
@@ -1326,6 +1395,9 @@ module.exports = {
         color: '#cbcaca',
         website: 'https://axelar.network',
         prefix_address: 'axelar',
+        prefix_chain_ids: [
+          'axelar-',
+        ],
         endpoints: {
           lcd: 'http://testnet-2.rpc.axelarscan.io:1317',
         },
