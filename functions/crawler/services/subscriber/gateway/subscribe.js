@@ -1,11 +1,13 @@
-// import ethers.js
 const { Contract } = require('ethers');
-// import config
 const config = require('config-yml');
-// import api
-const { getLatestEventBlock, saveEvent } = require('../api');
-// import utils
-const { log, sleep } = require('../../../utils');
+const {
+  getLatestEventBlock,
+  saveEvent,
+} = require('../api');
+const {
+  log,
+  sleep,
+} = require('../../../utils');
 
 // service name
 const service_name = 'gateway-subscriber';
@@ -19,10 +21,17 @@ const num_query_block = config?.[environment]?.past_events_block_per_request || 
 const events_name = ['TokenSent'];
 
 // subscribe contract
-const subscribe = async (chain_config, data, _environment) => {
+const subscribe = async (
+  chain_config,
+  data,
+  _environment,
+) => {
   if (chain_config && data) {
     try {
-      const { id, gateway } = { ...chain_config };
+      const {
+        id,
+        gateway,
+      } = { ...chain_config };
       const chain = id;
       // set id
       data.id = `${data.transactionHash}_${data.transactionIndex}_${data.logIndex}`;
@@ -57,9 +66,17 @@ const subscribe = async (chain_config, data, _environment) => {
 };
 
 // get past events
-const getPastEvents = async (chain_config, filters, options) => {
+const getPastEvents = async (
+  chain_config,
+  filters,
+  options,
+) => {
   if (chain_config && filters && options) {
-    const { id, gateway, provider } = { ...chain_config };
+    const {
+      id,
+      gateway,
+      provider,
+    } = { ...chain_config };
     const chain = id;
 
     // initial contract
@@ -70,8 +87,7 @@ const getPastEvents = async (chain_config, filters, options) => {
       .catch(error => { return { error }; });
     if (!events?.error) {
       if (events) {
-        for (let i = 0; i < events.length; i++) {
-          const event = events[i];
+        for (const event of events) {
           await subscribe(chain_config, event, options.environment);
         }
       }
@@ -87,9 +103,15 @@ const getPastEvents = async (chain_config, filters, options) => {
 };
 
 // sync events
-const sync = async (chain_config, filters) => {
+const sync = async (
+  chain_config,
+  filters,
+) => {
   if (chain_config) {
-    const { id, provider } = { ...chain_config };
+    const {
+      id,
+      provider,
+    } = { ...chain_config };
     const chain = id;
 
     // get latest block

@@ -5,7 +5,10 @@ const {
   utils: { formatUnits },
 } = require('ethers');
 
-const getContractSupply = async (contract_data, provider) => {
+const getContractSupply = async (
+  contract_data,
+  provider,
+) => {
   let supply;
   const {
     contract_address,
@@ -21,7 +24,11 @@ const getContractSupply = async (contract_data, provider) => {
   return Number(formatUnits(BigNumber.from((supply || 0).toString()), decimals));
 };
 
-const getBalance = async (address, contract_data, provider) => {
+const getBalance = async (
+  address,
+  contract_data,
+  provider,
+) => {
   let balance;
   const {
     contract_address,

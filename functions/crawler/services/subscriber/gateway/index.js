@@ -1,7 +1,8 @@
-// import ethers.js
 const { Contract } = require('ethers');
-// import subscribe function
-const { subscribe, sync } = require('./subscribe');
+const {
+  subscribe,
+  sync,
+} = require('./subscribe');
 
 // run
 module.exports.subscribeGateway = chains_config => {

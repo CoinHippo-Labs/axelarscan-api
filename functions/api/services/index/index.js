@@ -1,7 +1,8 @@
-// import module for http request
 const axios = require('axios');
-// import utils
-const { normalize_obj, transfer_collections } = require('./utils');
+const {
+  normalize_obj,
+  transfer_collections,
+} = require('./utils');
 
 module.exports.crud = async (params = {}) => {
   // initial indexer info

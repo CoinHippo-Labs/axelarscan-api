@@ -1,13 +1,9 @@
-// import ethers.js
 const {
   Contract,
   providers: { FallbackProvider, JsonRpcProvider },
 } = require('ethers');
-// import config
 const config = require('config-yml');
-// import subscriber
 const gateway_subscriber = require('./services/subscriber/gateway/subscribe');
-// IAxelarGateway
 const IAxelarGateway = require('./data/contracts/interfaces/IAxelarGateway.json');
 
 // import arguments
@@ -18,12 +14,18 @@ const optionDefinitions = [
   { name: 'block', alias: 'b', type: Number, multiple: true },
 ];
 const _options = commandLineArgs(optionDefinitions);
-const { environment, chain, block } = { ..._options };
+const {
+  environment,
+  chain,
+  block,
+} = { ..._options };
 // initial number of block per query
 const num_query_block = config?.[environment]?.past_events_block_per_request || 100;
 
 // initial env config
-const env_config = { ...config?.[environment] };
+const env_config = {
+  ...config?.[environment],
+};
 // initial chains config
 const chains_config = Object.entries({ ...env_config?.chains }).filter(([k, v]) => v?.endpoints?.rpc?.length > 0).map(([k, v]) => {
   // initial rpc provider
@@ -50,7 +52,10 @@ const chains_config = Object.entries({ ...env_config?.chains }).filter(([k, v]) 
 
 const chain_config = chains_config?.find(c => c?.id === chain);
 if (chain_config) {
-  const { gateway, provider } = { ...chain_config };
+  const {
+    gateway,
+    provider,
+  } = { ...chain_config };
   // initial contract
   const gateway_contract = new Contract(gateway?.address, gateway?.abi, provider);
 
@@ -61,7 +66,11 @@ if (chain_config) {
 
   const run = async () => {
     const fromBlock = block?.[0], toBlock = block?.[1];
-    const options = { fromBlock, toBlock, environment };
+    const options = {
+      fromBlock,
+      toBlock,
+      environment,
+    };
     let synced = false;
     while (!synced) {
       // check synced and set options

@@ -1,12 +1,7 @@
-// import module for http request
 const axios = require('axios');
-// import module for generate diff time
 const moment = require('moment');
-// import config
 const config = require('config-yml');
-// import db service
 const { crud } = require('./index');
-// import utils
 const { log } = require('../utils');
 
 // service name

@@ -1,16 +1,9 @@
-// import module for http request
 const axios = require('axios');
-// import lodash
 const _ = require('lodash');
-// import module for date time
 const moment = require('moment');
-// import config
 const config = require('config-yml');
-// import index
 const { crud } = require('./index');
-// data
 const { assets } = require('../data');
-// import utils
 const { equals_ignore_case } = require('../utils');
 
 // initial environment

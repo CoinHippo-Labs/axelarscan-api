@@ -1,12 +1,8 @@
-// import ethers.js
 const {
   providers: { FallbackProvider, JsonRpcProvider },
 } = require('ethers');
-// import config
 const config = require('config-yml');
-// import gateway subscriber
 const { subscribeGateway } = require('./gateway');
-// IAxelarGateway
 const IAxelarGateway = require('../../data/contracts/interfaces/IAxelarGateway.json');
 
 // initial environment
@@ -14,7 +10,9 @@ const environment = process.env.ENVIRONMENT;
 
 module.exports = () => {
   // initial env config
-  const env_config = { ...config?.[environment] };
+  const env_config = {
+    ...config?.[environment],
+  };
   // initial chains config
   const chains_config = Object.entries({ ...env_config?.chains }).filter(([k, v]) => v?.endpoints?.rpc?.length > 0).map(([k, v]) => {
     // initial rpc provider

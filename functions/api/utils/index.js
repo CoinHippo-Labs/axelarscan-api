@@ -1,15 +1,22 @@
-// import config
 const config = require('config-yml');
-// import module for generate timestamp
 const moment = require('moment');
 
-const log = (level, from, message, data = {}) => {
-  try {
-    // generate log message
-    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' && data ? JSON.stringify(data, null, 2) : data}`;
+const {
+  log_level,
+} = { ...config };
 
+const log = (
+  level,
+  from,
+  message,
+  data = {},
+) => {
+  try {
     // normalize level
     level = level?.toLowerCase();
+
+    // generate log message
+    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;
 
     switch (level) {
       case 'error':
@@ -19,14 +26,14 @@ const log = (level, from, message, data = {}) => {
         console.warn(log_message);
         break;
       case 'debug':
-        if (config?.log_level === 'debug') {
+        if (log_level === 'debug') {
           console.debug(log_message);
         }
         break;
       default:
         console.log(log_message);
         break;
-    };
+    }
   } catch (error) {}
 };
 
@@ -90,7 +97,11 @@ const transfer_actions = ['ConfirmDeposit', 'ConfirmERC20Deposit'];
 const vote_types = ['VoteConfirmDeposit', 'Vote'];
 
 // get transaction
-const getTransaction = async (provider, tx_hash, chain) => {
+const getTransaction = async (
+  provider,
+  tx_hash,
+  chain,
+) => {
   // initial output
   let output;
 
@@ -113,7 +124,10 @@ const getTransaction = async (provider, tx_hash, chain) => {
 };
 
 // get block time
-const getBlockTime = async (provider, block_number) => {
+const getBlockTime = async (
+  provider,
+  block_number,
+) => {
   // initial output
   let output;
 

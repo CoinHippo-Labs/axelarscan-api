@@ -1,13 +1,22 @@
 // import config
 const config = require('config-yml');
 
-const log = (level, from, message, data = {}) => {
-  try {
-    // generate log message
-    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' && data ? JSON.stringify(data, null, 2) : data}`;
+const {
+  log_level,
+} = { ...config };
 
+const log = (
+  level,
+  from,
+  message,
+  data = {},
+) => {
+  try {
     // normalize level
     level = level?.toLowerCase();
+
+    // generate log message
+    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;
 
     switch (level) {
       case 'error':
@@ -17,14 +26,14 @@ const log = (level, from, message, data = {}) => {
         console.warn(log_message);
         break;
       case 'debug':
-        if (config?.log_level === 'debug' || process.env.LOG_LEVEL === 'debug' || !process.env.ENVIRONMENT) {
+        if (log_level === 'debug' || process.env.LOG_LEVEL === 'debug' || !process.env.ENVIRONMENT) {
           console.debug(log_message);
         }
         break;
       default:
         console.log(log_message);
         break;
-    };
+    }
   } catch (error) {}
 };
 

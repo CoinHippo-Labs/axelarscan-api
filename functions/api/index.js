@@ -1,35 +1,42 @@
 exports.handler = async (event, context, callback) => {
-  // import module for http request
-  const axios = require('axios');
-  // import ethers.js
   const {
     BigNumber,
     Contract,
     providers: { FallbackProvider, JsonRpcProvider },
     utils: { formatUnits },
   } = require('ethers');
-  // import module for date time
-  const moment = require('moment');
-  // import lodash
+  const axios = require('axios');
   const _ = require('lodash');
-  // import config
+  const moment = require('moment');
   const config = require('config-yml');
-  // import index
   const { crud } = require('./services/index');
-  // import asset price
-  const assets_price = require('./services/assets');
-  // import tvl
+  const assets_price = require('./services/assets-price');
+  const evm_votes = require('./services/evm-votes');
+  const heartbeats = require('./services/heartbeats');
   const {
     getContractSupply,
     getBalance,
   } = require('./services/tvl');
-  // import utils
-  const { log, sleep, equals_ignore_case, get_params, to_json, to_hex, get_granularity, normalize_original_chain, normalize_chain, transfer_actions, vote_types, getTransaction, getBlockTime } = require('./utils');
-  // data
-  const { chains, assets } = require('./data');
-  // IAxelarGateway
+  const {
+    log,
+    sleep,
+    equals_ignore_case,
+    get_params,
+    to_json,
+    to_hex,
+    get_granularity,
+    normalize_original_chain,
+    normalize_chain,
+    transfer_actions,
+    vote_types,
+    getTransaction,
+    getBlockTime,
+  } = require('./utils');
+  const {
+    chains,
+    assets,
+  } = require('./data');
   const IAxelarGateway = require('./data/contracts/interfaces/IAxelarGateway.json');
-  // IBurnableMintableCappedERC20
   const IBurnableMintableCappedERC20 = require('./data/contracts/interfaces/IBurnableMintableCappedERC20.json');
 
   // initial environment
@@ -2022,7 +2029,7 @@ exports.handler = async (event, context, callback) => {
                       must: [
                         { exists: { field: 'sign_batch' } },
                       ],
-                      should: evm_chains_data?.map(c => {
+                      should: evm_chains_data.map(c => {
                         return { match: { 'source.recipient_chain': c?.id } };
                       }) || [],
                       minimum_should_match: 1,
@@ -2033,7 +2040,7 @@ exports.handler = async (event, context, callback) => {
                       must: [
                         { exists: { field: 'ibc_send' } },
                       ],
-                      should: cosmos_chains_data?.map(c => {
+                      should: cosmos_chains_data.map(c => {
                         return { match: { 'source.recipient_chain': c?.id } };
                       }) || [],
                       minimum_should_match: 1,
@@ -2061,7 +2068,7 @@ exports.handler = async (event, context, callback) => {
                             must: [
                               { exists: { field: 'sign_batch' } },
                             ],
-                            should: evm_chains_data?.map(c => {
+                            should: evm_chains_data.map(c => {
                               return { match: { 'source.recipient_chain': c?.id } };
                             }) || [],
                             minimum_should_match: 1,
@@ -2072,7 +2079,7 @@ exports.handler = async (event, context, callback) => {
                             must: [
                               { exists: { field: 'ibc_send' } },
                             ],
-                            should: cosmos_chains_data?.map(c => {
+                            should: cosmos_chains_data.map(c => {
                               return { match: { 'source.recipient_chain': c?.id } };
                             }) || [],
                             minimum_should_match: 1,
@@ -2220,13 +2227,11 @@ exports.handler = async (event, context, callback) => {
               let transfer = _response?.data?.[0];
               if (!transfer && depositAddress) {
                 let created_at = moment().utc();
-                const evm_chains = chains?.[environment]?.evm || [];
-                const cosmos_chains = chains?.[environment]?.cosmos?.filter(c => c?.id !== 'axelarnet') || [];
+                const _cosmos_chains_data = cosmos_chains_data.filter(c => c?.id !== 'axelarnet');
                 if (txHash.startsWith('0x')) {
-                  if (evm_chains.length > 0) {
-                    const chains_rpc = Object.fromEntries(evm_chains.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
-                    for (let i = 0; i < evm_chains.length; i++) {
-                      const chain_data = evm_chains[i];
+                  if (evm_chains_data.length > 0) {
+                    const chains_rpc = Object.fromEntries(evm_chains_data.map(c => [c?.id, c?.provider_params?.[0]?.rpcUrls || []]));
+                    for (const chain_data of evm_chains_data) {
                       if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
                         const rpcs = chains_rpc[chain_data.id];
                         const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
@@ -2323,15 +2328,14 @@ exports.handler = async (event, context, callback) => {
                     }
                   }
                 }
-                else if (cosmos_chains.length > 0) {
-                  for (let i = 0; i < cosmos_chains.length; i++) {
-                    const chain_data = cosmos_chains[i];
+                else if (_cosmos_chains_data.length > 0) {
+                  for (const chain_data of _cosmos_chains_data) {
                     if ((!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) && chain_data?.endpoints?.lcd) {
                       let found = false;
                       const lcds = _.concat([chain_data.endpoints.lcd], chain_data.endpoints.lcds || []);
-                      for (let j = 0; j < lcds.length; j++) {
+                      for (const lcd of lcds) {
                         // initial lcd
-                        const _lcd = axios.create({ baseURL: lcds[j] });
+                        const _lcd = axios.create({ baseURL: lcd });
                         try {
                           // request lcd
                           _response = await _lcd.get(`/cosmos/tx/v1beta1/txs/${txHash}`)
@@ -2383,7 +2387,7 @@ exports.handler = async (event, context, callback) => {
                                 }
                               }
                               if (equals_ignore_case(link?.original_sender_chain, 'axelarnet')) {
-                                const chain_data = cosmos_chains.find(c => record.sender_address?.startsWith(c?.prefix_address));
+                                const chain_data = _cosmos_chains_data.find(c => record.sender_address?.startsWith(c?.prefix_address));
                                 if (chain_data) {
                                   link.original_sender_chain = _.last(Object.keys({ ...chain_data.overrides })) || chain_data.id;
                                 }
@@ -2432,8 +2436,6 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               else if (transfer) {
-                const evm_chains = chains?.[environment]?.evm || [];
-                const cosmos_chains = chains?.[environment]?.cosmos || [];
                 query = {
                   match: {
                     deposit_address: transfer.source?.recipient_address || depositAddress,
@@ -2454,7 +2456,7 @@ exports.handler = async (event, context, callback) => {
                 transfer.source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer.source.sender_chain || link?.sender_chain);
                 transfer.source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer.source.recipient_chain || link?.recipient_chain);
                 if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
-                  const chain_data = evm_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains?.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
+                  const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains_data.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
                   const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
                   if (chain_data && asset_data) {
                     const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
@@ -2807,6 +2809,17 @@ exports.handler = async (event, context, callback) => {
         }
       } catch (error) {}
       break;
+    case '/evm-votes':
+      try {
+        response = evm_votes(params);
+      } catch (error) {}
+      break;
+    case '/heartbeats':
+      try {
+        response = heartbeats(params);
+      } catch (error) {}
+      break;
+    // internal
     case '/transfer/{pollId}':
       try {
         let { pollId } = { ...req.params };
@@ -2882,103 +2895,6 @@ exports.handler = async (event, context, callback) => {
           };
         }
         log('debug', req.url, 'save transfer id output', { ...response });
-      } catch (error) {}
-      break;
-    case '/evm-votes':
-      try {
-        const { chain, txHash, pollId, transactionId, voter, vote, from, size, sort } = { ...params };
-        let { query, fromTime, toTime } = { ...params };
-        const must = [], should = [], must_not = [];
-        if (chain) {
-          must.push({ match: { sender_chain: chain } });
-        }
-        if (txHash) {
-          must.push({ match: { txhash: txHash } });
-        }
-        if (pollId) {
-          must.push({ match_phrase: { poll_id: pollId } });
-        }
-        if (transactionId) {
-          must.push({ match: { transaction_id: transactionId } });
-        }
-        if (voter) {
-          must.push({ match: { voter } });
-        }
-        if (vote) {
-          switch (vote) {
-            case 'yes':
-            case 'no':
-              must.push({ match: { vote: vote === 'yes' } });
-              break;
-            default:
-              break;
-          }
-        }
-        if (fromTime && toTime) {
-          fromTime = Number(fromTime) * 1000;
-          toTime = Number(toTime) * 1000;
-          must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
-        }
-        if (!query) {
-          query = {
-            bool: {
-              must,
-              should,
-              must_not,
-              minimum_should_match: should.length > 0 ? 1 : 0,
-            },
-          };
-        }
-        const _response = await crud({
-          collection: 'evm_votes',
-          method: 'search',
-          query,
-          from: typeof from === 'number' ? from : 0,
-          size: typeof size === 'number' ? size : 100,
-          sort: sort || [{ 'created_at.ms': 'desc' }],
-          track_total_hits: true,
-        });
-        response = _response;
-      } catch (error) {}
-      break;
-    case '/heartbeats':
-      try {
-        const { sender, fromBlock, toBlock, from, size, sort } = { ...params };
-        let { query } = { ...params };
-        const must = [], should = [], must_not = [];
-        if (sender) {
-          must.push({ match: { sender } });
-        }
-        if (fromBlock || toBlock) {
-          const range = {};
-          if (fromBlock) {
-            range.gte = fromBlock;
-          }
-          if (toBlock) {
-            range.lte = toBlock;
-          }
-          must.push({ range: { height: range } });
-        }
-        if (!query) {
-          query = {
-            bool: {
-              must,
-              should,
-              must_not,
-              minimum_should_match: should.length > 0 ? 1 : 0,
-            },
-          };
-        }
-        const _response = await crud({
-          collection: 'heartbeats',
-          method: 'search',
-          query,
-          from: typeof from === 'number' ? from : 0,
-          size: typeof size === 'number' ? size : 200,
-          sort: sort || [{ period_height: 'desc' }],
-          track_total_hits: true,
-        });
-        response = _response;
       } catch (error) {}
       break;
     case '/gateway/{function}':

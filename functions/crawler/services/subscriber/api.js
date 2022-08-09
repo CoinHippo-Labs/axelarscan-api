@@ -1,8 +1,5 @@
-// import module for http request
 const axios = require('axios');
-// import config
 const config = require('config-yml');
-// import utils
 const { log } = require('../../utils');
 
 // service name
@@ -36,7 +33,12 @@ const getLatestEventBlock = async chain => {
 };
 
 // save data to indexer via api
-const saveEvent = async (event, chain, contractAddress, _environment) => {
+const saveEvent = async (
+  event,
+  chain,
+  contractAddress,
+  _environment,
+) => {
   // initial output
   let output;
 
