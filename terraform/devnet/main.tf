@@ -139,15 +139,9 @@ resource "aws_apigatewayv2_route" "route" {
   # target    = "integrations/${var.api_gateway_integration_id}"
 }
 
-resource "aws_apigatewayv2_route" "route_evm_votes" {
+resource "aws_apigatewayv2_route" "route_functions" {
   api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /evm-votes"
-  # target    = "integrations/${var.api_gateway_integration_id}"
-}
-
-resource "aws_apigatewayv2_route" "route_heartbeats" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /heartbeats"
+  route_key = "ANY /{function}"
   # target    = "integrations/${var.api_gateway_integration_id}"
 }
 

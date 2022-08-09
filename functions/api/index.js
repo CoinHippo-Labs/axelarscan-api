@@ -13,6 +13,7 @@ exports.handler = async (event, context, callback) => {
   const assets_price = require('./services/assets-price');
   const evm_votes = require('./services/evm-votes');
   const heartbeats = require('./services/heartbeats');
+  const cosmos_minted_assets = require('./services/cosmos-minted-assets');
   const {
     getContractSupply,
     getBalance,
@@ -2809,15 +2810,26 @@ exports.handler = async (event, context, callback) => {
         }
       } catch (error) {}
       break;
-    case '/evm-votes':
-      try {
-        response = evm_votes(params);
-      } catch (error) {}
-      break;
-    case '/heartbeats':
-      try {
-        response = heartbeats(params);
-      } catch (error) {}
+    case '/{function}':
+      switch (req.params.function) {
+        case 'evm-votes':
+          try {
+            response = await evm_votes(params);
+          } catch (error) {}
+          break;
+        case 'heartbeats':
+          try {
+            response = await heartbeats(params);
+          } catch (error) {}
+          break;
+        case 'cosmos-minted-assets':
+          try {
+            response = await cosmos_minted_assets(params);
+          } catch (error) {}
+          break;
+        default:
+          break;
+      }
       break;
     // internal
     case '/transfer/{pollId}':
