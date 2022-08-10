@@ -2903,7 +2903,7 @@ exports.handler = async (event, context, callback) => {
                   query = {
                     bool: {
                       must: [
-                        { range: { 'block_timestamp': { gte: fromTime, lte: toTime } } },
+                        { range: { block_timestamp: { gte: fromTime, lte: toTime } } },
                       ],
                     },
                   };
@@ -3481,6 +3481,10 @@ exports.handler = async (event, context, callback) => {
                         block_timestamp: await getBlockTime(provider, event.blockNumber),
                         ...event,
                       };
+                      if (event.block_timestamp) {
+                        event.created_at = get_granularity(moment(event.block_timestamp * 1000).utc());
+                      }
+
                       const {
                         symbol,
                         amount,
