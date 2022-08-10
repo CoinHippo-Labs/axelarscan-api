@@ -11,9 +11,12 @@ module.exports = {
           {
             chainId: '0x1',
             chainName: 'Ethereum',
-            rpcUrls: ['https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161', 'https://rpc.ankr.com/eth'],
+            rpcUrls: [
+              'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+              'https://rpc.ankr.com/eth',
+            ],
             nativeCurrency: {
-              name: 'Ether',
+              name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
             },
@@ -45,9 +48,12 @@ module.exports = {
           {
             chainId: '0x38',
             chainName: 'BNB Chain',
-            rpcUrls: ['https://rpc.ankr.com/bsc', 'https://bsc-dataseed.binance.org', 'https://bsc-dataseed1.defibit.io', 'https://bsc-dataseed1.ninicoin.io', 'https://bsc-dataseed1.binance.org'],
+            rpcUrls: [
+              'https://rpc.ankr.com/bsc',
+              'https://bsc-dataseed.binance.org',
+            ],
             nativeCurrency: {
-              name: 'BNB Token',
+              name: 'BNB',
               symbol: 'BNB',
               decimals: 18,
             },
@@ -78,8 +84,11 @@ module.exports = {
         provider_params: [
           {
             chainId: '0xa86a',
-            chainName: 'Avalanche C-Chain',
-            rpcUrls: ['https://rpc.ankr.com/avalanche', 'https://api.avax.network/ext/bc/C/rpc'],
+            chainName: 'Avalanche',
+            rpcUrls: [
+              'https://rpc.ankr.com/avalanche',
+              'https://api.avax.network/ext/bc/C/rpc',
+            ],
             nativeCurrency: {
               name: 'Avalanche',
               symbol: 'AVAX',
@@ -113,9 +122,11 @@ module.exports = {
           {
             chainId: '0x89',
             chainName: 'Polygon',
-            rpcUrls: ['https://rpc.ankr.com/polygon'],
+            rpcUrls: [
+              'https://rpc.ankr.com/polygon',
+            ],
             nativeCurrency: {
-              name: 'Matic',
+              name: 'Polygon',
               symbol: 'MATIC',
               decimals: 18,
             },
@@ -146,8 +157,12 @@ module.exports = {
         provider_params: [
           {
             chainId: '0xfa',
-            chainName: 'Fantom Opera',
-            rpcUrls: ['https://rpc.ftm.tools', 'https://rpc.ankr.com/fantom', 'https://rpcapi.fantom.network'],
+            chainName: 'Fantom',
+            rpcUrls: [
+              'https://rpc.ankr.com/fantom',
+              'https://rpc.ftm.tools',
+              'https://rpcapi.fantom.network',
+            ],
             nativeCurrency: {
               name: 'Fantom',
               symbol: 'FTM',
@@ -181,9 +196,12 @@ module.exports = {
           {
             chainId: '0x504',
             chainName: 'Moonbeam',
-            rpcUrls: ['https://rpc.api.moonbeam.network', 'https://rpc.ankr.com/moonbeam'],
+            rpcUrls: [
+              'https://rpc.ankr.com/moonbeam',
+              'https://rpc.api.moonbeam.network',
+            ],
             nativeCurrency: {
-              name: 'Glimmer',
+              name: 'Moonbeam',
               symbol: 'GLMR',
               decimals: 18,
             },
@@ -215,9 +233,11 @@ module.exports = {
           {
             chainId: '0x4e454152',
             chainName: 'Aurora',
-            rpcUrls: ['https://mainnet.aurora.dev'],
+            rpcUrls: [
+              'https://mainnet.aurora.dev',
+            ],
             nativeCurrency: {
-              name: 'Ether',
+              name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
             },
@@ -290,7 +310,10 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://lcd-cosmoshub.whispernode.com',
-          lcds: ['https://cosmos-lcd.quickapi.com', 'https://rest-cosmoshub.ecostake.com'],
+          lcds: [
+            'https://cosmos-lcd.quickapi.com',
+            'https://rest-cosmoshub.ecostake.com',
+          ],
         },
       },
       {
@@ -446,7 +469,9 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://rest.kujira.ccvalidators.com',
-          lcds: ['https://lcd-kujira.synergynodes.com'],
+          lcds: [
+            'https://lcd-kujira.synergynodes.com',
+          ],
         },
       },
       {
@@ -472,7 +497,11 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://api.roninventures.io',
-          lcds: ['https://api.secret.forbole.com', 'https://secret.api.consensus.one', 'https://secretnetwork-lcd.stakely.io'],
+          lcds: [
+            'https://api.secret.forbole.com',
+            'https://secret.api.consensus.one',
+            'https://secretnetwork-lcd.stakely.io',
+          ],
         },
       },
       {
@@ -498,7 +527,10 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://api-mainnet.blockchain.ki',
-          lcds: ['https://lcd.kichain.ezstaking.io', 'https://api-kichain-ia.notional.ventures'],
+          lcds: [
+            'https://lcd.kichain.ezstaking.io',
+            'https://api-kichain-ia.notional.ventures',
+          ],
         },
       },
       {
@@ -524,7 +556,12 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://phoenix-lcd.terra.dev',
-          lcds: ['https://blockdaemon-terra-lcd.api.bdnodes.net:1317', 'https://terra-lcd.quickapi.com', 'https://lcd.terra.dev', 'https://columbus-lcd.terra.dev'],
+          lcds: [
+            'https://blockdaemon-terra-lcd.api.bdnodes.net:1317',
+            'https://terra-lcd.quickapi.com',
+            'https://lcd.terra.dev',
+            'https://columbus-lcd.terra.dev',
+          ],
         },
         overrides: {
           terra: {
@@ -573,9 +610,11 @@ module.exports = {
           {
             chainId: '0x3',
             chainName: 'Ethereum Ropsten',
-            rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+            rpcUrls: [
+              'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+            ],
             nativeCurrency: {
-              name: 'Ropsten Ether',
+              name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
             },
@@ -607,9 +646,13 @@ module.exports = {
           {
             chainId: '0x61',
             chainName: 'BNB Chain Testnet',
-            rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545', 'https://data-seed-prebsc-2-s1.binance.org:8545', 'https://data-seed-prebsc-1-s2.binance.org:8545'],
+            rpcUrls: [
+              'https://data-seed-prebsc-1-s1.binance.org:8545',
+              'https://data-seed-prebsc-2-s1.binance.org:8545',
+              'https://data-seed-prebsc-1-s2.binance.org:8545',
+            ],
             nativeCurrency: {
-              name: 'BNB Token',
+              name: 'BNB',
               symbol: 'BNB',
               decimals: 18,
             },
@@ -641,7 +684,9 @@ module.exports = {
           {
             chainId: '0xa869',
             chainName: 'Avalanche Fuji',
-            rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+            rpcUrls: [
+              'https://api.avax-test.network/ext/bc/C/rpc',
+            ],
             nativeCurrency: {
               name: 'Avalanche',
               symbol: 'AVAX',
@@ -675,9 +720,12 @@ module.exports = {
           {
             chainId: '0x13881',
             chainName: 'Polygon Mumbai',
-            rpcUrls: ['https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161', 'https://matic-mumbai.chainstacklabs.com'],
+            rpcUrls: [
+              'https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+              'https://matic-mumbai.chainstacklabs.com',
+            ],
             nativeCurrency: {
-              name: 'Matic',
+              name: 'Polygon',
               symbol: 'MATIC',
               decimals: 18,
             },
@@ -709,7 +757,9 @@ module.exports = {
           {
             chainId: '0xfa2',
             chainName: 'Fantom Testnet',
-            rpcUrls: ['https://rpc.testnet.fantom.network'],
+            rpcUrls: [
+              'https://rpc.testnet.fantom.network',
+            ],
             nativeCurrency: {
               name: 'Fantom',
               symbol: 'FTM',
@@ -742,8 +792,10 @@ module.exports = {
         provider_params: [
           {
             chainId: '0x507',
-            chainName: 'Moonbeam Alpha',
-            rpcUrls: ['https://rpc.api.moonbase.moonbeam.network'],
+            chainName: 'Moonbase Alpha',
+            rpcUrls: [
+              'https://rpc.api.moonbase.moonbeam.network',
+            ],
             nativeCurrency: {
               name: 'Dev',
               symbol: 'DEV',
@@ -777,9 +829,11 @@ module.exports = {
           {
             chainId: '0x4e454153',
             chainName: 'Aurora Testnet',
-            rpcUrls: ['https://testnet.aurora.dev'],
+            rpcUrls: [
+              'https://testnet.aurora.dev',
+            ],
             nativeCurrency: {
-              name: 'Ether',
+              name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
             },
@@ -989,7 +1043,11 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://testnet-api.roninventures.io',
-          lcds: ['http://testnet.securesecrets.org:1317', 'https://lcd.testnet.secretsaturn.net', 'https://api.pulsar.scrttestnet.com'],
+          lcds: [
+            'http://testnet.securesecrets.org:1317',
+            'https://lcd.testnet.secretsaturn.net',
+            'https://api.pulsar.scrttestnet.com',
+          ],
         },
       },
       {
@@ -1066,7 +1124,9 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://pisco-lcd.terra.dev',
-          lcds: ['https://bombay-lcd.terra.dev'],
+          lcds: [
+            'https://bombay-lcd.terra.dev',
+          ],
         },
         overrides: {
           terra: {
@@ -1115,9 +1175,11 @@ module.exports = {
           {
             chainId: '0x3',
             chainName: 'Ethereum Ropsten',
-            rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+            rpcUrls: [
+              'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+            ],
             nativeCurrency: {
-              name: 'Ropsten Ether',
+              name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
             },
@@ -1149,7 +1211,9 @@ module.exports = {
           {
             chainId: '0xa869',
             chainName: 'Avalanche Fuji',
-            rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+            rpcUrls: [
+              'https://api.avax-test.network/ext/bc/C/rpc',
+            ],
             nativeCurrency: {
               name: 'Avalanche',
               symbol: 'AVAX',
@@ -1183,9 +1247,12 @@ module.exports = {
           {
             chainId: '0x13881',
             chainName: 'Polygon Mumbai',
-            rpcUrls: ['https://rpc-mumbai.matic.today', 'https://matic-mumbai.chainstacklabs.com'],
+            rpcUrls: [
+              'https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+              'https://matic-mumbai.chainstacklabs.com',
+            ],
             nativeCurrency: {
-              name: 'Matic',
+              name: 'Polygon',
               symbol: 'MATIC',
               decimals: 18,
             },
@@ -1217,7 +1284,9 @@ module.exports = {
           {
             chainId: '0xfa2',
             chainName: 'Fantom Testnet',
-            rpcUrls: ['https://rpc.testnet.fantom.network'],
+            rpcUrls: [
+              'https://rpc.testnet.fantom.network',
+            ],
             nativeCurrency: {
               name: 'Fantom',
               symbol: 'FTM',
@@ -1251,7 +1320,9 @@ module.exports = {
           {
             chainId: '0x507',
             chainName: 'Moonbeam Alpha',
-            rpcUrls: ['https://rpc.api.moonbase.moonbeam.network'],
+            rpcUrls: [
+              'https://rpc.api.moonbase.moonbeam.network',
+            ],
             nativeCurrency: {
               name: 'Dev',
               symbol: 'DEV',
@@ -1317,9 +1388,11 @@ module.exports = {
           {
             chainId: '0x3',
             chainName: 'Ethereum Ropsten',
-            rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+            rpcUrls: [
+              'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+            ],
             nativeCurrency: {
-              name: 'Ropsten Ether',
+              name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
             },
@@ -1351,7 +1424,9 @@ module.exports = {
           {
             chainId: '0xa869',
             chainName: 'Avalanche Fuji',
-            rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+            rpcUrls: [
+              'https://api.avax-test.network/ext/bc/C/rpc',
+            ],
             nativeCurrency: {
               name: 'Avalanche',
               symbol: 'AVAX',

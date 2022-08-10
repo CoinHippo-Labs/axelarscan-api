@@ -23,6 +23,7 @@ exports.handler = async (event, context, callback) => {
     getEVMBalance,
     getCosmosBalance,
     getCosmosSupply,
+    getAxelarnetSupply,
   } = require('./services/tvl');
   const {
     log,
@@ -77,7 +78,8 @@ exports.handler = async (event, context, callback) => {
     endpoints,
     num_blocks_per_heartbeat,
     fraction_heartbeat_block,
-    percent_diff_supply_threshold,
+    percent_diff_ibc_channel_supply_threshold,
+    percent_diff_total_supply_threshold,
   } = { ...config?.[environment] };
 
   // handle api routes
@@ -2936,6 +2938,25 @@ exports.handler = async (event, context, callback) => {
             const _evm_chains_data = evm_chains_data.filter(c => _chains.includes(c?.id));
             const _cosmos_chains_data = cosmos_chains_data.filter(c => _chains.includes(c?.id));
 
+            // set cache id on querying 1 asset on every chains
+            const cache_id = _assets.length === 1 &&
+              _evm_chains_data.length === evm_chains_data.length &&
+              _cosmos_chains_data.length === cosmos_chains_data.length &&
+              _.head(_assets);
+
+            // get cache
+            let cache_data;
+            if (cache_id) {
+              cache_data = await get(
+                'tvls',
+                cache_id,
+              );
+              if (moment().diff(moment((cache_data?.updated_at || 0) * 1000), 'minutes', true) < 3) {
+                response = cache_data;
+                break;
+              }
+            }
+
             // evm providers
             const providers = Object.fromEntries(_evm_chains_data.map(c => {
               const {
@@ -3048,6 +3069,7 @@ exports.handler = async (event, context, callback) => {
                   decimals,
                 };
                 let balance = 0,
+                  ibc_channels,
                   escrow_addresses;
                 if (prefix_chain_ids?.length > 0) {
                   for (let i = 0; i < 2; i++) {
@@ -3075,7 +3097,8 @@ exports.handler = async (event, context, callback) => {
                       data,
                     } = { ..._response };
                     if (data?.length > 0 && data.filter(d => moment().diff(moment((d?.updated_at || 0) * 1000), 'minutes', true) > 240).length < 1) {
-                      escrow_addresses = data.map(d => d?.escrow_address).filter(a => a);
+                      ibc_channels = data;
+                      escrow_addresses = ibc_channels.map(d => d?.escrow_address).filter(a => a);
                       break;
                     }
                     else if (endpoints?.api) {
@@ -3096,8 +3119,15 @@ exports.handler = async (event, context, callback) => {
                     );
                   }
                 }
-                const total = id === axelarnet_chain_data.id ?
+                const supply = escrow_addresses?.length > 0 && lcd ?
                   await getCosmosSupply(
+                    denom_data,
+                    lcd,
+                  ) : 0;
+                const percent_diff_supply = supply && balance ?
+                  Math.abs(balance - supply) * 100 / balance : 0;
+                const total = id === axelarnet_chain_data.id ?
+                  await getAxelarnetSupply(
                     denom_data,
                     cli,
                   ) : 0;
@@ -3106,9 +3136,13 @@ exports.handler = async (event, context, callback) => {
                 } = { ...axelarnet_chain_data };
                 result = {
                   denom_data,
+                  ibc_channels,
+                  supply,
                   escrow_addresses,
                   escrow_balance: balance,
                   total,
+                  percent_diff_supply,
+                  is_abnormal_supply: typeof percent_diff_ibc_channel_supply_threshold === 'number' && percent_diff_supply > percent_diff_ibc_channel_supply_threshold,
                   url: explorer?.url && (
                     escrow_addresses?.length > 0 ?
                       `${explorer.url}${explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
@@ -3157,10 +3191,27 @@ exports.handler = async (event, context, callback) => {
                 total_on_cosmos,
                 total,
                 percent_diff_supply,
-                is_abnormal_supply: typeof percent_diff_supply_threshold === 'number' && percent_diff_supply > percent_diff_supply_threshold,
+                is_abnormal_supply: typeof percent_diff_total_supply_threshold === 'number' && percent_diff_supply > percent_diff_total_supply_threshold,
+                percent_diff_ibc_channel_supply_threshold,
+                percent_diff_total_supply_threshold,
               });
             }
-            response = data;
+            response = {
+              data,
+              updated_at: moment().unix(),
+            };
+
+            if (data.length < 1 && cache_data) {
+              response = cache_data;
+            }
+            // write cache
+            else if (cache_id) {
+              await write(
+                'tvls',
+                cache_id,
+                response,
+              );
+            }
             break;
           default:
             break;

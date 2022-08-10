@@ -5,6 +5,7 @@ const {
   utils: { formatUnits },
 } = require('ethers');
 const {
+  equals_ignore_case,
   to_json,
 } = require('../utils');
 
@@ -88,6 +89,44 @@ const getCosmosBalance = async (
 
 const getCosmosSupply = async (
   denom_data,
+  lcd,
+) => {
+  let supply;
+  const {
+    base_denom,
+    denom,
+    decimals,
+  } = { ...denom_data };
+  const denoms = [denom].filter(d => d);
+
+  if (denoms.length > 0 && lcd) {
+    try {
+      for (const denom of denoms) {
+        const response = await lcd.get(`/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`)
+          .catch(error => { return { data: { error } }; });
+        const {
+          amount,
+        } = { ...response?.data?.amount };
+        supply = amount;
+        if (supply && supply !== '0') {
+          break;
+        }
+      }
+      if (!(supply && supply !== '0')) {
+        const response = await lcd.get('/cosmos/bank/v1beta1/supply', {
+          params: {
+            'pagination.limit': 2000,
+          },
+        }).catch(error => { return { data: { error } }; });
+        supply = response?.data?.supply?.find(s => equals_ignore_case(s?.denom, denom))?.amount;
+      }
+    } catch (error) {}
+  }
+  return Number(formatUnits(BigNumber.from((supply || 0).toString()), decimals || 6));
+};
+
+const getAxelarnetSupply = async (
+  denom_data,
   cli,
 ) => {
   let supply;
@@ -125,4 +164,5 @@ module.exports = {
   getEVMBalance,
   getCosmosBalance,
   getCosmosSupply,
+  getAxelarnetSupply,
 };
