@@ -2825,6 +2825,7 @@ exports.handler = async (event, context, callback) => {
             }
             break;
           case 'transfers-stats':
+            const origin_query = _.cloneDeep(query);
             if (!query) {
               if (fromTime) {
                 fromTime = Number(fromTime) * 1000;
@@ -2894,6 +2895,92 @@ exports.handler = async (event, context, callback) => {
                 )), ['volume', 'num_txs'], ['desc', 'desc']),
                 total: _response.total,
               };
+
+              if (!origin_query) {
+                if (fromTime) {
+                  fromTime /= 1000;
+                  toTime /= 1000;
+                  query = {
+                    bool: {
+                      must: [
+                        { range: { 'block_timestamp': { gte: fromTime, lte: toTime } } },
+                      ],
+                    },
+                  };
+                }
+                _response = await read(
+                  'token_sent_events',
+                  query,
+                  {
+                    aggs: {
+                      source_chains: {
+                        terms: { field: 'chain.keyword', size: 1000 },
+                        aggs: {
+                          destination_chains: {
+                            terms: { field: 'returnValues.destinationChain.keyword', size: 1000 },
+                            aggs: {
+                              assets: {
+                                terms: { field: 'denom.keyword', size: 1000 },
+                                aggs: {
+                                  volume: {
+                                    sum: { field: 'value' },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    size: 0,
+                  },
+                );
+                if (_response?.aggs?.source_chains?.buckets) {
+                  response = {
+                    ...response,
+                    data: _.orderBy(
+                      Object.entries(_.groupBy(
+                        _.concat(response?.data || [], _response.aggs.source_chains.buckets.flatMap(s => (
+                          s.destination_chains?.buckets?.flatMap(d => {
+                            d.key = chains_data.find(c => equals_ignore_case(c?.id, d.key) || c?.overrides?.[d.key] || c?.prefix_chain_ids?.findIndex(p => d.key?.startsWith(p)) > -1)?.id || d.key;
+                            return d.assets?.buckets?.map(a => {
+                              return {
+                                id: `${s.key}_${d.key}_${a.key}`,
+                                source_chain: s.key,
+                                destination_chain: d.key,
+                                asset: a.key,
+                                num_txs: a.doc_count,
+                                volume: a.volume?.value,
+                              };
+                            }) || [{
+                              id: `${s.key}_${d.key}`,
+                              source_chain: s.key,
+                              destination_chain: d.key,
+                              num_txs: d.doc_count,
+                              volume: d.volume?.value,
+                            }];
+                          }) || [{
+                            id: `${s.key}`,
+                            source_chain: s.key,
+                            num_txs: s.doc_count,
+                            volume: s.volume?.value,
+                          }]
+                        ))),
+                        'id'
+                      )).map(([k, v]) => {
+                        return {
+                          ..._.head(v),
+                          id: k,
+                          num_txs: _.sumBy(v, 'num_txs'),
+                          volume: _.sumBy(v, 'volume'),
+                        };
+                      }),
+                      ['volume', 'num_txs'], ['desc', 'desc']
+                    ),
+                    total: (response?.total || 0) + _response?.total,
+                  };
+                }
+              }
             }
             else {
               response = _response;
@@ -3388,25 +3475,49 @@ exports.handler = async (event, context, callback) => {
                 // save each event
                 switch (event_name) {
                   case 'TokenSent':
-                    event = {
-                      ...(await getTransaction(provider, event.transactionHash, chain)),
-                      block_timestamp: await getBlockTime(provider, event.blockNumber),
-                      ...event,
-                    };
-                    _response = await write(
-                      'token_sent_events',
-                      id,
-                      {
-                        event,
-                      },
-                      true,
-                    );
-                    response = {
-                      response: _response,
-                      data: {
-                        event,
-                      },
-                    };
+                    try {
+                      event = {
+                        ...(await getTransaction(provider, event.transactionHash, chain)),
+                        block_timestamp: await getBlockTime(provider, event.blockNumber),
+                        ...event,
+                      };
+                      const {
+                        symbol,
+                        amount,
+                      } = { ...event.returnValues };
+                      const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
+                      const asset_data = assets_data.find(a => equals_ignore_case(a?.symbol, symbol) || a?.contracts?.findIndex(c => c?.chain_id === chain_data?.chain_id && equals_ignore_case(c.symbol, symbol)) > -1);
+                      if (asset_data) {
+                        const contract_data = asset_data.contracts?.find(c => c.chain_id === chain_data?.chain_id);
+                        if (contract_data) {
+                          event.amount = Number(formatUnits(BigNumber.from(amount || '0').toString(), contract_data.decimals || asset_data.decimals || 18));
+                          event.denom = asset_data.id;
+                          const prices_data = await assets_price({
+                            denom: event.denom,
+                            timestamp: moment((event.block_timestamp || 0) * 1000).valueOf(),
+                          });
+                          if (prices_data?.[0]?.price) {
+                            event.price = prices_data[0].price;
+                            event.value = event.amount * event.price;
+                          }
+                        }
+                      }
+
+                      _response = await write(
+                        'token_sent_events',
+                        id,
+                        {
+                          event,
+                        },
+                        true,
+                      );
+                      response = {
+                        response: _response,
+                        data: {
+                          event,
+                        },
+                      };
+                    } catch (error) {}
                     break;
                   default:
                     break;

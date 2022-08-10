@@ -12,7 +12,7 @@ const { equals_ignore_case } = require('../utils');
 // initial environment
 const environment = process.env.ENVIRONMENT || config?.environment;
 // initial assets
-const _assets = assets?.[environment];
+const assets_data = assets?.[environment] || [];
 // initial default currency
 const currency = 'usd';
 // initial stablecoin threshold
@@ -68,7 +68,7 @@ module.exports = async (params = {}) => {
       const denom_data = typeof d === 'object' ? d : { denom: d };
       const _denom = denom_data?.denom || d;
       const _chain = _denom === 'uluna' && !['terra-2'].includes(chain) ? 'terra' : denom_data?.chain || chain;
-      const asset_data = _assets?.find(a => equals_ignore_case(a?.id, _denom));
+      const asset_data = assets_data.find(a => equals_ignore_case(a?.id, _denom));
       const {
         coingecko_id,
         coingecko_ids,
@@ -97,7 +97,7 @@ module.exports = async (params = {}) => {
     if (coingecko_ids.length > 0 && config?.external_api?.endpoints?.coingecko) {
       const coingecko = axios.create({ baseURL: config.external_api.endpoints.coingecko });
       // initial assets data
-      let assets_data;
+      let _assets_data;
       if (timestamp) {
         for (const coingecko_id of coingecko_ids) {
           const _response = await coingecko.get(`/coins/${coingecko_id}/history`, {
@@ -107,7 +107,7 @@ module.exports = async (params = {}) => {
               localization: 'false',
             },
           }).catch(error => { return { data: { error } }; });
-          assets_data = _.concat(assets_data || [], [_response?.data]);
+          _assets_data = _.concat(_assets_data || [], [_response?.data]);
         }
       }
       else {
@@ -118,13 +118,13 @@ module.exports = async (params = {}) => {
             per_page: 250,
           },
         }).catch(error => { return { data: { error } }; });
-        assets_data = _response?.data || [];
+        _assets_data = _response?.data || [];
       }
       // update data from coingecko
-      assets_data?.filter(a => a).map(a => {
-        const asset = _assets?.find(_a => _a?.coingecko_id === a.id);
+      _assets_data.filter(a => a).map(a => {
+        const asset_data = assets_data.find(_a => _a?.coingecko_id === a.id);
         let price = a.market_data?.current_price?.[currency] || a.current_price;
-        price = asset?.is_stablecoin && Math.abs(price - 1) > stablecoin_threshold ? 1 : price;
+        price = asset_data?.is_stablecoin && Math.abs(price - 1) > stablecoin_threshold ? 1 : price;
         return {
           denom: to_update_data?.find(d => equals_ignore_case(d?.coingecko_id, a.id))?.denom,
           coingecko_id: a.id,
