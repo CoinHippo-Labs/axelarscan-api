@@ -3233,7 +3233,7 @@ exports.handler = async (event, context, callback) => {
                   url: explorer?.url && (
                     escrow_addresses?.length > 0 ?
                       `${explorer.url}${explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
-                      `${explorer.url}`
+                      null
                   ),
                 };
 
