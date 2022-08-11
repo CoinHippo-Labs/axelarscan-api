@@ -2903,7 +2903,7 @@ exports.handler = async (event, context, callback) => {
                   query = {
                     bool: {
                       must: [
-                        { range: { block_timestamp: { gte: fromTime, lte: toTime } } },
+                        { range: { 'event.block_timestamp': { gte: fromTime, lte: toTime } } },
                       ],
                     },
                   };
@@ -2914,16 +2914,16 @@ exports.handler = async (event, context, callback) => {
                   {
                     aggs: {
                       source_chains: {
-                        terms: { field: 'chain.keyword', size: 1000 },
+                        terms: { field: 'event.chain.keyword', size: 1000 },
                         aggs: {
                           destination_chains: {
-                            terms: { field: 'returnValues.destinationChain.keyword', size: 1000 },
+                            terms: { field: 'event.returnValues.destinationChain.keyword', size: 1000 },
                             aggs: {
                               assets: {
-                                terms: { field: 'denom.keyword', size: 1000 },
+                                terms: { field: 'event.denom.keyword', size: 1000 },
                                 aggs: {
                                   volume: {
-                                    sum: { field: 'value' },
+                                    sum: { field: 'event.value' },
                                   },
                                 },
                               },
