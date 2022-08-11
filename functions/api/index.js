@@ -3038,7 +3038,7 @@ exports.handler = async (event, context, callback) => {
                 'tvls',
                 cache_id,
               );
-              if (moment().diff(moment((cache_data?.updated_at || 0) * 1000), 'minutes', true) < 3) {
+              if (moment().diff(moment((cache_data?.updated_at || 0) * 1000), 'minutes', true) < 5) {
                 response = cache_data;
                 break;
               }
