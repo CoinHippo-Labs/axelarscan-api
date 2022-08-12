@@ -1,16 +1,13 @@
-// import module for http request
 const axios = require('axios');
-// import module for data
 const _ = require('lodash');
-// import module for generate date time
 const moment = require('moment');
-// import config
 const config = require('config-yml');
-// import modules for log stream
 const readline = require('readline');
 const TailFile = require('@logdna/tail-file');
-// import utils
-const { log, sleep } = require('../../utils');
+const {
+  log,
+  sleep,
+} = require('../../utils');
 
 // initial service name
 const service_name = 'log-scraper';
@@ -18,26 +15,61 @@ const service_name = 'log-scraper';
 // initial environment
 const environment = process.env.ENVIRONMENT || config?.environment;
 
-const merge_data = (_data, attributes, initial_data = {}) => {
+const merge_data = (
+  _data,
+  attributes,
+  initial_data = {},
+) => {
   const data = initial_data;
   if (_data && attributes) {
     attributes.forEach(a => {
       try {
-        const from = a.pattern_start ? _data.indexOf(a.pattern_start) + a.pattern_start.length : 0;
-        const to = typeof a.pattern_end === 'string' && _data.indexOf(a.pattern_end) > -1 ? _data.indexOf(a.pattern_end) : _data.length;
+        const {
+          id,
+          primary_key,
+          pattern_start,
+          pattern_end,
+          type,
+          hard_value,
+        } = { ...a };
+        const from = pattern_start ?
+          _data.indexOf(pattern_start) + pattern_start.length :
+          0;
+        const to = typeof pattern_end === 'string' && _data.indexOf(pattern_end) > -1 ?
+          _data.indexOf(pattern_end) :
+          _data.length;
+
         if ('hard_value' in a) {
-          data[a.id] = a.hard_value;
+          data[id] = hard_value;
         }
         else {
-          data[a.id] = _data.substring(from, to);
-          data[a.id] = data[a.id].trim();
-          data[a.id] = a.type === 'date' ? Number(moment(data[a.id]).format('X')) :
-            a.type === 'number' ? Number(data[a.id]) :
-            a.type?.startsWith('array') ? data[a.id].replace('[', '').replace(']', '').split('"').join('').split('\\n').join('').split('\\').join('').split(',').map(e => e?.trim()).filter(e => e).map(e => a.type?.includes('number') ? Number(e) : e).filter(e => e) :
-            a.type === 'json' ? JSON.parse(data[a.id]) : data[a.id];
+          data[id] = _data.substring(from, to)?.trim();
+          data[id] = type === 'date' ?
+            Number(moment(data[id]).format('X')) :
+            type === 'number' ?
+              Number(data[id]) :
+              type?.startsWith('array') ?
+                data[id].replace('[', '')
+                  .replace(']', '')
+                  .split('"')
+                  .join('')
+                  .split('\\n')
+                  .join('')
+                  .split('\\')
+                  .join('')
+                  .split(',')
+                  .map(e => e?.trim())
+                  .filter(e => e)
+                  .map(e => type?.includes('number') ?
+                    Number(e) :
+                    e
+                  ).filter(e => e) :
+                type === 'json' ?
+                  JSON.parse(data[id]) :
+                  data[id];
         }
-        if (a.primary_key) {
-          data.id = data[a.id];
+        if (primary_key) {
+          data.id = data[id];
         }
       } catch (error) {}
     });
@@ -45,27 +77,33 @@ const merge_data = (_data, attributes, initial_data = {}) => {
   return data;
 };
 
-const save = async (data, collection, requester, is_update = false, delay_sec = 0) => {
-  if (data && collection && requester && (data.id || collection.endsWith('keygens'))) {
+const save = async (
+  data,
+  collection,
+  api,
+  is_update = false,
+  delay_sec = 0,
+) => {
+  if (data && collection && api && (data.id || collection.endsWith('keygens'))) {
     if (typeof data.snapshot === 'number') {
       // request api
-      let response = await requester.get('', {
+      let response = await api.get('', {
         params: {
           module: 'cli',
           cmd: `axelard q snapshot info ${data.snapshot} -oj`,
           cache: true,
           cache_timeout: 5,
-        }
+        },
       }).catch(error => { return { data: { error } }; });
       // handle error
       if (response?.data && !response.data.stdout && response.data.stderr && moment().diff(moment(data.timestamp * 1000), 'day') <= 1) {
-        response = await requester.get('', {
+        response = await api.get('', {
           params: {
             module: 'cli',
             cmd: 'axelard q snapshot info latest -oj',
             cache: true,
             cache_timeout: 5,
-          }
+          },
         }).catch(error => { return { data: { error } }; });
       }
       if (response?.data?.stdout) {
@@ -82,13 +120,13 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
     }
     if (data.key_id) {
       // request api
-      const response = await requester.get('', {
+      const response = await api.get('', {
         params: {
           module: 'cli',
-          cmd: `axelard q tss key ${data.key_id} -oj`,
+          cmd: `axelard q multisig key ${data.key_id} -oj`,
           cache: true,
           cache_timeout: 15,
-        }
+        },
       }).catch(error => { return { data: { error } }; });
       if (response?.data?.stdout) {
         try {
@@ -104,6 +142,25 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
                 data.threshold = Number(key_data.multisig_key.threshold) - 1;
               }
             }
+            else {
+              if (!isNaN(key_data.threshold_weight)) {
+                data.threshold_weight = Number(key_data.threshold_weight);
+                data.threshold = data.threshold_weight;
+              }
+              data = {
+                ...data,
+                ...key_data,
+                height: key_data.started_at ? Number(key_data.started_at) : data.height,
+                started_at: !isNaN(key_data.started_at) ? Number(key_data.started_at) : undefined,
+                bonded_weight: data.bonded_weight || (!isNaN(key_data.bonded_weight) ? Number(key_data.bonded_weight) : undefined),
+                participants: key_data?.participants.map(p => {
+                  return {
+                    ...p,
+                    weight: !isNaN(p?.weight) ? Number(p.weight) : undefined,
+                  };
+                }) || [],
+              };
+            }
           }
         } catch (error) {}
       }
@@ -114,7 +171,7 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
       }
       log('debug', service_name, 'index', { collection, id: data.id });
       // request api
-      await requester.post('', {
+      await api.post('', {
         module: 'index',
         collection,
         method: 'update',
@@ -128,18 +185,20 @@ const save = async (data, collection, requester, is_update = false, delay_sec = 
 
 module.exports = async () => {
   if (config?.[environment]?.endpoints?.api) {
-    // initial endpoints
-    const api = config[environment].endpoints.api;
-
-    // initial api requester
-    const requester = axios.create({ baseURL: api });
+    // initial api
+    const api = axios.create({ baseURL: config[environment].endpoints.api });
 
     // setup log stream
     const tail = new TailFile(`/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`, { encoding: 'utf8', startPos: 0 })
       .on('tail_error', error => log('error', service_name, 'tail error', { ...error }));
 
     // initial temp variables
-    let height, snapshot = 0, exclude_validators = {}, last_batch;
+    let height,
+      snapshot = 0,
+      exclude_validators = {},
+      last_batch;
+
+    const keygen_patterns = ['keygen session started', 'setting key'];
 
     try {
       await tail.start();
@@ -229,7 +288,7 @@ module.exports = async () => {
             }
             if (sign.sig_id) {
               // request api
-              const response = await requester.get('', {
+              const response = await api.get('', {
                 params: {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
@@ -245,7 +304,7 @@ module.exports = async () => {
             }
             delete sign._height;
           }
-          await save(sign, 'sign_attempts', requester);
+          await save(sign, 'sign_attempts', api);
         }
         else if (data.includes('" sigID=') && data.includes('articipants')) {
           const attributes = [
@@ -299,7 +358,7 @@ module.exports = async () => {
             }
             if (sign.sig_id) {
               // request api
-              const response = await requester.get('', {
+              const response = await api.get('', {
                 params: {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
@@ -315,7 +374,7 @@ module.exports = async () => {
             }
             delete sign._height;
           }
-          await save(sign, 'sign_attempts', requester, true, 1);
+          await save(sign, 'sign_attempts', api, true, 1);
         }
         else if (data.includes(' excluding validator ') && data.includes(' from snapshot ')) {
           const attributes = [
@@ -357,7 +416,7 @@ module.exports = async () => {
           keygen.height = height + 1;
           if (!snapshot) {
             // request api
-            const response = await requester.post('', {
+            const response = await api.post('', {
               module: 'index',
               collection: 'keygens',
               method: 'search',
@@ -378,7 +437,7 @@ module.exports = async () => {
           }
           snapshot++;
           exclude_validators = {};
-          await save(keygen, 'keygens', requester);
+          await save(keygen, 'keygens', api);
         }
         else if (data.includes('multisig keygen ') && data.includes(' timed out')) {
           const attributes = [
@@ -397,7 +456,7 @@ module.exports = async () => {
           log('debug', service_name, 'keygen failed');
           const keygen = merge_data(data, attributes);
           // request api
-          const response = await requester.post('', {
+          const response = await api.post('', {
             module: 'index',
             collection: 'keygens',
             method: 'search',
@@ -408,7 +467,83 @@ module.exports = async () => {
             keygen.id = response.data.data[0]._id;
           }
           keygen.failed = true;
-          await save(keygen, 'keygens', requester, true);
+          await save(keygen, 'keygens', api, true);
+        }
+        else if (keygen_patterns.findIndex(s => data.includes(s)) > -1) {
+          const attributes = [
+            {
+              id: 'timestamp',
+              pattern_start: '',
+              pattern_end: ' ',
+              type: 'date',
+            },
+            {
+              id: 'bonded_weight',
+              pattern_start: 'bonded_weight=',
+              pattern_end: ' expires_at=',
+              type: 'number',
+            },
+            {
+              id: 'key_id',
+              pattern_start: 'key_id=',
+              pattern_end: ' keygen_threshold=',
+            },
+            {
+              id: 'keygen_threshold',
+              pattern_start: 'keygen_threshold=',
+              pattern_end: ' module=',
+            },
+            {
+              id: 'participant_count',
+              pattern_start: 'participant_count=',
+              pattern_end: ' participants=',
+              type: 'number',
+            },
+            {
+              id: 'participant_addresses',
+              pattern_start: 'participants=',
+              pattern_end: ' participants_weight=',
+              type: 'array',
+            },
+            {
+              id: 'participants_weight',
+              pattern_start: 'participants_weight=',
+              pattern_end: ' signing_threshold=',
+              type: 'number',
+            },
+            {
+              id: 'signing_threshold',
+              pattern_start: 'signing_threshold=',
+              pattern_end: null,
+            },
+          ];
+          log('debug', service_name, keygen_patterns.find(s => data.includes(s)));
+          const keygen = merge_data(data, attributes);
+          keygen.height = height + 1;
+          if (!snapshot) {
+            // request api
+            const response = await api.post('', {
+              module: 'index',
+              collection: 'keygens',
+              method: 'search',
+              query: { range: { height: { lt: keygen.height } } },
+              sort: [{ height: 'desc' }],
+              size: 1,
+            }).catch(error => { return { data: { error } }; });
+            if (response?.data?.data?.[0]) {
+              snapshot = response.data.data[0].snapshot + 1;
+              keygen.snapshot = snapshot;
+            }
+          }
+          else {
+            keygen.snapshot = snapshot;
+            keygen.snapshot_non_participant_validators = {
+              validators: _.uniqBy(exclude_validators[keygen.snapshot] || [], 'validator'),
+            };
+          }
+          snapshot++;
+          exclude_validators = {};
+          await save(keygen, 'keygens', api);
         }
         // transfers
         else if (data.includes('deposit confirmed on chain ')) {
@@ -462,7 +597,7 @@ module.exports = async () => {
                 },
               };
               // request api
-              let response = await requester.post('', {
+              let response = await api.post('', {
                 module: 'index',
                 collection: 'transfers',
                 method: 'search',
@@ -490,7 +625,7 @@ module.exports = async () => {
                   },
                 };
                 // request api
-                response = await requester.post('', {
+                response = await api.post('', {
                   module: 'index',
                   collection: 'batches',
                   method: 'search',
@@ -510,7 +645,7 @@ module.exports = async () => {
                 }
                 log('debug', service_name, 'save transfer', { chain: confirm.chain, tx_hash: id, transfer_id: confirm.transfer_id });
                 // request api
-                await requester.post('', {
+                await api.post('', {
                   module: 'index',
                   collection: 'transfers',
                   method: 'update',
@@ -549,7 +684,7 @@ module.exports = async () => {
             if (last_batch && !(last_batch.batch_id === batch.batch_id && last_batch.chain === batch.chain)) {
               log('debug', service_name, 'get batch', { batch_id: batch.batch_id });
               // request api
-              requester.get('', {
+              api.get('', {
                 params: {
                   module: 'cli',
                   cmd: `axelard q evm batched-commands ${last_batch.chain} ${last_batch.batch_id} -oj`,
