@@ -328,6 +328,25 @@ exports.handler = async (event, context, callback) => {
                       }
                     }
                   }
+                  if (message?.inner_message?.vote?.events) {
+                    const events = message.inner_message.vote.events;
+                    for (let j = 0; j < events.length; j++) {
+                      const event = events[j];
+                      if (event) {
+                        for (let k = 0; k < byte_array_fields.length; k++) {
+                          const field = byte_array_fields[k];
+                          if (Array.isArray(event[field])) {
+                            event[field] = to_hex(event[field]);
+                          }
+                          else if (Array.isArray(event.transfer?.[field])) {
+                            event.transfer[field] = to_hex(event.transfer[field]);
+                          }
+                          events[j] = event;
+                          message.inner_message.vote.events = events;
+                        }
+                      }
+                    }
+                  }
                   messages[i] = message;
                   res.data.tx.body.messages[i] = message;
                 }
@@ -942,11 +961,24 @@ exports.handler = async (event, context, callback) => {
               else if (messages.findIndex(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', ''))) > -1) {
                 const event_message = _.head(logs.flatMap(l => l?.events?.filter(e => e?.type === 'message')));
                 let created_at = moment(tx_response.timestamp).utc();
-                const event = _.head(logs.flatMap(l => l?.events?.filter(e => e?.type === 'depositConfirmation')));
-                const poll_id = to_json(event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
+                const event = _.head(logs.flatMap(l => l?.events?.filter(e => e?.type === 'depositConfirmation' || e?.type?.includes('ConfirmDeposit'))));
+                const poll_id = to_json(event?.attributes?.find(a => a?.key === 'participants' && a.value)?.value)?.poll_id || to_json(event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
+                const type = event_message?.attributes?.find(a => a?.key === 'action' && transfer_actions?.includes(a.value))?.value || _.last(messages.find(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', '')))?.['@type']?.split('.'))?.replace('Request', '');
+                let token_address = event?.attributes?.find(a => ['token_address', 'tokenAddress'].includes(a?.key) && a.value)?.value;
+                if (token_address?.startsWith('[') && token_address.endsWith(']')) {
+                  token_address = to_hex(to_json(token_address));
+                }
+                let deposit_address = messages.find(m => m?.deposit_address)?.deposit_address || event?.attributes?.find(a => ['deposit_address', 'depositAddress'].includes(a?.key) && a.value)?.value;
+                if (deposit_address?.startsWith('[') && deposit_address.endsWith(']')) {
+                  deposit_address = to_hex(to_json(deposit_address));
+                }
+                let transaction_id = event?.attributes?.find(a => ['tx_id', 'txID'].includes(a?.key) && a.value)?.value || poll_id?.split('_')[0];
+                if (transaction_id?.startsWith('[') && transaction_id.endsWith(']')) {
+                  transaction_id = to_hex(to_json(transaction_id));
+                }
                 const record = {
                   id: tx_response.txhash,
-                  type: event_message?.attributes?.find(a => a?.key === 'action' && transfer_actions?.includes(a.value))?.value || _.last(messages.find(m => transfer_actions?.includes(_.last(m?.['@type']?.split('.'))?.replace('Request', '')))?.['@type']?.split('.'))?.replace('Request', ''),
+                  type,
                   status_code: tx_response.code,
                   status: tx_response.code ? 'failed' : 'success',
                   height: Number(tx_response.height),
@@ -957,11 +989,11 @@ exports.handler = async (event, context, callback) => {
                   recipient_chain: normalize_chain(event?.attributes?.find(a => ['destinationChain'].includes(a?.key) && a.value)?.value),
                   amount: event?.attributes?.find(a => a?.key === 'amount' && a.value)?.value,
                   denom: tx_response.denom || messages.find(m => m?.denom)?.denom,
-                  token_address: event?.attributes?.find(a => a?.key === 'tokenAddress' && a.value)?.value,
-                  deposit_address: messages.find(m => m?.deposit_address)?.deposit_address || event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value,
+                  token_address,
+                  deposit_address,
                   transfer_id: Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value),
                   poll_id,
-                  transaction_id: event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.split('_')[0],
+                  transaction_id,
                 };
                 if (!record.status_code && record.id && (record.transfer_id || record.poll_id)) {
                   switch (record.type) {
@@ -1260,9 +1292,9 @@ exports.handler = async (event, context, callback) => {
                   if (vote_types.includes(type)) {
                     const created_at = moment(tx_response.timestamp).utc();
                     const event = logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
-                    const event_vote = logs?.[i]?.events?.find(e => e?.type === 'vote');
-                    const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
-                    let sender_chain, vote, confirmation, late;
+                    const event_vote = logs?.[i]?.events?.find(e => e?.type?.includes('vote'));
+                    const poll_id = message?.inner_message?.poll_id || to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
+                    let sender_chain, transaction_id, vote, confirmation, late;
                     switch (type) {
                       case 'VoteConfirmDeposit':
                         sender_chain = normalize_chain(message?.inner_message?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value);
@@ -1270,8 +1302,8 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains_data.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
-                        const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.chain || message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains_data.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        const vote_results = message?.inner_message?.vote?.events || message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
                         confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_COMPLETED'].includes(v?.status)) > -1);
@@ -1279,6 +1311,28 @@ exports.handler = async (event, context, callback) => {
                         break;
                       default:
                         break;
+                    }
+                    transaction_id = message?.inner_message?.vote?.events?.[0]?.tx_id || event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
+                    if (!transaction_id || transaction_id === poll_id) {
+                      transaction_id = null;
+                      const _response = await read(
+                        'evm_votes',
+                        {
+                          bool: {
+                            must: [
+                              { match: { poll_id } },
+                              { exists: { field: 'transaction_id' } },
+                            ],
+                            must_not: [
+                              { match: { transaction_id: poll_id } },
+                            ],
+                          },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
+                      transaction_id = _response?.data?.[0]?.transaction_id;
                     }
                     const record = {
                       id: tx_response.txhash,
@@ -1292,7 +1346,7 @@ exports.handler = async (event, context, callback) => {
                       deposit_address: event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1],
                       transfer_id: Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value),
                       poll_id,
-                      transaction_id: event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0],
+                      transaction_id,
                       voter: message?.inner_message?.sender,
                       vote,
                       confirmation,
@@ -1626,7 +1680,7 @@ exports.handler = async (event, context, callback) => {
                 }
               }
               // VoteConfirmDeposit & Vote
-              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => vote_types.includes(_.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(t => {
+              records = tx_responses.filter(t => !t?.code && t.tx?.body?.messages?.findIndex(m => vote_types.includes(_.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', ''))) > -1).map(async t => {
                 const {
                   logs,
                 } = { ...t };
@@ -1640,9 +1694,9 @@ exports.handler = async (event, context, callback) => {
                   if (vote_types.includes(type)) {
                     const created_at = moment(t.timestamp).utc();
                     const event = logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
-                    const event_vote = logs?.[i]?.events?.find(e => e?.type === 'vote');
-                    const poll_id = to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
-                    let sender_chain, vote, confirmation, late;
+                    const event_vote = logs?.[i]?.events?.find(e => e?.type?.includes('vote'));
+                    const poll_id = message?.inner_message?.poll_id || to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
+                    let sender_chain, transaction_id, vote, confirmation, late;
                     switch (type) {
                       case 'VoteConfirmDeposit':
                         sender_chain = normalize_chain(message?.inner_message?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value);
@@ -1650,8 +1704,8 @@ exports.handler = async (event, context, callback) => {
                         confirmation = event?.attributes?.findIndex(a => a?.key === 'action' && a.value === 'confirm') > -1;
                         break;
                       case 'Vote':
-                        sender_chain = normalize_chain(message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains_data.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
-                        const vote_results = message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
+                        sender_chain = normalize_chain(message?.inner_message?.vote?.chain || message?.inner_message?.vote?.results?.[0]?.chain || message?.inner_message?.vote?.result?.chain || evm_chains_data.find(c => poll_id?.startsWith(`${c?.id}_`))?.id);
+                        const vote_results = message?.inner_message?.vote?.events || message?.inner_message?.vote?.results || message?.inner_message?.vote?.result?.events;
                         vote = (Array.isArray(vote_results) ? vote_results : Object.keys({ ...vote_results })).length > 0;
                         const vote_has_enum_status = Array.isArray(vote_results) && vote_results.findIndex(v => v?.status) > -1;
                         confirmation = !!event || (event_vote && vote_has_enum_status && vote_results.findIndex(v => ['STATUS_COMPLETED'].includes(v?.status)) > -1);
@@ -1659,6 +1713,28 @@ exports.handler = async (event, context, callback) => {
                         break;
                       default:
                         break;
+                    }
+                    transaction_id = message?.inner_message?.vote?.events?.[0]?.tx_id || event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
+                    if (!transaction_id || transaction_id === poll_id) {
+                      transaction_id = null;
+                      const _response = await read(
+                        'evm_votes',
+                        {
+                          bool: {
+                            must: [
+                              { match: { poll_id } },
+                              { exists: { field: 'transaction_id' } },
+                            ],
+                            must_not: [
+                              { match: { transaction_id: poll_id } },
+                            ],
+                          },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
+                      transaction_id = _response?.data?.[0]?.transaction_id;
                     }
                     const record = {
                       id: t.txhash,
@@ -1672,7 +1748,7 @@ exports.handler = async (event, context, callback) => {
                       deposit_address: event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1],
                       transfer_id: Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value),
                       poll_id,
-                      transaction_id: event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0],
+                      transaction_id,
                       voter: message?.inner_message?.sender,
                       vote,
                       confirmation,
