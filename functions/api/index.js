@@ -1305,7 +1305,7 @@ exports.handler = async (event, context, callback) => {
                     const event = logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const event_vote = logs?.[i]?.events?.find(e => e?.type?.includes('vote'));
                     const poll_id = message?.inner_message?.poll_id || to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
-                    let sender_chain, transaction_id, vote, confirmation, late;
+                    let sender_chain, transaction_id, deposit_address, vote, confirmation, late;
                     switch (type) {
                       case 'VoteConfirmDeposit':
                         sender_chain = normalize_chain(message?.inner_message?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value);
@@ -1327,6 +1327,7 @@ exports.handler = async (event, context, callback) => {
                     if (transaction_id === poll_id) {
                       transaction_id = null;
                     }
+                    deposit_address = message?.inner_message?.vote?.events?.[0]?.transfer?.to || event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
                     let participants;
                     let _response = await read(
                       'transfers',
@@ -1351,6 +1352,9 @@ exports.handler = async (event, context, callback) => {
                       } = { ..._response.data[0] };
                       if (!transaction_id) {
                         transaction_id = confirm_deposit.transaction_id;
+                      }
+                      if (!deposit_address) {
+                        deposit_address = confirm_deposit.deposit_address;
                       }
                       participants = confirm_deposit.participants;
                     }
@@ -1383,7 +1387,7 @@ exports.handler = async (event, context, callback) => {
                       created_at: get_granularity(created_at),
                       sender_chain,
                       recipient_chain: normalize_chain(event?.attributes?.find(a => ['destinationChain'].includes(a?.key) && a.value)?.value),
-                      deposit_address: event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1],
+                      deposit_address,
                       transfer_id: Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value),
                       poll_id,
                       transaction_id,
@@ -1739,7 +1743,7 @@ exports.handler = async (event, context, callback) => {
                     const event = logs?.[i]?.events?.find(e => e?.type === 'depositConfirmation');
                     const event_vote = logs?.[i]?.events?.find(e => e?.type?.includes('vote'));
                     const poll_id = message?.inner_message?.poll_id || to_json(message?.inner_message?.poll_key || event?.attributes?.find(a => a?.key === 'poll' && a.value)?.value || event_vote?.attributes?.find(a => a?.key === 'poll' && a.value)?.value)?.id;
-                    let sender_chain, transaction_id, vote, confirmation, late;
+                    let sender_chain, transaction_id, deposit_address, vote, confirmation, late;
                     switch (type) {
                       case 'VoteConfirmDeposit':
                         sender_chain = normalize_chain(message?.inner_message?.chain || event?.attributes?.find(a => ['sourceChain', 'chain'].includes(a?.key) && a.value)?.value);
@@ -1761,6 +1765,7 @@ exports.handler = async (event, context, callback) => {
                     if (transaction_id === poll_id) {
                       transaction_id = null;
                     }
+                    deposit_address = message?.inner_message?.vote?.events?.[0]?.transfer?.to || event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
                     let participants;
                     let _response = await read(
                       'transfers',
@@ -1785,6 +1790,9 @@ exports.handler = async (event, context, callback) => {
                       } = { ..._response.data[0] };
                       if (!transaction_id) {
                         transaction_id = confirm_deposit.transaction_id;
+                      }
+                      if (!deposit_address) {
+                        deposit_address = confirm_deposit.deposit_address;
                       }
                       participants = confirm_deposit.participants;
                     }
@@ -1817,7 +1825,7 @@ exports.handler = async (event, context, callback) => {
                       created_at: get_granularity(created_at),
                       sender_chain,
                       recipient_chain: normalize_chain(event?.attributes?.find(a => ['destinationChain'].includes(a?.key) && a.value)?.value),
-                      deposit_address: event?.attributes?.find(a => a?.key === 'depositAddress' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[1],
+                      deposit_address,
                       transfer_id: Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value),
                       poll_id,
                       transaction_id,
@@ -3490,15 +3498,26 @@ exports.handler = async (event, context, callback) => {
 
         log('debug', req.url, 'save transfer id', { pollId, transferId });
         if (typeof transferId === 'number') {
-          let _response = await get(
+          let _response = await read(
             'transfers',
-            pollId,
+            {
+              should: [
+                { match: { 'confirm_deposit.poll_id': pollId } },
+                { match: { 'vote.poll_id': pollId } },
+              ],
+              minimum_should_match: 1,
+            },
+            {
+              size: 1,
+            },
           );
-          const transfer = _response;
-          if (transfer) {
+          const {
+            id,
+          } = { ..._response?.data?.[0] };
+          if (id) {
             await write(
               'transfers',
-              pollId,
+              id,
               {
                 transfer_id: transferId,
               },
