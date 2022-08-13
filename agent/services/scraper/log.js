@@ -293,7 +293,7 @@ module.exports = async () => {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
                   events: `sign.sigID='${sign.sig_id}'`,
-                }
+                },
               }).catch(error => { return { data: { error } }; });
               if (response?.data?.tx_responses?.[0]?.height) {
                 sign.height = Number(response.data.tx_responses[0].height);
@@ -363,7 +363,7 @@ module.exports = async () => {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
                   events: `sign.sigID='${sign.sig_id}'`,
-                }
+                },
               }).catch(error => { return { data: { error } }; });
               if (response?.data?.tx_responses?.[0]?.height) {
                 sign.height = Number(response.data.tx_responses[0].height);
@@ -520,29 +520,21 @@ module.exports = async () => {
           log('debug', service_name, keygen_patterns.find(s => data.includes(s)));
           const keygen = merge_data(data, attributes);
           keygen.height = height + 1;
-          if (!snapshot) {
+          if (keygen.participant_addresses) {
             // request api
-            const response = await api.post('', {
-              module: 'index',
-              collection: 'keygens',
-              method: 'search',
-              query: { range: { height: { lt: keygen.height } } },
-              sort: [{ height: 'desc' }],
-              size: 1,
+            const response = await api.get('', {
+              params: {
+                module: 'lcd',
+                path: `/cosmos/base/tendermint/v1beta1/validatorsets/${keygen.height}`,
+              },
             }).catch(error => { return { data: { error } }; });
-            if (response?.data?.data?.[0]) {
-              snapshot = response.data.data[0].snapshot + 1;
-              keygen.snapshot = snapshot;
+            if (response?.data?.validators) {
+              const {
+                validators,
+              } = { ...response.data };
+              keygen.non_participants = validators.filter(v => !keygen.participant_addresses.includes(v?.address));
             }
           }
-          else {
-            keygen.snapshot = snapshot;
-            keygen.snapshot_non_participant_validators = {
-              validators: _.uniqBy(exclude_validators[keygen.snapshot] || [], 'validator'),
-            };
-          }
-          snapshot++;
-          exclude_validators = {};
           await save(keygen, 'keygens', api);
         }
         // transfers
@@ -691,7 +683,7 @@ module.exports = async () => {
                   created_at: last_batch.timestamp,
                   cache: true,
                   cache_timeout: 1,
-                }
+                },
               }).catch(error => { return { data: { error } }; });
             }
             last_batch = batch;
