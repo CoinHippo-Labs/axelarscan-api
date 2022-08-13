@@ -341,6 +341,15 @@ exports.handler = async (event, context, callback) => {
                           else if (Array.isArray(event.transfer?.[field])) {
                             event.transfer[field] = to_hex(event.transfer[field]);
                           }
+                          else if (Array.isArray(event?.contract_call?.[field])) {
+                            event.contract_call[field] = to_hex(event.contract_call[field]);
+                          }
+                          else if (Array.isArray(event?.contract_call_with_token?.[field])) {
+                            event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
+                          }
+                          else if (Array.isArray(event?.multisig_operatorship_transferred?.[field])) {
+                            event.multisig_operatorship_transferred[field] = to_hex(event.multisig_operatorship_transferred[field]);
+                          }
                           events[j] = event;
                           message.inner_message.vote.events = events;
                         }
@@ -976,6 +985,7 @@ exports.handler = async (event, context, callback) => {
                 if (transaction_id?.startsWith('[') && transaction_id.endsWith(']')) {
                   transaction_id = to_hex(to_json(transaction_id));
                 }
+                const participants = to_json(event?.attributes?.find(a => a?.key === 'participants' && a.value)?.value)?.participants;
                 const record = {
                   id: tx_response.txhash,
                   type,
@@ -994,6 +1004,7 @@ exports.handler = async (event, context, callback) => {
                   transfer_id: Number(event?.attributes?.find(a => a?.key === 'transferID' && a.value)?.value),
                   poll_id,
                   transaction_id,
+                  participants,
                 };
                 if (!record.status_code && record.id && (record.transfer_id || record.poll_id)) {
                   switch (record.type) {
@@ -1313,9 +1324,35 @@ exports.handler = async (event, context, callback) => {
                         break;
                     }
                     transaction_id = message?.inner_message?.vote?.events?.[0]?.tx_id || event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
-                    if (!transaction_id || transaction_id === poll_id) {
-                      transaction_id = null;
-                      const _response = await read(
+                    let participants;
+                    let _response = await read(
+                      'transfers',
+                      {
+                        bool: {
+                          must: [
+                            { match: { 'confirm_deposit.poll_id': poll_id } },
+                            { exists: { field: 'confirm_deposit.transaction_id' } },
+                          ],
+                          must_not: [
+                            { match: { 'confirm_deposit.transaction_id': poll_id } },
+                          ],
+                        },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
+                    if (_response?.data?.[0]?.confirm_deposit) {
+                      const {
+                        confirm_deposit,
+                      } = { ..._response.data[0] };
+                      if (!transaction_id || transaction_id === poll_id) {
+                        transaction_id = confirm_deposit.transaction_id;
+                      }
+                      participants = confirm_deposit.participants;
+                    }
+                    if (!transaction_id) {
+                      _response = await read(
                         'evm_votes',
                         {
                           bool: {
@@ -1537,6 +1574,9 @@ exports.handler = async (event, context, callback) => {
                               transaction_id,
                               confirmation,
                             };
+                            if (participants) {
+                              poll_record.participants = participants;
+                            }
                             await write(
                               'evm_polls',
                               poll_record.id,
@@ -1715,9 +1755,35 @@ exports.handler = async (event, context, callback) => {
                         break;
                     }
                     transaction_id = message?.inner_message?.vote?.events?.[0]?.tx_id || event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
-                    if (!transaction_id || transaction_id === poll_id) {
-                      transaction_id = null;
-                      const _response = await read(
+                    let participants;
+                    let _response = await read(
+                      'transfers',
+                      {
+                        bool: {
+                          must: [
+                            { match: { 'confirm_deposit.poll_id': poll_id } },
+                            { exists: { field: 'confirm_deposit.transaction_id' } },
+                          ],
+                          must_not: [
+                            { match: { 'confirm_deposit.transaction_id': poll_id } },
+                          ],
+                        },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
+                    if (_response?.data?.[0]?.confirm_deposit) {
+                      const {
+                        confirm_deposit,
+                      } = { ..._response.data[0] };
+                      if (!transaction_id || transaction_id === poll_id) {
+                        transaction_id = confirm_deposit.transaction_id;
+                      }
+                      participants = confirm_deposit.participants;
+                    }
+                    if (!transaction_id) {
+                      _response = await read(
                         'evm_votes',
                         {
                           bool: {
@@ -1754,6 +1820,7 @@ exports.handler = async (event, context, callback) => {
                       confirmation,
                       late,
                       unconfirmed: logs?.findIndex(l => l?.log?.startsWith('not enough votes')) > -1,
+                      participants,
                     };
                     _records.push(record);
                   }
@@ -1776,6 +1843,7 @@ exports.handler = async (event, context, callback) => {
                     confirmation,
                     late,
                     unconfirmed,
+                    participants,
                   } = { ...record };
                   let {
                     sender_chain,
@@ -1820,6 +1888,9 @@ exports.handler = async (event, context, callback) => {
                       transaction_id,
                       confirmation,
                     };
+                    if (participants) {
+                      poll_record.participants = participants;
+                    }
                     write(
                       'evm_polls',
                       poll_record.id,
