@@ -1324,6 +1324,9 @@ exports.handler = async (event, context, callback) => {
                         break;
                     }
                     transaction_id = message?.inner_message?.vote?.events?.[0]?.tx_id || event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
+                    if (transaction_id === poll_id) {
+                      transaction_id = null;
+                    }
                     let participants;
                     let _response = await read(
                       'transfers',
@@ -1346,7 +1349,7 @@ exports.handler = async (event, context, callback) => {
                       const {
                         confirm_deposit,
                       } = { ..._response.data[0] };
-                      if (!transaction_id || transaction_id === poll_id) {
+                      if (!transaction_id) {
                         transaction_id = confirm_deposit.transaction_id;
                       }
                       participants = confirm_deposit.participants;
@@ -1755,6 +1758,9 @@ exports.handler = async (event, context, callback) => {
                         break;
                     }
                     transaction_id = message?.inner_message?.vote?.events?.[0]?.tx_id || event?.attributes?.find(a => a?.key === 'txID' && a.value)?.value || poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
+                    if (transaction_id === poll_id) {
+                      transaction_id = null;
+                    }
                     let participants;
                     let _response = await read(
                       'transfers',
@@ -1777,7 +1783,7 @@ exports.handler = async (event, context, callback) => {
                       const {
                         confirm_deposit,
                       } = { ..._response.data[0] };
-                      if (!transaction_id || transaction_id === poll_id) {
+                      if (!transaction_id) {
                         transaction_id = confirm_deposit.transaction_id;
                       }
                       participants = confirm_deposit.participants;
