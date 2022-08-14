@@ -3327,6 +3327,7 @@ exports.handler = async (event, context, callback) => {
                 const ibc_data = ibc?.find(i => i?.chain_id === id);
                 const {
                   ibc_denom,
+                  is_native,
                 } = { ...ibc_data };
                 let {
                   decimals,
@@ -3338,6 +3339,7 @@ exports.handler = async (event, context, callback) => {
                   base_denom: asset_data.id,
                   denom: ibc_denom,
                   decimals,
+                  is_native,
                 };
                 let balance = 0,
                   ibc_channels,
