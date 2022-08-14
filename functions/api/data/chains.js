@@ -293,7 +293,7 @@ module.exports = {
         short_name: 'COSMOS',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/cosmos',
+          url: 'https://www.mintscan.io/cosmos',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -323,7 +323,7 @@ module.exports = {
         short_name: 'OSMO',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/osmosis',
+          url: 'https://www.mintscan.io/osmosis',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -349,7 +349,7 @@ module.exports = {
         short_name: 'JUNO',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/juno',
+          url: 'https://www.mintscan.io/juno',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -375,7 +375,7 @@ module.exports = {
         short_name: 'EMO',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/emoney',
+          url: 'https://www.mintscan.io/emoney',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -406,7 +406,7 @@ module.exports = {
         short_name: 'INJ',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/injective',
+          url: 'https://www.mintscan.io/injective',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -432,7 +432,7 @@ module.exports = {
         short_name: 'CRE',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/crescent',
+          url: 'https://www.mintscan.io/crescent',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -486,7 +486,7 @@ module.exports = {
         short_name: 'SCRT',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/secret',
+          url: 'https://www.mintscan.io/secret',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -517,7 +517,7 @@ module.exports = {
         short_name: 'KI',
         explorer: {
           name: 'Mintscan',
-          url: 'https://mintscan.io/ki-chain',
+          url: 'https://www.mintscan.io/ki-chain',
           icon: '/logos/explorers/mintscan.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',

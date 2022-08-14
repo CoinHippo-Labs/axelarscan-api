@@ -35,6 +35,14 @@ module.exports = {
           decimals: 6,
         },
       ],
+      ibc: [
+        {
+          ibc_denom: 'uaxl',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
     },
     {
       id: 'uusdc',
@@ -327,7 +335,7 @@ module.exports = {
     {
       id: 'wbtc-satoshi',
       symbol: 'WBTC',
-      name: 'Bitcoin',
+      name: 'Wrapped Bitcoin',
       image: '/logos/assets/wbtc.png',
       decimals: 8,
       coingecko_id: 'wrapped-bitcoin',
@@ -959,6 +967,12 @@ module.exports = {
           decimals: 6,
           symbol: 'axlATOM',
         },
+        {
+          ibc_denom: 'uatom',
+          chain_id: 'cosmoshub',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -1068,6 +1082,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uosmo',
+          chain_id: 'osmosis',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -1115,6 +1135,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'ujuno',
+          chain_id: 'juno',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -1129,6 +1155,7 @@ module.exports = {
           ibc_denom: 'ibc/33C0B536F10138B8F2F7485F0A48F53C4F5A7004DFAB00EA750312731209293F',
           chain_id: 'ki',
           decimals: 6,
+          is_native: true,
         },
       ],
     },
@@ -1834,6 +1861,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uluna',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
   ],
@@ -1880,6 +1913,14 @@ module.exports = {
           contract_address: '0x1AA14c03783e3C31b14615a83a58E1eAF98Bf596',
           chain_id: 1313161555,
           decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'uaxl',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          is_native: true,
         },
       ],
     },
@@ -1981,6 +2022,12 @@ module.exports = {
           decimals: 6,
           symbol: 'axlATOM',
         },
+        {
+          ibc_denom: 'uatom',
+          chain_id: 'cosmoshub',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -2075,7 +2122,7 @@ module.exports = {
     {
       id: 'wbtc-satoshi',
       symbol: 'WBTC',
-      name: 'Bitcoin',
+      name: 'Wrapped Bitcoin',
       image: '/logos/assets/wbtc.png',
       decimals: 8,
       coingecko_id: 'wrapped-bitcoin',
@@ -2678,6 +2725,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uosmo',
+          chain_id: 'osmosis',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -2693,6 +2746,12 @@ module.exports = {
           chain_id: 'sei',
           decimals: 6,
         },
+        {
+          ibc_denom: 'usei',
+          chain_id: 'sei',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -2702,6 +2761,14 @@ module.exports = {
       image: '/logos/assets/juno.png',
       decimals: 6,
       coingecko_id: 'juno-network',
+      ibc: [
+        {
+          ibc_denom: 'ujuno',
+          chain_id: 'juno',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
     },
     {
       id: 'uusd',
@@ -2785,6 +2852,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uluna',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
   ],
@@ -2821,6 +2894,14 @@ module.exports = {
           contract_address: '0x8a6614f33ec72fb70084b22b2effb643424e9cc9',
           chain_id: 1287,
           decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'uaxl',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          is_native: true,
         },
       ],
     },
@@ -2929,6 +3010,14 @@ module.exports = {
           decimals: 6,
         },
       ],
+      ibc: [
+        {
+          ibc_denom: 'uaxl',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
     },
     {
       id: 'weth-wei',
@@ -3007,6 +3096,14 @@ module.exports = {
           contract_address: '0xa0164F7B73dcAe5E3c44581c2f99Bf92dc9b4b3D',
           chain_id: 43113,
           decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'uluna',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
         },
       ],
     },

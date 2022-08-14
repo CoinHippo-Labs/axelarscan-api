@@ -3235,7 +3235,6 @@ exports.handler = async (event, context, callback) => {
                 id,
                 provider_params,
               } = { ...c };
-
               const rpcs = provider_params?.[0]?.rpcUrls?.filter(url => url) || [];
               const provider = rpcs.length === 1 ?
                 new JsonRpcProvider(rpcs[0]) :
@@ -3318,7 +3317,7 @@ exports.handler = async (event, context, callback) => {
               }, {});
 
               // get tvl from lcd
-              const cosmos_tvl = await _cosmos_chains_data.reduce(async (acc, c) => {
+              let cosmos_tvl = await _cosmos_chains_data.reduce(async (acc, c) => {
                 const {
                   id,
                   prefix_chain_ids,
@@ -3429,6 +3428,21 @@ exports.handler = async (event, context, callback) => {
                   [`${id}`]: result,
                 };
               }, {});
+              cosmos_tvl = Object.fromEntries(Object.entries(cosmos_tvl).map(([k, v]) => {
+                const {
+                  supply,
+                  total,
+                } = { ...v };
+                return [
+                  k,
+                  {
+                    ...v,
+                    supply: k === axelarnet_chain_data.id && (contracts?.findIndex(c => c?.is_native) > -1 || ['uaxl'].includes(asset)) ?
+                      total - _.sum(Object.values(cosmos_tvl).map(_v => _v?.supply || 0)) :
+                      supply,
+                  },
+                ];
+              }));
 
               const tvl = Object.fromEntries(
                 _.concat(
