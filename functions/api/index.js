@@ -3415,9 +3415,11 @@ exports.handler = async (event, context, callback) => {
                   total,
                   percent_diff_supply,
                   is_abnormal_supply: typeof percent_diff_ibc_channel_supply_threshold === 'number' && percent_diff_supply > percent_diff_ibc_channel_supply_threshold,
-                  url: explorer?.url && (
+                  url: c?.explorer?.url && c.explorer.asset_path && ibc_denom?.includes('/') ?
+                    `${c.explorer.url}${c.explorer.asset_path.replace('{ibc_denom}', _.last(ibc_denom.split('/')))}` :
+                    explorer?.url && (
                     escrow_addresses?.length > 0 ?
-                      `${explorer.url}${explorer.asset_path && ibc_denom?.includes('/') ? explorer.asset_path.replace('{ibc_denom}', _.last(ibc_denom.split('/'))) : explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
+                      `${explorer.url}${explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
                       null
                   ),
                 };
