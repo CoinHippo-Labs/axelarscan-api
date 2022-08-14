@@ -3,7 +3,7 @@ exports.handler = async (event, context, callback) => {
     BigNumber,
     Contract,
     providers: { FallbackProvider, JsonRpcProvider },
-    utils: { formatUnits },
+    utils: { formatUnits, parseUnits },
   } = require('ethers');
   const axios = require('axios');
   const _ = require('lodash');
@@ -2809,13 +2809,37 @@ exports.handler = async (event, context, callback) => {
                 }
                 transfer.source.original_sender_chain = link?.original_sender_chain || normalize_original_chain(transfer.source.sender_chain || link?.sender_chain);
                 transfer.source.original_recipient_chain = link?.original_recipient_chain || normalize_original_chain(transfer.source.recipient_chain || link?.recipient_chain);
-                if (transfer.source?.denom && typeof transfer.source.amount === 'string') {
+                if (transfer.source?.denom) {
                   const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain)) || cosmos_chains_data.find(c => equals_ignore_case(c?.id, transfer.source.sender_chain));
                   const asset_data = assets_data.find(a => equals_ignore_case(a?.id, transfer.source.denom) || a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, transfer.source.denom)) > -1);
                   if (chain_data && asset_data) {
                     const decimals = asset_data?.contracts?.find(c => c?.chain_id === chain_data?.chain_id)?.decimals || asset_data?.ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || asset_data?.decimals || 6;
-                    transfer.source.amount = Number(formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
-                    transfer.source.denom = asset_data?.id || transfer.source.denom;
+                    if (typeof transfer.source.amount === 'string') {
+                      transfer.source.amount = Number(formatUnits(BigNumber.from(transfer.source.amount).toString(), decimals));
+                      transfer.source.denom = asset_data?.id || transfer.source.denom;
+                    }
+                    if (!transfer.source.fee) {
+                      // initial lcd
+                      const lcd = axios.create({ baseURL: endpoints?.lcd });
+                      const response_fee = await lcd.get('/axelar/nexus/v1beta1/transfer_fee', {
+                        params: {
+                          source_chain: link?.original_sender_chain,
+                          destination_chain: link?.original_recipient_chain,
+                          amount: `${parseUnits(transfer.source.amount?.toString() || '0', decimals).toString()}${asset_data.id}`,
+                        },
+                      }).catch(error => { return { data: { error } }; });
+                      if (response_fee?.data?.fee?.amount) {
+                        transfer.source.fee = Number(formatUnits(BigNumber.from(response_fee.data.fee.amount).toString(), decimals));
+                      }
+                      if (transfer.source.fee) {
+                        if (transfer.source.amount < transfer.source.fee) {
+                          transfer.source.insufficient_fee = true;
+                        }
+                        else {
+                          transfer.source.amount_received = transfer.source.amount - transfer.source.fee;
+                        }
+                      }
+                    }
                   }
                 }
                 if (link?.txhash && typeof link.price !== 'number' && endpoints?.api) {
