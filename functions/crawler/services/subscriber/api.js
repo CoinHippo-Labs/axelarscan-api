@@ -15,7 +15,7 @@ const API = (env = environment) => {
     axios.create({ baseURL: api });
 };
 
-const getLatestGMPBlock = async chain => {
+const getLatestEventBlock = async chain => {
   let output;
 
   // create api request object

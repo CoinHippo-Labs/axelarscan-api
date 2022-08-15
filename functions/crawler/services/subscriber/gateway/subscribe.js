@@ -120,7 +120,11 @@ const getPastEvents = async (
     } = { ...gateway };
 
     // initial contract
-    const contract = new Contract(address, abi, provider);
+    const contract = new Contract(
+      address,
+      abi,
+      provider,
+    );
 
     // query options
     const {

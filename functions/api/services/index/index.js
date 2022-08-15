@@ -4,8 +4,9 @@ const {
   transfer_collections,
 } = require('./utils');
 
-const crud = async (params = {}) => {
-  // initial response
+const crud = async (
+  params = {},
+) => {
   let response;
 
   // initial indexer info
@@ -29,6 +30,7 @@ const crud = async (params = {}) => {
     track_total_hits,
     height,
   } = { ...params };
+
   // normalize
   path = path || '';
   use_raw_data = typeof use_raw_data === 'boolean' ?
@@ -40,6 +42,9 @@ const crud = async (params = {}) => {
   track_total_hits = typeof track_total_hits === 'boolean' ?
     track_total_hits :
     typeof track_total_hits !== 'string' || equals_ignore_case(track_total_hits, 'true');
+  if (!isNaN(height)) {
+    height = Number(height);
+  }
 
   if (indexer_url && collection) {
     delete params.collection;
@@ -50,11 +55,12 @@ const crud = async (params = {}) => {
     delete params.use_raw_data;
     delete params.update_only;
 
-    // normalize
-    if (!isNaN(height)) {
-      height = Number(height);
-    }
-    const object_fields = ['aggs', 'query', 'sort', 'fields'];
+    const object_fields = [
+      'aggs',
+      'query',
+      'sort',
+      'fields',
+    ];
     object_fields.forEach(f => {
       if (params[f]) {
         try {
@@ -76,9 +82,7 @@ const crud = async (params = {}) => {
       }
     }
 
-    // initial indexer
     const indexer = axios.create({ baseURL: indexer_url });
-    // initial auth
     const auth = {
       username: indexer_username,
       password: indexer_password,
@@ -88,15 +92,25 @@ const crud = async (params = {}) => {
     switch (method) {
       case 'get':
         path = path || `/${collection}/_doc/${id}`;
-        // request indexer
-        response = await indexer.get(path, { params, auth })
-          .catch(error => { return { data: { error } }; });
-        // set response data
-        response = response?.data?._source ?
+
+        response = await indexer.get(
+          path,
+          {
+            params,
+            auth,
+          },
+        ).catch(error => { return { data: { error } }; });
+
+        const {
+          _id,
+          _source,
+        } = { ...response?.data };
+
+        response = _source ?
           {
             data: {
-              ...response.data._source,
-              id: response.data._id,
+              ..._source,
+              id: _id,
             },
           } :
           response;
@@ -104,34 +118,72 @@ const crud = async (params = {}) => {
       case 'set':
       case 'update':
         path = path || `/${collection}/_doc/${id}`;
+
         if (path.includes('/_update_by_query')) {
           try {
-            // request indexer
-            response = await indexer.post(path, params, { auth })
-              .catch(error => { return { data: { error } }; });
+            response = await indexer.post(
+              path,
+              params,
+              { auth },
+            ).catch(error => { return { data: { error } }; });
           } catch (error) {}
         }
         else {
-          // request indexer
           response = await (path.includes('_update') ?
-            indexer.post(path, { doc: params }, { auth }) :
-            indexer.put(path, params, { auth })
+            indexer.post(
+              path,
+              { doc: params },
+              { auth },
+            ) :
+            indexer.put(
+              path,
+              params,
+              { auth },
+            )
           ).catch(error => { return { data: { error } }; });
+
+          const {
+            error,
+          } = { ...response?.data };
+
           // retry with update / insert
-          if (response?.data?.error) {
-            path = path.replace(path.includes('_doc') ? '_doc' : '_update', path.includes('_doc') ? '_update' : '_doc');
+          if (error) {
+            path = path.replace(
+              path.includes('_doc') ?
+                '_doc' :
+                '_update',
+              path.includes('_doc') ?
+                '_update' :
+                '_doc',
+            );
+
             if (update_only && path.includes('_doc')) {
-              // request indexer
-              const _response = await indexer.get(path, { auth })
-                .catch(error => { return { data: { error } }; });
-              if (_response?.data?._source) {
+              const _response = await indexer.get(
+                path,
+                { auth },
+              ).catch(error => { return { data: { error } }; });
+
+              const {
+                _id,
+                _source,
+              } = { ..._response?.data };
+
+              if (_source) {
                 path = path.replace('_doc', '_update');
               }
             }
-            // request indexer
+
             response = await (path.includes('_update') ?
-              indexer.post(path, { doc: params }, { auth }) :
-              indexer.put(path, params, { auth })
+              indexer.post(
+                path,
+                { doc: params },
+                { auth },
+              ) :
+              indexer.put(
+                path,
+                params,
+                { auth },
+              )
             ).catch(error => { return { data: { error } }; });
           }
         }
@@ -139,15 +191,23 @@ const crud = async (params = {}) => {
       case 'query':
       case 'search':
         path = path || `/${collection}/_search`;
-        // setup search data
+
         const search_data = use_raw_data ?
           params :
           {
             query: {
               bool: {
                 // set query for each field
-                must: Object.entries({ ...params }).filter(([k, v]) =>
-                  !['query', 'aggs', 'from', 'size', 'sort', 'fields', '_source'].includes(k)
+                must: Object.entries({ ...params })
+                  .filter(([k, v]) => ![
+                    'query',
+                    'aggs',
+                    'from',
+                    'size',
+                    'sort',
+                    'fields',
+                    '_source',
+                  ].includes(k)
                 ).map(([k, v]) => {
                   // overide field from params
                   switch (k) {
@@ -158,7 +218,7 @@ const crud = async (params = {}) => {
                       break;
                     default:
                       break;
-                  };
+                  }
                   // set match query
                   return {
                     match: {
@@ -169,28 +229,47 @@ const crud = async (params = {}) => {
               },
             },
           };
+
         if (path.endsWith('/_search')) {
-          search_data.from = !isNaN(from) ? Number(from) : 0;
-          search_data.size = !isNaN(size) ? Number(size) : 10;
+          search_data.from = !isNaN(from) ?
+            Number(from) :
+            0;
+          search_data.size = !isNaN(size) ?
+            Number(size) :
+            10;
           search_data.sort = sort;
           search_data.track_total_hits = track_total_hits;
         }
-        // request indexer
-        response = await indexer.post(path, search_data, { auth })
-          .catch(error => { return { data: { error } }; });
-        // set response data
-        response = response?.data?.hits?.hits || response?.data?.aggregations ?
+
+        response = await indexer.post(
+          path,
+          search_data,
+          { auth },
+        ).catch(error => { return { data: { error } }; });
+
+        const {
+          hits,
+          aggregations,
+        } = { ...response?.data };
+
+        response = hits?.hits || aggregations ?
           {
             data: {
-              data: response.data.hits?.hits?.map(d => {
+              data: hits?.hits?.map(d => {
+                const {
+                  _id,
+                  _source,
+                  fields,
+                } = { ...d };
+
                 return {
-                  ...d?._source,
-                  ...d?.fields,
-                  id: d?._id,
-                }
+                  ..._source,
+                  ...fields,
+                  id: _id,
+                };
               }),
-              total: response.data.hits?.total?.value,
-              aggs: response.data.aggregations,
+              total: hits?.total?.value,
+              aggs: aggregations,
             },
           } :
           response;
@@ -198,9 +277,14 @@ const crud = async (params = {}) => {
       case 'delete':
       case 'remove':
         path = path || `/${collection}/_doc/${id}`;
-        // request indexer
-        response = await indexer.delete(path, { params, auth })
-          .catch(error => { return { data: { error } }; });
+
+        response = await indexer.delete(
+          path,
+          {
+            params,
+            auth,
+          },
+        ).catch(error => { return { data: { error } }; });
         break;
       default:
         break;
@@ -219,27 +303,23 @@ const crud = async (params = {}) => {
 const get = async (
   collection,
   id,
-) => {
-  return await crud({
-    method: 'get',
-    collection,
-    id,
-  });
-};
+) => await crud({
+  method: 'get',
+  collection,
+  id,
+});
 
 const read = async (
   collection,
   query,
   params = {},
-) => {
-  return await crud({
-    method: 'query',
-    collection,
-    query,
-    use_raw_data: true,
-    ...params,
-  });
-};
+) => await crud({
+  method: 'query',
+  collection,
+  query,
+  use_raw_data: true,
+  ...params,
+});
 
 const write = async (
   collection,
@@ -247,31 +327,29 @@ const write = async (
   data = {},
   update_only = false,
   is_update = true,
-) => {
-  return await crud({
-    method: 'set',
-    collection,
-    id,
-    path: is_update ? `/${collection}/_update/${id}` : undefined,
-    update_only,
-    ...data,
-  });
-};
+) => await crud({
+  method: 'set',
+  collection,
+  id,
+  path: is_update ?
+    `/${collection}/_update/${id}` :
+    undefined,
+  update_only,
+  ...data,
+});
 
 const delete_by_query = async (
   collection,
   query,
   params = {},
-) => {
-  return await crud({
-    method: 'query',
-    collection,
-    path: `/${collection}/_delete_by_query`,
-    query,
-    use_raw_data: true,
-    ...params,
-  });
-};
+) => await crud({
+  method: 'query',
+  collection,
+  path: `/${collection}/_delete_by_query`,
+  query,
+  use_raw_data: true,
+  ...params,
+});
 
 module.exports = {
   crud,

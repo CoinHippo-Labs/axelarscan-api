@@ -2,7 +2,9 @@ const {
   read,
 } = require('./index');
 
-module.exports = async (params = {}) => {
+module.exports = async (
+  params = {},
+) => {
   const {
     sender,
     fromBlock,
@@ -47,8 +49,12 @@ module.exports = async (params = {}) => {
     'heartbeats',
     query,
     {
-      from: typeof from === 'number' ? from : 0,
-      size: typeof size === 'number' ? size : 200,
+      from: typeof from === 'number' ?
+        from :
+        0,
+      size: typeof size === 'number' ?
+        size :
+        200,
       sort: sort || [{ period_height: 'desc' }],
       track_total_hits: true,
     },

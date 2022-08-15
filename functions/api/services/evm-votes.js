@@ -2,7 +2,9 @@ const {
   read,
 } = require('./index');
 
-module.exports = async (params = {}) => {
+module.exports = async (
+  params = {},
+) => {
   const {
     chain,
     txHash,
@@ -51,7 +53,9 @@ module.exports = async (params = {}) => {
   }
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
+    toTime = toTime ?
+      Number(toTime) * 1000 :
+      moment().valueOf();
     must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
   }
   if (!query) {
@@ -69,8 +73,12 @@ module.exports = async (params = {}) => {
     'evm_votes',
     query,
     {
-      from: typeof from === 'number' ? from : 0,
-      size: typeof size === 'number' ? size : 100,
+      from: typeof from === 'number' ?
+        from :
+        0,
+      size: typeof size === 'number' ?
+        size :
+        100,
       sort: sort || [{ 'created_at.ms': 'desc' }],
       track_total_hits: true,
     },

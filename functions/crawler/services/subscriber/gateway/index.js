@@ -20,7 +20,11 @@ module.exports.subscribeGateway = (chains_config = []) => {
 
     if (provider && address) {
       // initial gateway contract
-      const contract = new Contract(address, abi, provider);
+      const contract = new Contract(
+        address,
+        abi,
+        provider,
+      );
 
       // events to subscribe
       const events_name = [

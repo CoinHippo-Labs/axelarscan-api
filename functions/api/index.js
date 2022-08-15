@@ -16,8 +16,6 @@ exports.handler = async (event, context, callback) => {
     write,
   } = require('./services/index');
   const assets_price = require('./services/assets-price');
-  const evm_votes = require('./services/evm-votes');
-  const heartbeats = require('./services/heartbeats');
   const {
     getContractSupply,
     getEVMBalance,
@@ -3512,12 +3510,12 @@ exports.handler = async (event, context, callback) => {
       switch (req.params.function) {
         case 'evm-votes':
           try {
-            response = await evm_votes(params);
+            response = await require('./services/evm-votes')(params);
           } catch (error) {}
           break;
         case 'heartbeats':
           try {
-            response = await heartbeats(params);
+            response = await require('./services/heartbeats')(params);
           } catch (error) {}
           break;
         default:

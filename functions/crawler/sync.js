@@ -65,13 +65,24 @@ const chains_config = Object.entries({ ...chains })
 // get the specific chain's configuration
 const chain_config = chains_config.find(c => c?.id === chain);
 if (chain_config) {
+  // chain configuration
   const {
-    gateway,
     provider,
+    gateway,
   } = { ...chain_config };
 
+  // contract parameters
+  const {
+    address,
+    abi,
+  } = { ...gateway };
+
   // initial contracts
-  const gateway_contract = new Contract(gateway?.address, gateway?.abi, provider);
+  const gateway_contract = new Contract(
+    address,
+    abi,
+    provider,
+  );
 
   // initial filters
   const gateway_filters = [
