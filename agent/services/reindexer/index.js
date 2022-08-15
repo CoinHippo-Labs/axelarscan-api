@@ -78,7 +78,7 @@ module.exports = () => {
               for (const tx_response of tx_responses) {
                 const {
                   txhash,
-                } = { ...tx };
+                } = { ...tx_response };
 
                 if (txhash) {
                   log(

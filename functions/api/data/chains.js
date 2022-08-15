@@ -767,6 +767,7 @@ module.exports = {
             chainName: 'Fantom Testnet',
             rpcUrls: [
               'https://rpc.testnet.fantom.network',
+              'https://xapi.testnet.fantom.network/lachesis',
             ],
             nativeCurrency: {
               name: 'Fantom',
@@ -1297,6 +1298,7 @@ module.exports = {
             chainName: 'Fantom Testnet',
             rpcUrls: [
               'https://rpc.testnet.fantom.network',
+              'https://xapi.testnet.fantom.network/lachesis',
             ],
             nativeCurrency: {
               name: 'Fantom',
