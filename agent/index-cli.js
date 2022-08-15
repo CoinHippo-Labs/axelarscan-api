@@ -1,10 +1,13 @@
-// import modules for building api
 const express = require('express');
 const bodyParser = require('body-parser');
-// import config
 const config = require('config-yml');
-// import utils
 const { log } = require('./utils');
+
+const environment = process.env.ENVIRONMENT || config?.environment;
+
+const {
+	port,
+} = { ...config?.[environment] };
 
 // initial express server
 const app = express();
@@ -12,15 +15,20 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// initial environment
-const environment = process.env.ENVIRONMENT || config?.environment;
+log(
+  'info',
+  'main',
+  'start service',
+  {
+  	config: {
+  		...config?.[environment],
+  	},
+  },
+);
 
-log('info', 'main', 'start service', { config: config?.[environment] });
 // import cli routes
 require('./routes/cli')(app);
-
 // start service
-app.listen(config?.port?.cli || 3333);
-
+app.listen(port?.cli || 3333);
 // import log scraper
 require('./services/scraper/log')();

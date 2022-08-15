@@ -9,13 +9,14 @@ const {
   sleep,
 } = require('../../utils');
 
-// initial service name
 const service_name = 'log-scraper';
-
-// initial environment
 const environment = process.env.ENVIRONMENT || config?.environment;
 
-const merge_data = (
+const {
+  endpoints,
+} = { ...config?.[environment] };
+
+const construct = (
   _data,
   attributes,
   initial_data = {},
@@ -184,13 +185,23 @@ const save = async (
 };
 
 module.exports = async () => {
-  if (config?.[environment]?.endpoints?.api) {
+  if (endpoints?.api) {
     // initial api
-    const api = axios.create({ baseURL: config[environment].endpoints.api });
+    const api = axios.create({ baseURL: endpoints.api });
 
     // setup log stream
-    const tail = new TailFile(`/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`, { encoding: 'utf8', startPos: 0 })
-      .on('tail_error', error => log('error', service_name, 'tail error', { ...error }));
+    const tail = new TailFile(
+      `/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`,
+      {
+        encoding: 'utf8',
+        startPos: 0,
+      }
+    ).on('tail_error', error => log(
+      'error',
+      service_name,
+      'tail error',
+      { ...error },
+    ));
 
     // initial temp variables
     let height,
@@ -198,15 +209,21 @@ module.exports = async () => {
       exclude_validators = {},
       last_batch;
 
-    const keygen_patterns = ['keygen session started', 'setting key'];
+    const keygen_patterns = [
+      'keygen session started',
+      'setting key',
+    ];
 
     try {
       await tail.start();
       const splitter = readline.createInterface({ input: tail });
+
       // subscribe log data
       splitter.on('line', async chunk => {
-        // initial data
-        const data = chunk.toString('utf8').replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '').trim();
+        const data = chunk.toString('utf8')
+          .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+          .trim();
+
         // block
         if (data.includes('executed block height=')) {
           const attributes = [
@@ -217,8 +234,15 @@ module.exports = async () => {
               type: 'number',
             },
           ];
-          height = merge_data(data, attributes).height;
-          log('debug', service_name, 'block', { height });
+
+          height = construct(data, attributes).height;
+
+          log(
+            'debug',
+            service_name,
+            'block',
+            { height },
+          );
         }
         // participations
         else if (data.includes('next sign: sig_id')) {
@@ -269,42 +293,77 @@ module.exports = async () => {
               hard_value: true,
             },
           ];
-          log('debug', service_name, 'next sign');
-          const sign = merge_data(data, attributes);
-          if (sign) {
-            sign._height = height;
-            if (sign.participants) {
-              sign.participants = sign.participants.filter(a => a?.startsWith('axelarvaloper'));
-            }
-            if (sign.non_participants) {
-              sign.non_participants = sign.non_participants.filter(a => a).map(a => {
-                const pattern_start = 'operator_address: ';
-                const pattern_end = 'consensus_pubkey:';
-                const from = pattern_start ? a.indexOf(pattern_start) + pattern_start.length : 0;
-                const to = typeof pattern_end === 'string' && a.indexOf(pattern_end) > -1 ? a.indexOf(pattern_end) : a.length;
-                a = a.substring(from, to).trim();
-                return a;
-              }).filter(a => a?.startsWith('axelarvaloper'));
-            }
-            if (sign.sig_id) {
-              // request api
+
+          log(
+            'debug',
+            service_name,
+            'next sign',
+          );
+
+          let obj = construct(data, attributes);
+
+          if (obj) {
+            const _height = height;
+            const {
+              sig_id,
+            } = { ...obj };
+            let {
+              participants,
+              non_participants,
+            } = { ...obj };
+
+            participants = participants?.filter(a => a?.startsWith('axelarvaloper'));
+            non_participants = non_participants?.filter(a => a)
+              .map(a => {
+                const pattern_start = 'operator_address: ',
+                  pattern_end = 'consensus_pubkey:';
+
+                const from = pattern_start ?
+                  a.indexOf(pattern_start) + pattern_start.length :
+                  0;
+                const to = typeof pattern_end === 'string' && a.indexOf(pattern_end) > -1 ?
+                  a.indexOf(pattern_end) :
+                  a.length;
+
+                return a.substring(from, to)
+                  .trim();
+              })
+              .filter(a => a.startsWith('axelarvaloper'));
+
+            if (sig_id) {
               const response = await api.get('', {
                 params: {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
-                  events: `sign.sigID='${sign.sig_id}'`,
+                  events: `sign.sigID='${sig_id}'`,
                 },
               }).catch(error => { return { data: { error } }; });
-              if (response?.data?.tx_responses?.[0]?.height) {
-                sign.height = Number(response.data.tx_responses[0].height);
+              
+              const {
+                tx_responses,
+              } = { ...response?.data };
+
+              if (_.head(tx_responses)?.height) {
+                obj.height = Number(_.head(tx_responses).height);
               }
             }
-            if (!sign.height && sign._height) {
-              sign.height = sign._height;
+
+            if (!obj.height && _height) {
+              obj.height = _height;
             }
-            delete sign._height;
+
+            obj = {
+              ...obj,
+              participants,
+              non_participants,
+            };
+
+            await save(
+              obj,
+              'sign_attempts',
+              api,
+            );
           }
-          await save(sign, 'sign_attempts', api);
         }
         else if (data.includes('" sigID=') && data.includes('articipants')) {
           const attributes = [
@@ -339,42 +398,79 @@ module.exports = async () => {
               type: 'array',
             },
           ];
-          log('debug', service_name, 'next sign');
-          const sign = merge_data(data, attributes);
-          if (sign) {
-            sign._height = height;
-            if (sign.participants) {
-              sign.participants = sign.participants.filter(a => a?.startsWith('axelarvaloper'));
-            }
-            if (sign.non_participants) {
-              sign.non_participants = sign.non_participants.filter(a => a).map(a => {
-                const pattern_start = 'operator_address: ';
-                const pattern_end = 'consensus_pubkey:';
-                const from = pattern_start ? a.indexOf(pattern_start) + pattern_start.length : 0;
-                const to = typeof pattern_end === 'string' && a.indexOf(pattern_end) > -1 ? a.indexOf(pattern_end) : a.length;
-                a = a.substring(from, to).trim();
-                return a;
-              }).filter(a => a?.startsWith('axelarvaloper'));
-            }
-            if (sign.sig_id) {
-              // request api
+
+          log(
+            'debug',
+            service_name,
+            'next sign',
+          );
+
+          let obj = construct(data, attributes);
+
+          if (obj) {
+            const _height = height;
+            const {
+              sig_id,
+            } = { ...obj };
+            let {
+              participants,
+              non_participants,
+            } = { ...obj };
+
+            participants = participants?.filter(a => a?.startsWith('axelarvaloper'));
+            non_participants = non_participants?.filter(a => a)
+              .map(a => {
+                const pattern_start = 'operator_address: ',
+                  pattern_end = 'consensus_pubkey:';
+
+                const from = pattern_start ?
+                  a.indexOf(pattern_start) + pattern_start.length :
+                  0;
+                const to = typeof pattern_end === 'string' && a.indexOf(pattern_end) > -1 ?
+                  a.indexOf(pattern_end) :
+                  a.length;
+
+                return a.substring(from, to)
+                  .trim();
+              })
+              .filter(a => a.startsWith('axelarvaloper'));
+
+            if (sig_id) {
               const response = await api.get('', {
                 params: {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
-                  events: `sign.sigID='${sign.sig_id}'`,
+                  events: `sign.sigID='${sig_id}'`,
                 },
               }).catch(error => { return { data: { error } }; });
-              if (response?.data?.tx_responses?.[0]?.height) {
-                sign.height = Number(response.data.tx_responses[0].height);
+              
+              const {
+                tx_responses,
+              } = { ...response?.data };
+
+              if (_.head(tx_responses)?.height) {
+                obj.height = Number(_.head(tx_responses).height);
               }
             }
-            if (!sign.height && sign._height) {
-              sign.height = sign._height;
+
+            if (!obj.height && _height) {
+              obj.height = _height;
             }
-            delete sign._height;
+
+            obj = {
+              ...obj,
+              participants,
+              non_participants,
+            };
+
+            await save(
+              obj,
+              'sign_attempts',
+              api,
+              true,
+              1,
+            );
           }
-          await save(sign, 'sign_attempts', api, true, 1);
         }
         else if (data.includes(' excluding validator ') && data.includes(' from snapshot ')) {
           const attributes = [
@@ -390,12 +486,22 @@ module.exports = async () => {
               type: 'number',
             },
           ];
-          log('debug', service_name, 'keygen excluding validator');
-          const exclude_validator_data = merge_data(data, attributes);
-          if (typeof exclude_validator_data?.snapshot === 'number') {
-            snapshot = exclude_validator_data.snapshot;
+
+          log(
+            'debug',
+            service_name,
+            'keygen excluding validator',
+          );
+
+          const obj = construct(data, attributes);
+
+          if (typeof obj?.snapshot === 'number') {
+            snapshot = obj.snapshot;
           }
-          exclude_validators[snapshot] = _.concat(exclude_validators[snapshot] || [], exclude_validator_data);
+          exclude_validators[snapshot] = _.concat(
+            exclude_validators[snapshot] || [],
+            obj,
+          );
         }
         else if (data.includes('new Keygen: key_id')) {
           const attributes = [
@@ -411,33 +517,55 @@ module.exports = async () => {
               pattern_end: '] threshold [',
             },
           ];
-          log('debug', service_name, 'new keygen');
-          const keygen = merge_data(data, attributes);
-          keygen.height = height + 1;
-          if (!snapshot) {
-            // request api
-            const response = await api.post('', {
-              module: 'index',
-              collection: 'keygens',
-              method: 'search',
-              query: { range: { height: { lt: keygen.height } } },
-              sort: [{ height: 'desc' }],
-              size: 1,
-            }).catch(error => { return { data: { error } }; });
-            if (response?.data?.data?.[0]) {
-              snapshot = response.data.data[0].snapshot + 1;
-              keygen.snapshot = snapshot;
+
+          log(
+            'debug',
+            service_name,
+            'new keygen',
+          );
+
+          const obj = construct(data, attributes);
+
+          if (obj) {
+            obj.height = height + 1;
+
+            if (!snapshot) {
+              const response = await api.post('', {
+                module: 'index',
+                collection: 'keygens',
+                method: 'search',
+                query: {
+                  range: { height: { lt: obj.height } },
+                },
+                size: 1,
+                sort: [{ height: 'desc' }],
+              }).catch(error => { return { data: { error } }; });
+
+              const {
+                data,
+              } = { ...response?.data };
+
+              if (typeof _.head(data)?.snapshot === 'number') {
+                snapshot = _.head(data).snapshot + 1;
+              }
             }
+            else {
+              obj.snapshot_non_participant_validators = {
+                validators: _.uniqBy(exclude_validators[snapshot] || [], 'validator'),
+              };
+            }
+
+            obj.snapshot = snapshot;
+
+            snapshot++;
+            exclude_validators = {};
+
+            await save(
+              obj,
+              'keygens',
+              api,
+            );
           }
-          else {
-            keygen.snapshot = snapshot;
-            keygen.snapshot_non_participant_validators = {
-              validators: _.uniqBy(exclude_validators[keygen.snapshot] || [], 'validator'),
-            };
-          }
-          snapshot++;
-          exclude_validators = {};
-          await save(keygen, 'keygens', api);
         }
         else if (data.includes('multisig keygen ') && data.includes(' timed out')) {
           const attributes = [
@@ -453,21 +581,46 @@ module.exports = async () => {
               pattern_end: ' timed out',
             },
           ];
-          log('debug', service_name, 'keygen failed');
-          const keygen = merge_data(data, attributes);
-          // request api
-          const response = await api.post('', {
-            module: 'index',
-            collection: 'keygens',
-            method: 'search',
-            query: { match_phrase: { 'key_id': keygen.key_id } },
-            size: 1,
-          }).catch(error => { return { data: { error } }; });
-          if (response?.data?.data?.[0]) {
-            keygen.id = response.data.data[0]._id;
+
+          log(
+            'debug',
+            service_name,
+            'keygen failed',
+          );
+
+          let obj = construct(data, attributes);
+
+          if (obj) {
+            const {
+              key_id,
+            } = { ...obj };
+
+            const response = await api.post('', {
+              module: 'index',
+              collection: 'keygens',
+              method: 'search',
+              query: {
+                match_phrase: { key_id } },
+              size: 1,
+            }).catch(error => { return { data: { error } }; });
+
+            const {
+              _id,
+            } = { _.head(response?.data?.data) };
+
+            obj = {
+              ...obj,
+              id: _id,
+              failed: true,
+            };
+
+            await save(
+              obj,
+              'keygens',
+              api,
+              true,
+            );
           }
-          keygen.failed = true;
-          await save(keygen, 'keygens', api, true);
         }
         else if (keygen_patterns.findIndex(s => data.includes(s)) > -1) {
           const attributes = [
@@ -517,25 +670,51 @@ module.exports = async () => {
               pattern_end: null,
             },
           ];
-          log('debug', service_name, keygen_patterns.find(s => data.includes(s)));
-          const keygen = merge_data(data, attributes);
-          keygen.height = height + 1;
-          if (keygen.participant_addresses) {
-            // request api
-            const response = await api.get('', {
-              params: {
-                module: 'lcd',
-                path: `/cosmos/base/tendermint/v1beta1/validatorsets/${keygen.height}`,
-              },
-            }).catch(error => { return { data: { error } }; });
-            if (response?.data?.validators) {
+
+          log(
+            'debug',
+            service_name,
+            keygen_patterns.find(s => data.includes(s)),
+          );
+
+          let obj = construct(data, attributes);
+
+          if (obj) {
+            obj.height = height + 1;
+
+            const {
+              participant_addresses,
+            } = { ...obj };
+            let {
+              non_participants,
+            } = { ...obj };
+
+            if (participant_addresses) {
+              const response = await api.get('', {
+                params: {
+                  module: 'lcd',
+                  path: `/cosmos/base/tendermint/v1beta1/validatorsets/${obj.height}`,
+                },
+              }).catch(error => { return { data: { error } }; });
+
               const {
                 validators,
-              } = { ...response.data };
-              keygen.non_participants = validators.filter(v => !keygen.participant_addresses.includes(v?.address));
+              } = { ...response?.data };
+
+              non_participants = validators?.filter(v => !participant_addresses.includes(v?.address));
             }
+
+            obj = {
+              ...obj,
+              non_participants,
+            };
+
+            await save(
+              obj,
+              'keygens',
+              api,
+            );
           }
-          await save(keygen, 'keygens', api);
         }
         // transfers
         else if (data.includes('deposit confirmed on chain ')) {
@@ -573,77 +752,113 @@ module.exports = async () => {
               pattern_end: ' module=',
             },
           ];
-          log('debug', service_name, 'confirm deposit - evm');
-          const confirm = merge_data(data, attributes);
-          if (confirm) {
-            confirm.chain = confirm.chain?.toLowerCase();
-            if (confirm.tx_id && confirm.deposit_address && confirm.transfer_id) {
-              // get exist transfer
-              const id = confirm.tx_id;
-              let query = {
-                bool: {
-                  must: [
-                    { match: { 'source.id': id } },
-                    { match: { 'source.recipient_address': confirm.deposit_address } },
-                  ],
-                },
-              };
-              // request api
+
+          log(
+            'debug',
+            service_name,
+            'confirm deposit - evm',
+          );
+
+          const obj = construct(data, attributes);
+
+          if (obj) {
+            const {
+              tx_id,
+              deposit_address,
+              transfer_id,
+            } = { ...obj };
+            let {
+              chain,
+              command_id,
+            } = { ...obj };
+
+            chain = chain?.toLowerCase();
+            command_id = command_id || transfer_id.toString(16).padStart(64, '0');
+
+            if (tx_id && deposit_address && transfer_id) {
               let response = await api.post('', {
                 module: 'index',
                 collection: 'transfers',
                 method: 'search',
-                query,
-                size: 1,
-              }).catch(error => { return { data: { error } }; });
-              if (response?.data?.data?.[0]) {
-                const transfer = response.data.data[0];
-                if (transfer.confirm_deposit) {
-                  transfer.confirm_deposit.transfer_id = confirm.transfer_id;
-                }
-                if (transfer.vote) {
-                  transfer.vote.transfer_id = confirm.transfer_id;
-                }
-                // sign batch
-                let sign_batch;
-                const command_id = confirm.command_id || confirm.transfer_id.toString(16).padStart(64, '0');
-                query = {
+                query: {
                   bool: {
                     must: [
-                      { match: { chain: confirm.chain } },
-                      { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
-                      { match: { command_ids: command_id } },
+                      { match: { 'source.id': tx_id } },
+                      { match: { 'source.recipient_address': confirm.deposit_address } },
                     ],
                   },
-                };
-                // request api
+                },
+                size: 1,
+              }).catch(error => { return { data: { error } }; });
+
+              const transfer_data = _.head(response?.data?.data);
+
+              if (transfer_data) {
+                const {
+                  confirm_deposit,
+                  vote,
+                } = { ...transfer_data };
+                let {
+                  sign_batch,
+                } = { ...transfer_data };
+
+                if (confirm_deposit) {
+                  confirm_deposit.transfer_id = transfer_id;
+                }
+                if (vote) {
+                  vote.transfer_id = transfer_id;
+                }
+
                 response = await api.post('', {
                   module: 'index',
                   collection: 'batches',
                   method: 'search',
-                  query,
+                  query: {
+                    bool: {
+                      must: [
+                        { match: { chain } },
+                        { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                        { match: { command_ids: command_id } },
+                      ],
+                    },
+                  },
                   size: 1,
                 }).catch(error => { return { data: { error } }; });
-                if (response?.data?.data?.[0]) {
-                  const batch = response.data.data[0];
-                  if (batch) {
-                    sign_batch = {
-                      chain: confirm.chain,
-                      batch_id: batch.batch_id,
-                      command_id,
-                      transfer_id: confirm.transfer_id,
-                    };
-                  }
+
+                const batch_data = _.head(response?.data?.data);
+
+                const {
+                  batch_id,
+                } = { ...batch_data };
+
+                if (batch_id) {
+                  sign_batch = {
+                    chain,
+                    batch_id,
+                    transfer_id,
+                    command_id,
+                  };
                 }
-                log('debug', service_name, 'save transfer', { chain: confirm.chain, tx_hash: id, transfer_id: confirm.transfer_id });
-                // request api
+
+                log(
+                  'debug',
+                  service_name,
+                  'save transfer',
+                  {
+                    chain,
+                    tx_hash: tx_id,
+                    transfer_id,
+                    command_id,
+                  },
+                );
+
                 await api.post('', {
                   module: 'index',
                   collection: 'transfers',
                   method: 'update',
-                  path: `/transfers/_update/${id}`,
-                  id,
-                  ...transfer,
+                  path: `/transfers/_update/${tx_id}`,
+                  id: tx_id,
+                  ...transfer_data,
                   sign_batch,
                 }).catch(error => { return { data: { error } }; });
               }
@@ -669,29 +884,62 @@ module.exports = async () => {
               pattern_end: ' using key',
             },
           ];
-          log('debug', service_name, 'sign batch');
-          const batch = merge_data(data, attributes);
-          if (batch?.batch_id && batch.chain) {
-            batch.chain = batch.chain.toLowerCase();
-            if (last_batch && !(last_batch.batch_id === batch.batch_id && last_batch.chain === batch.chain)) {
-              log('debug', service_name, 'get batch', { batch_id: batch.batch_id });
-              // request api
-              api.get('', {
-                params: {
-                  module: 'cli',
-                  cmd: `axelard q evm batched-commands ${last_batch.chain} ${last_batch.batch_id} -oj`,
-                  created_at: last_batch.timestamp,
-                  cache: true,
-                  cache_timeout: 1,
-                },
-              }).catch(error => { return { data: { error } }; });
+
+          log(
+            'debug',
+            service_name,
+            'sign batch',
+          );
+
+          let obj = construct(data, attributes);
+
+          if (obj) {
+            const {
+              batch_id,
+            } = { ...obj };
+            let {
+              chain,
+            } = { ...obj };
+
+            if (batch_id && chain) {
+              chain = chain.toLowerCase();
+
+              if (last_batch && !(last_batch.batch_id === batch_id && last_batch.chain === chain)) {
+                log(
+                  'debug',
+                  service_name,
+                  'get batch',
+                  { batch_id },
+                );
+
+                api.get('', {
+                  params: {
+                    module: 'cli',
+                    cmd: `axelard q evm batched-commands ${last_batch.chain} ${last_batch.batch_id} -oj`,
+                    created_at: last_batch.timestamp,
+                    cache: true,
+                    cache_timeout: 1,
+                  },
+                }).catch(error => { return { data: { error } }; });
+              }
+
+              obj = {
+                ...obj,
+                chain,
+              };
+
+              last_batch = obj;
             }
-            last_batch = batch;
           }
         }
       });
     } catch (error) {
-      log('error', service_name, 'on error', { ...error });
+      log(
+        'error',
+        service_name,
+        'on error',
+        { ...error },
+      );
     }
   }
 };

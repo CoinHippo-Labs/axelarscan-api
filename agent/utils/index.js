@@ -1,9 +1,16 @@
-// import config
-const config = require('config-yml');
-// import module for generate timestamp
 const moment = require('moment');
+const config = require('config-yml');
 
-const log = (level, from, message, data = {}) => {
+const {
+  log_level,
+} = { ...config };
+
+const log = (
+  level = 'info',
+  from,
+  message,
+  data = {},
+) => {
   // terminal colors
   const LIGHT_BLUE = '\033[0;94m',
     LIGHT_YELLOW = '\033[0;93m',
@@ -15,11 +22,11 @@ const log = (level, from, message, data = {}) => {
     NO_COLOR = '\033[0m';
 
   try {
-    // generate log message
-    const log_message = `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${level === 'error' ? `${RED}ERR` : level === 'warn' ? `${YELLOW}WARN` : level === 'debug' ? `${GREEN}DBG` : `${GREEN}INF`}${NO_COLOR} ${LIGHT_BLUE}[${from?.toUpperCase()}]${NO_COLOR} ${LIGHT_YELLOW}${message}${NO_COLOR} ${typeof data === 'string' ? data : typeof data === 'object' && data ? Object.entries(data).map(([k, v]) => `${CYAN}${k}=${NO_COLOR}${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' ') : data}`;
-
     // normalize level
-    level = level?.toLowerCase();
+    level = level.toLowerCase();
+
+    // generate log message
+    const log_message = `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${level === 'error' ? `${RED}ERR` : level === 'warn' ? `${YELLOW}WARN` : level === 'debug' ? `${GREEN}DBG` : `${GREEN}INF`}${NO_COLOR} ${LIGHT_BLUE}[${from?.toUpperCase()}]${NO_COLOR} ${LIGHT_YELLOW}${message}${NO_COLOR} ${typeof data === 'string' ? data : typeof data === 'object' ? Object.entries({ ...data }).map(([k, v]) => `${CYAN}${k}=${NO_COLOR}${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' ') : data}`;
 
     switch (level) {
       case 'error':
@@ -29,7 +36,7 @@ const log = (level, from, message, data = {}) => {
         console.warn(log_message);
         break;
       case 'debug':
-        if (config?.log_level === 'debug') {
+        if (log_level === 'debug') {
           console.debug(log_message);
         }
         break;
