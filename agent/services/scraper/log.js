@@ -606,7 +606,7 @@ module.exports = async () => {
 
             const {
               _id,
-            } = { _.head(response?.data?.data) };
+            } = { ..._.head(response?.data?.data) };
 
             obj = {
               ...obj,
