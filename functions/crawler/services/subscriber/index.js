@@ -5,37 +5,41 @@ const config = require('config-yml');
 const { subscribeGateway } = require('./gateway');
 const IAxelarGateway = require('../../data/contracts/interfaces/IAxelarGateway.json');
 
-// initial environment
 const environment = process.env.ENVIRONMENT;
 
 module.exports = () => {
-  // initial env config
-  const env_config = {
-    ...config?.[environment],
-  };
-  // initial chains config
-  const chains_config = Object.entries({ ...env_config?.chains }).filter(([k, v]) => v?.endpoints?.rpc?.length > 0).map(([k, v]) => {
-    // initial rpc provider
-    const rpcs = v.endpoints.rpc;
-    const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
+  // initial config parameters of this environment
+  const {
+    chains,
+    gateway_contracts,
+  } = { ...config?.[environment] };
+
+  // setup all chains' configuration including provider and contracts
+  const chains_config = Object.entries({ ...chains })
+    .filter(([k, v]) => v?.endpoints?.rpc?.length > 0)
+    .map(([k, v]) => {
+      // setup provider
+      const rpcs = v.endpoints.rpc;
+      const provider = rpcs.length === 1 ?
+        new JsonRpcProvider(rpcs[0]) :
+        new FallbackProvider(rpcs.map((url, i) => {
+          return {
+            provider: new JsonRpcProvider(url),
+            priority: i + 1,
+            stallTimeout: 1000,
+          };
+        }));
       return {
-        provider: new JsonRpcProvider(url),
-        priority: i + 1,
-        stallTimeout: 1000,
+        ...v,
+        id: k,
+        provider,
+        gateway: {
+          ...gateway_contracts?.[k],
+          abi: IAxelarGateway.abi,
+        },
       };
-    }));
-    // initial chain config
-    const chain_config = {
-      ...v,
-      id: k,
-      gateway: {
-        ...env_config.gateway_contracts?.[k],
-        abi: IAxelarGateway.abi,
-      },
-      provider,
-    };
-    return chain_config;
-  });
-  // subscribe
+    });
+
+  // subscribe contracts on all chains
   subscribeGateway(chains_config);
 };

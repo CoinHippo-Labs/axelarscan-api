@@ -1,25 +1,47 @@
 const { Contract } = require('ethers');
 const {
-  subscribe,
+  onEmit,
   sync,
 } = require('./subscribe');
 
-// run
-module.exports.subscribeGateway = chains_config => {
-  chains_config?.forEach(c => {
-    if (c?.gateway?.address && c.provider) {
+module.exports.subscribeGateway = (chains_config = []) => {
+  chains_config.forEach(c => {
+    // chain configuration
+    const {
+      provider,
+      gateway,
+    } = { ...c };
+
+    // contract parameters
+    const {
+      address,
+      abi,
+    } = { ...gateway };
+
+    if (provider && address) {
       // initial gateway contract
-      const contract = new Contract(c.gateway.address, c.gateway.abi, c.provider);
-      // initial events
-      const events_name = ['TokenSent'];
+      const contract = new Contract(address, abi, provider);
+
+      // events to subscribe
+      const events_name = [
+        'TokenSent',
+      ];
       const filters = [
         contract.filters.TokenSent(),
       ];
+
+      // listen to events emitted from contract
       contract.on(filters, e => {
-        if (events_name.includes(e?.event)) {
-          subscribe(c, e);
+        const {
+          event,
+        } = { ...e };
+
+        if (events_name.includes(event)) {
+          onEmit(c, e);
         }
       });
+
+      // sync events from latest subscribed block
       sync(c, filters);
     }
   });

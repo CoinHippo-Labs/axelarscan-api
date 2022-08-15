@@ -29,6 +29,7 @@ mainnet:
         endpoints:
           rpc:
             - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+            - "https://rpc.ankr.com/eth"
         native_token:
           name: "Ethereum"
           symbol: "ETH"
@@ -37,6 +38,7 @@ mainnet:
         endpoints:
           rpc:
             - "https://rpc.ankr.com/bsc"
+            - "https://bsc-dataseed.binance.org"
         native_token:
           name: "BNB"
           symbol: "BNB"
@@ -45,6 +47,7 @@ mainnet:
         endpoints:
           rpc:
             - "https://rpc.ankr.com/avalanche"
+            - "https://api.avax.network/ext/bc/C/rpc"
         native_token:
           name: "Avalanche"
           symbol: "AVAX"
@@ -61,6 +64,8 @@ mainnet:
         endpoints:
           rpc:
             - "https://rpc.ankr.com/fantom"
+            - "https://rpc.ftm.tools"
+            - "https://rpcapi.fantom.network"
         native_token:
           name: "Fantom"
           symbol: "FTM"
@@ -69,6 +74,7 @@ mainnet:
         endpoints:
           rpc:
             - "https://rpc.ankr.com/moonbeam"
+            - "https://rpc.api.moonbeam.network"
         native_token:
           name: "Moonbeam"
           symbol: "GLMR"
@@ -124,6 +130,8 @@ testnet:
         endpoints:
           rpc:
             - "https://data-seed-prebsc-1-s1.binance.org:8545"
+            - "https://data-seed-prebsc-2-s1.binance.org:8545"
+            - "https://data-seed-prebsc-1-s2.binance.org:8545"
         native_token:
           name: "BNB"
           symbol: "BNB"
@@ -140,8 +148,9 @@ testnet:
         endpoints:
           rpc:
             - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+            - "https://matic-mumbai.chainstacklabs.com"
         native_token:
-          name: "Matic"
+          name: "Polygon"
           symbol: "MATIC"
           decimals: 18
       fantom:

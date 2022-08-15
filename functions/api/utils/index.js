@@ -6,14 +6,14 @@ const {
 } = { ...config };
 
 const log = (
-  level,
+  level = 'info',
   from,
   message,
   data = {},
 ) => {
   try {
     // normalize level
-    level = level?.toLowerCase();
+    level = level.toLowerCase();
 
     // generate log message
     const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;
@@ -39,10 +39,12 @@ const log = (
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const equals_ignore_case = (a, b) => (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
+const equals_ignore_case = (
+  a,
+  b,
+) => (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
 
 const get_params = req => {
-  // initial params
   const params = {
     ...req.query,
     ...req.body,
@@ -62,7 +64,9 @@ const to_json = s => {
 
 const to_hex = byte_array => {
   let string = '0x';
-  byte_array.forEach(byte => string += ('0' + (byte & 0xFF).toString(16)).slice(-2));
+  byte_array.forEach(byte =>
+    string += ('0' + (byte & 0xFF).toString(16)).slice(-2)
+  );
   return string;
 };
 
@@ -87,26 +91,33 @@ const normalize_original_chain = chain => {
 
 const normalize_chain = chain => {
   if (chain) {
-    chain = chain.split('-').filter(c => isNaN(c)).join('').trim().toLowerCase();
+    chain = chain.split('-')
+      .filter(c => isNaN(c))
+      .join('')
+      .trim()
+      .toLowerCase();
   }
   return chain;
 };
 
-const transfer_actions = ['ConfirmDeposit', 'ConfirmERC20Deposit'];
+const transfer_actions = [
+  'ConfirmDeposit',
+  'ConfirmERC20Deposit',
+];
 
-const vote_types = ['VoteConfirmDeposit', 'Vote'];
+const vote_types = [
+  'VoteConfirmDeposit',
+  'Vote',
+];
 
-// get transaction
 const getTransaction = async (
   provider,
   tx_hash,
   chain,
 ) => {
-  // initial output
   let output;
 
   if (provider && tx_hash) {
-    // initial transaction
     output = {
       id: tx_hash,
       chain,
@@ -123,12 +134,10 @@ const getTransaction = async (
   return output;
 };
 
-// get block time
 const getBlockTime = async (
   provider,
   block_number,
 ) => {
-  // initial output
   let output;
 
   if (provider && block_number) {

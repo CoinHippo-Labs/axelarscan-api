@@ -37,27 +37,33 @@ module.exports = () => {
             },
           );
 
-          api.get('', {
-            params: {
-              module: 'lcd',
-              path: `/cosmos/base/tendermint/v1beta1/blocks/${height}`,
+          api.get(
+            '',
+            {
+              params: {
+                module: 'lcd',
+                path: `/cosmos/base/tendermint/v1beta1/blocks/${height}`,
+              },
             },
-          }).catch(error => { return { data: { error } }; });
+          ).catch(error => { return { data: { error } }; });
 
           // get transactions of each block
           let next_page_key = true;
           while (next_page_key) {
-            const response = await api.get('', {
-              params: {
-                module: 'lcd',
-                path: '/cosmos/tx/v1beta1/txs',
-                events: `tx.height=${height}`,
-                'pagination.key': typeof next_page_key === 'string' && next_page_key ?
-                  next_page_key :
-                  undefined,
-                no_index: true,
+            const response = await api.get(
+              '',
+              {
+                params: {
+                  module: 'lcd',
+                  path: '/cosmos/tx/v1beta1/txs',
+                  events: `tx.height=${height}`,
+                  'pagination.key': typeof next_page_key === 'string' && next_page_key ?
+                    next_page_key :
+                    undefined,
+                  no_index: true,
+                },
               },
-            }).catch(error => { return { data: { error } }; });
+            ).catch(error => { return { data: { error } }; });
 
             const {
               tx_responses,
@@ -91,14 +97,20 @@ module.exports = () => {
                   };
 
                   if (tx_responses.length < 25) {
-                    api.get('', {
-                      params,
-                    }).catch(error => { return { data: { error } }; });
+                    api.get(
+                      '',
+                      {
+                        params,
+                      },
+                    ).catch(error => { return { data: { error } }; });
                   }
                   else {
-                    await api.get('', {
-                      params,
-                    }).catch(error => { return { data: { error } }; });
+                    await api.get(
+                      '',
+                      {
+                        params,
+                      },
+                    ).catch(error => { return { data: { error } }; });
                   }
                 }
               }

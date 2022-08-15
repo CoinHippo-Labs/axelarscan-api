@@ -2,64 +2,101 @@ const axios = require('axios');
 const config = require('config-yml');
 const { log } = require('../../utils');
 
-// service name
 const service_name = 'api';
-
-// initial environment
 const environment = process.env.ENVIRONMENT;
-// initial request object
-let api = config?.[environment]?.api && axios.create({ baseURL: config[environment].api });
 
-// get latest event subscribed block
-const getLatestEventBlock = async chain => {
-  // initial output
+// create request object from environment
+const API = (env = environment) => {
+  // initial config parameters of this environment
+  const {
+    api,
+  } = { ...config?.[env] };
+  return api &&
+    axios.create({ baseURL: api });
+};
+
+const getLatestGMPBlock = async chain => {
   let output;
 
+  // create api request object
+  const api = API();
+
   if (api && chain) {
-    // initial params
     const params = {
       chain,
     };
 
-    log('info', service_name, 'get latest event block', { params });
-    // request api
-    const response = await api.get('/gateway/latest-event-block', { params })
-      .catch(error => { return { data: { error } }; });
+    log(
+      'info',
+      service_name,
+      'get latest gmp block',
+      { ...params },
+    );
+
+    const response = await api.get(
+      '/gateway/latest-event-block',
+      {
+        params,
+      },
+    ).catch(error => { return { data: { error } }; });
+
     output = response?.data;
-    log('debug', service_name, 'latest event block', { output, chain });
+
+    log(
+      'debug',
+      service_name,
+      'latest gmp block',
+      {
+        output,
+        ...params,
+      },
+    );
   }
 
   return output;
 };
 
-// save data to indexer via api
 const saveEvent = async (
   event,
   chain,
   contractAddress,
-  _environment,
+  env = environment,
 ) => {
-  // initial output
   let output;
 
-  if (!api && _environment) {
-    api = config?.[_environment]?.api && axios.create({ baseURL: config[_environment].api });
-  }
+  // create api request object
+  const api = API(env);
 
   if (api && event && chain && contractAddress) {
-    // initial params
     const params = {
       chain,
       contractAddress,
       event,
     };
 
-    log('info', service_name, 'save event', { params });
-    // request api
-    const response = await api.post('/gateway/save-events', params)
-      .catch(error => { return { data: { error } }; });
+    log(
+      'info',
+      service_name,
+      'save event',
+      { ...params },
+    );
+
+    const response = await api.post(
+      '/gateway/save-events',
+      params,
+    ).catch(error => { return { data: { error } }; });
+
     output = response?.data;
-    log('debug', service_name, 'save event result', { output, params });
+
+    log(
+      'debug',
+      service_name,
+      'save event result',
+      {
+        output,
+        ...params,
+      },
+    );
   }
 
   return output;

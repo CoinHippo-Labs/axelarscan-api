@@ -78,17 +78,20 @@ module.exports = () => {
             for (let i = 0; i <= num_prev_blocks_fetch_tx; i++) {
               const _height = height - i;
               if (_height > 0) {
-                await api.get('', {
-                  params: {
-                    module: 'lcd',
-                    path: i === 0 ?
-                      `/cosmos/base/tendermint/v1beta1/blocks/${_height}` :
-                      '/cosmos/tx/v1beta1/txs',
-                    events: i === 0 ?
-                      undefined :
-                      `tx.height=${_height}`,
+                await api.get(
+                  '',
+                  {
+                    params: {
+                      module: 'lcd',
+                      path: i === 0 ?
+                        `/cosmos/base/tendermint/v1beta1/blocks/${_height}` :
+                        '/cosmos/tx/v1beta1/txs',
+                      events: i === 0 ?
+                        undefined :
+                        `tx.height=${_height}`,
+                    },
                   },
-                }).catch(error => { return { data: { error } }; });
+                ).catch(error => { return { data: { error } }; });
               }
             }
           }

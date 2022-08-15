@@ -1,4 +1,3 @@
-// import config
 const config = require('config-yml');
 
 const {
@@ -6,14 +5,14 @@ const {
 } = { ...config };
 
 const log = (
-  level,
+  level = 'info',
   from,
   message,
   data = {},
 ) => {
   try {
     // normalize level
-    level = level?.toLowerCase();
+    level = level.toLowerCase();
 
     // generate log message
     const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;

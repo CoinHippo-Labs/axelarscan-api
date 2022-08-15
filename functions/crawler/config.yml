@@ -10,14 +10,16 @@ mainnet:
       endpoints:
         rpc:
           - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://rpc.ankr.com/eth"
       native_token:
-        name: "Ether"
+        name: "Ethereum"
         symbol: "ETH"
         decimals: 18
     binance:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/bsc"
+          - "https://bsc-dataseed.binance.org"
       native_token:
         name: "BNB"
         symbol: "BNB"
@@ -25,6 +27,7 @@ mainnet:
     avalanche:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/avalanche"
           - "https://api.avax.network/ext/bc/C/rpc"
       native_token:
         name: "Avalanche"
@@ -35,13 +38,15 @@ mainnet:
         rpc:
           - "https://rpc.ankr.com/polygon"
       native_token:
-        name: "Matic"
+        name: "Polygon"
         symbol: "MATIC"
         decimals: 18
     fantom:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/fantom"
           - "https://rpc.ftm.tools"
+          - "https://rpcapi.fantom.network"
       native_token:
         name: "Fantom"
         symbol: "FTM"
@@ -49,16 +54,25 @@ mainnet:
     moonbeam:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/moonbeam"
           - "https://rpc.api.moonbeam.network"
       native_token:
-        name: "Glimmer"
+        name: "Moonbeam"
         symbol: "GLMR"
+        decimals: 18
+    aurora:
+      endpoints:
+        rpc:
+          - "https://mainnet.aurora.dev"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
         decimals: 18
   gateway_contracts:
     ethereum:
       address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
     binance:
-      address: ""
+      address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
     avalanche:
       address: "0x5029C0EFf6C34351a0CEc334542cDb22c7928f78"
     polygon:
@@ -67,6 +81,8 @@ mainnet:
       address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
     moonbeam:
       address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
+    aurora:
+      address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
 
 
 
@@ -79,13 +95,15 @@ testnet:
         rpc:
           - "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
       native_token:
-        name: "Ether"
+        name: "Ethereum"
         symbol: "ETH"
         decimals: 18
     binance:
       endpoints:
         rpc:
           - "https://data-seed-prebsc-1-s1.binance.org:8545"
+          - "https://data-seed-prebsc-2-s1.binance.org:8545"
+          - "https://data-seed-prebsc-1-s2.binance.org:8545"
       native_token:
         name: "BNB"
         symbol: "BNB"
@@ -101,10 +119,10 @@ testnet:
     polygon:
       endpoints:
         rpc:
+          - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://matic-mumbai.chainstacklabs.com"
-          # - "https://rpc-mumbai.matic.today"
       native_token:
-        name: "Matic"
+        name: "Polygon"
         symbol: "MATIC"
         decimals: 18
     fantom:
@@ -124,6 +142,14 @@ testnet:
         name: "Dev"
         symbol: "DEV"
         decimals: 18
+    aurora:
+      endpoints:
+        rpc:
+          - "https://testnet.aurora.dev"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
   gateway_contracts:
     ethereum:
       address: "0xBC6fcce7c5487d43830a219CA6E7B83238B41e71"
@@ -137,3 +163,5 @@ testnet:
       address: "0x97837985Ec0494E7b9C71f5D3f9250188477ae14"
     moonbeam:
       address: "0x5769D84DD62a6fD969856c75c7D321b84d455929"
+    aurora:
+      address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"

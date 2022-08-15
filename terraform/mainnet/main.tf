@@ -208,12 +208,6 @@ resource "aws_apigatewayv2_route" "route_functions" {
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
-resource "aws_apigatewayv2_route" "route_transfer_id" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /transfer/{pollId}"
-  target    = "integrations/${var.api_gateway_integration_id}"
-}
-
 resource "aws_cloudwatch_event_rule" "schedule" {
   name                = "${var.package_name}-${var.environment}-rule"
   schedule_expression = "cron(*/15 * * * ? *)"

@@ -1,6 +1,5 @@
 const { exec } = require('../services/cli');
 
-// get params
 const get_params = req => {
   const params = {
     ...req.query,

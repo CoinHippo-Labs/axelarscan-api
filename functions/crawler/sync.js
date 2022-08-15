@@ -6,57 +6,71 @@ const config = require('config-yml');
 const gateway_subscriber = require('./services/subscriber/gateway/subscribe');
 const IAxelarGateway = require('./data/contracts/interfaces/IAxelarGateway.json');
 
-// import arguments
-const commandLineArgs = require('command-line-args');
-const optionDefinitions = [
-  { name: 'environment', alias: 'e', type: String, defaultValue: 'testnet' },
-  { name: 'chain', alias: 'c', type: String, defaultValue: 'ethereum' },
-  { name: 'block', alias: 'b', type: Number, multiple: true },
-];
-const _options = commandLineArgs(optionDefinitions);
+// setup arguments
+const args = require('command-line-args')([{
+  name: 'environment',
+  alias: 'e',
+  type: String,
+  defaultValue: 'testnet',
+}, {
+  name: 'chain',
+  alias: 'c',
+  type: String,
+  defaultValue: 'ethereum',
+}, {
+  name: 'block',
+  alias: 'b',
+  type: Number,
+  multiple: true,
+}]);
 const {
   environment,
   chain,
   block,
-} = { ..._options };
-// initial number of block per query
-const num_query_block = config?.[environment]?.past_events_block_per_request || 100;
+} = { ...args };
 
-// initial env config
-const env_config = {
-  ...config?.[environment],
-};
-// initial chains config
-const chains_config = Object.entries({ ...env_config?.chains }).filter(([k, v]) => v?.endpoints?.rpc?.length > 0).map(([k, v]) => {
-  // initial rpc provider
-  const rpcs = v.endpoints.rpc;
-  const provider = rpcs.length === 1 ? new JsonRpcProvider(rpcs[0]) : new FallbackProvider(rpcs.map((url, i) => {
+// initial config parameters of this environment
+const {
+  past_events_block_per_request,
+  chains,
+  gateway_contracts,
+} = { ...config?.[environment] };
+
+// setup all chains' configuration including provider and contracts
+const chains_config = Object.entries({ ...chains })
+  .filter(([k, v]) => v?.endpoints?.rpc?.length > 0)
+  .map(([k, v]) => {
+    // setup provider
+    const rpcs = v.endpoints.rpc;
+    const provider = rpcs.length === 1 ?
+      new JsonRpcProvider(rpcs[0]) :
+      new FallbackProvider(rpcs.map((url, i) => {
+        return {
+          provider: new JsonRpcProvider(url),
+          priority: i + 1,
+          stallTimeout: 1000,
+        };
+      }));
     return {
-      provider: new JsonRpcProvider(url),
-      priority: i + 1,
-      stallTimeout: 1000,
+      ...v,
+      id: k,
+      provider,
+      gateway: {
+        ...gateway_contracts?.[k],
+        abi: IAxelarGateway.abi,
+      },
     };
-  }));
-  // initial chain config
-  const chain_config = {
-    ...v,
-    id: k,
-    gateway: {
-      ...env_config.gateway_contracts?.[k],
-      abi: IAxelarGateway.abi,
-    },
-    provider,
-  };
-  return chain_config;
-});
+  });
 
-const chain_config = chains_config?.find(c => c?.id === chain);
+// get the specific chain's configuration
+const chain_config = chains_config.find(c => c?.id === chain);
 if (chain_config) {
   const {
     gateway,
     provider,
   } = { ...chain_config };
-  // initial contract
+
+  // initial contracts
   const gateway_contract = new Contract(gateway?.address, gateway?.abi, provider);
 
   // initial filters
@@ -64,16 +78,28 @@ if (chain_config) {
     gateway_contract.filters.TokenSent(),
   ];
 
+  /********************************************************
+   * function to fetch past events emitted from contracts *
+   ********************************************************/
   const run = async () => {
-    const fromBlock = block?.[0], toBlock = block?.[1];
+    // setup specific block range from args
+    const fromBlock = block?.[0],
+      toBlock = block?.[1];
+    // number of block per past events querying
+    const num_query_block = past_events_block_per_request || 100;
+
+    // initial blockchain query filters options data
     const options = {
       fromBlock,
       toBlock,
       environment,
     };
+    // flag to check whether is it query all data from specific block range
     let synced = false;
+
+    // iterate until cover all
     while (!synced) {
-      // check synced and set options
+      /* start if statement for checking & set the query filters options of each round */
       if (typeof toBlock !== 'number' || typeof options.fromBlock !== 'number') {
         synced = true;
       }
@@ -89,9 +115,17 @@ if (chain_config) {
         options.toBlock = toBlock;
         synced = true;
       }
-      // get past events
-      await gateway_subscriber.getPastEvents(chain_config, gateway_filters, options);
+      /* end if statement */
+
+      // get past events from contracts
+      await gateway_subscriber.getPastEvents(
+        chain_config,
+        gateway_filters,
+        options,
+      );
     }
   };
+
+  // run function
   run();
 }

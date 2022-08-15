@@ -76,12 +76,15 @@ module.exports = () => {
               { txhash },
             );
 
-            await api.get('', {
-              params: {
-                module: 'lcd',
-                path: `/cosmos/tx/v1beta1/txs/${txhash}`,
+            await api.get(
+              '',
+              {
+                params: {
+                  module: 'lcd',
+                  path: `/cosmos/tx/v1beta1/txs/${txhash}`,
+                },
               },
-            }).catch(error => { return { data: { error } }; });
+            ).catch(error => { return { data: { error } }; });
           }
         } catch (error) {}
       });

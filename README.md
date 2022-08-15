@@ -24,7 +24,7 @@
 [Setup agent](/agent)
 
 ### Install dependencies
-```
+```bash
 cd functions/api
 npm i
 cd functions/crawler
@@ -32,7 +32,7 @@ npm i
 ```
 
 ### Deploy services
-```
+```bash
 cd terraform/testnet
 terraform init
 terraform apply
