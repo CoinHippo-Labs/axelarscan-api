@@ -1,6 +1,8 @@
 const axios = require('axios');
 const config = require('config-yml');
-const { log } = require('../../utils');
+const {
+  log,
+} = require('../../utils');
 
 const service_name = 'api';
 const environment = process.env.ENVIRONMENT;
@@ -82,7 +84,7 @@ const saveEvent = async (
     );
 
     const response = await api.post(
-      '/gateway/save-events',
+      '/gateway/save-event',
       params,
     ).catch(error => { return { data: { error } }; });
 

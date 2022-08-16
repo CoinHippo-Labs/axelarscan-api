@@ -70,6 +70,12 @@ const to_hex = byte_array => {
   return string;
 };
 
+const decode_base64 = s => {
+  if (!s) return '';
+  const buffer = new Buffer(s, 'base64');
+  return buffer.toString();
+};
+
 const get_granularity = time => {
   return time && {
     ms: moment(time).valueOf(),
@@ -160,6 +166,7 @@ module.exports = {
   get_params,
   to_json,
   to_hex,
+  decode_base64,
   get_granularity,
   normalize_original_chain,
   normalize_chain,

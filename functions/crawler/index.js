@@ -1,5 +1,11 @@
-exports.handler = async (event, context, callback) => {
-  const { sleep } = require('./utils');
+exports.handler = async (
+  event,
+  context,
+  callback,
+) => {
+  const {
+    sleep,
+  } = require('./utils');
 
   // import subscriber
   require('./services/subscriber')();

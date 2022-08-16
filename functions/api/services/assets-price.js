@@ -6,11 +6,14 @@ const {
   read,
   write,
 } = require('./index');
-const { assets } = require('../data');
-const { equals_ignore_case } = require('../utils');
+const {
+  equals_ignore_case,
+} = require('../utils');
 
 const environment = process.env.ENVIRONMENT || config?.environment;
-const assets_data = assets?.[environment] || [];
+
+const data = require('../data');
+const assets_data = data?.assets?.[environment] || [];
 const currency = 'usd';
 const stablecoin_threshold = 0.01;
 const collection = 'assets';

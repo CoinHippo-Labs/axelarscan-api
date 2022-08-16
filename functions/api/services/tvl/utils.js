@@ -7,7 +7,7 @@ const {
 const {
   equals_ignore_case,
   to_json,
-} = require('../utils');
+} = require('../../utils');
 
 const getContractSupply = async (
   contract_data,
