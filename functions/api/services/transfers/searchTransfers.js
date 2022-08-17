@@ -308,7 +308,7 @@ module.exports = async (
           sign_batch?.executed ?
             'executed' :
              sign_batch ?
-              'sign_batch' :
+              'batch_signed' :
               vote ?
                 'voted' :
                 confirm_deposit ?

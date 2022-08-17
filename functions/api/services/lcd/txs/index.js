@@ -446,19 +446,24 @@ module.exports = async (
                       confirm_deposit,
                     } = { ...transfer_data };
 
-                    if (confirm_deposit) {
-                      if (!transaction_id) {
-                        transaction_id = confirm_deposit.transaction_id;
-                      }
-                      if (!deposit_address) {
-                        deposit_address = confirm_deposit.deposit_address;
-                      }
-                      if (!participants) {
-                        participants = confirm_deposit.participants;
-                      }
+                    if (!transaction_id) {
+                    transaction_id = transfer_data?.vote?.transaction_id ||
+                      confirm_deposit?.transaction_id ||
+                      transfer_data?.source?.id;
+                    }
+                    if (!deposit_address) {
+                      deposit_address = transfer_data?.vote?.deposit_address ||
+                        confirm_deposit?.deposit_address ||
+                        transfer_data?.source?.recipient_address ||
+                        transfer_data?.link?.deposit_address;
                     }
                     if (!transfer_id) {
-                      transfer_id = transfer_data?.vote?.transfer_id || confirm_deposit?.transfer_id || transfer_data?.transfer_id;
+                      transfer_id = transfer_data?.vote?.transfer_id ||
+                        confirm_deposit?.transfer_id ||
+                        transfer_data?.transfer_id;
+                    }
+                    if (!participants) {
+                      participants = confirm_deposit?.participants;
                     }
                   }
 
@@ -532,8 +537,18 @@ module.exports = async (
                         );
                       }) || [];
 
-                      transaction_id = _.head(end_block_events.map(e => e.txID)) || transaction_id;
-                      transfer_id = _.head(end_block_events.map(e => Number(e.transferID))) || transfer_id;
+                      const _transaction_id = _.head(end_block_events.map(e => e.txID));
+                      const _transfer_id = _.head(end_block_events.map(e => Number(e.transferID)));
+
+                      if (equals_ignore_case(transaction_id, _transaction_id)) {
+                        if (!confirmation && !unconfirmed && !transfer_id && _transfer_id) {
+                          confirmation = true;
+                        }
+
+                        transfer_id = _transfer_id || transfer_id;
+                      }
+
+                      transaction_id = _transaction_id || transaction_id;
                     }
                   }
 

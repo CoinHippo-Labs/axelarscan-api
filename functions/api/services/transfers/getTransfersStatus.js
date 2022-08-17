@@ -8,6 +8,7 @@ const moment = require('moment');
 const config = require('config-yml');
 const {
   read,
+  write,
 } = require('../index');
 const assets_price = require('../assets-price');
 const {
@@ -713,7 +714,7 @@ module.exports = async (
           sign_batch?.executed ?
             'executed' :
              sign_batch ?
-              'sign_batch' :
+              'batch_signed' :
               vote ?
                 'voted' :
                 confirm_deposit ?
@@ -732,8 +733,13 @@ module.exports = async (
           vote,
           status,
         } = { ...d };
+        let {
+          sign_batch,
+        } = { ...d };
         const {
+          id,
           recipient_chain,
+          recipient_address,
         } = { ...source };
         let {
           height,
@@ -741,7 +747,8 @@ module.exports = async (
 
         height = height || confirm_deposit?.height;
 
-        if (cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
+        if (
+          cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
           height &&
           [
             'voted',
@@ -757,6 +764,89 @@ module.exports = async (
                 events: `tx.height=${height + i}`,
               },
             ).catch(error => { return { data: { error } }; });
+          }
+        }
+        else if (
+          evm_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
+          [
+            'batch_signed',
+            'voted',
+          ].includes(status)
+        ) {
+          const transfer_id = vote?.transfer_id ||
+            confirm_deposit?.transfer_id ||
+            d.transfer_id;
+
+          if (transfer_id) {
+            const command_id = transfer_id.toString(16).padStart(64, '0');
+
+            const _response = await read(
+              'batches',
+              {
+                bool: {
+                  must: [
+                    { match: { chain: recipient_chain } },
+                    { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                    { match: { command_ids: command_id } },
+                  ],
+                },
+              },
+              {
+                size: 1,
+              },
+            );
+
+            const batch = _.head(_response?.data);
+
+            if (batch) {
+              const {
+                batch_id,
+                commands,
+              } = { ...batch };
+              let {
+                executed,
+              } = { ...commands?.find(c => c?.id === command_id) };
+
+              if (!executed) {
+                const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
+                const provider = getProvider(chain_data);
+                const {
+                  chain_id,
+                  gateway_address,
+                } = { ...chain_data };
+
+                const gateway_contract = gateway_address &&
+                  new Contract(
+                    gateway_address,
+                    IAxelarGateway.abi,
+                    provider,
+                  );
+
+                try {
+                  if (gateway_contract) {
+                    executed = await gateway_contract.isCommandExecuted(`0x${command_id}`);
+                  }
+                } catch (error) {}
+              }
+
+              sign_batch = {
+                ...sign_batch,
+                chain: recipient_chain,
+                batch_id,
+                command_id,
+                transfer_id,
+                executed,
+              };
+            }
+
+            await write(
+              'transfers',
+              `${id}_${recipient_address}`.toLowerCase(),
+              {
+                ...d,
+                sign_batch: sign_batch || undefined,
+              },
+            );
           }
         }
       }
