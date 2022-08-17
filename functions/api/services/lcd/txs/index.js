@@ -188,6 +188,38 @@ module.exports = async (
           original_sender_chain = normalize_original_chain(sender_chain);
           original_recipient_chain = normalize_original_chain(recipient_chain);
           sender_address = sender;
+
+          if (
+            sender_address?.startsWith(axelarnet.prefix_address) &&
+            (
+              evm_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ||
+              cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1
+            )
+          ) {
+            const _response = await read(
+              'transfers',
+              {
+                bool: {
+                  must: [
+                    { match: { 'source.recipient_address': deposit_address } },
+                    { match: { 'source.sender_chain': sender_chain } },
+                  ],
+                },
+              },
+              {
+                size: 1,
+              },
+            );
+
+            const {
+              source,
+            } = { ..._.head(_response?.data) };
+
+            if (source?.sender_address) {
+              sender_address = source.sender_address;
+            }
+          }
+
           sender_chain = normalize_chain(
             cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
             sender_chain ||

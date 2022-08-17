@@ -520,6 +520,38 @@ module.exports = async (
         original_sender_chain = normalize_original_chain(sender_chain);
         original_recipient_chain = normalize_original_chain(recipient_chain);
         sender_address = sender;
+
+        if (
+          sender_address?.startsWith(axelarnet.prefix_address) &&
+          (
+            evm_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ||
+            cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1
+          )
+        ) {
+          const _response = await read(
+            'transfers',
+            {
+              bool: {
+                must: [
+                  { match: { 'source.recipient_address': deposit_address } },
+                  { match: { 'source.sender_chain': sender_chain } },
+                ],
+              },
+            },
+            {
+              size: 1,
+            },
+          );
+
+          const {
+            source,
+          } = { ..._.head(_response?.data) };
+
+          if (source?.sender_address) {
+            sender_address = source.sender_address;
+          }
+        }
+
         sender_chain = normalize_chain(
           cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
           sender_chain ||
@@ -1051,8 +1083,64 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
+        if (
+          logs?.length > 0 &&
+          logs.findIndex(l => l?.events?.findIndex(e => equals_ignore_case(e?.type, 'send_packet')) > -1) < 0 &&
+          height
+        ) {
+          const _response = await rpc(
+            '/block_results',
+            {
+              height,
+            },
+          );
+
+          const {
+            end_block_events,
+          } = { ..._response };
+
+          const event = _.head(
+            end_block_events?.filter(e =>
+              equals_ignore_case(e?.type, 'send_packet') &&
+              e.attributes?.length > 0
+            )
+          );
+
+          const {
+            attributes,
+          } = { ...event };
+
+          const packet_data = to_json(attributes?.find(a => a?.key === 'packet_data')?.value);
+
+          const {
+            sender,
+          } = { ...packet_data };
+
+          if (sender &&
+            logs.findIndex(l =>
+              l?.events?.findIndex(e =>
+                e?.attributes?.findIndex(a =>
+                  [
+                    'minter',
+                    'receiver',
+                  ].includes(a?.key) &&
+                  equals_ignore_case(a.value, sender)
+                ) > -1
+              ) > -1
+            ) > -1
+          ) {
+            logs[0] = {
+              ..._.head(logs),
+              events: _.concat(
+                _.head(logs).events,
+                event,
+              ).filter(e => e),
+            };
+          }
+        }
+
         const send_packets = logs?.map(l => l?.events?.find(e => equals_ignore_case(e?.type, 'send_packet')))
-          .filter(e => e.attributes?.length > 0)
+          .filter(e => e?.attributes?.length > 0)
           .flatMap(e => {
             let {
               attributes,
@@ -1264,7 +1352,7 @@ module.exports = async (
         ) > -1
       ) {
         const ack_packets = logs?.map(l => l?.events?.find(e => equals_ignore_case(e?.type, 'acknowledge_packet')))
-          .filter(e => e.attributes?.length > 0)
+          .filter(e => e?.attributes?.length > 0)
           .map(e => {
             const {
               attributes,
