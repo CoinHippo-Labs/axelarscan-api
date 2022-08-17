@@ -14,6 +14,7 @@ const {
 } = require('./utils');
 const {
   get,
+  read,
   write,
 } = require('../index');
 const assets_price = require('../assets-price');

@@ -1,6 +1,5 @@
 const {
   BigNumber,
-  providers: { FallbackProvider, JsonRpcProvider },
   utils: { formatUnits, parseUnits },
 } = require('ethers');
 const axios = require('axios');
@@ -18,6 +17,7 @@ const {
   normalize_original_chain,
   normalize_chain,
   getBlockTime,
+  getProvider,
 } = require('../../utils');
 
 const environment = process.env.ENVIRONMENT || config?.environment;
@@ -74,24 +74,10 @@ module.exports = async (
       if (txHash.startsWith('0x')) {
         for (const chain_data of evm_chains_data) {
           if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
+            const provider = getProvider(chain_data);
             const {
               chain_id,
-              provider_params,
             } = { ...chain_data };
-            const {
-              rpcUrls,
-            } = { ..._.head(provider_params) };
-
-            const rpcs = rpcUrls?.filter(url => url) || [];
-            const provider = rpcs.length === 1 ?
-              new JsonRpcProvider(rpcs[0]) :
-              new FallbackProvider(rpcs.map((url, i) => {
-                return {
-                  provider: new JsonRpcProvider(url),
-                  priority: i + 1,
-                  stallTimeout: 1000,
-                };
-              }));
 
             try {
               const transaction = await provider.getTransaction(txHash);
@@ -513,6 +499,7 @@ module.exports = async (
 
             if (!source.fee && endpoints?.lcd) {
               const lcd = axios.create({ baseURL: endpoints.lcd });
+
               const ___response = await lcd.get(
                 '/axelar/nexus/v1beta1/transfer_fee',
                 {

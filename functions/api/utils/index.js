@@ -1,4 +1,8 @@
+const {
+  providers: { FallbackProvider, JsonRpcProvider },
+} = require('ethers');
 const config = require('config-yml');
+const _ = require('lodash');
 const moment = require('moment');
 
 const {
@@ -159,6 +163,28 @@ const getBlockTime = async (
   return output;
 };
 
+const getProvider = chain_data => {
+  const {
+    provider_params,
+  } = { ...chain_data };
+  const {
+    rpcUrls,
+  } = { ..._.head(provider_params) };
+
+  const rpcs = rpcUrls?.filter(url => url) || [];
+  const provider = rpcs.length === 1 ?
+    new JsonRpcProvider(rpcs[0]) :
+    new FallbackProvider(rpcs.map((url, i) => {
+      return {
+        provider: new JsonRpcProvider(url),
+        priority: i + 1,
+        stallTimeout: 1000,
+      };
+    }));
+
+  return provider;
+};
+
 module.exports = {
   log,
   sleep,
@@ -174,4 +200,5 @@ module.exports = {
   vote_types,
   getTransaction,
   getBlockTime,
+  getProvider,
 };
