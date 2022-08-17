@@ -345,7 +345,7 @@ module.exports = async (
                 for (const transfer_data of transfers_data) {
                   const {
                     source,
-                  } = { ...transfers_data };
+                  } = { ...transfer_data };
                   const {
                     id,
                     sender_chain,

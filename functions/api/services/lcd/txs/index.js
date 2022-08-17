@@ -7,6 +7,7 @@ const {
   read,
   write,
 } = require('../../index');
+const rpc = require('../../rpc');
 const assets_price = require('../../assets-price');
 const {
   sleep,
@@ -79,8 +80,8 @@ module.exports = async (
             return {
               txhash,
               height,
-              timestamp: moment(timestamp).valueOf(),
               period_height: height - (height % num_blocks_per_heartbeat) + fraction_heartbeat_block,
+              timestamp: moment(timestamp).utc().valueOf(),
               signatures,
               sender: _.head(messages.map(m => m?.sender)),
               key_ids: _.uniq(messages.flatMap(m => m?.inner_message?.key_ids || [])),
@@ -104,6 +105,8 @@ module.exports = async (
             record,
           );
         }
+
+        await sleep(1 * 1000);
       }
     } catch (error) {}
 
@@ -252,6 +255,8 @@ module.exports = async (
             record,
           );
         }
+
+        await sleep(1 * 1000);
       }
     } catch (error) {}
 
@@ -327,6 +332,7 @@ module.exports = async (
                     late,
                     transaction_id,
                     deposit_address,
+                    transfer_id,
                     participants;
 
                   switch (type) {
@@ -408,9 +414,14 @@ module.exports = async (
                     attributes?.find(a => a?.key === 'depositAddress')?.value ||
                     poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
 
+                  transfer_id = Number(
+                    attributes?.find(a => a?.key === 'transferID')?.value
+                  );
+
                   if (
                     !transaction_id ||
                     !deposit_address ||
+                    !transfer_id ||
                     !participants
                   ) {
                     const _response = await read(
@@ -430,9 +441,10 @@ module.exports = async (
                       },
                     );
 
+                    const transfer_data = _.head(_response?.data);
                     const {
                       confirm_deposit,
-                    } = { ..._.head(_response?.data) };
+                    } = { ...transfer_data };
 
                     if (confirm_deposit) {
                       if (!transaction_id) {
@@ -445,17 +457,27 @@ module.exports = async (
                         participants = confirm_deposit.participants;
                       }
                     }
+                    if (!transfer_id) {
+                      transfer_id = transfer_data?.vote?.transfer_id || confirm_deposit?.transfer_id || transfer_data?.transfer_id;
+                    }
                   }
 
-                  if (!transaction_id) {
+                  if (
+                    !transaction_id ||
+                    !transfer_id
+                  ) {
                     const _response = await read(
                       'evm_votes',
                       {
                         bool: {
                           must: [
                             { match: { poll_id } },
-                            { exists: { field: 'transaction_id' } },
                           ],
+                          should: [
+                            { exists: { field: 'transaction_id' } },
+                            { exists: { field: 'transfer_id' } },
+                          ],
+                          minimum_should_match: 1,
                           must_not: [
                             { match: { transaction_id: poll_id } },
                           ],
@@ -466,7 +488,53 @@ module.exports = async (
                       },
                     );
 
-                    transaction_id = _.head(_response?.data)?.transaction_id;
+                    const vote_data = _.head(_response?.data);
+
+                    transaction_id = vote_data?.transaction_id || transaction_id;
+                    transfer_id = vote_data?.transfer_id || transfer_id;
+
+                    if (
+                      !transaction_id ||
+                      !transfer_id
+                    ) {
+                      const __response = await rpc(
+                        '/block_results',
+                        {
+                          height,
+                        },
+                      );
+
+                      let {
+                        end_block_events,
+                      } = { ...__response };
+
+                      end_block_events = end_block_events?.filter(e =>
+                        equals_ignore_case(e?.type, 'depositConfirmation') &&
+                        e.attributes?.length > 0
+                      )
+                      .map(e => {
+                        const {
+                          attributes,
+                        } = { ...e };
+
+                        return Object.fromEntries(
+                          attributes.map(a => {
+                            const {
+                              key,
+                              value,
+                            } = { ...a };
+
+                            return [
+                              key,
+                              value,
+                            ];
+                          })
+                        );
+                      }) || [];
+
+                      transaction_id = _.head(end_block_events.map(e => e.txID)) || transaction_id;
+                      transfer_id = _.head(end_block_events.map(e => Number(e.transferID))) || transfer_id;
+                    }
                   }
 
                   if (!sender_chain) {
@@ -508,9 +576,7 @@ module.exports = async (
                     poll_id,
                     transaction_id,
                     deposit_address,
-                    transfer_id: Number(
-                      attributes?.find(a => a?.key === 'transferID')?.value
-                    ),
+                    transfer_id,
                     voter,
                     vote,
                     confirmation,
@@ -539,6 +605,7 @@ module.exports = async (
             sender_chain,
             poll_id,
             transaction_id,
+            transfer_id,
             voter,
             vote,
             confirmation,
@@ -557,6 +624,7 @@ module.exports = async (
                 created_at,
                 sender_chain,
                 transaction_id,
+                transfer_id,
                 confirmation,
                 participants: participants || undefined,
               },
@@ -573,6 +641,7 @@ module.exports = async (
               sender_chain,
               poll_id,
               transaction_id,
+              transfer_id,
               voter,
               vote,
               confirmation,
@@ -581,6 +650,8 @@ module.exports = async (
             },
           );
         }
+
+        await sleep(1 * 1000);
       }
     } catch (error) {}
 
@@ -609,6 +680,8 @@ module.exports = async (
             },
           ).catch(error => { return { data: { error } }; });
         }
+
+        await sleep(1 * 1000);
       }
     } catch (error) {}
   }

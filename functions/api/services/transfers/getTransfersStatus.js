@@ -129,6 +129,7 @@ module.exports = async (
                   original_recipient_chain,
                   sender_chain,
                   recipient_chain,
+                  sender_address,
                   asset,
                   denom,
                 } = { ...link };
@@ -136,18 +137,30 @@ module.exports = async (
                   price,
                 } = { ...link };
 
-                if (link && !price) {
-                  const ___response = await assets_price({
-                    chain: original_sender_chain,
-                    denom: asset || denom,
-                    timestamp: created_at,
-                  });
+                if (link) {
+                  let updated = false;
 
-                  const _price = _.head(___response)?.price;
-                  if (_price) {
-                    price = _price;
-                    link.price = price;
+                  if (!equals_ignore_case(sender_address, from)) {
+                    link.sender_address = from;
+                    updated = true;
+                  }
 
+                  if (!price) {
+                    const ___response = await assets_price({
+                      chain: original_sender_chain,
+                      denom: asset || denom,
+                      timestamp: created_at,
+                    });
+
+                    const _price = _.head(___response)?.price;
+                    if (_price) {
+                      price = _price;
+                      link.price = price;
+                      updated = true;
+                    }
+                  }
+
+                  if (updated) {
                     await write(
                       'deposit_addresses',
                       id,
