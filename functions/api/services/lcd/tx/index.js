@@ -413,6 +413,7 @@ module.exports = async (
     }
 
     types = types.map(t => _.last(t.split('.')));
+    types = types.filter(t => !types.includes(`${t}Request`));
 
     transaction_data.types = types;
     /* end add message types field */
@@ -2004,6 +2005,56 @@ module.exports = async (
           }
         }
       }
+      // ConfirmTransferKey
+      else if (
+        [
+          'ConfirmTransferKey',
+        ].findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+        ) > -1
+      ) {
+        for (let i = 0; i < messages.length; i++) {
+          const message = messages[i];
+
+          if (message) {
+            const created_at = moment(timestamp).utc().valueOf();
+
+            const {
+              events,
+            } = { ...logs?.[i] };
+
+            const event = events?.find(e => e?.type?.includes('ConfirmKeyTransferStarted'));
+
+            const {
+              attributes,
+            } = { ...event };
+
+            const {
+              poll_id,
+              participants,
+            } = { ...to_json(attributes?.find(a => a?.key === 'participants')?.value) };
+
+            const sender_chain = normalize_chain(message.chain);
+            const transaction_id = message.tx_id;
+
+            if (poll_id && transaction_id) {
+              await write(
+                'evm_polls',
+                poll_id,
+                {
+                  id: poll_id,
+                  height,
+                  created_at: get_granularity(created_at),
+                  sender_chain,
+                  transaction_id,
+                  participants: participants || undefined,
+                },
+              );
+            }
+          }
+        }
+      }
+
       // VoteConfirmDeposit & Vote
       if (
         vote_types.findIndex(s =>
@@ -2193,6 +2244,39 @@ module.exports = async (
                 }
 
                 if (
+                  !sender_chain ||
+                  !transaction_id ||
+                  !participants
+                ) {
+                  if (poll_id) {
+                    const _response = await get(
+                      'evm_polls',
+                      poll_id,
+                    );
+
+                    if (_response) {
+                      sender_chain = _response.sender_chain || sender_chain;
+                      transaction_id = _response.transaction_id || transaction_id;
+                      participants = _response.participants || participants;
+                    }
+                  }
+
+                  if (!sender_chain && deposit_address) {
+                    const _response = await read(
+                      'deposit_addresses',
+                      {
+                        match: { deposit_address },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
+
+                    sender_chain = _.head(_response?.data)?.sender_chain;
+                  }
+                }
+
+                if (
                   !transaction_id ||
                   !transfer_id
                 ) {
@@ -2220,8 +2304,10 @@ module.exports = async (
 
                   const vote_data = _.head(_response?.data);
 
-                  transaction_id = vote_data?.transaction_id || transaction_id;
-                  transfer_id = vote_data?.transfer_id || transfer_id;
+                  if (vote_data) {
+                    transaction_id = vote_data.transaction_id || transaction_id;
+                    transfer_id = vote_data.transfer_id || transfer_id;
+                  }
 
                   if (
                     !transaction_id ||
@@ -2274,31 +2360,6 @@ module.exports = async (
                     }
 
                     transaction_id = _transaction_id || transaction_id;
-                  }
-                }
-
-                if (!sender_chain) {
-                  if (poll_id) {
-                    const _response = await get(
-                      'evm_polls',
-                      poll_id,
-                    );
-
-                    sender_chain = _response?.sender_chain;
-                  }
-
-                  if (!sender_chain && deposit_address) {
-                    const _response = await read(
-                      'deposit_addresses',
-                      {
-                        match: { deposit_address },
-                      },
-                      {
-                        size: 1,
-                      },
-                    );
-
-                    sender_chain = _.head(_response?.data)?.sender_chain;
                   }
                 }
 
