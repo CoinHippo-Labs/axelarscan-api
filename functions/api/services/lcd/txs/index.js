@@ -80,7 +80,7 @@ module.exports = async (
             return {
               txhash,
               height,
-              period_height: height - (height % num_blocks_per_heartbeat) + fraction_heartbeat_block,
+              period_height: height - ((height % num_blocks_per_heartbeat) || num_blocks_per_heartbeat) + fraction_heartbeat_block,
               timestamp: moment(timestamp).utc().valueOf(),
               signatures,
               sender: _.head(messages.map(m => m?.sender)),
