@@ -165,6 +165,7 @@ const getBlockTime = async (
     try {
       // get block
       const block = await provider.getBlock(block_number);
+
       if (block?.timestamp) {
         output = block.timestamp;
       }

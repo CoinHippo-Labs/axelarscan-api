@@ -56,8 +56,8 @@ const crud = async (
     delete params.update_only;
 
     const object_fields = [
-      'aggs',
       'query',
+      'aggs',
       'sort',
       'fields',
     ];
@@ -290,7 +290,6 @@ const crud = async (
         break;
     }
 
-    // set response
     if (response?.data) {
       delete response.data.error;
       response = response.data;
