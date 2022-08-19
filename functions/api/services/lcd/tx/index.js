@@ -16,6 +16,7 @@ const rpc = require('../../rpc');
 const assets_price = require('../../assets-price');
 const {
   sleep,
+  capitalize,
   equals_ignore_case,
   to_json,
   to_hex,
@@ -172,7 +173,10 @@ module.exports = async (
       else if (
         [
           'ConfirmDepositRequest',
+          'ConfirmGatewayTxRequest',
           'ConfirmTransferKeyRequest',
+          'ConfirmTokenRequest',
+          'CreateDeployTokenRequest',
         ].findIndex(s =>
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
@@ -181,6 +185,7 @@ module.exports = async (
           'tx_id',
           'burner_address',
           'burn_address',
+          'address',
         ];
 
         for (let i = 0; i < messages.length; i++) {
@@ -404,15 +409,19 @@ module.exports = async (
           types,
           messages.flatMap(m =>
             _.concat(
-              _.last(m?.['@type']?.split('.')),
-              _.last(m?.inner_message?.['@type']?.split('.')),
+              m?.inner_message?.['@type'],
+              m?.['@type'],
             )
           ),
         ).filter(t => t)
       );
     }
 
-    types = types.map(t => _.last(t.split('.')));
+    types = _.uniq(
+      types.map(t => capitalize(
+        _.last(t.split('.'))
+      ))
+    );
     types = types.filter(t => !types.includes(`${t}Request`));
 
     transaction_data.types = types;

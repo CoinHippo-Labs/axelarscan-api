@@ -43,6 +43,17 @@ const log = (
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+const capitalize = s => typeof s !== 'string' ?
+  '' :
+  s.trim()
+    .split('-').join(' ')
+    .split('_').join(' ')
+    .split(' ')
+    .map(c => c.trim())
+    .filter(c => c)
+    .map(c => `${c.substr(0, 1).toUpperCase()}${c.substr(1)}`)
+    .join(' ');
+
 const equals_ignore_case = (
   a,
   b,
@@ -188,6 +199,7 @@ const getProvider = chain_data => {
 module.exports = {
   log,
   sleep,
+  capitalize,
   equals_ignore_case,
   get_params,
   to_json,
