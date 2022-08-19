@@ -94,7 +94,7 @@ const saveEvent = async (
       'save event result',
       {
         output,
-        ...params,
+        params,
       },
     );
   }
