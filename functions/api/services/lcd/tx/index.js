@@ -388,6 +388,17 @@ module.exports = async (
     /* start add message types field */
     let types = [];
 
+    // inner message type
+    if (messages) {
+      types = _.uniq(
+        _.concat(
+          types,
+          messages.flatMap(m => m?.inner_message?.['@type']),
+        ).filter(t => t)
+      );
+    }
+
+    // message action
     if (logs) {
       types = _.uniq(
         _.concat(
@@ -403,16 +414,12 @@ module.exports = async (
       );
     }
 
+    // message type
     if (messages) {
       types = _.uniq(
         _.concat(
           types,
-          messages.flatMap(m =>
-            _.concat(
-              m?.inner_message?.['@type'],
-              m?.['@type'],
-            )
-          ),
+          messages.flatMap(m => m?.['@type']),
         ).filter(t => t)
       );
     }
