@@ -41,12 +41,18 @@ module.exports.subscribeGateway = (chains_config = []) => {
         } = { ...e };
 
         if (events_name.includes(event)) {
-          onEmit(c, e);
+          onEmit(
+            c,
+            e,
+          );
         }
       });
 
       // sync events from latest subscribed block
-      sync(c, filters);
+      sync(
+        c,
+        filters,
+      );
     }
   });
 };

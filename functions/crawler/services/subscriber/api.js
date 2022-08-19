@@ -37,9 +37,7 @@ const getLatestEventBlock = async chain => {
 
     const response = await api.get(
       '/gateway/latest-event-block',
-      {
-        params,
-      },
+      { params },
     ).catch(error => { return { data: { error } }; });
 
     output = response?.data;
