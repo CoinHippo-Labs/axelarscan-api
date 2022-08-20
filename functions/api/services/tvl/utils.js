@@ -84,8 +84,11 @@ const getCosmosBalance = async (
     denom,
     decimals,
   } = { ...denom_data };
-  const denoms = [base_denom, denom]
-    .filter(d => d);
+
+  const denoms = [
+    base_denom,
+    denom,
+  ].filter(d => d);
 
   if (address && denoms.length > 0 && lcd) {
     try {
@@ -130,8 +133,10 @@ const getCosmosSupply = async (
     denom,
     decimals,
   } = { ...denom_data };
-  const denoms = [denom]
-    .filter(d => d);
+
+  const denoms = [
+    denom,
+  ].filter(d => d);
 
   if (denoms.length > 0 && lcd) {
     try {
@@ -184,8 +189,11 @@ const getAxelarnetSupply = async (
     denom,
     decimals,
   } = { ...denom_data };
-  const denoms = [base_denom, denom]
-    .filter(d => d);
+
+  const denoms = [
+    base_denom,
+    denom,
+  ].filter(d => d);
 
   if (denoms.length > 0 && cli) {
     try {

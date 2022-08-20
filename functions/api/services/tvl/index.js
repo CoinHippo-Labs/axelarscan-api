@@ -340,10 +340,18 @@ module.exports = async (
       }
 
       const supply = escrow_addresses?.length > 0 && lcd ?
-        await getCosmosSupply(
-          denom_data,
-          lcd,
-        ) :
+        is_native && id !== axelarnet.id ?
+          await getAxelarnetSupply(
+            {
+              ...denom_data,
+              denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
+            },
+            cli,
+          ) :
+          await getCosmosSupply(
+            denom_data,
+            lcd,
+          ) :
         0;
 
       const percent_diff_supply = supply && escrow_balance ?
