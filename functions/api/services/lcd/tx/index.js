@@ -2691,6 +2691,8 @@ module.exports = async (
           }
         }
       }
+
+      lcd_response.tx_response.raw_log = JSON.stringify(logs);
     }
     /* end index validator metrics & transfers */
   }
