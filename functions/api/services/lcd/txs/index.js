@@ -143,7 +143,7 @@ module.exports = async (
           } = { ...event };
 
           const created_at = moment(timestamp).utc().valueOf();
-          const sender_chain = attributes?.find(a => a?.key === 'sourceChain')?.value;
+          let sender_chain = attributes?.find(a => a?.key === 'sourceChain')?.value;
           const deposit_address = attributes?.find(a => a?.key === 'depositAddress')?.value;
 
           const record = {
