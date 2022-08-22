@@ -180,7 +180,9 @@ module.exports = async (
               overrides,
             } = { ...chain_data };
 
-            sender_chain = _.last(Object.keys({ ...overrides })) || id || sender_chain;
+            sender_chain = _.last(Object.keys({ ...overrides })) ||
+              id ||
+              sender_chain;
           }
 
           id = deposit_address || txhash;
@@ -193,7 +195,7 @@ module.exports = async (
             sender_address?.startsWith(axelarnet.prefix_address) &&
             (
               evm_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ||
-              cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1
+              cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1
             )
           ) {
             const _response = await read(
@@ -225,6 +227,9 @@ module.exports = async (
             sender_chain ||
             chain
           );
+          if (!original_sender_chain?.startsWith(sender_chain)) {
+            original_sender_chain = sender_chain;
+          }
           recipient_address = recipient_addr;
           recipient_chain = normalize_chain(recipient_chain);
 
@@ -384,7 +389,8 @@ module.exports = async (
               created_at,
               sender_chain,
               transaction_id,
-              participants: participants || undefined,
+              participants: participants ||
+                undefined,
             },
           );
         }
@@ -482,7 +488,8 @@ module.exports = async (
                           )?.value
                         );
 
-                        vote = inner_message.confirmed || false;
+                        vote = inner_message.confirmed ||
+                          false;
 
                         confirmation = attributes?.findIndex(a =>
                           a?.key === 'action' &&
@@ -614,9 +621,12 @@ module.exports = async (
                         );
 
                         if (_response) {
-                          sender_chain = _response.sender_chain || sender_chain;
-                          transaction_id = _response.transaction_id || transaction_id;
-                          participants = _response.participants || participants;
+                          sender_chain = _response.sender_chain ||
+                            sender_chain;
+                          transaction_id = _response.transaction_id ||
+                            transaction_id;
+                          participants = _response.participants ||
+                            participants;
                         }
                       }
 
@@ -715,10 +725,12 @@ module.exports = async (
                             confirmation = true;
                           }
 
-                          transfer_id = _transfer_id || transfer_id;
+                          transfer_id = _transfer_id ||
+                            transfer_id;
                         }
 
-                        transaction_id = _transaction_id || transaction_id;
+                        transaction_id = _transaction_id ||
+                          transaction_id;
                       }
                     }
 
@@ -785,7 +797,8 @@ module.exports = async (
                 transaction_id,
                 transfer_id,
                 confirmation,
-                participants: participants || undefined,
+                participants: participants ||
+                  undefined,
               },
             );
           }

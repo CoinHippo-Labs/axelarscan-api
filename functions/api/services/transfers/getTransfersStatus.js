@@ -74,7 +74,10 @@ module.exports = async (
 
       if (txHash.startsWith('0x')) {
         for (const chain_data of evm_chains_data) {
-          if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
+          if (
+            !sourceChain ||
+            equals_ignore_case(chain_data?.id, sourceChain)
+          ) {
             const provider = getProvider(chain_data);
             const {
               chain_id,
@@ -170,11 +173,22 @@ module.exports = async (
                   }
                 }
 
-                source.original_sender_chain = original_sender_chain || normalize_original_chain(source.sender_chain || sender_chain);
-                source.original_recipient_chain = original_recipient_chain || normalize_original_chain(source.recipient_chain || recipient_chain);
+                source.original_sender_chain = original_sender_chain ||
+                  normalize_original_chain(
+                    source.sender_chain ||
+                    sender_chain
+                  );
+                source.original_recipient_chain = original_recipient_chain ||
+                  normalize_original_chain(
+                    source.recipient_chain ||
+                    recipient_chain
+                  );
 
                 if (link) {
-                  source.recipient_chain = normalize_chain(recipient_chain || source.recipient_chain);
+                  source.recipient_chain = normalize_chain(
+                    recipient_chain ||
+                    source.recipient_chain
+                  );
                   source.denom = source.denom || asset;
 
                   if (source.denom && typeof source.amount === 'string') {
@@ -226,7 +240,10 @@ module.exports = async (
       }
       else {
         for (const chain_data of cosmos_non_axelarnet_chains_data) {
-          if (!sourceChain || equals_ignore_case(chain_data?.id, sourceChain)) {
+          if (
+            !sourceChain ||
+            equals_ignore_case(chain_data?.id, sourceChain)
+          ) {
             let found = false;
 
             const _lcds = _.concat(
@@ -313,7 +330,8 @@ module.exports = async (
                       } = { ...chain_data };
 
                       if (chain_data) {
-                        original_sender_chain = _.last(Object.keys({ ...overrides })) || chain_data.id;
+                        original_sender_chain = _.last(Object.keys({ ...overrides })) ||
+                          chain_data.id;
                         if (link) {
                           link.original_sender_chain = original_sender_chain;
                         }
@@ -340,12 +358,24 @@ module.exports = async (
                       }
                     }
 
-                    source.original_sender_chain = original_sender_chain || normalize_original_chain(source.sender_chain || sender_chain);
-                    source.original_recipient_chain = original_recipient_chain || normalize_original_chain(source.recipient_chain || recipient_chain);
+                    source.original_sender_chain = original_sender_chain ||
+                      normalize_original_chain(
+                        source.sender_chain ||
+                        sender_chain
+                      );
+                    source.original_recipient_chain = original_recipient_chain ||
+                      normalize_original_chain(
+                        source.recipient_chain ||
+                        recipient_chain
+                      );
 
                     if (link) {
-                      source.recipient_chain = normalize_chain(recipient_chain || source.recipient_chain);
-                      source.denom = source.denom || asset;
+                      source.recipient_chain = normalize_chain(
+                        recipient_chain ||
+                        source.recipient_chain
+                      );
+                      source.denom = source.denom ||
+                        asset;
 
                       if (source.denom && typeof source.amount === 'string') {
                         const asset_data = assets_data.find(a =>
@@ -369,7 +399,8 @@ module.exports = async (
                               decimals
                             )
                           );
-                          source.denom = asset_data.id || source.denom;
+                          source.denom = asset_data.id ||
+                            source.denom;
                         }
                       }
 
@@ -432,6 +463,7 @@ module.exports = async (
         original_recipient_chain,
         sender_chain,
         recipient_chain,
+        sender_address,
         asset,
         denom,
         price,
@@ -474,11 +506,46 @@ module.exports = async (
       }
 
       if (source) {
-        source.sender_chain = sender_chain || source.sender_chain;
-        source.recipient_chain = recipient_chain || source.recipient_chain;
-        source.denom = source.denom || asset;
-        source.original_sender_chain = original_sender_chain || normalize_original_chain(source.sender_chain || sender_chain);
-        source.original_recipient_chain = original_recipient_chain || normalize_original_chain(source.recipient_chain || recipient_chain);
+        if (source.sender_address) {
+          sender_address = source.sender_address;
+          sender_chain = normalize_chain(
+            cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
+            sender_chain ||
+            source.sender_chain
+          );
+          if (!original_sender_chain?.startsWith(sender_chain)) {
+            original_sender_chain = sender_chain;
+          }
+
+          if (link) {
+            link.sender_address = sender_address;
+            link.sender_chain = source.sender_chain;
+            link.original_sender_chain = original_sender_chain;
+
+            await write(
+              'deposit_addresses',
+              id,
+              link,
+            );
+          }
+        }
+
+        source.sender_chain = sender_chain ||
+          source.sender_chain;
+        source.recipient_chain = recipient_chain ||
+          source.recipient_chain;
+        source.denom = source.denom ||
+          asset;
+        source.original_sender_chain = original_sender_chain ||
+          normalize_original_chain(
+            source.sender_chain ||
+            sender_chain
+          );
+        source.original_recipient_chain = original_recipient_chain ||
+          normalize_original_chain(
+            source.recipient_chain ||
+            recipient_chain
+          );
 
         if (source.denom) {
           const chain_data = chains_data.find(c => equals_ignore_case(c?.id, source.sender_chain));
@@ -508,7 +575,8 @@ module.exports = async (
                   decimals
                 )
               );
-              source.denom = asset_data.id || source.denom;
+              source.denom = asset_data.id ||
+                source.denom;
             }
 
             if (!source.fee && endpoints?.lcd) {

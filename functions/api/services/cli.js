@@ -361,7 +361,10 @@ module.exports = async (
                       sign_batch,
                       source: {
                         ...source,
-                        sender_chain: normalize_chain(cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id || sender_chain),
+                        sender_chain: normalize_chain(
+                          cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
+                          sender_chain
+                        ),
                       },
                     },
                   );
