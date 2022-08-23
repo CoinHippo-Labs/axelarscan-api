@@ -337,6 +337,7 @@ exports.handler = async (
     default:
       if (!req.url) {
         await require('./services/archiver')();
+        await require('./services/tvl/updater')(context);
       }
       break;
   }
