@@ -6,8 +6,14 @@ const {
   read,
   write,
 } = require('../../index');
+const {
+  get_address,
+} = require('../../../utils/address');
 
 const environment = process.env.ENVIRONMENT || config?.environment;
+
+const data = require('../../../data');
+const cosmos_chains_data = data?.chains?.[environment]?.cosmos || [];
 
 const {
   endpoints,
@@ -94,6 +100,8 @@ module.exports = async (
       const {
         channel_id,
         port_id,
+        version,
+        counterparty,
         updated_at,
       } = { ...channel };
       let {
@@ -104,7 +112,7 @@ module.exports = async (
       if (
         !chain_id ||
         !escrow_address ||
-        moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 240
+        moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 40
       ) {
         const __response = await lcd.get(
           `/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`,
@@ -114,7 +122,8 @@ module.exports = async (
           client_state,
         } = { ...__response?.data?.identified_client_state };
 
-        chain_id = client_state?.chain_id || chain_id;
+        chain_id = client_state?.chain_id ||
+          chain_id;
 
         if (chain_id) {
           const ___response = await cli.get(
@@ -130,7 +139,22 @@ module.exports = async (
             stdout,
           } = { ...___response?.data };
 
-          escrow_address = stdout?.trim() || escrow_address;
+          escrow_address = stdout?.trim() ||
+            escrow_address;
+
+          if (counterparty) {
+            const chain_data = cosmos_chains_data.find(c => c?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1);
+            const {
+              prefix_address,
+            } = { ...chain_data };
+
+            if (prefix_address) {
+              counterparty.escrow_address = get_address(
+                `${version}\x00${counterparty.port_id}/${counterparty.channel_id}`,
+                prefix_address,
+              );
+            }
+          }
 
           await write(
             'ibc_channels',
@@ -138,6 +162,7 @@ module.exports = async (
             {
               ...channel,
               chain_id,
+              counterparty,
               escrow_address,
               updated_at: moment().unix(),
             },

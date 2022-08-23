@@ -281,8 +281,10 @@ module.exports = async (
       };
 
       let escrow_balance = 0,
+        source_escrow_balance = 0,
         ibc_channels,
-        escrow_addresses;
+        escrow_addresses,
+        source_escrow_addresses;
 
       if (prefix_chain_ids?.length > 0) {
         for (let i = 0; i < 2; i++) {
@@ -317,6 +319,9 @@ module.exports = async (
             escrow_addresses = ibc_channels
               .map(d => d?.escrow_address)
               .filter(a => a);
+            source_escrow_addresses = ibc_channels
+              .map(d => d?.counterparty?.escrow_address)
+              .filter(a => a);
             break;
           }
           else if (endpoints?.api) {
@@ -339,26 +344,51 @@ module.exports = async (
         }
       }
 
-      const supply = escrow_addresses?.length > 0 && lcd ?
-        is_native && id !== axelarnet.id ?
-          await getAxelarnetSupply(
+      if (source_escrow_addresses) {
+        for (const escrow_address of source_escrow_addresses) {
+          source_escrow_balance += await getCosmosBalance(
+            escrow_address,
             {
               ...denom_data,
               denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
             },
-            cli,
-          ) :
-          await getCosmosSupply(
-            denom_data,
             lcd,
-          ) :
+          );
+        }
+      }
+
+      const supply = lcd ?
+        is_native && id !== axelarnet.id ?
+          source_escrow_balance :
+          escrow_addresses?.length > 0 ?
+            await getCosmosSupply(
+              denom_data,
+              lcd,
+            ) :
+            0 :
         0;
 
-      const percent_diff_supply = supply && escrow_balance ?
-        Math.abs(
-          escrow_balance - supply
-        ) * 100 / escrow_balance :
+      const total_supply = is_native && id !== axelarnet.id ?
+        await getAxelarnetSupply(
+          {
+            ...denom_data,
+            denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
+          },
+          cli,
+        ) :
         0;
+
+      const percent_diff_supply = is_native && id !== axelarnet.id ?
+        total_supply && source_escrow_balance ?
+          Math.abs(
+            source_escrow_balance - total_supply
+          ) * 100 / source_escrow_balance :
+          0 :
+        supply && escrow_balance ?
+          Math.abs(
+            escrow_balance - supply
+          ) * 100 / escrow_balance :
+          0;
 
       const total = id === axelarnet.id ?
         await getAxelarnetSupply(
@@ -373,17 +403,21 @@ module.exports = async (
         supply,
         escrow_addresses,
         escrow_balance,
+        source_escrow_addresses,
+        source_escrow_balance,
         total,
         percent_diff_supply,
         is_abnormal_supply: typeof percent_diff_ibc_channel_supply_threshold === 'number' &&
           percent_diff_supply > percent_diff_ibc_channel_supply_threshold,
-        url: explorer?.url && explorer.asset_path && ibc_denom?.includes('/') ?
-          `${explorer.url}${explorer.asset_path.replace('{ibc_denom}', _.last(ibc_denom.split('/')))}` :
-          axelarnet.explorer?.url && (
-            escrow_addresses?.length > 0 ?
-              `${axelarnet.explorer.url}${axelarnet.explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
-              null
-          ),
+        url: explorer?.url && explorer.address_path && source_escrow_addresses?.length > 0 && is_native && id !== axelarnet.id ?
+          `${explorer.url}${explorer.address_path.replace('{address}', _.last(source_escrow_addresses))}` :
+          explorer?.url && explorer.asset_path && ibc_denom?.includes('/') ?
+            `${explorer.url}${explorer.asset_path.replace('{ibc_denom}', _.last(ibc_denom.split('/')))}` :
+            axelarnet.explorer?.url && (
+              escrow_addresses?.length > 0 ?
+                `${axelarnet.explorer.url}${axelarnet.explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
+                null
+            ),
       };
 
       return {
