@@ -112,7 +112,7 @@ module.exports = async (
       if (
         !chain_id ||
         !escrow_address ||
-        moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 40
+        moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 240
       ) {
         const __response = await lcd.get(
           `/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`,

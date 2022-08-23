@@ -392,7 +392,11 @@ module.exports = {
           'emoney-',
         ],
         endpoints: {
-          lcd: 'https://lcd-emoney.keplr.app',
+          lcd: 'https://emoney.validator.network/api',
+          lcds: [
+            'https://lcd.emoney.ezstaking.io',
+            'https://api-emoney-ia.notional.ventures',
+          ],
         },
         overrides: {
           'e-money': {

@@ -1020,6 +1020,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'ungm',
+          chain_id: 'emoney',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -1064,8 +1070,14 @@ module.exports = {
       ibc: [
         {
           ibc_denom: 'ibc/373EF14936B38AC8F8A7E7024C0FB7099369FDDFDA3CDA9EFA73684B16249B64',
+          chain_id: 'axelarnet',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'eeur',
           chain_id: 'emoney',
           decimals: 6,
+          is_native: true,
         },
       ],
     },
