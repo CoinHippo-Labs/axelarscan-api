@@ -92,23 +92,38 @@ const getCosmosBalance = async (
 
   if (address && denoms.length > 0 && lcd) {
     try {
+      const paths = [
+        '/cosmos/bank/v1beta1/balances/{address}/by_denom',
+        '/cosmos/bank/v1beta1/balances/{address}/{denom}',
+      ];
+
       for (const denom of denoms) {
-        const response = await lcd.get(
-          `/cosmos/bank/v1beta1/balances/${address}/by_denom`,
-          {
-            params: {
-              denom,
+        let valid = false;
+
+        for (const path of paths) {
+          const response = await lcd.get(
+            path.replace('{address}', address)
+              .replace('{denom}', denom),
+            {
+              params: {
+                denom,
+              },
             },
-          },
-        ).catch(error => { return { data: { error } }; });
+          ).catch(error => { return { data: { error } }; });
 
-        const {
-          amount,
-        } = { ...response?.data?.balance };
+          const {
+            amount,
+          } = { ...response?.data?.balance };
 
-        balance = amount;
+          balance = amount;
 
-        if (balance && balance !== '0') {
+          if (balance && balance !== '0') {
+            valid = true;
+            break;
+          }
+        }
+
+        if (valid) {
           break;
         }
       }
