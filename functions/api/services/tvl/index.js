@@ -221,6 +221,12 @@ module.exports = async (
       let result;
 
       if (contract_data && provider) {
+        const gateway_balance = await getEVMBalance(
+          gateway_address,
+          contract_data,
+          provider,
+        );
+
         const supply = !is_native ?
           await getContractSupply(
             contract_data,
@@ -228,20 +234,14 @@ module.exports = async (
           ) :
           0;
 
-        const gateway_balance = await getEVMBalance(
-          gateway_address,
-          contract_data,
-          provider,
-        );
-
         result = {
           contract_data,
-          supply,
           gateway_address,
           gateway_balance,
+          supply,
           total: ibc?.findIndex(i => i?.is_native) > -1 ?
             0 :
-            supply + gateway_balance,
+            gateway_balance + supply,
           url: explorer?.url &&
             `${explorer.url}${explorer.contract_path?.replace('{address}', contract_address)}${is_native && gateway_address ? `?a=${gateway_address}` : ''}`,
         };
@@ -298,9 +298,9 @@ module.exports = async (
         is_native,
       };
 
-      let escrow_balance = 0,
+      let ibc_channels,
+        escrow_balance = 0,
         source_escrow_balance = 0,
-        ibc_channels,
         escrow_addresses,
         source_escrow_addresses;
 
@@ -418,11 +418,11 @@ module.exports = async (
       result = {
         denom_data,
         ibc_channels,
-        supply,
         escrow_addresses,
         escrow_balance,
         source_escrow_addresses,
         source_escrow_balance,
+        supply,
         total,
         percent_diff_supply,
         is_abnormal_supply: typeof percent_diff_ibc_channel_supply_threshold === 'number' &&
@@ -431,11 +431,9 @@ module.exports = async (
           `${explorer.url}${explorer.address_path.replace('{address}', _.last(source_escrow_addresses))}` :
           explorer?.url && explorer.asset_path && ibc_denom?.includes('/') ?
             `${explorer.url}${explorer.asset_path.replace('{ibc_denom}', _.last(ibc_denom.split('/')))}` :
-            axelarnet.explorer?.url && (
-              escrow_addresses?.length > 0 ?
-                `${axelarnet.explorer.url}${axelarnet.explorer.address_path?.replace('{address}', _.last(escrow_addresses))}` :
-                null
-            ),
+            axelarnet.explorer?.url && axelarnet.explorer.address_path && escrow_addresses?.length > 0 ?
+              `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
+              null,
       };
 
       return {
@@ -515,8 +513,15 @@ module.exports = async (
 
     const percent_diff_supply = Math.abs(
       total -
-      (total_on_evm + total_on_cosmos)
-    ) * 100 / total;
+      (
+        total_on_evm +
+        (
+          ibc?.findIndex(i => i?.is_native && i.chain_id !== axelarnet.id) > -1 ?
+            0 :
+            total_on_cosmos
+        )
+      )
+    ) * 100 / (total || 1);
 
     data.push({
       asset,
