@@ -870,6 +870,7 @@ module.exports = async (
               const {
                 batch_id,
                 commands,
+                created_at,
               } = { ...batch };
               let {
                 executed,
@@ -901,6 +902,7 @@ module.exports = async (
                 ...sign_batch,
                 chain: recipient_chain,
                 batch_id,
+                created_at,
                 command_id,
                 transfer_id,
                 executed,

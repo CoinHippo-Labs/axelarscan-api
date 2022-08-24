@@ -290,6 +290,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'tvl-alert':
+          try {
+            response = await require('./services/tvl/alert')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         default:
           break;
       }

@@ -515,7 +515,7 @@ module.exports = {
           ],
         },
       },
-      {
+      /*{
         id: 'ki',
         name: 'KI',
         short_name: 'KI',
@@ -544,7 +544,7 @@ module.exports = {
             'https://api-kichain-ia.notional.ventures',
           ],
         },
-      },
+      },*/
       {
         id: 'terra',
         name: 'Terra',
@@ -590,6 +590,17 @@ module.exports = {
               transaction_path: '/tx/{tx}',
             },
             image: '/logos/chains/terra.png',
+            prefix_chain_ids: [
+              'columbus-',
+            ],
+            endpoints: {
+              lcd: 'https://blockdaemon-terra-lcd.api.bdnodes.net:1317',
+              lcds: [
+                'https://terra-lcd.quickapi.com',
+                'https://lcd.terra.dev',
+                'https://columbus-lcd.terra.dev',
+              ],
+            },
           },
           'terra-2': {
             id: 'terra-2',
@@ -605,6 +616,12 @@ module.exports = {
               transaction_path: '/tx/{tx}',
             },
             image: '/logos/chains/terra-2.png',
+            prefix_chain_ids: [
+              'phoenix-',
+            ],
+            endpoints: {
+              lcd: 'https://phoenix-lcd.terra.dev',
+            },
           },
         },
       },

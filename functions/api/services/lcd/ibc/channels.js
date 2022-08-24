@@ -112,6 +112,7 @@ module.exports = async (
       if (
         !chain_id ||
         !escrow_address ||
+        (counterparty && !counterparty.escrow_address) ||
         moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 240
       ) {
         const __response = await lcd.get(
@@ -143,7 +144,10 @@ module.exports = async (
             escrow_address;
 
           if (counterparty) {
-            const chain_data = cosmos_chains_data.find(c => c?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1);
+            const chain_data = cosmos_chains_data.find(c =>
+              c?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1 ||
+              Object.values({ ...c?.overrides }).findIndex(o => o?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1) > -1
+            );
             const {
               prefix_address,
             } = { ...chain_data };

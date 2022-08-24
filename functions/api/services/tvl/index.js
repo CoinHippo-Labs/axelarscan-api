@@ -239,7 +239,9 @@ module.exports = async (
           supply,
           gateway_address,
           gateway_balance,
-          total: supply + gateway_balance,
+          total: ibc?.findIndex(i => i?.is_native) > -1 ?
+            0 :
+            supply + gateway_balance,
           url: explorer?.url &&
             `${explorer.url}${explorer.contract_path?.replace('{address}', contract_address)}${is_native && gateway_address ? `?a=${gateway_address}` : ''}`,
         };
@@ -255,21 +257,37 @@ module.exports = async (
     let cosmos_tvl = await _cosmos_chains_data.reduce(async (acc, c) => {
       const {
         id,
+        overrides,
+      } = { ...c };
+      let {
         explorer,
         prefix_chain_ids,
       } = { ...c };
 
-      const lcd = lcds[id];
+      let lcd = lcds[id];
 
       const ibc_data = ibc?.find(i => i?.chain_id === id);
       const {
         ibc_denom,
+        original_chain_id,
         is_native,
       } = { ...ibc_data };
       let {
         decimals,
       } = { ...ibc_data };
       decimals = decimals || asset_data?.decimals;
+
+      if (overrides?.[original_chain_id]) {
+        const _override = overrides[original_chain_id];
+
+        explorer = _override.explorer ||
+          explorer;
+
+        prefix_chain_ids = _override.prefix_chain_ids ||
+          prefix_chain_ids;
+
+        lcd = axios.create({ baseURL: _override.endpoints?.lcd || _.head(_override.endpoints?.lcds) });
+      }
 
       let result;
 

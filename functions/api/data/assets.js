@@ -1155,7 +1155,7 @@ module.exports = {
         },
       ],
     },
-    {
+    /*{
       id: 'uxki',
       symbol: 'XKI',
       name: 'KI',
@@ -1170,7 +1170,7 @@ module.exports = {
           is_native: true,
         },
       ],
-    },
+    },*/
     {
       id: 'rai-wei',
       symbol: 'RAI',
@@ -1823,6 +1823,13 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uusd',
+          chain_id: 'terra',
+          original_chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -1876,6 +1883,7 @@ module.exports = {
         {
           ibc_denom: 'uluna',
           chain_id: 'terra',
+          original_chain_id: 'terra',
           decimals: 6,
           is_native: true,
         },
@@ -2822,6 +2830,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uusd',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -2957,6 +2971,12 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
         },
+        {
+          ibc_denom: 'uusd',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
+        },
       ],
     },
     {
@@ -2998,6 +3018,12 @@ module.exports = {
           ibc_denom: 'ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8',
           chain_id: 'axelarnet',
           decimals: 6,
+        },
+        {
+          ibc_denom: 'uluna',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
         },
       ],
     },
@@ -3088,6 +3114,14 @@ module.exports = {
           contract_address: '0x9f59cb0d2660cd2Ca3aBaa9E2880fd1AedA6A173',
           chain_id: 43113,
           decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'uusd',
+          chain_id: 'terra',
+          decimals: 6,
+          is_native: true,
         },
       ],
     },

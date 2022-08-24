@@ -210,7 +210,7 @@ resource "aws_apigatewayv2_route" "route_functions" {
 
 resource "aws_cloudwatch_event_rule" "schedule" {
   name                = "${var.package_name}-${var.environment}-rule"
-  schedule_expression = "cron(*/3 * * * ? *)"
+  schedule_expression = "cron(*/2 * * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "target" {

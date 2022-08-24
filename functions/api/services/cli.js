@@ -292,6 +292,7 @@ module.exports = async (
             let sign_batch = {
               chain,
               batch_id,
+              created_at: data.created_at,
             };
 
             for (const command_id of _command_ids) {
