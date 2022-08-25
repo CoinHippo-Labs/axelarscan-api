@@ -41,6 +41,7 @@ module.exports = async (
     depositAddress,
     senderAddress,
     recipientAddress,
+    transferId,
     from,
     size,
     sort,
@@ -75,7 +76,9 @@ module.exports = async (
   if (state) {
     switch (state) {
       case 'completed':
-        should.push({
+        const _should = [];
+
+        _should.push({
           bool: {
             must: [
               { exists: { field: 'sign_batch' } },
@@ -86,7 +89,7 @@ module.exports = async (
             minimum_should_match: 1,
           },
         });
-        should.push({
+        _should.push({
           bool: {
             must: [
               { exists: { field: 'ibc_send' } },
@@ -97,7 +100,7 @@ module.exports = async (
             minimum_should_match: 1,
           },
         });
-        should.push({
+        _should.push({
           bool: {
             must: [
               { match: { 'source.recipient_chain': axelarnet.id } },
@@ -107,6 +110,13 @@ module.exports = async (
               { exists: { field: 'vote' } },
             ],
             minimum_should_match: 1,
+          },
+        });
+
+        must.push({
+          bool: {
+            should: _should,
+            minimum_should_match: _should.length > 0 ? 1 : 0,
           },
         });
         break
@@ -173,6 +183,18 @@ module.exports = async (
   }
   if (recipientAddress) {
     must.push({ match: { 'link.recipient_address': recipientAddress } });
+  }
+  if (transferId) {
+    must.push({
+      bool: {
+        should: [
+          { match: { 'confirm_deposit.transfer_id': transferId } },
+          { match: { 'vote.transfer_id': transferId } },
+          { match: { transfer_id: transferId } },
+        ],
+        minimum_should_match: 1,
+      },
+    });
   }
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
