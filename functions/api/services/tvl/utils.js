@@ -103,7 +103,7 @@ const getCosmosBalance = async (
         for (const path of paths) {
           const response = await lcd.get(
             path.replace('{address}', address)
-              .replace('{denom}', denom),
+              .replace('{denom}', encodeURIComponent(denom)),
             {
               params: {
                 denom,

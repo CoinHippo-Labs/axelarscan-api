@@ -118,6 +118,9 @@ module.exports = async (
         total,
         total_on_evm,
         total_on_cosmos,
+        evm_escrow_address,
+        evm_escrow_balance,
+        evm_escrow_address_urls,
         tvl,
       } = { ...d };
       const {
@@ -133,11 +136,20 @@ module.exports = async (
           total,
           total_on_evm,
           total_on_cosmos,
+          evm_escrow_address,
+          evm_escrow_balance,
           links: _.uniq(
             _.concat(
+              evm_escrow_address_urls,
               Object.values({ ...tvl })
-                .filter(_d => (_d?.contract_data?.is_native || _d?.denom_data?.is_native) && _d.url)
-                .map(_d => _d.url),
+                .filter(_d => (_d?.contract_data?.is_native || _d?.denom_data?.is_native))
+                .flatMap(_d =>
+                  _.concat(
+                    _d.url,
+                    _d.escrow_addresses_urls,
+                    _d.supply_urls,
+                  )
+                ),
               endpoints?.app && `${endpoints.app}/tvl`,
             ).filter(l => l)
           ),
@@ -202,8 +214,14 @@ module.exports = async (
           links: _.uniq(
             _.concat(
               Object.values({ ...tvl })
-                .filter(_d => _d?.is_abnormal_supply && _d.url)
-                .map(_d => _d.url),
+                .filter(_d => _d?.is_abnormal_supply)
+                .flatMap(_d =>
+                  _.concat(
+                    _d.url,
+                    _d.escrow_addresses_urls,
+                    _d.supply_urls,
+                  )
+                ),
               endpoints?.app && `${endpoints.app}/tvl`,
             ).filter(l => l)
           ),

@@ -22,7 +22,7 @@ mainnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_minutes: 15
-  percent_diff_ibc_channel_supply_threshold: 1.0
+  percent_diff_escrow_supply_threshold: 1.0
   percent_diff_total_supply_threshold: 2.0
   gateway:
     chains:
@@ -116,7 +116,7 @@ testnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_minutes: 15
-  percent_diff_ibc_channel_supply_threshold: 1.0
+  percent_diff_escrow_supply_threshold: 1.0
   percent_diff_total_supply_threshold: 2.0
   gateway:
     chains:

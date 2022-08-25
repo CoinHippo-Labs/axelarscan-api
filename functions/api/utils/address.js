@@ -5,6 +5,14 @@ const {
   tmhash,
 } = require('tendermint/lib/hash');
 
+const to_hash = (
+  string,
+  length,
+) => tmhash(string)
+  .slice(0, length)
+  .toString('hex')
+  .toUpperCase();
+
 const hex_to_bech32 = (
   address,
   prefix,
@@ -19,16 +27,18 @@ const hex_to_bech32 = (
 );
 
 const get_address = (
-  preImage,
+  string,
   prefix,
+  length = 20,
 ) => hex_to_bech32(
-  tmhash(preImage)
-    .slice(0, 20)
-    .toString('hex')
-    .toUpperCase(),
+  to_hash(
+    string,
+    length,
+  ),
   prefix,
 );
 
 module.exports = {
+  to_hash,
   get_address,
 };

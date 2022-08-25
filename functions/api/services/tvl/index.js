@@ -21,6 +21,10 @@ const assets_price = require('../assets-price');
 const {
   equals_ignore_case,
 } = require('../../utils');
+const {
+  to_hash,
+  get_address,
+} = require('../../utils/address');
 
 const environment = process.env.ENVIRONMENT || config?.environment;
 
@@ -36,7 +40,7 @@ const assets_data = data?.assets?.[environment] || [];
 
 const {
   endpoints,
-  percent_diff_ibc_channel_supply_threshold,
+  percent_diff_escrow_supply_threshold,
   percent_diff_total_supply_threshold,
 } = { ...config?.[environment] };
 
@@ -265,6 +269,8 @@ module.exports = async (
       } = { ...c };
 
       let lcd = lcds[id];
+      let lcd_url = c?.endpoints?.lcd ||
+          _.head(c?.endpoints?.lcds);
 
       const ibc_data = ibc?.find(i => i?.chain_id === id);
       const {
@@ -278,15 +284,18 @@ module.exports = async (
       decimals = decimals || asset_data?.decimals;
 
       if (overrides?.[original_chain_id]) {
-        const _override = overrides[original_chain_id];
+        const override = overrides[original_chain_id];
 
-        explorer = _override.explorer ||
+        explorer = override.explorer ||
           explorer;
 
-        prefix_chain_ids = _override.prefix_chain_ids ||
+        prefix_chain_ids = override.prefix_chain_ids ||
           prefix_chain_ids;
 
-        lcd = axios.create({ baseURL: _override.endpoints?.lcd || _.head(_override.endpoints?.lcds) });
+        lcd_url = override.endpoints?.lcd ||
+          _.head(override.endpoints?.lcds) ||
+          lcd_url;
+        lcd = axios.create({ baseURL: lcd_url });
       }
 
       let result;
@@ -425,8 +434,8 @@ module.exports = async (
         supply,
         total,
         percent_diff_supply,
-        is_abnormal_supply: typeof percent_diff_ibc_channel_supply_threshold === 'number' &&
-          percent_diff_supply > percent_diff_ibc_channel_supply_threshold,
+        is_abnormal_supply: typeof percent_diff_escrow_supply_threshold === 'number' &&
+          percent_diff_supply > percent_diff_escrow_supply_threshold,
         url: explorer?.url && explorer.address_path && source_escrow_addresses?.length > 0 && is_native && id !== axelarnet.id ?
           `${explorer.url}${explorer.address_path.replace('{address}', _.last(source_escrow_addresses))}` :
           explorer?.url && explorer.asset_path && ibc_denom?.includes('/') ?
@@ -434,6 +443,25 @@ module.exports = async (
             axelarnet.explorer?.url && axelarnet.explorer.address_path && escrow_addresses?.length > 0 ?
               `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
               null,
+        escrow_addresses_urls: is_native && id !== axelarnet.id ?
+          source_escrow_addresses?.flatMap(a =>
+            [
+              `${lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(ibc_denom)}`,
+              `${lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
+            ]
+          ) || [] :
+          escrow_addresses?.flatMap(a =>
+            [
+              `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom_data.base_denom)}`,
+              `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}`,
+            ]
+          ) || [],
+        supply_urls: !(is_native && id !== axelarnet.id) && escrow_addresses?.length > 0 ?
+          [
+            `${lcd_url}/cosmos/bank/v1beta1/supply/${encodeURIComponent(ibc_denom)}`,
+            `${lcd_url}/cosmos/bank/v1beta1/supply`,
+          ] :
+          [],
       };
 
       return {
@@ -454,14 +482,18 @@ module.exports = async (
             k,
             {
               ...v,
-              supply: k === axelarnet.id && (
-                contracts?.findIndex(c => c?.is_native) > -1 ||
-                ['uaxl'].includes(asset)
-              ) ?
-                total - _.sum(
-                  Object.values(cosmos_tvl)
-                    .map(_v => _v?.supply || 0)
-                ) :
+              supply: k === axelarnet.id ?
+                contracts?.findIndex(c => c?.is_native) > -1 ?
+                  total - _.sum(
+                    Object.values(cosmos_tvl)
+                      .map(_v => _v?.supply || 0)
+                  ) :
+                  ibc?.findIndex(i => i?.is_native) > -1 ?
+                    total - _.sum(
+                      Object.values(evm_tvl)
+                        .map(_v => _v?.supply || 0)
+                    ) :
+                    supply :
                 supply,
             },
           ];
@@ -511,17 +543,45 @@ module.exports = async (
         })
     );
 
-    const percent_diff_supply = Math.abs(
-      total -
-      (
-        total_on_evm +
+    const evm_escrow_address = ibc?.findIndex(i => i?.is_native) > -1 ?
+      get_address(
+        `ibc/${to_hash(`transfer/${_.last(cosmos_tvl[ibc?.find(i => i?.is_native)?.chain_id]?.ibc_channels)?.channel_id}/${asset}`)}`,
+        axelarnet.prefix_address,
+        32,
+      ) :
+      undefined;
+
+    const evm_escrow_balance = evm_escrow_address &&
+      await getCosmosBalance(
+        evm_escrow_address,
+        {
+          ...ibc?.find(i => i?.chain_id === axelarnet.id),
+          base_denom: asset,
+          denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
+        },
+        axelarnet_lcd,
+      );
+
+    const evm_escrow_address_urls = evm_escrow_address &&
+      [
+        `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`,
+      ];
+
+    const percent_diff_supply = evm_escrow_address ?
+      Math.abs(
+        evm_escrow_balance - total_on_evm
+      ) * 100 / (evm_escrow_balance || 1) :
+      Math.abs(
+        total -
         (
-          ibc?.findIndex(i => i?.is_native && i.chain_id !== axelarnet.id) > -1 ?
-            0 :
-            total_on_cosmos
+          (
+            ibc?.findIndex(i => i?.is_native) > -1 ?
+              0 :
+              total_on_evm
+          ) +
+          total_on_cosmos
         )
-      )
-    ) * 100 / (total || 1);
+      ) * 100 / (total || 1);
 
     data.push({
       asset,
@@ -530,10 +590,16 @@ module.exports = async (
       total_on_evm,
       total_on_cosmos,
       total,
+      evm_escrow_address,
+      evm_escrow_balance,
+      evm_escrow_address_urls,
       percent_diff_supply,
-      is_abnormal_supply: typeof percent_diff_total_supply_threshold === 'number' &&
-        percent_diff_supply > percent_diff_total_supply_threshold,
-      percent_diff_ibc_channel_supply_threshold,
+      is_abnormal_supply: evm_escrow_address ?
+        typeof percent_diff_escrow_supply_threshold === 'number' &&
+          percent_diff_supply > percent_diff_escrow_supply_threshold :
+        typeof percent_diff_total_supply_threshold === 'number' &&
+          percent_diff_supply > percent_diff_total_supply_threshold,
+      percent_diff_escrow_supply_threshold,
       percent_diff_total_supply_threshold,
     });
   }
