@@ -107,7 +107,7 @@ module.exports = async (
   if (data?.length > 0) {
     status = 'alert';
     event_action = 'trigger';
-    severity = 'critical';
+    severity = 'info';
 
     custom_details = data.map(d => {
       const {

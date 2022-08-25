@@ -545,10 +545,9 @@ module.exports = async (
 
     const evm_escrow_address = ibc?.findIndex(i => i?.is_native) > -1 ?
       get_address(
-        `ibc/${to_hash(ibc?.find(i => i?.is_native)?.chain_id === axelarnet.id ?
+        ibc?.find(i => i?.is_native).chain_id === axelarnet.id ?
           asset :
-          `transfer/${_.last(cosmos_tvl[ibc?.find(i => i?.is_native)?.chain_id]?.ibc_channels)?.channel_id}/${asset}`
-        )}`,
+          `ibc/${to_hash(`transfer/${_.last(cosmos_tvl[ibc?.find(i => i?.is_native).chain_id]?.ibc_channels)?.channel_id}/${asset}`)}`,
         axelarnet.prefix_address,
         32,
       ) :
