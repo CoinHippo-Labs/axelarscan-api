@@ -160,8 +160,8 @@ resource "aws_lambda_function" "function" {
   role             = aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
-  timeout          = 30
-  memory_size      = 256
+  timeout          = 60
+  memory_size      = 384
   environment {
     variables = {
       NODE_NO_WARNINGS           = 1
@@ -210,7 +210,7 @@ resource "aws_apigatewayv2_route" "route_functions" {
 
 resource "aws_cloudwatch_event_rule" "schedule" {
   name                = "${var.package_name}-${var.environment}-rule"
-  schedule_expression = "cron(*/15 * * * ? *)"
+  schedule_expression = "cron(*/5 * * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "target" {

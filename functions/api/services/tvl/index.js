@@ -444,18 +444,26 @@ module.exports = async (
               `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
               null,
         escrow_addresses_urls: is_native && id !== axelarnet.id ?
-          source_escrow_addresses?.flatMap(a =>
+          _.reverse(
+            _.cloneDeep(source_escrow_addresses || [])
+          ).flatMap(a =>
             [
+              explorer?.url && explorer.address_path &&
+                `${explorer.url}${explorer.address_path.replace('{address}', a)}`,
               `${lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(ibc_denom)}`,
               `${lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
-            ]
-          ) || [] :
-          escrow_addresses?.flatMap(a =>
+            ].filter(l => l),
+          ) :
+          _.reverse(
+            _.cloneDeep(escrow_addresses || [])
+          ).flatMap(a =>
             [
+              axelarnet.explorer?.url && axelarnet.explorer.address_path &&
+                `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', a)}`,
               `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom_data.base_denom)}`,
               `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}`,
-            ]
-          ) || [],
+            ].filter(l => l)
+          ),
         supply_urls: !(is_native && id !== axelarnet.id) && escrow_addresses?.length > 0 ?
           [
             `${lcd_url}/cosmos/bank/v1beta1/supply/${encodeURIComponent(ibc_denom)}`,
@@ -522,9 +530,13 @@ module.exports = async (
     );
 
     const total_on_cosmos = _.sumBy(
-      Object.values(cosmos_tvl),
+      Object.entries(cosmos_tvl)
+        .filter(([k, v]) => ibc?.find(i => i?.is_native)?.chain_id !== k)
+        .map(([k, v]) => v),
       _cosmos_chains_data.length === cosmos_chains_data.length ?
-        'total' :
+        ibc?.findIndex(i => i?.is_native) > -1 ?
+          'supply' :
+          'total' :
         'escrow_balance',
     );
 
@@ -545,7 +557,7 @@ module.exports = async (
 
     const evm_escrow_address = ibc?.findIndex(i => i?.is_native) > -1 ?
       get_address(
-        ibc?.find(i => i?.is_native).chain_id === axelarnet.id ?
+        ibc.find(i => i?.is_native).chain_id === axelarnet.id ?
           asset :
           `ibc/${to_hash(`transfer/${_.last(cosmos_tvl[ibc?.find(i => i?.is_native).chain_id]?.ibc_channels)?.channel_id}/${asset}`)}`,
         axelarnet.prefix_address,
@@ -566,23 +578,17 @@ module.exports = async (
 
     const evm_escrow_address_urls = evm_escrow_address &&
       [
+        axelarnet.explorer?.url && axelarnet.explorer.address_path &&
+          `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`,
         `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`,
-      ];
+      ].filter(l => l);
 
     const percent_diff_supply = evm_escrow_address ?
       Math.abs(
         evm_escrow_balance - total_on_evm
       ) * 100 / (evm_escrow_balance || 1) :
       Math.abs(
-        total -
-        (
-          (
-            ibc?.findIndex(i => i?.is_native) > -1 ?
-              0 :
-              total_on_evm
-          ) +
-          total_on_cosmos
-        )
+        total - (total_on_evm + total_on_cosmos)
       ) * 100 / (total || 1);
 
     data.push({
