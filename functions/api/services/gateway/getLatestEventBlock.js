@@ -86,9 +86,11 @@ module.exports = async (
       ...response,
       latest: {
         ...response?.latest,
-        gateway_block: _.max(
-          response?.latest?.token_sent_block,
-          response?.latest?.batches_executed_block,
+        gateway_block: _.min(
+          _.concat(
+            response?.latest?.token_sent_block,
+            response?.latest?.batches_executed_block,
+          ).filter(b => b),
         ),
       },
     };
