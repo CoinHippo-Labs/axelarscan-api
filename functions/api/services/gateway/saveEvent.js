@@ -249,6 +249,8 @@ module.exports = async (
             const batch = _.head(_response?.data);
             const {
               batch_id,
+            } = { ...batch };
+            let {
               commands,
             } = { ...batch };
 
@@ -256,13 +258,84 @@ module.exports = async (
               const index = commands.findIndex(c => equals_ignore_case(c?.id, commandId));
 
               if (index > -1) {
-                commands[index] = {
-                  ...commands[index],
+                const transaction = {
                   transactionHash,
                   transactionIndex,
                   logIndex,
+                  block_timestamp,
+                };
+
+                commands[index] = {
+                  ...commands[index],
+                  ...transaction,
                   executed: true,
                 };
+
+                let command_events
+
+                if (commands.findIndex(c => !c?.transactionHash) > -1) {
+                  const __response = await read(
+                    'command_events',
+                    {
+                      bool: {
+                        must: [
+                          { match: { chain } },
+                        ],
+                        should: commands
+                          .filter(c => !c?.transactionHash)
+                          .map(c => {
+                            const {
+                              id,
+                            } = { ...c };
+
+                            return {
+                              match: { command_id: id },
+                            };
+                          }),
+                        minimum_should_match: 1,
+                      },
+                    },
+                    {
+                      size: 100,
+                    },
+                  );
+
+                  command_events = __response?.data;
+                }
+
+                commands = commands.map(c => {
+                  if (c?.id && !c.transactionHash) {
+                    const command_event = command_events?.find(_c => equals_ignore_case(_c?.command_id, c.id));
+
+                    if (command_event) {
+                      const {
+                        transactionHash,
+                        transactionIndex,
+                        logIndex,
+                        block_timestamp,
+                      } = { ...command_event };
+
+                      c.transactionHash = transactionHash;
+                      c.transactionIndex = transactionIndex;
+                      c.logIndex = logIndex;
+                      c.block_timestamp = block_timestamp;
+                    }
+                  }
+
+                  return c;
+                });
+
+                await write(
+                  'command_events',
+                  `${chain}_${commandId}`.toLowerCase(),
+                  {
+                    ...transaction,
+                    chain,
+                    batch_id,
+                    command_id: commandId,
+                    blockNumber,
+                  },
+                );
 
                 await write(
                   'batches',

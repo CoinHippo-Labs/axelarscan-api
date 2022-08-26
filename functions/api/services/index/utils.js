@@ -18,6 +18,7 @@ const transfer_collections = [
   'deposit_addresses',
   'transfers',
   'batches',
+  'command_events',
   'token_sent_events',
   'ibc_channels',
   'tvls',

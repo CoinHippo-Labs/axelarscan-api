@@ -53,7 +53,7 @@ module.exports = async (
     }
 
     _response = await read(
-      'batches',
+      'command_events',
       {
         bool: {
           must: [

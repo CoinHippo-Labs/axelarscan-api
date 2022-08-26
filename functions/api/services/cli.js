@@ -117,13 +117,16 @@ module.exports = async (
           } = { ...data };
 
           batch_id = id;
-          const chain = cmd.split(' ')[4]?.toLowerCase();
+          let chain = cmd.split(' ')[4]?.toLowerCase();
           const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
           const provider = getProvider(chain_data);
           const {
             chain_id,
             gateway_address,
           } = { ...chain_data };
+
+          chain = chain_data?.id ||
+            chain;
 
           const gateway_contract = gateway_address &&
             new Contract(
@@ -243,6 +246,47 @@ module.exports = async (
 
           commands = commands
             .filter(c => c);
+
+          if (commands.findIndex(c => !c?.transactionHash) > -1) {
+            const __response = await read(
+              'command_events',
+              {
+                bool: {
+                  must: [
+                    { match: { chain } },
+                    { match_phrase: { batch_id } },
+                  ],
+                },
+              },
+              {
+                size: 100,
+              },
+            );
+
+            const command_events = __response?.data;
+
+            commands = commands.map(c => {
+              if (c?.id && !c.transactionHash) {
+                const command_event = command_events?.find(_c => equals_ignore_case(_c?.command_id, c.id));
+
+                if (command_event) {
+                  const {
+                    transactionHash,
+                    transactionIndex,
+                    logIndex,
+                    block_timestamp,
+                  } = { ...command_event };
+
+                  c.transactionHash = transactionHash;
+                  c.transactionIndex = transactionIndex;
+                  c.logIndex = logIndex;
+                  c.block_timestamp = block_timestamp;
+                }
+              }
+
+              return c;
+            });
+          }
 
           data = {
             ...data,
