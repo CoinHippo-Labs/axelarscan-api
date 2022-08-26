@@ -254,8 +254,22 @@ module.exports = async (
                 bool: {
                   must: [
                     { match: { chain } },
-                    { match_phrase: { batch_id } },
                   ],
+                  should: _.concat(
+                    { match_phrase: { batch_id } },
+                    commands
+                      .filter(c => !c?.transactionHash)
+                      .map(c => {
+                        const {
+                          id,
+                        } = { ...c };
+
+                        return {
+                          match: { command_id: id },
+                        };
+                      }),
+                  ),
+                  minimum_should_match: 1,
                 },
               },
               {
