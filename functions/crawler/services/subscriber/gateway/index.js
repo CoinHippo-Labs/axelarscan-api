@@ -29,9 +29,11 @@ module.exports.subscribeGateway = (chains_config = []) => {
       // events to subscribe
       const events_name = [
         'TokenSent',
+        'Executed',
       ];
       const filters = [
         contract.filters.TokenSent(),
+        contract.filters.Executed(),
       ];
 
       // listen to events emitted from contract

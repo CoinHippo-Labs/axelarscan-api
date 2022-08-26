@@ -24,7 +24,7 @@ module.exports = async (
     };
   }
   else {
-    const _response = await read(
+    let _response = await read(
       'token_sent_events',
       {
         bool: {
@@ -40,9 +40,7 @@ module.exports = async (
       },
     );
 
-    const {
-      blockNumber,
-    } = { ..._.head(_response?.data)?.event };
+    let blockNumber = _.head(_response?.data)?.event?.blockNumber;
 
     if (blockNumber) {
       response = {
@@ -54,13 +52,44 @@ module.exports = async (
       };
     }
 
+    _response = await read(
+      'batches',
+      {
+        bool: {
+          must: [
+            { match: { chain } },
+            { exists: { field: 'blockNumber' } },
+          ],
+        },
+      },
+      {
+        size: 1,
+        sort: [{ 'blockNumber': 'desc' }],
+      },
+    );
+
+    blockNumber = _.head(_response?.data)?.event?.blockNumber;
+
+    if (blockNumber) {
+      response = {
+        ...response,
+        latest: {
+          ...response?.latest,
+          batches_executed_block: blockNumber,
+        },
+      };
+    }
+
     // finalize
     response = {
       chain,
       ...response,
       latest: {
         ...response?.latest,
-        gateway_block: response?.latest?.token_sent_block,
+        gateway_block: _.max(
+          response?.latest?.token_sent_block,
+          response?.latest?.batches_executed_block,
+        ),
       },
     };
   }

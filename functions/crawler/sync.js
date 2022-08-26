@@ -87,6 +87,7 @@ if (chain_config) {
   // initial filters
   const gateway_filters = [
     gateway_contract.filters.TokenSent(),
+    gateway_contract.filters.Executed(),
   ];
 
   /********************************************************

@@ -7,6 +7,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
+  read,
   write,
 } = require('../index');
 const assets_price = require('../assets-price');
@@ -205,6 +206,76 @@ module.exports = async (
               event,
             },
           };
+        } catch (error) {}
+        break;
+      case 'Executed':
+        try {
+          event = {
+            ...await getTransaction(
+              provider,
+              transactionHash,
+              chain,
+            ),
+            block_timestamp: await getBlockTime(
+              provider,
+              blockNumber,
+            ),
+            ...event,
+          };
+
+          const {
+            block_timestamp,
+            returnValues,
+          } = { ...event };
+          let {
+            commandId,
+          } = { ...returnValues };
+
+          if (commandId) {
+            if (commandId.startsWith('0x')) {
+              commandId = commandId.substring(2);
+            }
+
+            const _response = await read(
+              'batches',
+              {
+                match: { 'commands.id': commandId },
+              },
+              {
+                size: 1,
+              },
+            );
+
+            const batch = _.head(_response?.data);
+            const {
+              batch_id,
+              commands,
+            } = { ...batch };
+
+            if (batch_id && commands) {
+              const index = commands.findIndex(c => equals_ignore_case(c?.id, commandId));
+
+              if (index > -1) {
+                commands[index] = {
+                  ...commands[index],
+                  transactionHash,
+                  transactionIndex,
+                  logIndex,
+                  executed: true,
+                };
+
+                await write(
+                  'batches',
+                  batch_id,
+                  {
+                    ...batch,
+                    commands,
+                    blockNumber,
+                  },
+                );
+              }
+            }
+          }
         } catch (error) {}
         break;
       default:

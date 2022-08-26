@@ -18,6 +18,7 @@ const {
 
 const events_name = [
   'TokenSent',
+  'Executed',
 ];
 
 const onEmit = async (
@@ -210,7 +211,7 @@ const sync = async (
       latest_block;
 
     try {
-      const latest_gmp_block = await getLatestGMPBlock(chain);
+      const latest_gmp_block = await getLatestEventBlock(chain);
 
       // block for each events group
       const {
