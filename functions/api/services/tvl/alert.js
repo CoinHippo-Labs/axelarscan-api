@@ -22,6 +22,7 @@ const assets_data = data?.assets?.[environment] || [];
 
 const {
   endpoints,
+  alert_asset_value_threshold,
 } = { ...config?.[environment] };
 
 module.exports = async (
@@ -127,7 +128,10 @@ module.exports = async (
         symbol,
       } = { ...assets_data.find(a => a?.id === asset) };
 
-      if (is_abnormal_supply) {
+      if (
+        is_abnormal_supply &&
+        total * price > alert_asset_value_threshold
+      ) {
         return {
           asset,
           symbol,

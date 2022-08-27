@@ -24,6 +24,7 @@ mainnet:
   cache_timeout_minutes: 15
   percent_diff_escrow_supply_threshold: 1.0
   percent_diff_total_supply_threshold: 2.0
+  alert_asset_value_threshold: 1000
   gateway:
     chains:
       ethereum:
@@ -118,6 +119,7 @@ testnet:
   cache_timeout_minutes: 15
   percent_diff_escrow_supply_threshold: 1.0
   percent_diff_total_supply_threshold: 2.0
+  alert_asset_value_threshold: 1000
   gateway:
     chains:
       ethereum:
