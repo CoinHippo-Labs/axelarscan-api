@@ -77,7 +77,10 @@ module.exports = async (
   );
 
   const _data = data.filter(d =>
-    d.is_abnormal_supply ||
+    (
+      d.is_abnormal_supply &&
+      d.total * d.price > alert_asset_value_threshold
+    ) ||
     Object.values({ ...d.tvl }).findIndex(_d => _d?.is_abnormal_supply) > -1
   );
 
