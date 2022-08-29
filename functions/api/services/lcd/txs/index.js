@@ -827,13 +827,14 @@ module.exports = async (
       }
     } catch (error) {}
 
-    // RouteIBCTransfersRequest
+    // IBC Transfer
     try {
       const txHashes = tx_responses
         .filter(t =>
           !t?.code &&
           [
             'RouteIBCTransfersRequest',
+            'MsgAcknowledgement',
           ].findIndex(s =>
             t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes(s)) > -1
           ) > -1

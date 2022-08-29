@@ -778,7 +778,9 @@ module.exports = async (
           price,
         },
         status: ibc_send ?
-          'ibc_sent' :
+          ibc_send.recv_txhash ?
+            'ibc_recv' :
+            'ibc_sent' :
           sign_batch?.executed ?
             'executed' :
              sign_batch ?
@@ -799,6 +801,7 @@ module.exports = async (
           source,
           confirm_deposit,
           vote,
+          ibc_send,
           status,
         } = { ...d };
         let {
@@ -813,7 +816,9 @@ module.exports = async (
           height,
         } = { ...vote };
 
-        height = height || confirm_deposit?.height;
+        height = ibc_send?.height ||
+          height ||
+          confirm_deposit?.height;
 
         if (
           cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
@@ -821,9 +826,10 @@ module.exports = async (
           [
             'voted',
             'deposit_confirmed',
+            'ibc_sent',
           ].includes(status)
         ) {
-          for (let i = 1; i <= 5; i++) {
+          for (let i = 1; i <= 7; i++) {
             api.post(
               '',
               {
