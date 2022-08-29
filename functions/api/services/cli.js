@@ -382,6 +382,10 @@ module.exports = async (
               if (__response?.data?.length > 0) {
                 let {
                   executed,
+                  transactionHash,
+                  transactionIndex,
+                  logIndex,
+                  block_timestamp,
                 } = { ..._.head(__response.data).sign_batch };
 
                 executed = !!executed ||
@@ -393,9 +397,39 @@ module.exports = async (
                   } catch (error) {}
                 }
 
+                if (!transactionHash) {
+                  const ___response = await read(
+                    'command_events',
+                    {
+                      bool: {
+                        must: [
+                          { match: { chain } },
+                          { match: { command_id } },
+                        ],
+                      },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                  const command_event = _.head(___response?.data);
+
+                  if (command_event) {
+                    transactionHash = command_event.transactionHash;
+                    transactionIndex = command_event.transactionIndex;
+                    logIndex = command_event.logIndex;
+                    block_timestamp = command_event.block_timestamp;
+                  }
+                }
+
                 sign_batch = {
                   ...sign_batch,
                   executed,
+                  transactionHash,
+                  transactionIndex,
+                  logIndex,
+                  block_timestamp,
                 };
 
                 const transfers_data = __response.data

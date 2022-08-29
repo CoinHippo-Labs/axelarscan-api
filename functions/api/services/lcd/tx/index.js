@@ -1408,7 +1408,12 @@ module.exports = async (
             return Object.fromEntries(
               attributes
                 .filter(a => a?.key && a.value)
-                .map(a => [a.key, a.value])
+                .map(a =>
+                  [
+                    a.key,
+                    a.value,
+                  ]
+                )
             );
           })
           .filter(e => e.packet_sequence)
@@ -1443,7 +1448,7 @@ module.exports = async (
                   { match: { 'ibc_send.packet.packet_sequence': packet_sequence } },
                   { match: { 'ibc_send.packet.packet_src_channel': packet_src_channel } },
                   { match: { 'ibc_send.packet.packet_dst_channel': packet_dst_channel } },
-                  { match: { 'ibc_send.packet.packet_connection': packet_connection } },
+                  // { match: { 'ibc_send.packet.packet_connection': packet_connection } },
                 ],
                 should: [
                   { match: { 'ibc_send.ack_txhash': id } },
@@ -1530,9 +1535,12 @@ module.exports = async (
                 if (index > -1) {
                   const {
                     txhash,
+                    timestamp,
                   } = { ...tx_responses[index] };
 
                   if (txhash) {
+                    const received_at = moment(timestamp).utc().valueOf();
+
                     await write(
                       'transfers',
                       `${id}_${recipient_address}`.toLowerCase(),
@@ -1541,6 +1549,7 @@ module.exports = async (
                           ...ibc_send,
                           ack_txhash: record.id,
                           recv_txhash: txhash,
+                          received_at: get_granularity(received_at),
                         },
                       },
                     );
@@ -1715,9 +1724,16 @@ module.exports = async (
                       commands,
                       created_at,
                     } = { ...batch };
+
+                    const command = commands?.find(c => c?.id === command_id);
+
                     let {
                       executed,
-                    } = { ...commands?.find(c => c?.id === command_id) };
+                      transactionHash,
+                      transactionIndex,
+                      logIndex,
+                      block_timestamp,
+                    } = { ...command };
 
                     if (!executed) {
                       const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
@@ -1741,6 +1757,32 @@ module.exports = async (
                       } catch (error) {}
                     }
 
+                    if (!transactionHash) {
+                      const __response = await read(
+                        'command_events',
+                        {
+                          bool: {
+                            must: [
+                              { match: { chain: recipient_chain } },
+                              { match: { command_id } },
+                            ],
+                          },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
+
+                      const command_event = _.head(__response?.data);
+
+                      if (command_event) {
+                        transactionHash = command_event.transactionHash;
+                        transactionIndex = command_event.transactionIndex;
+                        logIndex = command_event.logIndex;
+                        block_timestamp = command_event.block_timestamp;
+                      }
+                    }
+
                     sign_batch = {
                       chain: recipient_chain,
                       batch_id,
@@ -1748,6 +1790,10 @@ module.exports = async (
                       command_id,
                       transfer_id,
                       executed,
+                      transactionHash,
+                      transactionIndex,
+                      logIndex,
+                      block_timestamp,
                     };
                   }
                 }

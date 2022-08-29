@@ -872,9 +872,16 @@ module.exports = async (
                 commands,
                 created_at,
               } = { ...batch };
+
+              const command = commands?.find(c => c?.id === command_id);
+
               let {
                 executed,
-              } = { ...commands?.find(c => c?.id === command_id) };
+                transactionHash,
+                transactionIndex,
+                logIndex,
+                block_timestamp,
+              } = { ...command };
 
               if (!executed) {
                 const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
@@ -898,6 +905,32 @@ module.exports = async (
                 } catch (error) {}
               }
 
+              if (!transactionHash) {
+                const __response = await read(
+                  'command_events',
+                  {
+                    bool: {
+                      must: [
+                        { match: { chain: recipient_chain } },
+                        { match: { command_id } },
+                      ],
+                    },
+                  },
+                  {
+                    size: 1,
+                  },
+                );
+
+                const command_event = _.head(__response?.data);
+
+                if (command_event) {
+                  transactionHash = command_event.transactionHash;
+                  transactionIndex = command_event.transactionIndex;
+                  logIndex = command_event.logIndex;
+                  block_timestamp = command_event.block_timestamp;
+                }
+              }
+
               sign_batch = {
                 ...sign_batch,
                 chain: recipient_chain,
@@ -906,6 +939,10 @@ module.exports = async (
                 command_id,
                 transfer_id,
                 executed,
+                transactionHash,
+                transactionIndex,
+                logIndex,
+                block_timestamp,
               };
             }
 
@@ -914,7 +951,8 @@ module.exports = async (
               `${id}_${recipient_address}`.toLowerCase(),
               {
                 ...d,
-                sign_batch: sign_batch || undefined,
+                sign_batch: sign_batch ||
+                  undefined,
               },
             );
           }
