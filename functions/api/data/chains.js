@@ -263,7 +263,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
-        name: 'Axelar Network',
+        name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
           name: 'Axelarscan',
@@ -889,7 +889,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
-        name: 'Axelar Network',
+        name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
           name: 'Axelarscan',
@@ -1384,7 +1384,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
-        name: 'Axelar Network',
+        name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
           name: 'Axelarscan',
@@ -1488,7 +1488,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
-        name: 'Axelar Network',
+        name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
           name: 'Axelarscan',

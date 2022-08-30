@@ -7,30 +7,34 @@ module.exports = {
       image: '/logos/assets/axl.png',
       decimals: 6,
       coingecko_id: 'axelar-network',
-      is_staging: true,
       contracts: [
         {
-          contract_address: '0x3eacbdc6c382ea22b78acc158581a55aaf4ef3cc',
+          contract_address: '0x467719aD09025FcC6cF6F8311755809d45a5E5f3',
           chain_id: 1,
           decimals: 6,
         },
         {
-          contract_address: '0x1b7c03bc2c25b8b5989f4bc2872cf9342cec80ae',
+          contract_address: '0x8b1f4432F943c465A973FeDC6d7aa50Fc96f1f65',
+          chain_id: 56,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x44c784266cf024a60e8acF2427b9857Ace194C5d',
           chain_id: 43114,
           decimals: 6,
         },
         {
-          contract_address: '0x161ce0d2a3f625654abf0098b06e9eaf5f308691',
+          contract_address: '0x6e4E624106Cb12E168E6533F8ec7c82263358940',
           chain_id: 137,
           decimals: 6,
         },
         {
-          contract_address: '0xe4619601fff110e649f68fd209080697b8c40dbc',
+          contract_address: '0x8b1f4432F943c465A973FeDC6d7aa50Fc96f1f65',
           chain_id: 250,
           decimals: 6,
         },
         {
-          contract_address: '0x3eacbdc6c382ea22b78acc158581a55aaf4ef3cc',
+          contract_address: '0x467719aD09025FcC6cF6F8311755809d45a5E5f3',
           chain_id: 1284,
           decimals: 6,
         },
