@@ -4,6 +4,133 @@
   "sourceName": "contracts/interfaces/IAxelarGateway.sol",
   "abi": [
     {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "BurnFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "ExceedMintLimit",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAuthModule",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidChainId",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidCodeHash",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidCommands",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidSetMintLimitsParams",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidTokenDeployer",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "MintFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotProxy",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotSelf",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SetupFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "TokenAlreadyExists",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "TokenContractDoesNotExist",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "TokenDeployFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "TokenDoesNotExist",
+      "type": "error"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -217,18 +344,12 @@
       "inputs": [
         {
           "indexed": false,
-          "internalType": "string",
-          "name": "symbol",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "limit",
-          "type": "uint256"
+          "internalType": "bytes",
+          "name": "newOperatorsData",
+          "type": "bytes"
         }
       ],
-      "name": "TokenDailyMintLimitUpdated",
+      "name": "OperatorshipTransferred",
       "type": "event"
     },
     {
@@ -248,6 +369,25 @@
         }
       ],
       "name": "TokenDeployed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "limit",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokenMintLimitUpdated",
       "type": "event"
     },
     {
@@ -359,6 +499,19 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "authModule",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -594,7 +747,7 @@
           "type": "uint256[]"
         }
       ],
-      "name": "setTokenDailyMintLimits",
+      "name": "setTokenMintLimits",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -632,38 +785,13 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "symbol",
-          "type": "string"
-        }
-      ],
-      "name": "tokenDailyMintAmount",
+      "inputs": [],
+      "name": "tokenDeployer",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "symbol",
-          "type": "string"
-        }
-      ],
-      "name": "tokenDailyMintLimit",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -683,6 +811,44 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "tokenMintAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "tokenMintLimit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
