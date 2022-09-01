@@ -21,7 +21,7 @@ testnet:
   endpoints:
     rpc: "http://testnet.rpc.axelarscan.io:26657"
     api: "https://testnet.api.axelarscan.io"
-  num_prev_blocks_fetch_tx: 3
+  num_prev_blocks_fetch_tx: 1
   num_reindex_processes: 2
   start_reindex_block: 690489
   end_reindex_block: 5000000
