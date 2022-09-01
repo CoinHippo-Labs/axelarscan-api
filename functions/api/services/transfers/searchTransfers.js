@@ -327,7 +327,7 @@ module.exports = async (
         },
         status: ibc_send ?
           ibc_send.recv_txhash ?
-            'ibc_recv' :
+            'executed' :
             'ibc_sent' :
           sign_batch?.executed ?
             'executed' :

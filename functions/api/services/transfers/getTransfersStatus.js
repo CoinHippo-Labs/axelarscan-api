@@ -46,11 +46,11 @@ module.exports = async (
   const {
     txHash,
     sourceChain,
-    depositAddress,
     recipientAddress,
     asset,
   } = { ...params };
   let {
+    depositAddress,
     fromTime,
     toTime,
     query,
@@ -69,7 +69,7 @@ module.exports = async (
 
     let data = _.head(_response?.data);
 
-    if (!data && depositAddress) {
+    if (!data) {
       let created_at = moment().valueOf();
 
       if (txHash.startsWith('0x')) {
@@ -102,135 +102,166 @@ module.exports = async (
                   created_at = block_timestamp * 1000;
                 }
 
-                const source = {
-                  id: txHash,
-                  type: 'evm_transfer',
-                  status_code: 0,
-                  status: 'success',
-                  height: blockNumber,
-                  created_at: get_granularity(created_at),
-                  sender_chain: chain_data?.id,
-                  sender_address: from,
-                  recipient_address: depositAddress,
-                  amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString(),
-                  denom: assets_data.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, to)) > -1)?.id,
-                };
+                let __response;
 
-                const __response = await read(
-                  'deposit_addresses',
-                  {
-                    match: { deposit_address: depositAddress },
-                  },
-                  {
-                    size: 1,
-                  },
-                );
+                if (!depositAddress) {
+                  const receipt = await provider.getTransactionReceipt(txHash);
 
-                const link = _.head(__response?.data);
-                const {
-                  id,
-                  original_sender_chain,
-                  original_recipient_chain,
-                  sender_chain,
-                  recipient_chain,
-                  sender_address,
-                  asset,
-                  denom,
-                } = { ...link };
-                let {
-                  price,
-                } = { ...link };
+                  const {
+                    logs,
+                  } = { ...receipt };
+                  const topics = logs?.flatMap(l => l?.topics || []) || [];
 
-                if (link) {
-                  let updated = false;
-
-                  if (!equals_ignore_case(sender_address, from)) {
-                    link.sender_address = from;
-                    updated = true;
-                  }
-
-                  if (!price) {
-                    const ___response = await assets_price({
-                      chain: original_sender_chain,
-                      denom: asset || denom,
-                      timestamp: created_at,
-                    });
-
-                    const _price = _.head(___response)?.price;
-                    if (_price) {
-                      price = _price;
-                      link.price = price;
-                      updated = true;
-                    }
-                  }
-
-                  if (updated) {
-                    await write(
+                  for (const topic of topics) {
+                    __response = await read(
                       'deposit_addresses',
-                      id,
-                      link,
+                      {
+                        match: { deposit_address: topic },
+                      },
+                      {
+                        size: 1,
+                      },
                     );
+
+                    if (_.head(__response?.data)) {
+                      depositAddress = topic;
+                      break;
+                    }
                   }
                 }
-
-                source.original_sender_chain = original_sender_chain ||
-                  normalize_original_chain(
-                    source.sender_chain ||
-                    sender_chain
-                  );
-                source.original_recipient_chain = original_recipient_chain ||
-                  normalize_original_chain(
-                    source.recipient_chain ||
-                    recipient_chain
-                  );
-
-                if (link) {
-                  source.recipient_chain = normalize_chain(
-                    recipient_chain ||
-                    source.recipient_chain
-                  );
-                  source.denom = source.denom || asset;
-
-                  if (source.denom && typeof source.amount === 'string') {
-                    const asset_data = assets_data.find(a => equals_ignore_case(a?.id, source.denom));
-
-                    const {
-                      contracts,
-                    } = { ...asset_data };
-                    let {
-                      decimals,
-                    } = { ...asset_data };
-
-                    decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals || decimals || 18;
-
-                    if (asset_data) {
-                      source.amount = Number(
-                        formatUnits(
-                          BigNumber.from(source.amount).toString(),
-                          decimals
-                        )
-                      );
-                    }
-                  }
-
-                  if (price && typeof source.amount === 'number') {
-                    source.value = source.amount * price;
-                  }
-
-                  await write(
-                    'transfers',
-                    `${source.id}_${source.recipient_address}`.toLowerCase(),
+                else {
+                  __response = await read(
+                    'deposit_addresses',
                     {
-                      source,
-                      link,
+                      match: { deposit_address: depositAddress },
+                    },
+                    {
+                      size: 1,
                     },
                   );
                 }
 
-                data = {
-                  source,
-                  link,
-                };
+                if (depositAddress) {
+                  const source = {
+                    id: txHash,
+                    type: 'evm_transfer',
+                    status_code: 0,
+                    status: 'success',
+                    height: blockNumber,
+                    created_at: get_granularity(created_at),
+                    sender_chain: chain_data?.id,
+                    sender_address: from,
+                    recipient_address: depositAddress,
+                    amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString(),
+                    denom: assets_data.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, to)) > -1)?.id,
+                  };
+
+                  const link = _.head(__response?.data);
+                  const {
+                    id,
+                    original_sender_chain,
+                    original_recipient_chain,
+                    sender_chain,
+                    recipient_chain,
+                    sender_address,
+                    asset,
+                    denom,
+                  } = { ...link };
+                  let {
+                    price,
+                  } = { ...link };
+
+                  if (link) {
+                    let updated = false;
+
+                    if (!equals_ignore_case(sender_address, from)) {
+                      link.sender_address = from;
+                      updated = true;
+                    }
+
+                    if (!price) {
+                      const ___response = await assets_price({
+                        chain: original_sender_chain,
+                        denom: asset || denom,
+                        timestamp: created_at,
+                      });
+
+                      const _price = _.head(___response)?.price;
+                      if (_price) {
+                        price = _price;
+                        link.price = price;
+                        updated = true;
+                      }
+                    }
+
+                    if (updated) {
+                      await write(
+                        'deposit_addresses',
+                        id,
+                        link,
+                      );
+                    }
+                  }
+
+                  source.original_sender_chain = original_sender_chain ||
+                    normalize_original_chain(
+                      source.sender_chain ||
+                      sender_chain
+                    );
+                  source.original_recipient_chain = original_recipient_chain ||
+                    normalize_original_chain(
+                      source.recipient_chain ||
+                      recipient_chain
+                    );
+
+                  if (link) {
+                    source.recipient_chain = normalize_chain(
+                      recipient_chain ||
+                      source.recipient_chain
+                    );
+                    source.denom = source.denom || asset;
+
+                    if (source.denom && typeof source.amount === 'string') {
+                      const asset_data = assets_data.find(a => equals_ignore_case(a?.id, source.denom));
+
+                      const {
+                        contracts,
+                      } = { ...asset_data };
+                      let {
+                        decimals,
+                      } = { ...asset_data };
+
+                      decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals || decimals || 18;
+
+                      if (asset_data) {
+                        source.amount = Number(
+                          formatUnits(
+                            BigNumber.from(source.amount).toString(),
+                            decimals
+                          )
+                        );
+                      }
+                    }
+
+                    if (price && typeof source.amount === 'number') {
+                      source.value = source.amount * price;
+                    }
+
+                    await write(
+                      'transfers',
+                      `${source.id}_${source.recipient_address}`.toLowerCase(),
+                      {
+                        source,
+                        link,
+                      },
+                    );
+                  }
+
+                  data = {
+                    source,
+                    link,
+                  };
+                }
 
                 break;
               }
@@ -779,7 +810,7 @@ module.exports = async (
         },
         status: ibc_send ?
           ibc_send.recv_txhash ?
-            'ibc_recv' :
+            'executed' :
             'ibc_sent' :
           sign_batch?.executed ?
             'executed' :
