@@ -17,6 +17,10 @@ mainnet:
     cli: "http://rpc.axelarscan.io:3333"
     api: "https://api.axelarscan.io"
     app: "https://axelarscan.io"
+    cosmostation: "https://api-axelar.cosmostation.io/v1"
+    mintscan:
+      api: "https://api.mintscan.io/v1/axelar"
+      chain_id: "axelar-dojo-1"
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
@@ -112,6 +116,10 @@ testnet:
     cli: "http://testnet.rpc.axelarscan.io:3333"
     api: "https://testnet.api.axelarscan.io"
     app: "https://testnet.axelarscan.io"
+    cosmostation: "https://api-axelar-testnet.cosmostation.io/v1"
+    mintscan:
+      api: "https://api.mintscan.io/v1/axelar-testnet"
+      chain_id: "axelar-testnet-lisbon-3"
   num_blocks_avg_block_time: 100
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1

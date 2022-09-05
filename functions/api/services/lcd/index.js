@@ -1,4 +1,5 @@
 const axios = require('axios');
+const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const index_tx = require('./tx');
@@ -85,9 +86,96 @@ module.exports = async (
         { params },
       ).catch(error => { return { data: { error } }; });
 
-      const {
+      let {
         data,
       } = { ..._response };
+      const {
+        error,
+      } = { ...data };
+
+      if (error) {
+        if (path.startsWith('/cosmos/tx/v1beta1/txs')) {
+          const {
+            events,
+          } = { ...params };
+
+          const hash = _.last(
+            path.split('/')
+              .filter(s => s)
+          );
+
+          const height = typeof events === 'string' &&
+            events.startsWith('tx.height=') &&
+            Number(_.last(events.split('=')));
+
+          if (
+            hash &&
+            hash !== 'txs' &&
+            endpoints.cosmostation
+          ) {
+            const api = endpoints.cosmostation;
+
+            const cosmostation = axios.create({ baseURL: api });
+            const _path = `/tx/hash/${hash}`;
+
+            const __response = await cosmostation.get(
+              _path,
+            ).catch(error => { return { data: { error } }; });
+
+            const {
+              tx,
+            } = { ...__response?.data?.data };
+
+            if (tx) {
+              data = {
+                url: `${api}${_path}`,
+                tx_response: __response.data.data,
+                tx,
+              };
+            }
+          }
+          else if (
+            !isNaN(height) &&
+            endpoints.mintscan?.api
+          ) {
+            const {
+              api,
+              chain_id,
+            } = { ...endpoints.mintscan };
+
+            const mintscan = axios.create({ baseURL: api });
+            const _path = `/block/${chain_id}/${height}`;
+
+            const __response = await mintscan.get(
+              _path,
+            ).catch(error => { return { data: { error } }; });
+
+            const {
+              txs,
+            } = { ..._.head(__response?.data) };
+
+            if (txs) {
+              data = {
+                url: `${api}${_path}`,
+                tx_responses: txs.map(d => {
+                  return {
+                    ...d?.data,
+                  };
+                }),
+                txs: txs.map(d => {
+                  const {
+                    tx,
+                  } = { ...d?.data };
+
+                  return {
+                    ...tx,
+                  };
+                }),
+              };
+            }
+          }
+        }
+      }
 
       response = data;
     }
