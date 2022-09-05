@@ -410,6 +410,7 @@ module.exports = async (
         ).flatMap(async t => {
           const {
             txhash,
+            code,
             timestamp,
             tx,
             logs,
