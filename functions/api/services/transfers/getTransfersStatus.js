@@ -883,7 +883,9 @@ module.exports = async (
             d.transfer_id;
 
           if (transfer_id) {
-            const command_id = transfer_id.toString(16).padStart(64, '0');
+            const command_id = transfer_id
+              .toString(16)
+              .padStart(64, '0');
 
             const _response = await read(
               'batches',

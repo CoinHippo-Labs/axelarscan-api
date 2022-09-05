@@ -824,19 +824,21 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        const recv_packets = logs?.map(l => {
-          const {
-            events,
-          } = { ...l };
+        const recv_packets = (logs || [])
+          .map(l => {
+            const {
+              events,
+            } = { ...l };
 
-          return {
-            ...events?.find(e => equals_ignore_case(e?.type, 'recv_packet')),
-            height: Number(
-              messages.find(m => _.last(m?.['@type']?.split('.')) === 'MsgRecvPacket')?.proof_height?.revision_height ||
-              '0'
-            ) - 1,
-          };
-        }).filter(e => height && e.attributes?.length > 0)
+            return {
+              ...events?.find(e => equals_ignore_case(e?.type, 'recv_packet')),
+              height: Number(
+                messages.find(m => _.last(m?.['@type']?.split('.')) === 'MsgRecvPacket')?.proof_height?.revision_height ||
+                '0'
+              ) - 1,
+            };
+          })
+          .filter(e => e.height > 0 && e.attributes?.length > 0)
           .map(e => {
             let {
               attributes,
@@ -856,7 +858,7 @@ module.exports = async (
               packet_sequence,
             };
           })
-          .filter(e => e.packet_data && typeof e.packet_data === 'object') || [];
+          .filter(e => e.packet_data && typeof e.packet_data === 'object');
 
         for (const record of recv_packets) {
           const {
@@ -882,14 +884,25 @@ module.exports = async (
               for (const _lcd of _lcds) {
                 const lcd = axios.create({ baseURL: _lcd });
 
-                const _response = await lcd.get(
+                let _response = await lcd.get(
                   `/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`,
                 ).catch(error => { return { data: { error } }; });
 
-                const {
+                let {
                   tx_responses,
                   txs,
                 } = { ..._response?.data };
+
+                if (tx_responses?.length < 1) {
+                  _response = await lcd.get(
+                    `/cosmos/tx/v1beta1/txs?limit=5&events=send_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`,
+                  ).catch(error => { return { data: { error } }; });
+
+                  if (_response?.data) {
+                    tx_responses = _response.data.tx_responses;
+                    txs = _response.data.txs;
+                  }
+                }
 
                 const index = tx_responses?.findIndex(t => {
                   const send_packet = _.head(
@@ -1512,14 +1525,25 @@ module.exports = async (
               for (const _lcd of _lcds) {
                 const lcd = axios.create({ baseURL: _lcd });
 
-                const __response = await lcd.get(
+                let __response = await lcd.get(
                   `/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`,
                 ).catch(error => { return { data: { error } }; });
 
-                const {
+                let {
                   tx_responses,
                   txs,
                 } = { ...__response?.data };
+
+                if (tx_responses?.length < 1) {
+                  __response = await lcd.get(
+                    `/cosmos/tx/v1beta1/txs?limit=5&events=recv_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`,
+                  ).catch(error => { return { data: { error } }; });
+
+                  if (__response?.data) {
+                    tx_responses = __response.data.tx_responses;
+                    txs = __response.data.txs;
+                  }
+                }
 
                 const index = tx_responses?.findIndex(t => {
                   const recv_packet = _.head(
@@ -1614,7 +1638,9 @@ module.exports = async (
           transaction_id = to_hex(to_json(transaction_id));
         }
 
-        const participants = to_json(attributes?.find(a => a?.key === 'participants')?.value)?.participants;
+        const {
+          participants,
+        } = { ...to_json(attributes?.find(a => a?.key === 'participants')?.value) };
 
         const record = {
           id: txhash,
@@ -1698,7 +1724,9 @@ module.exports = async (
                 );
 
                 if (recipient_chain) {
-                  const command_id = transfer_id.toString(16).padStart(64, '0');
+                  const command_id = transfer_id
+                    .toString(16)
+                    .padStart(64, '0');
 
                   _response = await read(
                     'batches',
@@ -1842,8 +1870,8 @@ module.exports = async (
                     },
                   );
 
-                  transfers_data = _response?.data
-                    .filter(t => t?.source?.id) || [];
+                  transfers_data = (_response?.data || [])
+                    .filter(t => t?.source?.id);
                 }
 
                 for (const transfer_data of transfers_data) {
