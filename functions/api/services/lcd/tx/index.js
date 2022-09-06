@@ -1396,6 +1396,7 @@ module.exports = async (
                 {
                   ibc_send: record,
                 },
+                true,
               );
             }
           }
@@ -1417,6 +1418,7 @@ module.exports = async (
                 {
                   ibc_send: record,
                 },
+                true,
               );
             }
           }
@@ -1531,6 +1533,7 @@ module.exports = async (
                   ack_txhash: record.id,
                 },
               },
+              true,
             );
 
             if (height && packet_data_hex && recipient_chain) {
@@ -1595,6 +1598,7 @@ module.exports = async (
                           received_at: get_granularity(received_at),
                         },
                       },
+                      true,
                     );
                   }
 
