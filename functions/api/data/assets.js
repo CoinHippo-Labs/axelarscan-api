@@ -557,6 +557,12 @@ module.exports = {
           symbol: 'axlWAVAX',
         },
         {
+          ibc_denom: 'ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
           ibc_denom: 'ibc/045E01C8D691C2E404F6D2CCBB7722A8ED511F0818E180E029143D58E72EA5F7',
           chain_id: 'secret',
           decimals: 18,

@@ -824,6 +824,10 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
+        const {
+          chain_id,
+        } = { ...messages.find(m => m?.['@type']?.includes('MsgUpdateClient'))?.header?.signer_header?.header };
+
         const recv_packets = (logs || [])
           .map(l => {
             const {
@@ -961,7 +965,11 @@ module.exports = async (
                       amount,
                     } = { ..._record };
 
-                    if (recipient_address?.length >= 65 && txhash && amount) {
+                    if (
+                      recipient_address?.length >= 65 &&
+                      txhash &&
+                      amount
+                    ) {
                       const _response = await read(
                         'deposit_addresses',
                         {
@@ -1012,17 +1020,32 @@ module.exports = async (
                           asset;
                       }
 
-                      if (equals_ignore_case(original_sender_chain, axelarnet.id)) {
+                      if (
+                        equals_ignore_case(original_sender_chain, axelarnet.id) ||
+                        cosmos_non_axelarnet_chains_data.findIndex(c => c?.overrides?.[original_sender_chain]) > -1
+                      ) {
                         const chain_data = cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address));
                         const {
                           overrides,
                         } = { ...chain_data };
 
                         if (chain_data) {
-                          original_sender_chain = _.last(Object.keys({ ...overrides })) ||
+                          original_sender_chain = Object.values({ ...overrides }).find(o => o?.prefix_chain_ids?.findIndex(p => chain_id?.startsWith(p)) > -1 || o?.endpoints?.lcd === _lcd || o?.endpoints?.lcds?.includes(_lcd))?.id ||
+                            _.last(Object.keys({ ...overrides })) ||
                             chain_data.id;
+
                           if (link) {
+                            let updated = link.original_sender_chain !== original_sender_chain;
+
                             link.original_sender_chain = original_sender_chain;
+
+                            if (updated) {
+                              await write(
+                                'deposit_addresses',
+                                id,
+                                link,
+                              );
+                            }
                           }
                         }
                       }

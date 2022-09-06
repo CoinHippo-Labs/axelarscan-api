@@ -329,7 +329,11 @@ module.exports = async (
                     recipient_address,
                   } = { ...source };
 
-                  if (recipient_address?.length >= 65 && txhash && source.amount) {
+                  if (
+                    recipient_address?.length >= 65 &&
+                    txhash &&
+                    source.amount
+                  ) {
                     const __response = await read(
                       'deposit_addresses',
                       {
@@ -354,17 +358,32 @@ module.exports = async (
                       price,
                     } = { ...link };
 
-                    if (equals_ignore_case(original_sender_chain, axelarnet.id)) {
+                    if (
+                      equals_ignore_case(original_sender_chain, axelarnet.id) ||
+                      cosmos_non_axelarnet_chains_data.findIndex(c => c?.overrides?.[original_sender_chain]) > -1
+                    ) {
                       const chain_data = cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address));
                       const {
                         overrides,
                       } = { ...chain_data };
 
                       if (chain_data) {
-                        original_sender_chain = _.last(Object.keys({ ...overrides })) ||
+                        original_sender_chain = Object.values({ ...overrides }).find(o => o?.endpoints?.lcd === _lcd || o?.endpoints?.lcds?.includes(_lcd))?.id ||
+                          _.last(Object.keys({ ...overrides })) ||
                           chain_data.id;
+
                         if (link) {
+                          let updated = link.original_sender_chain !== original_sender_chain;
+
                           link.original_sender_chain = original_sender_chain;
+
+                          if (updated) {
+                            await write(
+                              'deposit_addresses',
+                              id,
+                              link,
+                            );
+                          }
                         }
                       }
                     }
