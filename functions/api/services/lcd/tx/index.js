@@ -994,31 +994,13 @@ module.exports = async (
                         price,
                       } = { ...link };
 
-                      if (link && !price) {
-                        const __response = await assets_price({
-                          chain: original_sender_chain,
-                          denom: asset || denom,
-                          timestamp: created_at,
-                        });
-
-                        const _price = _.head(__response)?.price;
-                        if (_price) {
-                          price = _price;
-                          link.price = price;
-
-                          await write(
-                            'deposit_addresses',
-                            id,
-                            link,
-                          );
-                        }
-                      }
-
                       if (link) {
                         _record.recipient_chain = recipient_chain;
                         _record.denom = _record.denom ||
                           asset;
                       }
+
+                      let link_updated = false;
 
                       if (
                         equals_ignore_case(original_sender_chain, axelarnet.id) ||
@@ -1035,19 +1017,33 @@ module.exports = async (
                             chain_data.id;
 
                           if (link) {
-                            let updated = link.original_sender_chain !== original_sender_chain;
-
+                            link_updated = link.original_sender_chain !== original_sender_chain;
                             link.original_sender_chain = original_sender_chain;
-
-                            if (updated) {
-                              await write(
-                                'deposit_addresses',
-                                id,
-                                link,
-                              );
-                            }
                           }
                         }
+                      }
+
+                      if (link && !price) {
+                        const __response = await assets_price({
+                          chain: original_sender_chain,
+                          denom: asset || denom,
+                          timestamp: created_at,
+                        });
+
+                        const _price = _.head(__response)?.price;
+                        if (_price) {
+                          price = _price;
+                          link.price = price;
+                          link_updated = true;
+                        }
+                      }
+
+                      if (link_updated) {
+                        await write(
+                          'deposit_addresses',
+                          id,
+                          link,
+                        );
                       }
 
                       _record.original_sender_chain = original_sender_chain ||

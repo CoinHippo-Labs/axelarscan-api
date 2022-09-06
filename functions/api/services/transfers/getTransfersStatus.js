@@ -358,6 +358,8 @@ module.exports = async (
                       price,
                     } = { ...link };
 
+                    let link_updated = false;
+
                     if (
                       equals_ignore_case(original_sender_chain, axelarnet.id) ||
                       cosmos_non_axelarnet_chains_data.findIndex(c => c?.overrides?.[original_sender_chain]) > -1
@@ -373,17 +375,8 @@ module.exports = async (
                           chain_data.id;
 
                         if (link) {
-                          let updated = link.original_sender_chain !== original_sender_chain;
-
+                          link_updated = link.original_sender_chain !== original_sender_chain;
                           link.original_sender_chain = original_sender_chain;
-
-                          if (updated) {
-                            await write(
-                              'deposit_addresses',
-                              id,
-                              link,
-                            );
-                          }
                         }
                       }
                     }
@@ -399,13 +392,16 @@ module.exports = async (
                       if (_price) {
                         price = _price;
                         link.price = price;
-
-                        await write(
-                          'deposit_addresses',
-                          id,
-                          link,
-                        );
+                        link_updated = true;
                       }
+                    }
+
+                    if (link_updated) {
+                      await write(
+                        'deposit_addresses',
+                        id,
+                        link,
+                      );
                     }
 
                     source.original_sender_chain = original_sender_chain ||
