@@ -110,7 +110,12 @@ module.exports = async (
                   const {
                     logs,
                   } = { ...receipt };
-                  const topics = logs?.flatMap(l => l?.topics || []) || [];
+                  const topics = _.reverse(
+                    (logs || [])
+                      .flatMap(l => l?.topics || [])
+                  )
+                  .filter(t => t?.startsWith('0x000000000000000000000000'))
+                  .map(t => t.replace('0x000000000000000000000000', '0x'));
 
                   for (const topic of topics) {
                     __response = await read(
@@ -515,7 +520,11 @@ module.exports = async (
         price,
       } = { ...link };
 
-      if (txhash && typeof price !== 'number' && endpoints?.api) {
+      if (
+        txhash &&
+        typeof price !== 'number' &&
+        endpoints?.api
+      ) {
         const api = axios.create({ baseURL: endpoints.api });
         await api.post(
           '',
