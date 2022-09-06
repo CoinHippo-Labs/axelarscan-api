@@ -290,6 +290,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'batches':
+          try {
+            response = await require('./services/batches')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'tvl-alert':
           try {
             response = await require('./services/tvl/alert')(params);
