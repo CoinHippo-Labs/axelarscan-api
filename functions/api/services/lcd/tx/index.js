@@ -1178,47 +1178,52 @@ module.exports = async (
             end_block_events,
           } = { ..._response };
 
-          const event = _.head(
-            end_block_events?.filter(e =>
-              equals_ignore_case(e?.type, 'send_packet') &&
-              e.attributes?.length > 0
-            )
+          const events = end_block_events?.filter(e =>
+            equals_ignore_case(e?.type, 'send_packet') &&
+            e.attributes?.length > 0
           );
 
-          const {
-            attributes,
-          } = { ...event };
+          for (const event of events) {
+            const {
+              attributes,
+            } = { ...event };
 
-          const packet_data = to_json(attributes?.find(a => a?.key === 'packet_data')?.value);
+            const packet_data = to_json(attributes?.find(a => a?.key === 'packet_data')?.value);
 
-          const {
-            sender,
-          } = { ...packet_data };
+            const {
+              sender,
+            } = { ...packet_data };
 
-          if (sender &&
-            logs.findIndex(l =>
-              l?.events?.findIndex(e =>
-                e?.attributes?.findIndex(a =>
-                  [
-                    'minter',
-                    'receiver',
-                  ].includes(a?.key) &&
-                  equals_ignore_case(a.value, sender)
+            if (sender &&
+              logs.findIndex(l =>
+                l?.events?.findIndex(e =>
+                  e?.attributes?.findIndex(a =>
+                    [
+                      'minter',
+                      'receiver',
+                    ].includes(a?.key) &&
+                    equals_ignore_case(a.value, sender)
+                  ) > -1  ||
+                  (
+                    e?.attributes?.findIndex(a => a?.value === 'RouteIBCTransfers') > -1 &&
+                    events.length === 1
+                  )
                 ) > -1
               ) > -1
-            ) > -1
-          ) {
-            logs[0] = {
-              ..._.head(logs),
-              events: _.concat(
-                _.head(logs).events,
-                event,
-              ).filter(e => e),
-            };
+            ) {
+              logs[0] = {
+                ..._.head(logs),
+                events: _.concat(
+                  _.head(logs).events,
+                  event,
+                ).filter(e => e),
+              };
+            }
           }
         }
 
-        const send_packets = logs?.map(l => l?.events?.find(e => equals_ignore_case(e?.type, 'send_packet')))
+        const send_packets = (logs || [])
+          .flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'send_packet')))
           .filter(e => e?.attributes?.length > 0)
           .flatMap(e => {
             let {
@@ -1305,7 +1310,7 @@ module.exports = async (
             };
 
             return record;
-          }) || [];
+          });
 
         for (const record of send_packets) {
           const {
@@ -1377,7 +1382,7 @@ module.exports = async (
               },
               {
                 size: 1,
-                sort: [{ 'source.created_at.ms': 'asc' }],
+                sort: [{ 'source.created_at.ms': 'desc' }],
               },
             );
 
@@ -1499,7 +1504,7 @@ module.exports = async (
             },
             {
               size: 1,
-              sort: [{ 'source.created_at.ms': 'asc' }],
+              sort: [{ 'source.created_at.ms': 'desc' }],
             },
           );
 
