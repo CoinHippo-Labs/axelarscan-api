@@ -36,7 +36,8 @@ module.exports = async (
 
   test = typeof test === 'boolean' ?
     test :
-    typeof test === 'string' && equals_ignore_case(test, 'true');
+    typeof test === 'string' &&
+      equals_ignore_case(test, 'true');
 
   const _response = await read(
     'tvls',
@@ -57,7 +58,8 @@ module.exports = async (
   } =  { ..._.head(data) };
 
   data = _.orderBy(
-    data?.map(d => _.head(d?.data))
+    (data || [])
+      .map(d => _.head(d?.data))
       .filter(d => d)
       .map(d => {
         const {
@@ -65,15 +67,19 @@ module.exports = async (
           total,
         } = { ...d };
 
-        const value = (total * price) || 0;
-
         return {
           ...d,
-          value,
+          value: (total * price) || 0,
         };
-      }) || [],
-    ['value', 'total'],
-    ['desc', 'desc'],
+      }),
+    [
+      'value',
+      'total',
+    ],
+    [
+      'desc',
+      'desc',
+    ],
   );
 
   const _data = data.filter(d =>
@@ -81,10 +87,15 @@ module.exports = async (
       d.is_abnormal_supply &&
       d.value > alert_asset_value_threshold
     ) ||
-    Object.values({ ...d.tvl }).findIndex(_d => _d?.is_abnormal_supply) > -1
+    Object.values({ ...d.tvl })
+      .findIndex(_d => _d?.is_abnormal_supply) > -1
   );
 
-  if (test && _data.length < 1 && data.length > 0) {
+  if (
+    test &&
+    _data.length < 1 &&
+    data.length > 0
+  ) {
     data = _.slice(
       data,
       0,
@@ -101,19 +112,16 @@ module.exports = async (
       moment()
   ).format();
 
-  let status,
+  let native_on_evm_total_status = 'ok',
+    native_on_evm_escrow_status = 'ok',
+    native_on_cosmos_evm_escrow_status = 'ok',
+    native_on_cosmos_escrow_status = 'ok',
     summary,
-    event_action,
-    severity,
-    custom_details,
+    details,
     links;
 
   if (data?.length > 0) {
-    status = 'alert';
-    event_action = 'trigger';
-    severity = 'info';
-
-    custom_details = data.map(d => {
+    details = data.map(d => {
       const {
         asset,
         price,
@@ -128,9 +136,28 @@ module.exports = async (
         evm_escrow_address_urls,
         tvl,
       } = { ...d };
+
+      const asset_data = assets_data.find(a => a?.id === asset);
+
       const {
         symbol,
-      } = { ...assets_data.find(a => a?.id === asset) };
+        contracts,
+        ibc,
+      } = { ...asset_data };
+
+      const native_chain_id = contracts?.find(c => c?.is_native)?.chain_id ||
+        ibc?.find(i => i?.is_native)?.chain_id;
+
+      const native_chain = chains_data.find(c =>
+        c?.id === native_chain_id ||
+        c?.chain_id === native_chain_id
+      )?.id;
+
+      const native_on = evm_chains_data.findIndex(c => c?.id === native_chain) > -1 ?
+        'evm' :
+        cosmos_chains_data.findIndex(c => c?.id === native_chain) > -1 ?
+          'cosmos' :
+          undefined;
 
       if (
         is_abnormal_supply &&
@@ -140,6 +167,8 @@ module.exports = async (
           asset,
           symbol,
           price,
+          native_chain,
+          native_on,
           percent_diff_supply,
           total,
           total_on_evm,
@@ -168,6 +197,8 @@ module.exports = async (
           asset,
           symbol,
           price,
+          native_chain,
+          native_on,
           chains: Object.entries({ ...tvl })
             .filter(([k, v]) => v?.is_abnormal_supply)
             .map(([k, v]) => {
@@ -237,23 +268,63 @@ module.exports = async (
       }
     });
 
-    summary = `${custom_details.map(d => d.symbol).join(', ')} amount locked on the source chains does not match the amount minted on the evm/cosmos chains.`;
+    native_on_evm_total_status = details.findIndex(d => d.native_on === 'evm' && typeof d.percent_diff_supply === 'number') > -1 ?
+      'alert' :
+      'ok';
+    native_on_evm_escrow_status = details.findIndex(d => d.native_on === 'evm' && d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1) > -1 ?
+      'alert' :
+      'ok';
+    native_on_cosmos_evm_escrow_status = details.findIndex(d => d.native_on === 'cosmos' && typeof d.percent_diff_supply === 'number') > -1 ?
+      'alert' :
+      'ok';
+    native_on_cosmos_escrow_status = details.findIndex(d => d.native_on === 'cosmos' && d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1) > -1 ?
+      'alert' :
+      'ok';
+
+    const evm_details = [
+      native_on_evm_total_status,
+      native_on_evm_escrow_status,
+    ].findIndex(s => s !== 'ok') > -1 ?
+      details.filter(d => d.native_on === 'evm') :
+      undefined;
+
+    const cosmos_details = [
+      native_on_cosmos_evm_escrow_status,
+      native_on_cosmos_escrow_status,
+    ].findIndex(s => s !== 'ok') > -1 ?
+      details.filter(d => d.native_on === 'cosmos') :
+      undefined;
+
+    status = 'alert';
+
+    summary = evm_details && cosmos_details ?
+      {
+        evm: evm_details
+          .map(d => d.symbol)
+          .join(', '),
+        cosmos: cosmos_details
+          .map(d => d.symbol)
+          .join(', '),
+      } :
+      evm_details || cosmos_details ?
+        (evm_details || cosmos_details)
+          .map(d => d.symbol)
+          .join(', ') :
+        undefined;
 
     links = _.uniq(
-      custom_details.flatMap(d => d.links)
+      details.flatMap(d => d.links)
     );
-  }
-  else {
-    status = 'ok';
   }
 
   response = {
-    status,
     summary,
     timestamp,
-    event_action,
-    severity,
-    custom_details,
+    native_on_evm_total_status,
+    native_on_evm_escrow_status,
+    native_on_cosmos_evm_escrow_status,
+    native_on_cosmos_escrow_status,
+    details,
     links,
   };
 
