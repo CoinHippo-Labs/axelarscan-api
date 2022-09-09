@@ -79,13 +79,16 @@ module.exports = async (
     const rpcs = endpoints.rpc;
     const provider = rpcs.length === 1 ?
       new JsonRpcProvider(rpcs[0]) :
-      new FallbackProvider(rpcs.map((url, i) => {
-        return {
-          provider: new JsonRpcProvider(url),
-          priority: i + 1,
-          stallTimeout: 1000,
-        };
-      }));
+      new FallbackProvider(
+        rpcs.map((url, i) => {
+          return {
+            provider: new JsonRpcProvider(url),
+            priority: i + 1,
+            stallTimeout: 1000,
+          };
+        }),
+        rpcs.length / 3,
+      );
 
     const {
       _id,

@@ -50,7 +50,10 @@ module.exports = {
             chainName: 'BNB Chain',
             rpcUrls: [
               'https://rpc.ankr.com/bsc',
-              'https://bsc-dataseed.binance.org',
+              'https://bsc-dataseed1.binance.org',
+              'https://bsc-dataseed2.binance.org',
+              'https://bsc-dataseed3.binance.org',
+              'https://bsc-dataseed4.binance.org',
             ],
             nativeCurrency: {
               name: 'BNB',
@@ -124,6 +127,8 @@ module.exports = {
             chainName: 'Polygon',
             rpcUrls: [
               'https://rpc.ankr.com/polygon',
+              'https://matic-mainnet.chainstacklabs.com',
+              'https://polygon-rpc.com',
             ],
             nativeCurrency: {
               name: 'Polygon',
