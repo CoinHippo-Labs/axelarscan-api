@@ -458,7 +458,10 @@ module.exports = {
           'crescent-',
         ],
         endpoints: {
-          lcd: 'https://mainnet.crescent.network:1317',
+          lcd: 'https://api.crescent.pupmos.network',
+          lcds: [
+            'https://mainnet.crescent.network:1317',
+          ],
         },
       },
       {
