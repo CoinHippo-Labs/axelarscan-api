@@ -512,9 +512,8 @@ module.exports = {
           'secret-',
         ],
         endpoints: {
-          lcd: 'https://api.roninventures.io',
+          lcd: 'https://api.secret.forbole.com',
           lcds: [
-            'https://api.secret.forbole.com',
             'https://secret.api.consensus.one',
             'https://secretnetwork-lcd.stakely.io',
           ],
@@ -543,9 +542,8 @@ module.exports = {
           'stargaze-',
         ],
         endpoints: {
-          lcd: 'https://rest.stargaze-apis.com',
+          lcd: 'https://api.stargaze.pupmos.network',
           lcds: [
-            'https://api.stargaze.pupmos.network',
             'https://api.stargaze.ezstaking.io',
             'https://api.stars.kingnodes.com',
             'https://api-stargaze-ia.cosmosia.notional.ventures',
