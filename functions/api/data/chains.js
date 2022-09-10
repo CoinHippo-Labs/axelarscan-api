@@ -615,7 +615,7 @@ module.exports = {
         },
       },
       {
-        id: 'ki',
+        id: 'kichain',
         name: 'KI',
         short_name: 'KI',
         explorer: {
@@ -629,7 +629,7 @@ module.exports = {
           asset_path: '/assets/{ibc_denom}?type=ibc',
           transaction_path: '/txs/{tx}',
         },
-        image: '/logos/chains/ki.png',
+        image: '/logos/chains/kichain.png',
         color: '#2a4bfb',
         website: 'https://foundation.ki',
         prefix_address: 'ki',
