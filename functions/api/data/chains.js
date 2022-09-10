@@ -613,7 +613,7 @@ module.exports = {
         },
       },
       {
-        id: 'kichain',
+        id: 'ki',
         name: 'KI',
         short_name: 'KI',
         explorer: {

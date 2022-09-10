@@ -104,37 +104,42 @@ module.exports = async (
 
                 let __response;
 
-                if (!depositAddress) {
-                  const receipt = await provider.getTransactionReceipt(txHash);
+                const receipt = await provider.getTransactionReceipt(txHash);
 
-                  const {
-                    logs,
-                  } = { ...receipt };
-                  const topics = _.reverse(
-                    (logs || [])
-                      .flatMap(l => l?.topics || [])
-                  )
-                  .filter(t => t?.startsWith('0x000000000000000000000000'))
-                  .map(t => t.replace('0x000000000000000000000000', '0x'));
+                const {
+                  logs,
+                } = { ...receipt };
+                const topics = _.reverse(
+                  (logs || [])
+                    .flatMap(l => l?.topics || [])
+                )
+                .filter(t => t?.startsWith('0x000000000000000000000000'))
+                .map(t => t.replace('0x000000000000000000000000', '0x'));
 
-                  for (const topic of topics) {
-                    __response = await read(
-                      'deposit_addresses',
-                      {
-                        match: { deposit_address: topic },
-                      },
-                      {
-                        size: 1,
-                      },
-                    );
+                let found = false;
 
-                    if (_.head(__response?.data)) {
-                      depositAddress = topic;
-                      break;
-                    }
+                for (const topic of topics) {
+                  __response = await read(
+                    'deposit_addresses',
+                    {
+                      match: { deposit_address: topic },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                  if (_.head(__response?.data)) {
+                    depositAddress = topic;
+                    found = true;
+                    break;
                   }
                 }
-                else {
+
+                if (
+                  !found &&
+                  depositAddress
+                ) {
                   __response = await read(
                     'deposit_addresses',
                     {

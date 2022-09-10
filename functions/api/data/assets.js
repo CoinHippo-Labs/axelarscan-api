@@ -156,7 +156,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/E1E3674A0E4E1EF9C69646F9AF8D9497173821826074622D831BAB73CCB99A2D',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -282,7 +282,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/386A4031D68DE6370B85F9FF7E89CEF8DE7CDE01CC193CBD87BD3ED60F6662CE',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 6,
           symbol: 'axlUSDT',
         },
@@ -408,7 +408,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/B5172730CC62ACC6BCB4853D9B6F2C723438A6D7EA9009F44D8096D41FF04166',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -498,7 +498,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/911B721F15A40ABB29636CBF8AE630076DDF62841ACE7E6D879405CA8870CEA2',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 8,
           symbol: 'axlWBTC',
         },
@@ -588,7 +588,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/9B68CC79EFF12D25AF712EB805C5062B8F97B2CCE5F3FE55B107EE03095514A3',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -678,7 +678,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/F4B1551A3470D93A725460F109FB57990702B703790D8A21C7DC66AEF3BACBF4',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -768,7 +768,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/496812EE3F92871345EAFC70A2E747D30B13B1D99DB19538076F954DEF4B5B1D',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -858,7 +858,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/45368D217CE1F76A1214FA6F1F31493B5F127793E6AB4873B39A81A8CE21A18E',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -948,7 +948,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/CC7B0778EABFED87BA0B91C38A9127524DB191BFD6C230FA1862456BE04424A4',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -1044,7 +1044,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/927DA5BD557C059E3FA6816B2023B24EE4C1B149CDBFBC70A771F8C425DBB91A',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -1141,7 +1141,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/684772AC22DBD0C4F798F76A17B54CAC4D0935FED4E8A8B3E853F94BE842FDC9',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -1267,7 +1267,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/5F659691870E909D0F48F3B12D06DF64854D711B4B5927DC2352175A972197E5',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1613,7 +1613,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/783AB835CDB043AFB003843BCEEE5CF16D10BA4B5F113360ACC24730E25E6648',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlRAI',
         },
@@ -1703,7 +1703,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/1B31416323D25DAAD779DBC59DE5C31A187F1E8A5EAB57B0892789F9855B973C',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -1793,7 +1793,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/5A24CEC2E967580E64704D577184A055271B8DDB128B4D55221D9F7BB7048CA7',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlAAVE',
         },
@@ -1955,7 +1955,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/0A55E31CCF0ED9F754E683669AFF407FA351F242ECD54324B6B812DB78D0C6DD',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlAPE',
         },
@@ -2045,7 +2045,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/6C33F08AFE906E0FBC9ED78CAA2B189D2691F2F49972577D7AF5E43F77118410',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlUNI',
         },
@@ -2135,7 +2135,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/4CD89078E929E478404487FEEC097E968FCB331C12A2FA1D87108A118A413772',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlSHIB',
         },
@@ -2225,7 +2225,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/F7A0AFDEF6E3C8142ED0B01CA59EE42C060FB7EEF9B1154D4D1F987CA61320C0',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlAXS',
         },
@@ -2315,7 +2315,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/099D47DCAC13BCED6BA3CF63CFAF81CE530F74C6BA86FD88B6C8EC6F954C517F',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlXCN',
         },
@@ -2405,7 +2405,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/6FEC4D9AFC20E22A9388B6466F27D91479CADED5D0E6F7AADBBD9B6E30A494EC',
-          chain_id: 'kichain',
+          chain_id: 'ki',
           decimals: 18,
           symbol: 'axlMKR',
         },
