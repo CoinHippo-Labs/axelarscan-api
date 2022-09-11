@@ -371,7 +371,11 @@ module.exports = {
           'juno-',
         ],
         endpoints: {
-          lcd: 'https://lcd-juno.itastakers.com',
+          lcd: 'https://lcd-juno.whispernode.com',
+          lcds: [
+            'https://rest-juno.ecostake.com',
+            'https://api.juno.pupmos.network',
+          ],
         },
       },
       {
