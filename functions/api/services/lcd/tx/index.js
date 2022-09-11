@@ -12,6 +12,9 @@ const {
   read,
   write,
 } = require('../../index');
+const {
+  saveTimeSpent,
+} = require('../../transfers/utils');
 const rpc = require('../../rpc');
 const assets_price = require('../../assets-price');
 const {
@@ -1395,13 +1398,19 @@ module.exports = async (
                 recipient_address,
               } = { ...source };
 
+              const _id = `${id}_${recipient_address}`.toLowerCase();
+
               await write(
                 'transfers',
-                `${id}_${recipient_address}`.toLowerCase(),
+                _id,
                 {
                   ibc_send: record,
                 },
                 true,
+              );
+
+              await saveTimeSpent(
+                _id,
               );
             }
           }
@@ -1416,14 +1425,23 @@ module.exports = async (
               recipient_address,
             } = { ...source };
 
-            if (data && !_.isEqual(ibc_send, record)) {
+            if (
+              data &&
+              !_.isEqual(ibc_send, record)
+            ) {
+              const _id = `${id}_${recipient_address}`.toLowerCase();
+
               await write(
                 'transfers',
-                `${id}_${recipient_address}`.toLowerCase(),
+                _id,
                 {
                   ibc_send: record,
                 },
                 true,
+              );
+
+              await saveTimeSpent(
+                _id,
               );
             }
           }
@@ -1529,9 +1547,11 @@ module.exports = async (
             recipient_chain = recipient_chain ||
               link?.recipient_chain;
 
+              const _id = `${id}_${recipient_address}`.toLowerCase();
+
             await write(
               'transfers',
-              `${id}_${recipient_address}`.toLowerCase(),
+              _id,
               {
                 ibc_send: {
                   ...ibc_send,
@@ -1539,6 +1559,10 @@ module.exports = async (
                 },
               },
               true,
+            );
+
+            await saveTimeSpent(
+              _id,
             );
 
             if (height && packet_data_hex && recipient_chain) {
@@ -1592,9 +1616,11 @@ module.exports = async (
                   if (txhash) {
                     const received_at = moment(timestamp).utc().valueOf();
 
+                    const _id = `${id}_${recipient_address}`.toLowerCase();
+
                     await write(
                       'transfers',
-                      `${id}_${recipient_address}`.toLowerCase(),
+                      _id,
                       {
                         ibc_send: {
                           ...ibc_send,
@@ -1604,6 +1630,10 @@ module.exports = async (
                         },
                       },
                       true,
+                    );
+
+                    await saveTimeSpent(
+                      _id,
                     );
                   }
 
@@ -1933,9 +1963,11 @@ module.exports = async (
                     );
                   }
 
+                  const _id = `${id}_${recipient_address}`.toLowerCase();
+
                   await write(
                     'transfers',
-                    `${id}_${recipient_address}`.toLowerCase(),
+                    _id,
                     {
                       ...transfer_data,
                       confirm_deposit: record,
@@ -1951,6 +1983,10 @@ module.exports = async (
                         recipient_chain,
                       },
                     },
+                  );
+
+                  await saveTimeSpent(
+                    _id,
                   );
                 }
               } catch (error) {}
@@ -2169,9 +2205,11 @@ module.exports = async (
                       recipient_address,
                     } = { ...source };
 
+                    const _id = `${id}_${recipient_address}`.toLowerCase();
+
                     await write(
                       'transfers',
-                      `${id}_${recipient_address}`.toLowerCase(),
+                      _id,
                       {
                         source: {
                           ...source,
@@ -2181,6 +2219,10 @@ module.exports = async (
                           undefined,
                         confirm_deposit: record,
                       },
+                    );
+
+                    await saveTimeSpent(
+                      _id,
                     );
                   }
                 }
@@ -2552,9 +2594,6 @@ module.exports = async (
                       transfer_id = _transfer_id ||
                         transfer_id;
                     }
-
-                    transaction_id = _transaction_id ||
-                      transaction_id;
                   }
                 }
 
@@ -2821,9 +2860,11 @@ module.exports = async (
                         recipient_address,
                       } = { ...source };
 
+                      const _id = `${id}_${recipient_address}`.toLowerCase();
+
                       await write(
                         'transfers',
-                        `${id}_${recipient_address}`.toLowerCase(),
+                        _id,
                         {
                           source: {
                             ...source,
@@ -2837,6 +2878,10 @@ module.exports = async (
                             transfer_data.vote :
                             record,
                         },
+                      );
+
+                      await saveTimeSpent(
+                        _id,
                       );
                     }
                   } catch (error) {}

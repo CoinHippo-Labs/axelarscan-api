@@ -11,6 +11,9 @@ const {
   write,
 } = require('./index');
 const {
+  saveTimeSpent,
+} = require('./transfers/utils');
+const {
   equals_ignore_case,
   to_json,
   get_granularity,
@@ -446,9 +449,11 @@ module.exports = async (
                     recipient_address,
                   } = { ...source };
 
+                  const _id = `${id}_${recipient_address}`.toLowerCase();
+
                   await write(
                     'transfers',
-                    `${id}_${recipient_address}`.toLowerCase(),
+                    _id,
                     {
                       ...transfer_data,
                       sign_batch,
@@ -460,6 +465,10 @@ module.exports = async (
                         ),
                       },
                     },
+                  );
+
+                  await saveTimeSpent(
+                    _id,
                   );
                 }
               }

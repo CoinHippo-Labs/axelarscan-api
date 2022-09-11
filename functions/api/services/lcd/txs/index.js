@@ -729,9 +729,6 @@ module.exports = async (
                           transfer_id = _transfer_id ||
                             transfer_id;
                         }
-
-                        transaction_id = _transaction_id ||
-                          transaction_id;
                       }
                     }
 

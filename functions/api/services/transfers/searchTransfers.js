@@ -3,6 +3,9 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
+  saveTimeSpent,
+} = require('./utils');
+const {
   read,
 } = require('../index');
 const {
@@ -262,7 +265,10 @@ module.exports = async (
       );
     });
 
-    if (data.length > 0 && endpoints?.api) {
+    if (
+      data.length > 0 &&
+      endpoints?.api
+    ) {
       const api = axios.create({ baseURL: endpoints.api });
 
       for (const d of data) {
@@ -284,6 +290,44 @@ module.exports = async (
       }
 
       await sleep(5 * 1000);
+
+      response = await read(
+        'transfers',
+        query,
+        read_params,
+      );
+    }
+  }
+
+  if (Array.isArray(response?.data)) {
+    let {
+      data,
+    } = { ...response };
+
+    data = data.filter(d => {
+      const {
+        time_spent,
+      } = { ...d };
+      const {
+        total,
+      } = { ...time_spent };
+
+      return !total;
+    });
+
+    if (data.length > 0) {
+      for (const d of data) {
+        const {
+          id,
+        } = { ...d };
+
+        saveTimeSpent(
+          id,
+          d,
+        );
+      }
+
+      await sleep(1 * 1000);
 
       response = await read(
         'transfers',

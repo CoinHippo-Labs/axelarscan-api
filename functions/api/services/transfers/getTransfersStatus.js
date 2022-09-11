@@ -7,6 +7,9 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
+  saveTimeSpent,
+} = require('./utils');
+const {
   read,
   write,
 } = require('../index');
@@ -1014,14 +1017,20 @@ module.exports = async (
               };
             }
 
+            const _id = `${id}_${recipient_address}`.toLowerCase();
+
             await write(
               'transfers',
-              `${id}_${recipient_address}`.toLowerCase(),
+              _id,
               {
                 ...d,
                 sign_batch: sign_batch ||
                   undefined,
               },
+            );
+
+            await saveTimeSpent(
+              _id,
             );
           }
         }
