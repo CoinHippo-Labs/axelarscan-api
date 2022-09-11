@@ -449,27 +449,29 @@ module.exports = async (
                     recipient_address,
                   } = { ...source };
 
-                  const _id = `${id}_${recipient_address}`.toLowerCase();
+                  if (recipient_address) {
+                    const _id = `${id}_${recipient_address}`.toLowerCase();
 
-                  await write(
-                    'transfers',
-                    _id,
-                    {
-                      ...transfer_data,
-                      sign_batch,
-                      source: {
-                        ...source,
-                        sender_chain: normalize_chain(
-                          cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
-                          sender_chain
-                        ),
+                    await write(
+                      'transfers',
+                      _id,
+                      {
+                        ...transfer_data,
+                        sign_batch,
+                        source: {
+                          ...source,
+                          sender_chain: normalize_chain(
+                            cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
+                            sender_chain
+                          ),
+                        },
                       },
-                    },
-                  );
+                    );
 
-                  await saveTimeSpent(
-                    _id,
-                  );
+                    await saveTimeSpent(
+                      _id,
+                    );
+                  }
                 }
               }
             }

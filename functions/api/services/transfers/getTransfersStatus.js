@@ -260,14 +260,16 @@ module.exports = async (
                       source.value = source.amount * price;
                     }
 
-                    await write(
-                      'transfers',
-                      `${source.id}_${source.recipient_address}`.toLowerCase(),
-                      {
-                        source,
-                        link,
-                      },
-                    );
+                    if (source.recipient_address) {
+                      await write(
+                        'transfers',
+                        `${source.id}_${source.recipient_address}`.toLowerCase(),
+                        {
+                          source,
+                          link,
+                        },
+                      );
+                    }
                   }
 
                   data = {
@@ -467,14 +469,16 @@ module.exports = async (
                         source.value = source.amount * price;
                       }
 
-                      await write(
-                        'transfers',
-                        `${source.id}_${source.recipient_address}`.toLowerCase(),
-                        {
-                          source,
-                          link,
-                        },
-                      );
+                      if (source.recipient_address) {
+                        await write(
+                          'transfers',
+                          `${source.id}_${source.recipient_address}`.toLowerCase(),
+                          {
+                            source,
+                            link,
+                          },
+                        );
+                      }
                     }
 
                     data = {
@@ -709,14 +713,16 @@ module.exports = async (
           source.value = source.amount * price;
         }
 
-        await write(
-          'transfers',
-          `${source.id}_${source.recipient_address}`.toLowerCase(),
-          {
-            source,
-            link,
-          },
-        );
+        if (source.recipient_address) {
+          await write(
+            'transfers',
+            `${source.id}_${source.recipient_address}`.toLowerCase(),
+            {
+              source,
+              link,
+            },
+          );
+        }
       }
 
       data = {
@@ -1017,21 +1023,23 @@ module.exports = async (
               };
             }
 
-            const _id = `${id}_${recipient_address}`.toLowerCase();
+            if (recipient_address) {
+              const _id = `${id}_${recipient_address}`.toLowerCase();
 
-            await write(
-              'transfers',
-              _id,
-              {
-                ...d,
-                sign_batch: sign_batch ||
-                  undefined,
-              },
-            );
+              await write(
+                'transfers',
+                _id,
+                {
+                  ...d,
+                  sign_batch: sign_batch ||
+                    undefined,
+                },
+              );
 
-            await saveTimeSpent(
-              _id,
-            );
+              await saveTimeSpent(
+                _id,
+              );
+            }
           }
         }
       }

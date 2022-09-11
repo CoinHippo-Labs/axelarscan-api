@@ -805,18 +805,20 @@ module.exports = async (
             record.value = amount * price;
           }
 
-          await write(
-            'transfers',
-            `${txhash}_${recipient_address}`.toLowerCase(),
-            {
-              source: {
-                ...record,
-                amount,
+          if (recipient_address) {
+            await write(
+              'transfers',
+              `${txhash}_${recipient_address}`.toLowerCase(),
+              {
+                source: {
+                  ...record,
+                  amount,
+                },
+                link: link ||
+                  undefined,
               },
-              link: link ||
-                undefined,
-            },
-          );
+            );
+          }
         }
       }
       // MsgRecvPacket -> MsgTransfer
@@ -1130,18 +1132,20 @@ module.exports = async (
                         _record.value = amount * price;
                       }
 
-                      await write(
-                        'transfers',
-                        `${txhash}_${recipient_address}`.toLowerCase(),
-                        {
-                          source: {
-                            ..._record,
-                            amount,
+                      if (recipient_address) {
+                        await write(
+                          'transfers',
+                          `${txhash}_${recipient_address}`.toLowerCase(),
+                          {
+                            source: {
+                              ..._record,
+                              amount,
+                            },
+                            link: link ||
+                              undefined,
                           },
-                          link: link ||
-                            undefined,
-                        },
-                      );
+                        );
+                      }
 
                       found = true;
                       break;
@@ -1398,20 +1402,22 @@ module.exports = async (
                 recipient_address,
               } = { ...source };
 
-              const _id = `${id}_${recipient_address}`.toLowerCase();
+              if (recipient_address) {
+                const _id = `${id}_${recipient_address}`.toLowerCase();
 
-              await write(
-                'transfers',
-                _id,
-                {
-                  ibc_send: record,
-                },
-                true,
-              );
+                await write(
+                  'transfers',
+                  _id,
+                  {
+                    ibc_send: record,
+                  },
+                  true,
+                );
 
-              await saveTimeSpent(
-                _id,
-              );
+                await saveTimeSpent(
+                  _id,
+                );
+              }
             }
           }
           else {
@@ -1427,6 +1433,7 @@ module.exports = async (
 
             if (
               data &&
+              recipient_address &&
               !_.isEqual(ibc_send, record)
             ) {
               const _id = `${id}_${recipient_address}`.toLowerCase();
@@ -1547,23 +1554,25 @@ module.exports = async (
             recipient_chain = recipient_chain ||
               link?.recipient_chain;
 
+            if (recipient_address) {
               const _id = `${id}_${recipient_address}`.toLowerCase();
 
-            await write(
-              'transfers',
-              _id,
-              {
-                ibc_send: {
-                  ...ibc_send,
-                  ack_txhash: record.id,
+              await write(
+                'transfers',
+                _id,
+                {
+                  ibc_send: {
+                    ...ibc_send,
+                    ack_txhash: record.id,
+                  },
                 },
-              },
-              true,
-            );
+                true,
+              );
 
-            await saveTimeSpent(
-              _id,
-            );
+              await saveTimeSpent(
+                _id,
+              );
+            }
 
             if (height && packet_data_hex && recipient_chain) {
               const chain_data = cosmos_non_axelarnet_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
@@ -1613,7 +1622,10 @@ module.exports = async (
                     timestamp,
                   } = { ...tx_responses[index] };
 
-                  if (txhash) {
+                  if (
+                    txhash &&
+                    recipient_address
+                  ) {
                     const received_at = moment(timestamp).utc().valueOf();
 
                     const _id = `${id}_${recipient_address}`.toLowerCase();
@@ -1963,31 +1975,33 @@ module.exports = async (
                     );
                   }
 
-                  const _id = `${id}_${recipient_address}`.toLowerCase();
+                  if (recipient_address) {
+                    const _id = `${id}_${recipient_address}`.toLowerCase();
 
-                  await write(
-                    'transfers',
-                    _id,
-                    {
-                      ...transfer_data,
-                      confirm_deposit: record,
-                      sign_batch: sign_batch ||
-                        undefined,
-                      source: {
-                        ...source,
-                        original_sender_chain: link?.original_sender_chain ||
+                    await write(
+                      'transfers',
+                      _id,
+                      {
+                        ...transfer_data,
+                        confirm_deposit: record,
+                        sign_batch: sign_batch ||
+                          undefined,
+                        source: {
+                          ...source,
+                          original_sender_chain: link?.original_sender_chain ||
+                            sender_chain,
+                          original_recipient_chain: link?.original_recipient_chain ||
+                            recipient_chain,
                           sender_chain,
-                        original_recipient_chain: link?.original_recipient_chain ||
                           recipient_chain,
-                        sender_chain,
-                        recipient_chain,
+                        },
                       },
-                    },
-                  );
+                    );
 
-                  await saveTimeSpent(
-                    _id,
-                  );
+                    await saveTimeSpent(
+                      _id,
+                    );
+                  }
                 }
               } catch (error) {}
               break;
@@ -2205,25 +2219,27 @@ module.exports = async (
                       recipient_address,
                     } = { ...source };
 
-                    const _id = `${id}_${recipient_address}`.toLowerCase();
+                    if (recipient_address) {
+                      const _id = `${id}_${recipient_address}`.toLowerCase();
 
-                    await write(
-                      'transfers',
-                      _id,
-                      {
-                        source: {
-                          ...source,
-                          amount,
+                      await write(
+                        'transfers',
+                        _id,
+                        {
+                          source: {
+                            ...source,
+                            amount,
+                          },
+                          link: link ||
+                            undefined,
+                          confirm_deposit: record,
                         },
-                        link: link ||
-                          undefined,
-                        confirm_deposit: record,
-                      },
-                    );
+                      );
 
-                    await saveTimeSpent(
-                      _id,
-                    );
+                      await saveTimeSpent(
+                        _id,
+                      );
+                    }
                   }
                 }
               } catch (error) {}
@@ -2860,29 +2876,31 @@ module.exports = async (
                         recipient_address,
                       } = { ...source };
 
-                      const _id = `${id}_${recipient_address}`.toLowerCase();
+                      if (recipient_address) {
+                        const _id = `${id}_${recipient_address}`.toLowerCase();
 
-                      await write(
-                        'transfers',
-                        _id,
-                        {
-                          source: {
-                            ...source,
-                            amount,
+                        await write(
+                          'transfers',
+                          _id,
+                          {
+                            source: {
+                              ...source,
+                              amount,
+                            },
+                            link: link ||
+                              undefined,
+                            confirm_deposit: confirm_deposit ||
+                              undefined,
+                            vote: transfer_data?.vote && transfer_data.vote.height < height ?
+                              transfer_data.vote :
+                              record,
                           },
-                          link: link ||
-                            undefined,
-                          confirm_deposit: confirm_deposit ||
-                            undefined,
-                          vote: transfer_data?.vote && transfer_data.vote.height < height ?
-                            transfer_data.vote :
-                            record,
-                        },
-                      );
+                        );
 
-                      await saveTimeSpent(
-                        _id,
-                      );
+                        await saveTimeSpent(
+                          _id,
+                        );
+                      }
                     }
                   } catch (error) {}
                 }
