@@ -71,7 +71,6 @@ mainnet:
           rpc:
             - "https://rpc.ankr.com/fantom"
             - "https://rpc.ftm.tools"
-            - "https://rpcapi.fantom.network"
         native_token:
           name: "Fantom"
           symbol: "FTM"
