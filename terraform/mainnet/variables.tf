@@ -20,27 +20,27 @@ variable "environment" {
 
 variable "indexer_username" {
   description = "Indexer username"
-  default     = "axelarscan"
+  default     = ""
 }
 
 variable "indexer_password" {
   description = "Indexer password"
-  default     = "0xAxelarsc@n"
+  default     = ""
 }
 
 variable "transfers_indexer_username" {
   description = "Transfers indexer username"
-  default     = "axelarscan"
+  default     = ""
 }
 
 variable "transfers_indexer_password" {
   description = "Transfers indexer password"
-  default     = "0xAxelarsc@n"
+  default     = ""
 }
 
 variable "api_gateway_integration_id" {
   description = "API gateway integration id"
-  default     = "bj4nezd"
+  default     = ""
 }
 
 variable "log_level" {

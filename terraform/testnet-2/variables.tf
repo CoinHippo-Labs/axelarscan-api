@@ -20,17 +20,17 @@ variable "environment" {
 
 variable "indexer_username" {
   description = "Indexer username"
-  default     = "axelarscan"
+  default     = ""
 }
 
 variable "indexer_password" {
   description = "Indexer password"
-  default     = "0xAxelarsc@n"
+  default     = ""
 }
 
 variable "api_gateway_integration_id" {
   description = "API gateway integration id"
-  default     = "rguv1ai"
+  default     = ""
 }
 
 variable "log_level" {

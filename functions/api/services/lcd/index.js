@@ -6,6 +6,7 @@ const index_tx = require('./tx');
 const index_txs = require('./txs');
 const index_block = require('./block');
 const index_ibc_channels = require('./ibc/channels');
+const index_batch = require('./batch');
 const {
   get,
   write,
@@ -54,8 +55,11 @@ module.exports = async (
     }
 
     if (!cache_id ||
-      path.startsWith('/cosmos/tx/v1beta1/txs') ||
-      path.startsWith('/cosmos/base/tendermint/v1beta1/blocks')
+      [
+        '/cosmos/tx/v1beta1/txs',
+        '/cosmos/base/tendermint/v1beta1/blocks',
+        '/axelar/evm/v1beta1/batched_commands',
+      ].findIndex(p => path.startsWith(p)) > -1
     ) {
       cache = false;
     }
@@ -202,6 +206,7 @@ module.exports = async (
       tx_responses,
       block,
       channels,
+      command_ids,
     } = { ...response };
 
     if (
@@ -234,6 +239,16 @@ module.exports = async (
       response = await index_ibc_channels(
         path,
         response,
+      );
+    }
+    else if (
+      path.startsWith('/axelar/evm/v1beta1/batched_commands/') &&
+      !path.endsWith('/') &&
+      command_ids
+    ) {
+      response = await index_batch(
+        response,
+        created_at,
       );
     }
 

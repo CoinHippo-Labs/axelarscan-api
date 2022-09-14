@@ -290,6 +290,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'inflation':
+          try {
+            response = await require('./services/inflation')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'batches':
           try {
             response = await require('./services/batches')(params);
