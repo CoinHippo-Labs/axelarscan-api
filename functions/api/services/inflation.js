@@ -64,7 +64,7 @@ module.exports = async (
     (
       (
         tendermintInflationRate *
-        keyMgmtRelativeInflationRate
+        (1 + keyMgmtRelativeInflationRate)
       ) +
       (
         externalChainVotingInflationRate *
@@ -75,7 +75,7 @@ module.exports = async (
   );
 
   return {
-    equation: 'inflation = (tendermintInflationRate * keyMgmtRelativeInflationRate) + (externalChainVotingInflationRate * numEVMChains)',
+    equation: 'inflation = (tendermintInflationRate * (1 + keyMgmtRelativeInflationRate)) + (externalChainVotingInflationRate * numEVMChains)',
     tendermintInflationRate,
     keyMgmtRelativeInflationRate,
     externalChainVotingInflationRate,

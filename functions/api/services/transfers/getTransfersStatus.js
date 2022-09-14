@@ -54,8 +54,6 @@ module.exports = async (
   } = { ...params };
   let {
     depositAddress,
-    fromTime,
-    toTime,
     query,
   } = { ...params };
 
@@ -232,7 +230,8 @@ module.exports = async (
                       recipient_chain ||
                       source.recipient_chain
                     );
-                    source.denom = source.denom || asset;
+                    source.denom = source.denom ||
+                      asset;
 
                     if (source.denom && typeof source.amount === 'string') {
                       const asset_data = assets_data.find(a => equals_ignore_case(a?.id, source.denom));
