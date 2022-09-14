@@ -678,6 +678,36 @@ module.exports = {
         },
       },
       {
+        id: 'comdex',
+        name: 'Comdex',
+        short_name: 'CMDX',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/comdex',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/comdex.png',
+        color: '#fe424f',
+        website: 'https://comdex.one',
+        prefix_address: 'comdex',
+        prefix_chain_ids: [
+          'comdex-',
+        ],
+        endpoints: {
+          lcd: 'https://rest.comdex.one',
+          lcds: [
+            'https://api-comdex.zenchainlabs.io',
+            'https://api-comdex-ia.cosmosia.notional.ventures',
+          ],
+        },
+      },
+      {
         id: 'regen',
         name: 'Regen',
         short_name: 'REGEN',
