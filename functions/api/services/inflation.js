@@ -60,15 +60,19 @@ module.exports = async (
     .join('')
   );
 
-  const inflation =
+  const inflation = parseFloat(
     (
-      tendermintInflationRate *
-      keyMgmtRelativeInflationRate
-    ) +
-    (
-      externalChainVotingInflationRate *
-      numEVMChains
-    );
+      (
+        tendermintInflationRate *
+        keyMgmtRelativeInflationRate
+      ) +
+      (
+        externalChainVotingInflationRate *
+        numEVMChains
+      )
+    )
+    .toFixed(6)
+  );
 
   return {
     equation: 'inflation = (tendermintInflationRate * keyMgmtRelativeInflationRate) + (externalChainVotingInflationRate * numEVMChains)',
