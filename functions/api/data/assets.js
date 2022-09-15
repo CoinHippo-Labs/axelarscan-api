@@ -167,6 +167,18 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/E1616E7C19EA474C565737709A628D6F8A23FF9D3E9A7A6871306CF5E0A5341E',
+          chain_id: 'comdex',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
+          ibc_denom: 'ibc/334740505537E9894A64E8561030695016481830D7B36E6A9B6D13C608B55653',
+          chain_id: 'regen',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4',
           chain_id: 'terra',
           decimals: 6,
@@ -289,6 +301,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/F11C8CB7743E4B5FDCEA7C97F3B2C115E1931C5614B84C183DAC439B4C919D94',
           chain_id: 'evmos',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          ibc_denom: 'ibc/F0BEB4540AF9E0C6C4DD6FA1635C9AE1F99FCA15366671C9219B1140AAC3FCB1',
+          chain_id: 'comdex',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          ibc_denom: 'ibc/E2CAC8B785E3E496891ABC7AAB1659F239B5023C1072BA21196AAA443F0F5F23',
+          chain_id: 'regen',
           decimals: 6,
           symbol: 'axlUSDT',
         },
@@ -419,6 +443,18 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
+          ibc_denom: 'ibc/54DEF693B7C4BF171E7FFF3ABFE2B54D6A3B8A047A32BAAE9F1417A378594EC6',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          ibc_denom: 'ibc/3C147E71BD9FEC5AAAED09BF022F1C06F52D360580D602F79A5389DA471E7BA3',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
           ibc_denom: 'ibc/E46EF5449878F6B81219163F211E7329CC0729AA99DA8A589A865F82F754ADE8',
           chain_id: 'terra',
           decimals: 18,
@@ -505,6 +541,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/C834CD421B4FD910BBC97E06E86B5E6F64EA2FE36D6AE0E4304C2E1FB1E7333C',
           chain_id: 'evmos',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          ibc_denom: 'ibc/0A6F20FA34BEBB63568E44C81C6E154C63ED061BA45E7EBC144B24C0DBBD0A4F',
+          chain_id: 'comdex',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          ibc_denom: 'ibc/9D7B59A9F02B0D2F45FD1AA4441AB283E91F6B963F5E45883B1287C6FEBA9575',
+          chain_id: 'regen',
           decimals: 8,
           symbol: 'axlWBTC',
         },
@@ -599,6 +647,18 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
+          ibc_denom: 'ibc/81C3A46287D7664A8FD19843AC8D0CFD6C284EF1F750C661C48B3544277B1B29',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/62B27C470C859CBCB57DC12FCBBD357DD44CAD673362B47503FAA77523ABA028',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
           ibc_denom: 'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674',
           chain_id: 'terra',
           decimals: 18,
@@ -685,6 +745,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/5BDA280DA1EA865301F0DB343F87971D6E6C399152B335D8CE475EEA2BA38D21',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/EC7576E3F8D254787264F0972E6518E42CFFB5305EC9D0BC7DD7B7FFEFACB28A',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/E83EB9C4EC33A836E4E9B0F3216A85BF54996A8891F366F2F677EE0E012AADC2',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -779,6 +851,18 @@ module.exports = {
           symbol: 'axlWAVAX',
         },
         {
+          ibc_denom: 'ibc/1D5738BD39B3189714B7A5C7CE8A206861ECAE79F7E29C45DA98151571F017E7',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/47E16DE770374BE6ABE72A5264231DCEC92FD2711ACEB29B86574DBCCC228052',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
           ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
           chain_id: 'terra',
           decimals: 18,
@@ -869,6 +953,18 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/E8F0355CBC21AFD4C758E93383D28404D19AEB81E8251A63FAA0C250672ADBEF',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/08F89698ED1AEB855854C63901306D16E98186756A842828733252405675AF13',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/14E4FD1AB72DE9BF1D6725CBA18373C406CB9A7DA17955299F3F4DC5C6131A4E',
           chain_id: 'terra',
           decimals: 18,
@@ -953,14 +1049,26 @@ module.exports = {
           symbol: 'axlWFTM',
         },
         {
-          ibc_denom: 'ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746',
-          chain_id: 'terra',
+          ibc_denom: 'ibc/B389DF077401C819F7A4235167AC1399790FB819983191A3AFC646C7364D24C9',
+          chain_id: 'evmos',
           decimals: 18,
           symbol: 'axlWFTM',
         },
         {
-          ibc_denom: 'ibc/B389DF077401C819F7A4235167AC1399790FB819983191A3AFC646C7364D24C9',
-          chain_id: 'evmos',
+          ibc_denom: 'ibc/78A0828C273648513517BC6C10D9F7F2768472DD5C0F88B27CB54E346CB57D59',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/E8FF33FF39F5AD98A45CBE679B02ADB861D477B418896002243B32DCD042FF26',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746',
+          chain_id: 'terra',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -1051,6 +1159,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/E9528EEB1589F209D5EA99BA6BDB1634A65DFD883769D53072DDD26FE7DE8CA3',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
+          ibc_denom: 'ibc/14308B897F7966AD643E337853EC613200E9A123D159984DE7B59FE151BCE867',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
+          ibc_denom: 'ibc/417455B944F2C3A47811DB1C6AFA740911198939A97A987F0DEF94326D38E4D5',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -1148,6 +1268,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/80938A67AB5C2302E74919802F40F9F3A9CCE40FC878361AA4A53734EC40AF5A',
           chain_id: 'evmos',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
+          ibc_denom: 'ibc/212040AC44BB9576E4E1B4DF0584C9D1C2D96C17D7ADC765927265D5D06ACF9D',
+          chain_id: 'comdex',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
+          ibc_denom: 'ibc/8D43EF0E6FA102EAB9793146BE5BFEF177D5525388830D347B5DC287201BFE8E',
+          chain_id: 'regen',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -1274,6 +1406,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/6659354677AD62F7B4B30AEEB613E1100550D373366AFE33D54C5927BA868137',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/B0C60517B4B854164D87224AFF2D7633959BACD2402EB0BA460B64E95ED8D1ED',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/007D8660648AA2A59BCD464BF5E4834D06BA49298CFAF67009A53A59F811DC02',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1624,6 +1768,18 @@ module.exports = {
           symbol: 'axlRAI',
         },
         {
+          ibc_denom: 'ibc/7FB70D35FF8085A02BDCDCB1DD2A2E6E5B56928853E34846F7C80C78AE3D5F1E',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
+          ibc_denom: 'ibc/ADDE7057E983259BF6148327FE812BBC70BC0F62FBD4DA2B36653774D2C7534F',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
           ibc_denom: 'ibc/88C5B3E62FD8ECC8825107D86C4AC8CDECDC7B44135DD757D1D83E27203B6C9D',
           chain_id: 'terra',
           decimals: 18,
@@ -1714,6 +1870,18 @@ module.exports = {
           symbol: 'axlLINK',
         },
         {
+          ibc_denom: 'ibc/E37C113A206A0E27EC76453E66C045B1FB926F4A96E345D1C07455367BC4BE70',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
+          ibc_denom: 'ibc/BF08151D1CBA116B90183472571412A5A3BD631AD774800E89C58357651F0D6D',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
           ibc_denom: 'ibc/1FD62537E1FBE67DF7574E0234112B4FE417B20AADC2F574026CB664EA9492C7',
           chain_id: 'terra',
           decimals: 18,
@@ -1800,6 +1968,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/1FEB46080599EE46851FF987882627B58AFF27591BE945671A8713B0688A1677',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlAAVE',
+        },
+        {
+          ibc_denom: 'ibc/F45FD8456B69EBEA441F8463A69BCD1B184F04965AB84766A4D823053655DF47',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlAAVE',
+        },
+        {
+          ibc_denom: 'ibc/C774614AE0CCE51FB73555D571CC3D1C04EEE283581D9FD9AD6CB46D15A51924',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlAAVE',
         },
@@ -1966,6 +2146,18 @@ module.exports = {
           symbol: 'axlAPE',
         },
         {
+          ibc_denom: 'ibc/AE399671A9E47E6AB76ECA9189448604F52771238707E4A0F3EE172F4F80C38D',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlAPE',
+        },
+        {
+          ibc_denom: 'ibc/503616DEFD1FE19A53CCF9A2447B394E7653FCABFEFFB5C9D1C7DEDFBA90C75D',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlAPE',
+        },
+        {
           ibc_denom: 'ibc/5D36185CDE12E13DA9832315D2A35F07D52D952E3A242496C9A634808D86DC07',
           chain_id: 'terra',
           decimals: 18,
@@ -2052,6 +2244,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/7B9ED005F19A3E02972D6CE0703EA8535D8E19C6C9064173B26DAFFBCB089D5E',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
+          ibc_denom: 'ibc/B101E08F99A58A725E02F7B3F6683F43F2ABA152CA63AD1522C526A54FEDEBD8',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
+          ibc_denom: 'ibc/2DEDFDB05F9D851F5376CBAEA59A1D914AD24F53616C979813FBC62A76A1AE8C',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlUNI',
         },
@@ -2146,6 +2350,18 @@ module.exports = {
           symbol: 'axlSHIB',
         },
         {
+          ibc_denom: 'ibc/1F18934D62FFDA25C75ED7974EE34DB018BA004B58C42D46EB49AF41BB01AF01',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
+          ibc_denom: 'ibc/5138EC81DA50C8C062223FE012F7743C6327DF75CF67824A76840CC5671C30F7',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
           ibc_denom: 'ibc/62CC85ED0F0C43C453B1A059BF5A147498550C2A7ADDEE6324A0B4E9E371C9C7',
           chain_id: 'terra',
           decimals: 18,
@@ -2232,6 +2448,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/0F1DDAAC33539D6A8904CB242DDB002B7A9F7E1DBF0BFA5BC1EBF17609BB8A94',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlAXS',
+        },
+        {
+          ibc_denom: 'ibc/53ED48B86F4985066853E644B41A9E48405C8FB13E262C7081DC85ECBBAFC3F5',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlAXS',
+        },
+        {
+          ibc_denom: 'ibc/35CBD68F2FFC3068C05AE8E30CD0521FB11A2729E99A360512A5A934C376ECF6',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlAXS',
         },
@@ -2326,6 +2554,18 @@ module.exports = {
           symbol: 'axlXCN',
         },
         {
+          ibc_denom: 'ibc/718B8EFE25B69819A0C71D4DF0A91337669D6C38910147844BBF775FD7194568',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlXCN',
+        },
+        {
+          ibc_denom: 'ibc/B0D710B2C5170BBF27E6C2E16FB709E161A7B22EB9D3F5EC629D72BBBF0BAB62',
+          chain_id: 'regen',
+          decimals: 18,
+          symbol: 'axlXCN',
+        },
+        {
           ibc_denom: 'ibc/C22747737204871040AE896E7CA7791CF541AC269BF1D521870891E67AC83DA4',
           chain_id: 'terra',
           decimals: 18,
@@ -2412,6 +2652,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/620628A7B308C0B1CCC109A9CFD9BC8089F9A527674C91733B1E15D9A65CF567',
           chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
+          ibc_denom: 'ibc/74C6699525ADB582D2893666CE2F62616BA90041A6D486A65B1C94AD163D6670',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
+          ibc_denom: 'ibc/02B81671F02BFC81BC660D948B935195867294CB2A5CB98D21FA256433B19EE7',
+          chain_id: 'regen',
           decimals: 18,
           symbol: 'axlMKR',
         },
