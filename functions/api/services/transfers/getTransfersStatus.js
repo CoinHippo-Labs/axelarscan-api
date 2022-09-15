@@ -291,7 +291,12 @@ module.exports = async (
           ) {
             let found = false;
 
+            const {
+              cosmostation,
+            } = { ...chain_data?.endpoints };
+
             const _lcds = _.concat(
+              cosmostation,
               [chain_data?.endpoints?.lcd],
               chain_data?.endpoints?.lcds || [],
             ).filter(l => l);
@@ -299,14 +304,19 @@ module.exports = async (
             for (const _lcd of _lcds) {
               const lcd = axios.create({ baseURL: _lcd });
 
+              const is_cosmostation = _lcd === cosmostation;
+
               try {
                 const transaction = await lcd.get(
-                  `/cosmos/tx/v1beta1/txs/${txHash}`,
+                  is_cosmostation ?
+                    `/tx/hash/${txHash}` :
+                    `/cosmos/tx/v1beta1/txs/${txHash}`,
                 ).catch(error => { return { data: { error } }; });
 
-                const {
-                  tx_response,
-                } = { ...transaction?.data };
+                const tx_response = is_cosmostation ?
+                  transaction?.data?.data :
+                  transaction?.data?.tx_response;
+
                 const {
                   tx,
                   txhash,

@@ -317,6 +317,7 @@ module.exports = {
             'https://cosmos-lcd.quickapi.com',
             'https://rest-cosmoshub.ecostake.com',
           ],
+          cosmostation: 'https://api.cosmostation.io/v1',
         },
       },
       {
@@ -343,6 +344,7 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://lcd-osmosis.blockapsis.com',
+          cosmostation: 'https://api-osmosis.cosmostation.io/v1',
         },
       },
       {
@@ -373,6 +375,7 @@ module.exports = {
             'https://rest-juno.ecostake.com',
             'https://api.juno.pupmos.network',
           ],
+          cosmostation: 'https://api-juno.cosmostation.io/v1',
         },
       },
       {
@@ -403,6 +406,7 @@ module.exports = {
             'https://lcd.emoney.ezstaking.io',
             'https://api-emoney-ia.notional.ventures',
           ],
+          cosmostation: 'https://api-emoney.cosmostation.io/v1',
         },
         overrides: {
           'e-money': {
@@ -434,6 +438,7 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://public.lcd.injective.network',
+          cosmostation: 'https://api-inj.cosmostation.io/v1',
         },
       },
       {
@@ -463,6 +468,7 @@ module.exports = {
           lcds: [
             'https://mainnet.crescent.network:1317',
           ],
+          cosmostation: 'https://api-crescent.cosmostation.io/v1',
         },
       },
       {
@@ -521,6 +527,7 @@ module.exports = {
             'https://secret.api.consensus.one',
             'https://secretnetwork-lcd.stakely.io',
           ],
+          cosmostation: 'https://api-secret.cosmostation.io/v1',
         },
       },
       {
@@ -553,6 +560,7 @@ module.exports = {
             'https://api-stargaze-ia.cosmosia.notional.ventures',
             'https://stargaze.c29r3.xyz:443/api',
           ],
+          cosmostation: 'https://api-stargaze.cosmostation.io/v1',
         },
       },
       {
@@ -585,6 +593,7 @@ module.exports = {
             'https://api.assetmantle.nodestake.top',
             'https://api-assetmantle-ia.cosmosia.notional.ventures',
           ],
+          cosmostation: 'https://api-asset-mantle.cosmostation.io/v1',
         },
       },
       {
@@ -614,6 +623,7 @@ module.exports = {
           lcds: [
             'https://api-fetchhub-ia.cosmosia.notional.ventures',
           ],
+          cosmostation: 'https://api-fetchai.cosmostation.io/v1',
         },
       },
       {
@@ -644,6 +654,7 @@ module.exports = {
             'https://lcd.kichain.ezstaking.io',
             'https://api-kichain-ia.notional.ventures',
           ],
+          cosmostation: 'https://api-kichain.cosmostation.io/v1',
         },
       },
       {
@@ -675,6 +686,7 @@ module.exports = {
             'https://rest.bd.evmos.org:1317',
             'https://lcd.evmos.ezstaking.io',
           ],
+          cosmostation: 'https://api-evmos.cosmostation.io/v1',
         },
       },
       {
@@ -705,6 +717,7 @@ module.exports = {
             'https://api-comdex.zenchainlabs.io',
             'https://api-comdex-ia.cosmosia.notional.ventures',
           ],
+          cosmostation: 'https://api-comdex.cosmostation.io/v1',
         },
       },
       {
@@ -735,6 +748,7 @@ module.exports = {
             'https://regen.stakesystems.io',
             'https://api-regen-ia.cosmosia.notional.ventures',
           ],
+          cosmostation: 'https://api-regen.cosmostation.io/v1',
         },
       },
       {
@@ -1102,6 +1116,7 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'http://testnet.rpc.axelarscan.io:1317',
+          cosmostation: 'https://api-axelar.cosmostation.io/v1',
         },
         coingecko_id: 'axelar-network',
       },
