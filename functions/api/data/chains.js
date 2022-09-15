@@ -314,8 +314,8 @@ module.exports = {
         endpoints: {
           lcd: 'https://lcd-cosmoshub.whispernode.com',
           lcds: [
-            'https://cosmos-lcd.quickapi.com',
             'https://rest-cosmoshub.ecostake.com',
+            'https://cosmos-lcd.quickapi.com',
           ],
           cosmostation: 'https://api.cosmostation.io/v1',
         },
@@ -343,7 +343,13 @@ module.exports = {
           'osmosis-',
         ],
         endpoints: {
-          lcd: 'https://lcd-osmosis.blockapsis.com',
+          lcd: 'https://rest-osmosis.ecostake.com',
+          lcds: [
+            'https://osmosis-api.polkachu.com',
+            'https://lcd.osmosis.zone',
+            'https://api-osmosis-ia.cosmosia.notional.ventures',
+            'https://api.osmosis.interbloc.org',
+          ],
           cosmostation: 'https://api-osmosis.cosmostation.io/v1',
         },
       },
