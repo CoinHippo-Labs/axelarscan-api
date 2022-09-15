@@ -137,9 +137,15 @@ module.exports = async (
             },
           ).catch(error => { return { data: { error } }; });
 
+          const {
+            error,
+          } = { ..._response?.data };
+
           _data = _.concat(
             _data || [],
-            [_response?.data],
+            !error && _response?.data ?
+              _response.data :
+              [],
           );
         }
       }
@@ -155,7 +161,9 @@ module.exports = async (
           },
         ).catch(error => { return { data: { error } }; });
 
-        _data = _response?.data || [];
+        _data = Array.isArray(_response?.data) ?
+          _response.data :
+          [];
       }
 
       // update data from coingecko

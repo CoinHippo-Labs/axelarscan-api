@@ -286,6 +286,7 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'http://rpc.axelarscan.io:1317',
+          cosmostation: 'https://api-axelar.cosmostation.io/v1',
         },
         coingecko_id: 'axelar-network',
       },
@@ -1122,7 +1123,6 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'http://testnet.rpc.axelarscan.io:1317',
-          cosmostation: 'https://api-axelar.cosmostation.io/v1',
         },
         coingecko_id: 'axelar-network',
       },

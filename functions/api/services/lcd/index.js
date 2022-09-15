@@ -77,7 +77,10 @@ module.exports = async (
 
       response_cache = to_json(response_cache?.response);
 
-      if (response_cache && moment().diff(moment(updated_at * 1000), 'minutes', true) <= cache_timeout) {
+      if (
+        response_cache &&
+        moment().diff(moment(updated_at * 1000), 'minutes', true) <= cache_timeout
+      ) {
         response = response_cache;
         cache_hit = true;
       }
