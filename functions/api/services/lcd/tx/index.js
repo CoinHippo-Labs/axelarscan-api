@@ -1707,6 +1707,9 @@ module.exports = async (
         if (transaction_id?.startsWith('[') && transaction_id.endsWith(']')) {
           transaction_id = to_hex(to_json(transaction_id));
         }
+        if (transaction_id === poll_id) {
+          transaction_id = null;
+        }
 
         const {
           participants,
@@ -2281,7 +2284,10 @@ module.exports = async (
             const sender_chain = normalize_chain(message.chain);
             const transaction_id = message.tx_id;
 
-            if (poll_id && transaction_id) {
+            if (
+              poll_id &&
+              transaction_id
+            ) {
               await write(
                 'evm_polls',
                 poll_id,
@@ -2510,7 +2516,10 @@ module.exports = async (
                     }
                   }
 
-                  if (!sender_chain && deposit_address) {
+                  if (
+                    !sender_chain &&
+                    deposit_address
+                  ) {
                     const _response = await read(
                       'deposit_addresses',
                       {
@@ -2599,11 +2608,20 @@ module.exports = async (
                       );
                     }) || [];
 
-                    const _transaction_id = _.head(end_block_events.map(e => e.txID));
-                    const _transfer_id = _.head(end_block_events.map(e => Number(e.transferID)));
+                    const _transaction_id = _.head(
+                      end_block_events.map(e => e.txID)
+                    );
+                    const _transfer_id = _.head(
+                      end_block_events.map(e => Number(e.transferID))
+                    );
 
                     if (equals_ignore_case(transaction_id, _transaction_id)) {
-                      if (!confirmation && !unconfirmed && !transfer_id && _transfer_id) {
+                      if (
+                        !confirmation &&
+                        !unconfirmed &&
+                        !transfer_id &&
+                        _transfer_id
+                      ) {
                         confirmation = true;
                       }
 
@@ -2906,7 +2924,10 @@ module.exports = async (
                 }
 
                 if (voter) {
-                  if (confirmation || unconfirmed) {
+                  if (
+                    confirmation ||
+                    unconfirmed
+                  ) {
                     await write(
                       'evm_polls',
                       poll_id,

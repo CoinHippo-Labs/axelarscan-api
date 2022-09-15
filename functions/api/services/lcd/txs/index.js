@@ -349,7 +349,10 @@ module.exports = async (
                 const sender_chain = normalize_chain(message.chain);
                 const transaction_id = message.tx_id;
 
-                if (poll_id && transaction_id) {
+                if (
+                  poll_id &&
+                  transaction_id
+                ) {
                   const record = {
                     height,
                     created_at: get_granularity(created_at),
@@ -367,7 +370,10 @@ module.exports = async (
 
           return _records;
         })
-        .filter(t => t?.poll_id && t.transaction_id);
+        .filter(t =>
+          t?.poll_id &&
+          t.transaction_id
+        );
 
       if (records.length > 0) {
         for (const record of records) {
@@ -631,7 +637,10 @@ module.exports = async (
                         }
                       }
 
-                      if (!sender_chain && deposit_address) {
+                      if (
+                        !sender_chain &&
+                        deposit_address
+                      ) {
                         const _response = await read(
                           'deposit_addresses',
                           {
@@ -675,8 +684,10 @@ module.exports = async (
                       const vote_data = _.head(_response?.data);
 
                       if (vote_data) {
-                        transaction_id = vote_data.transaction_id || transaction_id;
-                        transfer_id = vote_data.transfer_id || transfer_id;
+                        transaction_id = vote_data.transaction_id ||
+                          transaction_id;
+                        transfer_id = vote_data.transfer_id ||
+                          transfer_id;
                       }
 
                       if (
@@ -718,11 +729,20 @@ module.exports = async (
                           );
                         }) || [];
 
-                        const _transaction_id = _.head(end_block_events.map(e => e.txID));
-                        const _transfer_id = _.head(end_block_events.map(e => Number(e.transferID)));
+                        const _transaction_id = _.head(
+                          end_block_events.map(e => e.txID)
+                        );
+                        const _transfer_id = _.head(
+                          end_block_events.map(e => Number(e.transferID))
+                        );
 
                         if (equals_ignore_case(transaction_id, _transaction_id)) {
-                          if (!confirmation && !unconfirmed && !transfer_id && _transfer_id) {
+                          if (
+                            !confirmation &&
+                            !unconfirmed &&
+                            !transfer_id &&
+                            _transfer_id
+                          ) {
                             confirmation = true;
                           }
 
