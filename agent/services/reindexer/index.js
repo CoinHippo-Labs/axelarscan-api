@@ -66,15 +66,44 @@ module.exports = () => {
             ).catch(error => { return { data: { error } }; });
 
             const {
-              tx_responses,
               pagination,
+              url,
+            } = { ...response?.data };
+            let {
+              tx_responses,
             } = { ...response?.data };
             const {
               next_key,
             } = { ...pagination };
+
             next_page_key = next_key;
 
             if (tx_responses) {
+              if (
+                tx_responses.length < 1 &&
+                url
+              ) {
+                const _response = await axios.get(
+                  url,
+                ).catch(error => { return { data: { error } }; });
+
+                const {
+                  txs,
+                } = { ..._.head(_response?.data) };
+
+                if (txs) {
+                  tx_responses = txs.map(d => {
+                    const {
+                      data,
+                    } = { ...d };
+
+                    return {
+                      ...data,
+                    };
+                  });
+                }
+              }
+
               for (const tx_response of tx_responses) {
                 const {
                   txhash,

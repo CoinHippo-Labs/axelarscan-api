@@ -165,8 +165,12 @@ module.exports = async (
               data = {
                 url: `${api}${_path}`,
                 tx_responses: txs.map(d => {
+                  const {
+                    data,
+                  } = { ...d };
+
                   return {
-                    ...d?.data,
+                    ...data,
                   };
                 }),
                 txs: txs.map(d => {
