@@ -254,6 +254,7 @@ module.exports = async (
       command_ids
     ) {
       response = await index_batch(
+        path,
         response,
         created_at,
       );

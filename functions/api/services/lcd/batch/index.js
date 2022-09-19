@@ -39,6 +39,7 @@ const {
 } = { ...config?.[environment] };
 
 module.exports = async (
+  path = '',
   lcd_response = {},
   created_at,
 ) => {
@@ -57,7 +58,14 @@ module.exports = async (
     } = { ...lcd_response };
 
     batch_id = id;
-    let chain = cmd.split(' ')[4]?.toLowerCase();
+    let chain =
+      _.head(
+        _.slice(
+          path
+            .split('/'),
+          -2,
+        )
+      );
     const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
     const provider = getProvider(chain_data);
     const {
