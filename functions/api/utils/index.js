@@ -60,34 +60,51 @@ const equals_ignore_case = (
 ) => (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
 
 const get_params = req => {
-  const params = {
+  return {
     ...req.query,
     ...req.body,
   };
-  return params;
 };
 
 const to_json = s => {
   if (s) {
-    if (typeof s === 'object') return s;
+    if (typeof s === 'object') {
+      return s;
+    }
+
     try {
       return JSON.parse(s);
     } catch (error) {}
   }
+
   return null;
 };
 
 const to_hex = byte_array => {
   let string = '0x';
+
   byte_array.forEach(byte =>
-    string += ('0' + (byte & 0xFF).toString(16)).slice(-2)
+    string += (
+      '0' +
+      (byte & 0xFF)
+        .toString(16)
+    )
+    .slice(-2)
   );
+
   return string;
 };
 
 const decode_base64 = s => {
-  if (!s) return '';
-  const buffer = new Buffer(s, 'base64');
+  if (!s) {
+    return '';
+  }
+
+  const buffer = new Buffer(
+    s,
+    'base64',
+  );
+
   return buffer.toString();
 };
 
@@ -107,6 +124,7 @@ const normalize_original_chain = chain => {
   if (chain) {
     chain = chain.trim().toLowerCase();
   }
+
   return chain;
 };
 
@@ -118,6 +136,7 @@ const normalize_chain = chain => {
       .trim()
       .toLowerCase();
   }
+
   return chain;
 };
 

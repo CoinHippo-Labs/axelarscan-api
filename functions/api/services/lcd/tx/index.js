@@ -201,7 +201,8 @@ module.exports = async (
             } = { ...event };
 
             const amount = attributes?.find(a => a?.key === 'amount')?.value;
-            const denom = transaction_data.denom || message.denom;
+            const denom = transaction_data.denom ||
+              message.denom;
 
             message.amount = [{
               amount,
@@ -2282,7 +2283,11 @@ module.exports = async (
             } = { ...to_json(attributes?.find(a => a?.key === 'participants')?.value) };
 
             const sender_chain = normalize_chain(message.chain);
-            const transaction_id = message.tx_id;
+            let transaction_id = message.tx_id;
+
+            transaction_id = Array.isArray(transaction_id) ?
+              to_hex(transaction_id) :
+              transaction_id;
 
             if (
               poll_id &&
@@ -2631,6 +2636,10 @@ module.exports = async (
                   }
                 }
 
+                transaction_id = Array.isArray(transaction_id) ?
+                  to_hex(transaction_id) :
+                  transaction_id;
+
                 const record = {
                   id: txhash,
                   type,
@@ -2804,7 +2813,10 @@ module.exports = async (
                         source.original_recipient_chain = normalize_original_chain(source.recipient_chain);
                       }
 
-                      if (source.denom && typeof amount === 'string') {
+                      if (
+                        source.denom &&
+                        typeof amount === 'string'
+                      ) {
                         const asset_data = assets_data.find(a => equals_ignore_case(a?.id, source.denom));
 
                         const {

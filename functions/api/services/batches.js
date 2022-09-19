@@ -50,17 +50,11 @@ module.exports = async (
         must_not.push({ match: { 'commands.executed': false } });
         break;
       case 'unexecuted':
-        must.push({
+        should.push({
           bool: {
-            should: [
+            must: [
               { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
-              { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNING' } },
             ],
-            minimum_should_match: 1,
-          },
-        });
-        must.push({
-          bool: {
             should: [
               { match: { 'commands.executed': false } },
               {
@@ -74,6 +68,7 @@ module.exports = async (
             minimum_should_match: 1,
           },
         });
+        should.push({ match: { status: 'BATCHED_COMMANDS_STATUS_SIGNING' } });
         break;
       case 'signed':
       case 'signing':

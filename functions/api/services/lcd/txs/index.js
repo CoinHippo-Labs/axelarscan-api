@@ -347,7 +347,11 @@ module.exports = async (
                 } = { ...to_json(attributes?.find(a => a?.key === 'participants')?.value) };
 
                 const sender_chain = normalize_chain(message.chain);
-                const transaction_id = message.tx_id;
+                let transaction_id = message.tx_id;
+
+                transaction_id = Array.isArray(transaction_id) ?
+                  to_hex(transaction_id) :
+                  transaction_id;
 
                 if (
                   poll_id &&
@@ -752,6 +756,10 @@ module.exports = async (
                       }
                     }
 
+                    transaction_id = Array.isArray(transaction_id) ?
+                      to_hex(transaction_id) :
+                      transaction_id;
+
                     const record = {
                       id: txhash,
                       type,
@@ -783,7 +791,10 @@ module.exports = async (
 
           return _records;
         })
-        .filter(t => t?.poll_id && t.voter);
+        .filter(t =>
+          t?.poll_id &&
+          t.voter
+        );
 
       if (records.length > 0) {
         for (const record of records) {
