@@ -129,9 +129,12 @@ const normalize_original_chain = chain => {
 };
 
 const normalize_chain = chain => {
+  const regex = /^[0-9.\b]+$/;
+
   if (chain) {
-    chain = chain.split('-')
-      .filter(c => isNaN(c))
+    chain = chain
+      .split('-')
+      .filter(c => !regex.test(c))
       .join('')
       .trim()
       .toLowerCase();

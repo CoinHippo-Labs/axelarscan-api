@@ -218,6 +218,40 @@ const saveTimeSpent = async (
   }
 };
 
+const get_distinguish_chain_id = chain => {
+  const chain_data = chains_data.find(c => {
+    const {
+      id,
+      overrides,
+    } = { ...c };
+
+    return equals_ignore_case(id, chain) ||
+      Object.keys({ ...overrides })
+        .findIndex(k =>
+          equals_ignore_case(k, chain)
+        ) > -1;
+  });
+
+  const {
+    id,
+    overrides,
+  } = { ...chain_data };
+
+  return (
+    _.head(
+      Object.entries({ ...overrides })
+        .filter(([k, v]) =>
+          equals_ignore_case(k, chain) &&
+          Object.keys({ ...v }).length > 0
+        )
+        .map(([k, v]) => k)
+    ) ||
+    id ||
+    chain
+  );
+};
+
 module.exports = {
   saveTimeSpent,
+  get_distinguish_chain_id,
 };
