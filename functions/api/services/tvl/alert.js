@@ -42,7 +42,7 @@ module.exports = async (
   const _response = await read(
     'tvls',
     {
-      range: { updated_at: { gt: moment().subtract(10, 'minutes').unix() } },
+      range: { updated_at: { gt: moment().subtract(5, 'minutes').unix() } },
     },
     {
       size: 100,
@@ -69,7 +69,8 @@ module.exports = async (
 
         return {
           ...d,
-          value: (total * price) || 0,
+          value: (total * price) ||
+            0,
         };
       }),
     [

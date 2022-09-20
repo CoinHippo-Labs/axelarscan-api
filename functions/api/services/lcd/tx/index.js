@@ -858,7 +858,10 @@ module.exports = async (
             } = { ...e };
 
             attributes = attributes
-              .filter(a => a?.key && a.value);
+              .filter(a =>
+                a?.key &&
+                a.value
+              );
 
             const packet_data = to_json(attributes.find(a => a?.key === 'packet_data')?.value);
             const packet_data_hex = attributes.find(a => a?.key === 'packet_data_hex')?.value;
@@ -1524,7 +1527,43 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        const ack_packets = logs?.map(l => l?.events?.find(e => equals_ignore_case(e?.type, 'acknowledge_packet')))
+        const ack_packets = (logs || [])
+          .map(l => {
+            const {
+              events,
+            } = { ...l };
+
+            const e = events?.find(e => equals_ignore_case(e?.type, 'acknowledge_packet'));
+            const {
+              attributes,
+            } = { ...e };
+
+            if (attributes) {
+              const transfer_completed_event = events.find(e =>
+                [
+                  'IBCTransferCompleted',
+                ].findIndex(t => equals_ignore_case(t, _.last(e.type?.split('.')))) > -1
+              );
+
+              const transfer_id = (transfer_completed_event?.attributes?.find(a => a?.key === 'id')?.value || '')
+                .split('"')
+                .join('');
+
+              if (transfer_id) {
+                attributes.push(
+                  {
+                    key: 'transfer_id',
+                    value: transfer_id,
+                  }
+                );
+              }
+            }
+
+            return {
+              ...e,
+              attributes,
+            };
+          })
           .filter(e => e?.attributes?.length > 0)
           .map(e => {
             const {
@@ -1533,7 +1572,10 @@ module.exports = async (
 
             return Object.fromEntries(
               attributes
-                .filter(a => a?.key && a.value)
+                .filter(a =>
+                  a?.key &&
+                  a.value
+                )
                 .map(a =>
                   [
                     a.key,
@@ -1552,7 +1594,7 @@ module.exports = async (
                 '0'
               ) - 1,
             };
-          }) || [];
+          });
 
         for (const record of ack_packets) {
           const {
@@ -1563,6 +1605,7 @@ module.exports = async (
             packet_src_channel,
             packet_dst_channel,
             packet_connection,
+            transfer_id,
           } = { ...record };
 
           const _response = await read(
@@ -1576,16 +1619,20 @@ module.exports = async (
                   { match: { 'ibc_send.packet.packet_dst_channel': packet_dst_channel } },
                   // { match: { 'ibc_send.packet.packet_connection': packet_connection } },
                 ],
-                should: [
-                  { match: { 'ibc_send.ack_txhash': id } },
-                  {
-                    bool: {
-                      must_not: [
-                        { exists: { field: 'ibc_send.ack_txhash' } },
-                      ],
+                should: transfer_id ?
+                  [
+                    { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                  ] :
+                  [
+                    { match: { 'ibc_send.ack_txhash': id } },                  
+                    {
+                      bool: {
+                        must_not: [
+                          { exists: { field: 'ibc_send.ack_txhash' } },
+                        ],
+                      },
                     },
-                  },
-                ],
+                  ],
                 minimum_should_match: 1,
               },
             },
@@ -1636,7 +1683,11 @@ module.exports = async (
               );
             }
 
-            if (height && packet_data_hex && recipient_chain) {
+            if (
+              height &&
+              packet_data_hex &&
+              recipient_chain
+            ) {
               const chain_data = cosmos_non_axelarnet_chains_data.find(c => equals_ignore_case(c?.id, recipient_chain));
 
               const _lcds = _.concat(

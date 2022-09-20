@@ -215,7 +215,7 @@ module.exports = async (
       updated_at,
     } = { ...cache_data };
 
-    if (moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) < 5) {
+    if (moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) < 3) {
       return cache_data;
     }
   }
@@ -651,7 +651,7 @@ module.exports = async (
       Object.entries(cosmos_tvl)
         .filter(([k, v]) => ibc?.find(i => i?.is_native)?.chain_id !== k)
         .map(([k, v]) => v),
-      _cosmos_chains_data.length === cosmos_chains_data.length ?
+      _cosmos_chains_data.length >= cosmos_chains_data.length ?
         ibc?.findIndex(i => i?.is_native) > -1 ?
           'supply' :
           'total' :

@@ -46,7 +46,10 @@ const crud = async (
     height = Number(height);
   }
 
-  if (indexer_url && collection) {
+  if (
+    indexer_url &&
+    collection
+  ) {
     delete params.collection;
     delete params.method;
     delete params.path;
@@ -312,13 +315,14 @@ const read = async (
   collection,
   query,
   params = {},
-) => await crud({
-  method: 'query',
-  collection,
-  query,
-  use_raw_data: true,
-  ...params,
-});
+) =>
+  await crud({
+    method: 'query',
+    collection,
+    query,
+    use_raw_data: true,
+    ...params,
+  });
 
 const write = async (
   collection,
@@ -326,29 +330,31 @@ const write = async (
   data = {},
   update_only = false,
   is_update = true,
-) => await crud({
-  method: 'set',
-  collection,
-  id,
-  path: is_update ?
-    `/${collection}/_update/${id}` :
-    undefined,
-  update_only,
-  ...data,
-});
+) =>
+  await crud({
+    method: 'set',
+    collection,
+    id,
+    path: is_update ?
+      `/${collection}/_update/${id}` :
+      undefined,
+    update_only,
+    ...data,
+  });
 
 const delete_by_query = async (
   collection,
   query,
   params = {},
-) => await crud({
-  method: 'query',
-  collection,
-  path: `/${collection}/_delete_by_query`,
-  query,
-  use_raw_data: true,
-  ...params,
-});
+) =>
+  await crud({
+    method: 'query',
+    collection,
+    path: `/${collection}/_delete_by_query`,
+    query,
+    use_raw_data: true,
+    ...params,
+  });
 
 module.exports = {
   crud,
