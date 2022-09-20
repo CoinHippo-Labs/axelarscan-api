@@ -2,11 +2,13 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+// const cli = require('../../cli');
 const {
   read,
   write,
 } = require('../../index');
 const {
+  to_hash,
   get_address,
 } = require('../../../utils/address');
 
@@ -14,6 +16,7 @@ const environment = process.env.ENVIRONMENT || config?.environment;
 
 const data = require('../../../data');
 const cosmos_chains_data = data?.chains?.[environment]?.cosmos || [];
+const axelarnet = cosmos_chains_data.find(c => c?.id === 'axelarnet');
 
 const {
   endpoints,
@@ -35,11 +38,9 @@ module.exports = async (
 
   if (
     channels &&
-    endpoints?.lcd &&
-    endpoints.cli
+    endpoints?.lcd
   ) {
     const lcd = axios.create({ baseURL: endpoints.lcd });
-    const cli = axios.create({ baseURL: endpoints.cli });
 
     let all_channels = channels;
 
@@ -66,7 +67,8 @@ module.exports = async (
           _.concat(
             all_channels,
             channels,
-          ), 'channel_id',
+          ),
+          'channel_id',
         );
       }
     }
@@ -85,16 +87,17 @@ module.exports = async (
       data,
     } = { ..._response };
 
-    all_channels = all_channels.map(c => {
-      const {
-        channel_id,
-      } = { ...c };
+    all_channels = all_channels
+      .map(c => {
+        const {
+          channel_id,
+        } = { ...c };
 
-      return {
-        ...data?.find(_c => _c?.channel_id === channel_id),
-        ...c,
-      };
-    });
+        return {
+          ...data?.find(_c => _c?.channel_id === channel_id),
+          ...c,
+        };
+      });
 
     for (const channel of all_channels) {
       const {
@@ -127,26 +130,32 @@ module.exports = async (
           chain_id;
 
         if (chain_id) {
-          const ___response = await cli.get(
+          /*const ___response = await cli(
             '',
             {
-              params: {
-                cmd: `axelard q ibc-transfer escrow-address ${port_id} ${channel_id} -oj`,
-              },
+              cmd: `axelard q ibc-transfer escrow-address ${port_id} ${channel_id} -oj`,
             },
-          ).catch(error => { return { data: { error } }; });
+          );
 
           const {
             stdout,
-          } = { ...___response?.data };
+          } = { ...___response };
 
           escrow_address = stdout?.trim() ||
-            escrow_address;
+            escrow_address;*/
+
+          escrow_address =
+            get_address(
+              `${version}\x00${port_id}/${channel_id}`,
+              axelarnet?.prefix_address,
+            ) ||
+              escrow_address;
 
           if (counterparty) {
             const chain_data = cosmos_chains_data.find(c =>
               c?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1 ||
-              Object.values({ ...c?.overrides }).findIndex(o => o?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1) > -1
+              Object.values({ ...c?.overrides })
+                .findIndex(o => o?.prefix_chain_ids?.findIndex(p => chain_id.startsWith(p)) > -1) > -1
             );
             const {
               prefix_address,

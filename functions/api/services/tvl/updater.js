@@ -14,9 +14,11 @@ module.exports = async context => {
       id,
     } = { ...asset_data };
 
-    tvl({
-      asset: id,
-    });
+    tvl(
+      {
+        asset: id,
+      },
+    );
   }
 
   while (context.getRemainingTimeInMillis() > 2 * 1000) {
