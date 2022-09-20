@@ -751,7 +751,10 @@ module.exports = async (
 
               decimals = ibc?.find(i => i?.chain_id === record.sender_chain)?.decimals || decimals || 6;
 
-              if (!record.fee && endpoints?.lcd) {
+              if (
+                !record.fee &&
+                endpoints?.lcd
+              ) {
                 const lcd = axios.create({ baseURL: endpoints.lcd });
 
                 const __response = await lcd.get(
@@ -1170,9 +1173,11 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
+        let transfer_sent_events;
+
         if (
           logs?.length > 0 &&
-          logs.findIndex(l => l?.events?.findIndex(e => equals_ignore_case(e?.type, 'send_packet')) > -1) < 0 &&
+          // logs.findIndex(l => l?.events?.findIndex(e => equals_ignore_case(e?.type, 'send_packet')) > -1) < 0 &&
           height
         ) {
           const _response = await rpc(
@@ -1186,48 +1191,84 @@ module.exports = async (
             end_block_events,
           } = { ..._response };
 
-          const events = end_block_events?.filter(e =>
-            equals_ignore_case(e?.type, 'send_packet') &&
-            e.attributes?.length > 0
-          );
+          if (logs.findIndex(l => l?.events?.findIndex(e => equals_ignore_case(e?.type, 'send_packet')) > -1) < 0) {
+            const events = end_block_events?.filter(e =>
+              equals_ignore_case(e?.type, 'send_packet') &&
+              e.attributes?.length > 0
+            );
 
-          for (const event of events) {
-            const {
-              attributes,
-            } = { ...event };
+            for (const event of events) {
+              const {
+                attributes,
+              } = { ...event };
 
-            const packet_data = to_json(attributes?.find(a => a?.key === 'packet_data')?.value);
+              const packet_data = to_json(attributes?.find(a => a?.key === 'packet_data')?.value);
 
-            const {
-              sender,
-            } = { ...packet_data };
+              const {
+                sender,
+              } = { ...packet_data };
 
-            if (sender &&
-              logs.findIndex(l =>
-                l?.events?.findIndex(e =>
-                  e?.attributes?.findIndex(a =>
-                    [
-                      'minter',
-                      'receiver',
-                    ].includes(a?.key) &&
-                    equals_ignore_case(a.value, sender)
-                  ) > -1  ||
-                  (
-                    e?.attributes?.findIndex(a => a?.value === 'RouteIBCTransfers') > -1 &&
-                    events.length === 1
-                  )
+              if (sender &&
+                logs.findIndex(l =>
+                  l?.events?.findIndex(e =>
+                    e?.attributes?.findIndex(a =>
+                      [
+                        'minter',
+                        'receiver',
+                      ].includes(a?.key) &&
+                      equals_ignore_case(a.value, sender)
+                    ) > -1  ||
+                    (
+                      e?.attributes?.findIndex(a => a?.value === 'RouteIBCTransfers') > -1 &&
+                      events.length === 1
+                    )
+                  ) > -1
                 ) > -1
-              ) > -1
-            ) {
-              logs[0] = {
-                ..._.head(logs),
-                events: _.concat(
-                  _.head(logs).events,
-                  event,
-                ).filter(e => e),
-              };
+              ) {
+                logs[0] = {
+                  ..._.head(logs),
+                  events: _.concat(
+                    _.head(logs).events,
+                    event,
+                  ).filter(e => e),
+                };
+              }
             }
           }
+
+          transfer_sent_events =
+            end_block_events?.filter(e =>
+              e?.attributes &&
+              [
+                'IBCTransferSent',
+              ].findIndex(t => equals_ignore_case(t, _.last(e.type?.split('.')))) > -1
+            )
+            .map(e => {
+              const {
+                attributes,
+              } = { ...e }
+
+              return Object.fromEntries(
+                attributes
+                  .map(a => {
+                    const {
+                      key,
+                      value,
+                    } = { ...a };
+
+                    return [
+                      key,
+                      to_json(value) ||
+                        (typeof value === 'string' ?
+                          value
+                            .split('"')
+                            .join('') :
+                          value
+                        ),
+                    ];
+                  })
+              );
+            });
         }
 
         const send_packets = (logs || [])
@@ -1239,7 +1280,10 @@ module.exports = async (
             } = { ...e };
 
             attributes = attributes
-              .filter(a => a?.key && a.value);
+              .filter(a =>
+                a?.key &&
+                a.value
+              );
 
             const events = [];
             let event;
@@ -1294,7 +1338,15 @@ module.exports = async (
               decimals,
             } = { ...asset_data };
 
-            decimals = ibc?.find(i => i?.chain_id === axelarnet.id)?.decimals || decimals || 6;
+            decimals = ibc?.find(i => i?.chain_id === axelarnet.id)?.decimals ||
+              decimals ||
+              6;
+
+            const transfer_id = transfer_sent_events?.find(e =>
+              equals_ignore_case(e?.recipient, receiver) &&
+              equals_ignore_case(e?.asset?.denom, denom) &&
+              equals_ignore_case(e?.asset?.amount, amount)
+            )?.id;
 
             const record = {
               id: txhash,
@@ -1310,11 +1362,12 @@ module.exports = async (
               amount: Number(
                 formatUnits(
                   BigNumber.from(amount).toString(),
-                  decimals
+                  decimals,
                 )
               ),
               denom,
               packet: e,
+              transfer_id,
             };
 
             return record;
@@ -1327,6 +1380,7 @@ module.exports = async (
             recipient_address,
             amount,
             denom,
+            transfer_id,
           } = { ...record };
           const {
             ms,
@@ -1336,11 +1390,15 @@ module.exports = async (
             'transfers',
             {
               bool: {
-                must: [
-                  { match: { 'ibc_send.id': id } },
-                  { match: { 'ibc_send.recipient_address': recipient_address } },
-                  { match: { 'ibc_send.denom': denom } },
-                ],
+                must: transfer_id ?
+                  [
+                    { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                  ] :
+                  [
+                    { match: { 'ibc_send.id': id } },
+                    { match: { 'ibc_send.recipient_address': recipient_address } },
+                    { match: { 'ibc_send.denom': denom } },
+                  ],
               },
             },
             {
@@ -1435,7 +1493,10 @@ module.exports = async (
             if (
               data &&
               recipient_address &&
-              !_.isEqual(ibc_send, record)
+              !_.isEqual(
+                ibc_send,
+                record,
+              )
             ) {
               const _id = `${id}_${recipient_address}`.toLowerCase();
 

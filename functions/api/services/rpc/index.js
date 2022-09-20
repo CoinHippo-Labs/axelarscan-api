@@ -1,10 +1,11 @@
 const axios = require('axios');
 const moment = require('moment');
 const config = require('config-yml');
+const index_end_block_events = require('./end_block_events');
 const {
   to_json,
   decode_base64,
-} = require('../utils');
+} = require('../../utils');
 
 const environment = process.env.ENVIRONMENT || config?.environment;
 
@@ -50,7 +51,10 @@ module.exports = async (
           latest_block_height,
         } = { ...data };
 
-        if (latest_block_height && endpoints.lcd) {
+        if (
+          latest_block_height &&
+          endpoints.lcd
+        ) {
           latest_block_height = Number(latest_block_height);
 
           const lcd = axios.create({ baseURL: endpoints.lcd });
@@ -180,6 +184,10 @@ module.exports = async (
             attributes,
           };
         });
+
+        end_block_events = await index_end_block_events(
+          end_block_events,
+        );
 
         data = {
           ...result,
