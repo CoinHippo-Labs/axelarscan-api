@@ -88,7 +88,7 @@ module.exports = async (
             ],
             should: evm_chains_data.map(c => {
               return { match: { 'source.recipient_chain': c?.id } };
-            }) || [],
+            }),
             minimum_should_match: 1,
           },
         });
@@ -99,7 +99,10 @@ module.exports = async (
             ],
             should: cosmos_chains_data.map(c => {
               return { match: { 'source.recipient_chain': c?.id } };
-            }) || [],
+            }),
+            must_not: [
+              { exists: { field: 'ibc_send.failed_txhash' } },
+            ],
             minimum_should_match: 1,
           },
         });
@@ -134,7 +137,7 @@ module.exports = async (
                   ],
                   should: evm_chains_data.map(c => {
                     return { match: { 'source.recipient_chain': c?.id } };
-                  }) || [],
+                  }),
                   minimum_should_match: 1,
                 },
               },
@@ -145,7 +148,7 @@ module.exports = async (
                   ],
                   should: cosmos_chains_data.map(c => {
                     return { match: { 'source.recipient_chain': c?.id } };
-                  }) || [],
+                  }),
                   minimum_should_match: 1,
                 },
               },
@@ -370,9 +373,12 @@ module.exports = async (
           price,
         },
         status: ibc_send ?
-          ibc_send.recv_txhash ?
-            'executed' :
-            'ibc_sent' :
+          ibc_send.failed_txhash &&
+          !ibc_send.ack_txhash ?
+            'ibc_failed' :
+            ibc_send.recv_txhash ?
+              'executed' :
+              'ibc_sent' :
           sign_batch?.executed ?
             'executed' :
              sign_batch ?

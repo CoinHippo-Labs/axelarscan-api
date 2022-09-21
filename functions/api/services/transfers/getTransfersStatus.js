@@ -856,9 +856,12 @@ module.exports = async (
           price,
         },
         status: ibc_send ?
-          ibc_send.recv_txhash ?
-            'executed' :
-            'ibc_sent' :
+          ibc_send.failed_txhash &&
+          !ibc_send.ack_txhash ?
+            'ibc_failed' :
+            ibc_send.recv_txhash ?
+              'executed' :
+              'ibc_sent' :
           sign_batch?.executed ?
             'executed' :
              sign_batch ?
