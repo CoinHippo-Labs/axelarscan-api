@@ -809,11 +809,15 @@ module.exports = async (
                 );
               }
 
-              if (typeof amount === 'number' && typeof record.fee === 'number') {
+              if (
+                typeof amount === 'number' &&
+                typeof record.fee === 'number'
+              ) {
                 if (amount < record.fee) {
                   record.insufficient_fee = true;
                 }
                 else {
+                  record.insufficient_fee = false;
                   record.amount_received = amount - record.fee;
                 }
               }
@@ -823,7 +827,10 @@ module.exports = async (
             }
           }
 
-          if (price && typeof amount === 'number') {
+          if (
+            price &&
+            typeof amount === 'number'
+          ) {
             record.value = amount * price;
           }
 
@@ -1139,11 +1146,15 @@ module.exports = async (
                             );
                           }
 
-                          if (typeof amount === 'number' && typeof _record.fee === 'number') {
+                          if (
+                            typeof amount === 'number' &&
+                            typeof _record.fee === 'number'
+                          ) {
                             if (amount < _record.fee) {
                               _record.insufficient_fee = true;
                             }
                             else {
+                              _record.insufficient_fee = false;
                               _record.amount_received = amount - _record.fee;
                             }
                           }
@@ -1153,7 +1164,10 @@ module.exports = async (
                         }
                       }
 
-                      if (price && typeof amount === 'number') {
+                      if (
+                        price &&
+                        typeof amount === 'number'
+                      ) {
                         _record.value = amount * price;
                       }
 
@@ -2096,7 +2110,10 @@ module.exports = async (
             'tokenAddress',
           ].includes(a?.key)
         )?.value;
-        if (token_address?.startsWith('[') && token_address.endsWith(']')) {
+        if (
+          token_address?.startsWith('[') &&
+          token_address.endsWith(']')
+        ) {
           token_address = to_hex(to_json(token_address));
         }
 
@@ -2107,7 +2124,10 @@ module.exports = async (
               'depositAddress',
             ].includes(a?.key)
           )?.value;
-        if (deposit_address?.startsWith('[') && deposit_address.endsWith(']')) {
+        if (
+          deposit_address?.startsWith('[') &&
+          deposit_address.endsWith(']')
+        ) {
           deposit_address = to_hex(to_json(deposit_address));
         }
 
@@ -2118,12 +2138,19 @@ module.exports = async (
           ].includes(a?.key)
         )?.value ||
           poll_id?.split('_')[0];
-        if (transaction_id?.startsWith('[') && transaction_id.endsWith(']')) {
+        if (
+          transaction_id?.startsWith('[') &&
+          transaction_id.endsWith(']')
+        ) {
           transaction_id = to_hex(to_json(transaction_id));
         }
         if (transaction_id === poll_id) {
           transaction_id = null;
         }
+
+        const asset = (attributes?.find(a => a?.key === 'asset')?.value || '')
+          .split('"')
+          .join('');
 
         const {
           participants,
@@ -2162,7 +2189,8 @@ module.exports = async (
           ),
           amount: attributes?.find(a => a?.key === 'amount')?.value,
           denom: tx_response.denom ||
-            messages.find(m => m?.denom)?.denom,
+            messages.find(m => m?.denom)?.denom ||
+            asset,
           token_address,
           deposit_address,
           transfer_id: Number(
@@ -2338,8 +2366,8 @@ module.exports = async (
                   },
                 );
 
-                let transfers_data = _response?.data
-                  .filter(t => t?.source?.id) || [];
+                let transfers_data = (_response?.data || [])
+                  .filter(t => t?.source?.id);
 
                 if (
                   transfers_data.length < 1 &&
@@ -2460,14 +2488,51 @@ module.exports = async (
 
                   const asset_data = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.contract_address, to)) > -1);
 
+                  let _amount;
+
+                  if (!asset_data) {
+                    const receipt = await provider.getTransactionReceipt(transaction_id);
+                    const {
+                      logs,
+                    } = { ...receipt };
+
+                    _amount = _.head(
+                      (logs || [])
+                        .map(l => l?.data)
+                        .filter(d => d?.length >= 64)
+                        .map(d =>
+                          d.substring(
+                            d.length - 64,
+                          )
+                          .replace(
+                            '0x',
+                            '',
+                          )
+                          .replace(
+                            /^0+/,
+                            '',
+                          )
+                        )
+                        .filter(d => {
+                          try {
+                            d = BigNumber.from(`0x${d}`);
+                            return true;
+                          } catch (error) {
+                            return false;
+                          }
+                        })
+                    );
+                  }
+
                   if (
-                    blockNumber &&
+                    blockNumber/* &&
                     (
                       equals_ignore_case(to, token_address) ||
                       asset_data
-                    )
+                    )*/
                   ) {
-                    amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString() || amount;
+                    amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || _amount || '0'}`).toString() ||
+                      amount;
                     denom = asset_data?.id ||
                       denom;
 
@@ -2575,7 +2640,10 @@ module.exports = async (
                       source.original_recipient_chain = normalize_original_chain(source.recipient_chain);
                     }
 
-                    if (source.denom && typeof amount === 'string') {
+                    if (
+                      source.denom &&
+                      typeof amount === 'string'
+                    ) {
                       const asset_data = assets_data.find(a => equals_ignore_case(a?.id, source.denom));
 
                       const {
@@ -2585,7 +2653,9 @@ module.exports = async (
                         decimals,
                       } = { ...asset_data };
 
-                      decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals || decimals || 18;
+                      decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals ||
+                        decimals ||
+                        18;
 
                       if (asset_data) {
                         amount = Number(
@@ -2595,7 +2665,10 @@ module.exports = async (
                           )
                         );
 
-                        if (!source.fee && endpoints?.lcd) {
+                        if (
+                          !source.fee &&
+                          endpoints?.lcd
+                        ) {
                           const lcd = axios.create({ baseURL: endpoints.lcd });
 
                           const ___response = await lcd.get(
@@ -2625,16 +2698,23 @@ module.exports = async (
                       }
                     }
 
-                    if (typeof amount === 'number' && typeof source.fee === 'number') {
+                    if (
+                      typeof amount === 'number' &&
+                      typeof source.fee === 'number'
+                    ) {
                       if (amount < source.fee) {
                         source.insufficient_fee = true;
                       }
                       else {
+                        source.insufficient_fee = false;
                         source.amount_received = amount - source.fee;
                       }
                     }
 
-                    if (price && typeof amount === 'number') {
+                    if (
+                      price &&
+                      typeof amount === 'number'
+                    ) {
                       source.value = amount * price;
                     }
 
@@ -3121,17 +3201,53 @@ module.exports = async (
 
                     const asset_data = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.contract_address, to)) > -1);
 
+                    let _amount;
+
+                    if (!asset_data) {
+                      const receipt = await provider.getTransactionReceipt(transaction_id);
+                      const {
+                        logs,
+                      } = { ...receipt };
+
+                      _amount = _.head(
+                        (logs || [])
+                          .map(l => l?.data)
+                          .filter(d => d?.length >= 64)
+                          .map(d =>
+                            d.substring(
+                              d.length - 64,
+                            )
+                            .replace(
+                              '0x',
+                              '',
+                            )
+                            .replace(
+                              /^0+/,
+                              '',
+                            )
+                          )
+                          .filter(d => {
+                            try {
+                              d = BigNumber.from(`0x${d}`);
+                              return true;
+                            } catch (error) {
+                              return false;
+                            }
+                          })
+                      );
+                    }
+
                     if (
-                      blockNumber &&
-                      asset_data
+                      blockNumber/* &&
+                      asset_data*/
                     ) {
-                      amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString() ||
+                      amount = BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || _amount || '0'}`).toString() ||
                         (
                           poll_id?.includes('_') &&
                           _.last(poll_id.split('_'))
                         ) ||
                         amount;
-                      denom = asset_data.id ||
+                      denom = asset_data?.id ||
                         denom;
 
                       const block_timestamp = await getBlockTime(
@@ -3299,6 +3415,7 @@ module.exports = async (
                           source.insufficient_fee = true;
                         }
                         else {
+                          source.insufficient_fee = false;
                           source.amount_received = amount - source.fee;
                         }
                       }

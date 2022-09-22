@@ -106,12 +106,12 @@ module.exports = async (
                 let __response;
 
                 const receipt = await provider.getTransactionReceipt(txHash);
-
                 const {
                   logs,
                 } = { ...receipt };
+
                 const topics = _.reverse(
-                  (logs || [])
+                  _.cloneDeep(logs || [])
                     .flatMap(l => l?.topics || [])
                 )
                 .filter(t => t?.startsWith('0x000000000000000000000000'))
@@ -153,6 +153,33 @@ module.exports = async (
                 }
 
                 if (depositAddress) {
+                  const _amount = _.head(
+                    (logs || [])
+                      .map(l => l?.data)
+                      .filter(d => d?.length >= 64)
+                      .map(d =>
+                        d.substring(
+                          d.length - 64,
+                        )
+                        .replace(
+                          '0x',
+                          '',
+                        )
+                        .replace(
+                          /^0+/,
+                          '',
+                        )
+                      )
+                      .filter(d => {
+                        try {
+                          d = BigNumber.from(`0x${d}`);
+                          return true;
+                        } catch (error) {
+                          return false;
+                        }
+                      })
+                  );
+
                   const source = {
                     id: txHash,
                     type: 'evm_transfer',
@@ -163,7 +190,7 @@ module.exports = async (
                     sender_chain: chain_data?.id,
                     sender_address: from,
                     recipient_address: depositAddress,
-                    amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString(),
+                    amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || _amount || '0'}`).toString(),
                     denom: assets_data.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, to)) > -1)?.id,
                   };
 
@@ -685,17 +712,24 @@ module.exports = async (
           }
         }
 
-        if (typeof source.amount === 'number' && typeof source.fee === 'number') {
+        if (
+          typeof source.amount === 'number' &&
+          typeof source.fee === 'number'
+        ) {
           if (source.amount < source.fee) {
             source.insufficient_fee = true;
           }
           else {
+            source.insufficient_fee = false;
             source.amount_received = source.amount - source.fee;
           }
         }
       }
 
-      if (!price && (link || source)) {
+      if (
+        !price &&
+        (link || source)
+      ) {
         const ___response = await assets_price({
           chain: original_sender_chain || source?.original_sender_chain,
           denom: asset || source?.asset || denom || source?.denom,

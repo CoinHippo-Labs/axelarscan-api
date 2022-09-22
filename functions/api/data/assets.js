@@ -52,6 +52,21 @@ module.exports = {
           decimals: 6,
           is_native: true,
         },
+        {
+          ibc_denom: 'ibc/903A61A498756EA560B85A85132D3AEE21B5DEDD41213725D22ABF276EA6945E',
+          chain_id: 'osmosis',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/EBE900AED8FF6BB2E186B17B066138F647CDD9647EF4FBE2DE6C8D4013A2C990',
+          chain_id: 'juno',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/C01154C2547F4CB10A985EA78E7CD4BA891C1504360703A37E1D7043F06B5E1F',
+          chain_id: 'kujira',
+          decimals: 6,
+        },
       ],
     },
     {
