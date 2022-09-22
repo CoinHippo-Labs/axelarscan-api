@@ -88,8 +88,27 @@ module.exports = async (
       d.is_abnormal_supply &&
       d.value > alert_asset_value_threshold
     ) ||
-    Object.values({ ...d.tvl })
-      .findIndex(_d => _d?.is_abnormal_supply) > -1
+    (
+      Object.values({ ...d.tvl })
+        .findIndex(_d => _d?.is_abnormal_supply) > -1 &&
+      _.sum(
+        Object.values({ ...d.tvl })
+          .map(_d => {
+            const {
+              price,
+            } = { ...d };
+            const {
+              supply,
+              escrow_balance,
+            } = { ..._d };
+
+            return (
+              (supply || escrow_balance) *
+              (price || 0)
+            );
+          })
+      ) > alert_asset_value_threshold
+    )
   );
 
   if (

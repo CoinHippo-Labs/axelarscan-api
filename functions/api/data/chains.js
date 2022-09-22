@@ -20,7 +20,9 @@ module.exports = {
               symbol: 'ETH',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://etherscan.io'],
+            blockExplorerUrls: [
+              'https://etherscan.io',
+            ],
           },
         ],
         explorer: {
@@ -57,7 +59,9 @@ module.exports = {
               symbol: 'BNB',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://bscscan.com'],
+            blockExplorerUrls: [
+              'https://bscscan.com',
+            ],
           },
         ],
         explorer: {
@@ -95,7 +99,9 @@ module.exports = {
               symbol: 'MATIC',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://polygonscan.com'],
+            blockExplorerUrls: [
+              'https://polygonscan.com',
+            ],
           },
         ],
         explorer: {
@@ -132,7 +138,9 @@ module.exports = {
               symbol: 'AVAX',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://snowtrace.io'],
+            blockExplorerUrls: [
+              'https://snowtrace.io',
+            ],
           },
         ],
         explorer: {
@@ -170,7 +178,9 @@ module.exports = {
               symbol: 'FTM',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://ftmscan.com'],
+            blockExplorerUrls: [
+              'https://ftmscan.com',
+            ],
           },
         ],
         explorer: {
@@ -207,7 +217,9 @@ module.exports = {
               symbol: 'GLMR',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://moonscan.io'],
+            blockExplorerUrls: [
+              'https://moonscan.io',
+            ],
           },
         ],
         explorer: {
@@ -243,7 +255,9 @@ module.exports = {
               symbol: 'ETH',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://aurorascan.dev'],
+            blockExplorerUrls: [
+              'https://aurorascan.dev',
+            ],
           },
         ],
         explorer: {
@@ -860,6 +874,7 @@ module.exports = {
             chainId: '0x3',
             chainName: 'Ethereum Ropsten',
             rpcUrls: [
+              'https://rpc.ankr.com/eth_ropsten',
               'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
             ],
             nativeCurrency: {
@@ -867,7 +882,9 @@ module.exports = {
               symbol: 'ETH',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://ropsten.etherscan.io'],
+            blockExplorerUrls: [
+              'https://ropsten.etherscan.io',
+            ],
           },
         ],
         explorer: {
@@ -905,7 +922,9 @@ module.exports = {
               symbol: 'BNB',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.bscscan.com'],
+            blockExplorerUrls: [
+              'https://testnet.bscscan.com',
+            ],
           },
         ],
         explorer: {
@@ -934,6 +953,7 @@ module.exports = {
             chainId: '0x13881',
             chainName: 'Polygon Mumbai',
             rpcUrls: [
+              'https://rpc.ankr.com/polygon_mumbai',
               'https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://matic-mumbai.chainstacklabs.com',
             ],
@@ -942,7 +962,9 @@ module.exports = {
               symbol: 'MATIC',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://mumbai.polygonscan.com'],
+            blockExplorerUrls: [
+              'https://mumbai.polygonscan.com',
+            ],
           },
         ],
         explorer: {
@@ -971,6 +993,7 @@ module.exports = {
             chainId: '0xa869',
             chainName: 'Avalanche Fuji',
             rpcUrls: [
+              'https://rpc.ankr.com/avalanche_fuji',
               'https://api.avax-test.network/ext/bc/C/rpc',
             ],
             nativeCurrency: {
@@ -978,7 +1001,9 @@ module.exports = {
               symbol: 'AVAX',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.snowtrace.io'],
+            blockExplorerUrls: [
+              'https://testnet.snowtrace.io',
+            ],
           },
         ],
         explorer: {
@@ -1007,15 +1032,17 @@ module.exports = {
             chainId: '0xfa2',
             chainName: 'Fantom Testnet',
             rpcUrls: [
+              'https://rpc.ankr.com/fantom_testnet',
               'https://rpc.testnet.fantom.network',
-              'https://xapi.testnet.fantom.network/lachesis',
             ],
             nativeCurrency: {
               name: 'Fantom',
               symbol: 'FTM',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.ftmscan.com'],
+            blockExplorerUrls: [
+              'https://testnet.ftmscan.com',
+            ],
           },
         ],
         explorer: {
@@ -1045,13 +1072,17 @@ module.exports = {
             chainName: 'Moonbase Alpha',
             rpcUrls: [
               'https://rpc.api.moonbase.moonbeam.network',
+              'https://rpc.testnet.moonbeam.network',
+              'https://moonbase-alpha.public.blastapi.io',
             ],
             nativeCurrency: {
               name: 'Dev',
               symbol: 'DEV',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://moonbase.moonscan.io'],
+            blockExplorerUrls: [
+              'https://moonbase.moonscan.io',
+            ],
           },
         ],
         explorer: {
@@ -1087,7 +1118,9 @@ module.exports = {
               symbol: 'ETH',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.aurorascan.dev'],
+            blockExplorerUrls: [
+              'https://testnet.aurorascan.dev',
+            ],
           },
         ],
         explorer: {

@@ -574,7 +574,7 @@ module.exports = {
     {
       id: 'weth-wei',
       symbol: 'WETH',
-      name: 'Ethereum',
+      name: 'Wrapped Ether',
       image: '/logos/assets/eth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
@@ -2847,6 +2847,11 @@ module.exports = {
           chain_id: 'axelarnet',
           decimals: 6,
           is_native: true,
+        },
+        {
+          ibc_denom: 'ibc/4DAB44738E392E8FDEC30F0EF3BED40D6EAA424B2666316B02307300B3A29B15',
+          chain_id: 'osmosis',
+          decimals: 6,
         },
       ],
     },

@@ -94,6 +94,7 @@ testnet:
     ethereum:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/eth_ropsten"
           - "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
       native_token:
         name: "Ethereum"
@@ -112,6 +113,7 @@ testnet:
     avalanche:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/avalanche_fuji"
           - "https://api.avax-test.network/ext/bc/C/rpc"
       native_token:
         name: "Avalanche"
@@ -120,6 +122,7 @@ testnet:
     polygon:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/polygon_mumbai"
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://matic-mumbai.chainstacklabs.com"
       native_token:
@@ -129,8 +132,8 @@ testnet:
     fantom:
       endpoints:
         rpc:
+          - "https://rpc.ankr.com/fantom_testnet"
           - "https://rpc.testnet.fantom.network"
-          - "https://xapi.testnet.fantom.network/lachesis"
       native_token:
         name: "Fantom"
         symbol: "FTM"
@@ -139,6 +142,8 @@ testnet:
       endpoints:
         rpc:
           - "https://rpc.api.moonbase.moonbeam.network"
+          - "https://rpc.testnet.moonbeam.network"
+          - "https://moonbase-alpha.public.blastapi.io"
       native_token:
         name: "Dev"
         symbol: "DEV"

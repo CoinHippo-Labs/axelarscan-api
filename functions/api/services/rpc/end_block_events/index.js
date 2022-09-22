@@ -51,13 +51,7 @@ module.exports = async (
     }
 
     switch (_type) {
-      case 'IBCTransferFailed':
-        break;
-      case 'IBCTransferRetried':
-        break;
-      case 'AxelarTransferCompleted':
-        break;
-      case 'FeeCollected':
+      case 'IBCTransferSent':
         break;
       default:
         break;

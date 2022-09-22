@@ -1186,7 +1186,7 @@ module.exports = async (
           }
         }
       }
-      // RouteIBCTransfersRequest -> ibc_send
+      // RouteIBCTransfers -> ibc_send
       else if (
         [
           'RouteIBCTransfersRequest',
@@ -1905,6 +1905,122 @@ module.exports = async (
             }
           }
         }
+      }
+      // ExecutePendingTransfers -> axelar_transfer
+      else if (
+        [
+          'ExecutePendingTransfersRequest',
+        ].findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+        ) > -1
+      ) {
+        // const failed_packets = (logs || [])
+        //   .map(l => {
+        //     const {
+        //       events,
+        //     } = { ...l };
+
+        //     const e = events?.find(e => equals_ignore_case(_.last(e?.type?.split('.')), 'IBCTransferFailed'));
+        //     const {
+        //       attributes,
+        //     } = { ...e };
+
+        //     if (attributes) {
+        //       const transfer_id = (attributes.find(a => a?.key === 'id')?.value || '')
+        //         .split('"')
+        //         .join('');
+
+        //       if (transfer_id) {
+        //         attributes.push(
+        //           {
+        //             key: 'transfer_id',
+        //             value: transfer_id,
+        //           }
+        //         );
+        //       }
+        //     }
+
+        //     return {
+        //       ...e,
+        //       attributes,
+        //     };
+        //   })
+        //   .filter(e => e?.attributes?.length > 0)
+        //   .map(e => {
+        //     const {
+        //       attributes,
+        //     } = { ...e };
+
+        //     return Object.fromEntries(
+        //       attributes
+        //         .filter(a =>
+        //           a?.key &&
+        //           a.value
+        //         )
+        //         .map(a =>
+        //           [
+        //             a.key,
+        //             a.value,
+        //           ]
+        //         )
+        //     );
+        //   })
+        //   .filter(e => e.transfer_id);
+
+        // for (const record of failed_packets) {
+        //   const {
+        //     transfer_id,
+        //   } = { ...record };
+
+        //   const _response = await read(
+        //     'transfers',
+        //     {
+        //       bool: {
+        //         must: [
+        //           { match: { 'confirm_deposit.transfer_id': transfer_id } },
+        //         ],
+        //         must_not: [
+        //           { exists: { field: 'ibc_send.ack_txhash' } },
+        //         ],
+        //       },
+        //     },
+        //     {
+        //       size: 1,
+        //       sort: [{ 'source.created_at.ms': 'desc' }],
+        //     },
+        //   );
+
+        //   if (_response?.data?.length > 0) {
+        //     const {
+        //       source,
+        //       ibc_send,
+        //     } = { ..._.head(_response.data) };
+        //     const {
+        //       id,
+        //       recipient_address,
+        //     } = { ...source };
+
+        //     if (recipient_address) {
+        //       const _id = `${id}_${recipient_address}`.toLowerCase();
+
+        //       await write(
+        //         'transfers',
+        //         _id,
+        //         {
+        //           ibc_send: {
+        //             ...ibc_send,
+        //             failed_txhash: record.id,
+        //           },
+        //         },
+        //         true,
+        //       );
+
+        //       await saveTimeSpent(
+        //         _id,
+        //       );
+        //     }
+        //   }
+        // }
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       else if (
