@@ -832,6 +832,7 @@ module.exports = async (
         vote,
         sign_batch,
         ibc_send,
+        axelar_transfer,
       } = { ...d };
       const {
         amount,

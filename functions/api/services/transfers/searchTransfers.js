@@ -111,8 +111,6 @@ module.exports = async (
               { match: { 'source.recipient_chain': axelarnet.id } },
             ],
             should: [
-              { exists: { field: 'confirm_deposit' } },
-              { exists: { field: 'vote' } },
               { exists: { field: 'axelar_transfer' } },
             ],
             minimum_should_match: 1,
@@ -158,8 +156,6 @@ module.exports = async (
                     { match: { 'source.recipient_chain': axelarnet.id } },
                   ],
                   should: [
-                    { exists: { field: 'confirm_deposit' } },
-                    { exists: { field: 'vote' } },
                     { exists: { field: 'axelar_transfer' } },
                   ],
                   minimum_should_match: 1,
