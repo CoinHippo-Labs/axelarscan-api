@@ -3286,7 +3286,10 @@ module.exports = async (
                         }
                       }
 
-                      if (typeof amount === 'number' && typeof source.fee === 'number') {
+                      if (
+                        typeof amount === 'number' &&
+                        typeof source.fee === 'number'
+                      ) {
                         if (amount < source.fee) {
                           source.insufficient_fee = true;
                         }
@@ -3295,7 +3298,10 @@ module.exports = async (
                         }
                       }
 
-                      if (price && typeof amount === 'number') {
+                      if (
+                        price &&
+                        typeof amount === 'number'
+                      ) {
                         source.value = amount * price;
                       }
 
@@ -3341,8 +3347,11 @@ module.exports = async (
                               undefined,
                             confirm_deposit: confirm_deposit ||
                               undefined,
-                            vote: transfer_data?.vote && transfer_data.vote.height < height ?
-                              transfer_data.vote :
+                            vote: transfer_data?.vote ?
+                              transfer_data.vote.height < height &&
+                              !equals_ignore_case(transfer_data.vote.poll_id, poll_id) ?
+                                record :
+                                transfer_data.vote :
                               record,
                           },
                         );
