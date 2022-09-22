@@ -866,11 +866,13 @@ module.exports = async (
             'executed' :
              sign_batch ?
               'batch_signed' :
-              vote ?
-                'voted' :
-                confirm_deposit ?
-                  'deposit_confirmed' :
-                  'asset_sent',
+              axelar_transfer ?
+                'executed' :
+                vote ?
+                  'voted' :
+                  confirm_deposit ?
+                    'deposit_confirmed' :
+                    'asset_sent',
       };
     });
 

@@ -53,28 +53,31 @@ const saveTimeSpent = async (
     vote,
     sign_batch,
     ibc_send,
+    axelar_transfer,
   } = { ...data };
   const {
     sender_chain,
     recipient_chain,
   } = { ...source };
 
-  const chain_types = [
-    evm_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ?
-      'evm' :
-      cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ?
-        'cosmos' :
-        equals_ignore_case(axelarnet.id, sender_chain) ?
-          'axelarnet' :
-          null,
-    evm_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 ?
-      'evm' :
-      cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 ?
-        'cosmos' :
-        equals_ignore_case(axelarnet.id, recipient_chain) ?
-          'axelarnet' :
-          null,
-  ].filter(t => t);
+  const chain_types =
+    [
+      evm_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ?
+        'evm' :
+        cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ?
+          'cosmos' :
+          equals_ignore_case(axelarnet.id, sender_chain) ?
+            'axelarnet' :
+            null,
+      evm_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 ?
+        'evm' :
+        cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 ?
+          'cosmos' :
+          equals_ignore_case(axelarnet.id, recipient_chain) ?
+            'axelarnet' :
+            null,
+    ]
+    .filter(t => t);
 
   const type = chain_types.length === 2 ?
     chain_types.join('_') :
@@ -121,6 +124,16 @@ const saveTimeSpent = async (
   }
 
   if (
+    axelar_transfer?.created_at?.ms &&
+    confirm_deposit?.created_at?.ms
+  ) {
+    time_spent = {
+      ...time_spent,
+      confirm_axelar_transfer: axelar_transfer.created_at.ms / 1000 - confirm_deposit.created_at.ms / 1000,
+    };
+  }
+
+  if (
     sign_batch?.block_timestamp &&
     vote?.created_at?.ms
   ) {
@@ -137,6 +150,16 @@ const saveTimeSpent = async (
     time_spent = {
       ...time_spent,
       vote_ibc: ibc_send.received_at.ms / 1000 - vote.created_at.ms / 1000,
+    };
+  }
+
+  if (
+    axelar_transfer?.created_at?.ms &&
+    vote?.created_at?.ms
+  ) {
+    time_spent = {
+      ...time_spent,
+      vote_axelar_transfer: axelar_transfer.created_at.ms / 1000 - vote.created_at.ms / 1000,
     };
   }
 
@@ -191,6 +214,17 @@ const saveTimeSpent = async (
               };
             }
             break;
+
+          if (
+            time_spent.vote_axelar_transfer ||
+            time_spent.confirm_axelar_transfer
+          ) {
+            time_spent = {
+              ...time_spent,
+              total: time_spent.vote_axelar_transfer ||
+                time_spent.confirm_axelar_transfer,
+            };
+          }
         }
         break;
       default:

@@ -114,6 +114,7 @@ module.exports = async (
             should: [
               { exists: { field: 'confirm_deposit' } },
               { exists: { field: 'vote' } },
+              { exists: { field: 'axelar_transfer' } },
             ],
             minimum_should_match: 1,
           },
@@ -160,6 +161,7 @@ module.exports = async (
                   should: [
                     { exists: { field: 'confirm_deposit' } },
                     { exists: { field: 'vote' } },
+                    { exists: { field: 'axelar_transfer' } },
                   ],
                   minimum_should_match: 1,
                 },
@@ -349,6 +351,7 @@ module.exports = async (
         vote,
         sign_batch,
         ibc_send,
+        axelar_transfer,
       } = { ...d };
       const {
         amount,
@@ -383,11 +386,13 @@ module.exports = async (
             'executed' :
              sign_batch ?
               'batch_signed' :
-              vote ?
-                'voted' :
-                confirm_deposit ?
-                  'deposit_confirmed' :
-                  'asset_sent',
+              axelar_transfer ?
+                'executed' :
+                vote ?
+                  'voted' :
+                  confirm_deposit ?
+                    'deposit_confirmed' :
+                    'asset_sent',
       };
     });
   }

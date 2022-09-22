@@ -667,7 +667,7 @@ module.exports = async (
 
         const record = {
           id: txhash,
-          type: 'axelarnet_transfer',
+          type: 'axelar_transfer',
           status_code: code,
           status: code ?
             'failed' :
@@ -794,7 +794,7 @@ module.exports = async (
                   record.fee = Number(
                     formatUnits(
                       BigNumber.from(fee.amount).toString(),
-                      decimals
+                      decimals,
                     )
                   );
                 }
@@ -804,7 +804,7 @@ module.exports = async (
                 amount = Number(
                   formatUnits(
                     BigNumber.from(amount).toString(),
-                    decimals
+                    decimals,
                   )
                 );
               }
@@ -1124,7 +1124,7 @@ module.exports = async (
                               _record.fee = Number(
                                 formatUnits(
                                   BigNumber.from(fee.amount).toString(),
-                                  decimals
+                                  decimals,
                                 )
                               );
                             }
@@ -1134,7 +1134,7 @@ module.exports = async (
                             amount = Number(
                               formatUnits(
                                 BigNumber.from(amount).toString(),
-                                decimals
+                                decimals,
                               )
                             );
                           }
@@ -1413,7 +1413,15 @@ module.exports = async (
               bool: {
                 must: transfer_id ?
                   [
-                    { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                    {
+                      bool: {
+                        should: [
+                          { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                          { match: { 'vote.transfer_id': transfer_id } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
                   ] :
                   [
                     { match: { 'ibc_send.id': id } },
@@ -1639,7 +1647,15 @@ module.exports = async (
                 ],
                 should: transfer_id ?
                   [
-                    { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                    {
+                      bool: {
+                        should: [
+                          { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                          { match: { 'vote.transfer_id': transfer_id } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
                   ] :
                   [
                     { match: { 'ibc_send.ack_txhash': id } },                  
@@ -1798,7 +1814,7 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        const failed_packets = (logs || [])
+        const transfer_failed_events = (logs || [])
           .map(l => {
             const {
               events,
@@ -1851,7 +1867,7 @@ module.exports = async (
           })
           .filter(e => e.transfer_id);
 
-        for (const record of failed_packets) {
+        for (const record of transfer_failed_events) {
           const {
             transfer_id,
           } = { ...record };
@@ -1860,9 +1876,11 @@ module.exports = async (
             'transfers',
             {
               bool: {
-                must: [
+                should: [
                   { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                  { match: { 'vote.transfer_id': transfer_id } },
                 ],
+                minimum_should_match: 1,
                 must_not: [
                   { exists: { field: 'ibc_send.ack_txhash' } },
                 ],
@@ -1893,7 +1911,7 @@ module.exports = async (
                 {
                   ibc_send: {
                     ...ibc_send,
-                    failed_txhash: record.id,
+                    failed_txhash: txhash,
                   },
                 },
                 true,
@@ -1914,113 +1932,143 @@ module.exports = async (
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        // const failed_packets = (logs || [])
-        //   .map(l => {
-        //     const {
-        //       events,
-        //     } = { ...l };
+        const created_at = moment(timestamp).utc().valueOf();
 
-        //     const e = events?.find(e => equals_ignore_case(_.last(e?.type?.split('.')), 'IBCTransferFailed'));
-        //     const {
-        //       attributes,
-        //     } = { ...e };
+        const axelar_transfer_completed_events = (logs || [])
+          .map(l => {
+            const {
+              events,
+            } = { ...l };
 
-        //     if (attributes) {
-        //       const transfer_id = (attributes.find(a => a?.key === 'id')?.value || '')
-        //         .split('"')
-        //         .join('');
+            const e = events?.find(e => equals_ignore_case(_.last(e?.type?.split('.')), 'AxelarTransferCompleted'));
+            const {
+              attributes,
+            } = { ...e };
 
-        //       if (transfer_id) {
-        //         attributes.push(
-        //           {
-        //             key: 'transfer_id',
-        //             value: transfer_id,
-        //           }
-        //         );
-        //       }
-        //     }
+            if (attributes) {
+              const transfer_id = (attributes.find(a => a?.key === 'id')?.value || '')
+                .split('"')
+                .join('');
 
-        //     return {
-        //       ...e,
-        //       attributes,
-        //     };
-        //   })
-        //   .filter(e => e?.attributes?.length > 0)
-        //   .map(e => {
-        //     const {
-        //       attributes,
-        //     } = { ...e };
+              if (transfer_id) {
+                attributes.push(
+                  {
+                    key: 'transfer_id',
+                    value: transfer_id,
+                  }
+                );
+              }
+            }
 
-        //     return Object.fromEntries(
-        //       attributes
-        //         .filter(a =>
-        //           a?.key &&
-        //           a.value
-        //         )
-        //         .map(a =>
-        //           [
-        //             a.key,
-        //             a.value,
-        //           ]
-        //         )
-        //     );
-        //   })
-        //   .filter(e => e.transfer_id);
+            return {
+              ...e,
+              attributes,
+            };
+          })
+          .filter(e => e?.attributes?.length > 0)
+          .map(e => {
+            const {
+              attributes,
+            } = { ...e };
 
-        // for (const record of failed_packets) {
-        //   const {
-        //     transfer_id,
-        //   } = { ...record };
+            return Object.fromEntries(
+              attributes
+                .filter(a =>
+                  a?.key &&
+                  a.value
+                )
+                .map(a =>
+                  [
+                    a.key,
+                    a.value,
+                  ]
+                )
+            );
+          })
+          .filter(e => e.transfer_id);
 
-        //   const _response = await read(
-        //     'transfers',
-        //     {
-        //       bool: {
-        //         must: [
-        //           { match: { 'confirm_deposit.transfer_id': transfer_id } },
-        //         ],
-        //         must_not: [
-        //           { exists: { field: 'ibc_send.ack_txhash' } },
-        //         ],
-        //       },
-        //     },
-        //     {
-        //       size: 1,
-        //       sort: [{ 'source.created_at.ms': 'desc' }],
-        //     },
-        //   );
+        for (const record of axelar_transfer_completed_events) {
+          const {
+            recipient,
+            asset,
+            transfer_id,
+          } = { ...record };
+          const {
+            denom,
+          } = { ...to_json(asset) };
+          let {
+            amount,
+          } = { ...to_json(asset) };
 
-        //   if (_response?.data?.length > 0) {
-        //     const {
-        //       source,
-        //       ibc_send,
-        //     } = { ..._.head(_response.data) };
-        //     const {
-        //       id,
-        //       recipient_address,
-        //     } = { ...source };
+          if (amount) {
+            const decimals = 6;
 
-        //     if (recipient_address) {
-        //       const _id = `${id}_${recipient_address}`.toLowerCase();
+            amount = Number(
+              formatUnits(
+                BigNumber.from(amount).toString(),
+                decimals,
+              )
+            );
+          }
 
-        //       await write(
-        //         'transfers',
-        //         _id,
-        //         {
-        //           ibc_send: {
-        //             ...ibc_send,
-        //             failed_txhash: record.id,
-        //           },
-        //         },
-        //         true,
-        //       );
+          const _response = await read(
+            'transfers',
+            {
+              bool: {
+                should: [
+                  { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                  { match: { 'vote.transfer_id': transfer_id } },
+                ],
+                minimum_should_match: 1,
+              },
+            },
+            {
+              size: 1,
+              sort: [{ 'source.created_at.ms': 'desc' }],
+            },
+          );
 
-        //       await saveTimeSpent(
-        //         _id,
-        //       );
-        //     }
-        //   }
-        // }
+          if (_response?.data?.length > 0) {
+            const {
+              source,
+            } = { ..._.head(_response.data) };
+            const {
+              id,
+              recipient_address,
+            } = { ...source };
+
+            if (recipient_address) {
+              const _id = `${id}_${recipient_address}`.toLowerCase();
+
+              await write(
+                'transfers',
+                _id,
+                {
+                  axelar_transfer: {
+                    id: txhash,
+                    type: 'axelar_transfer',
+                    status_code: code,
+                    status: code ?
+                      'failed' :
+                      'success',
+                    height,
+                    created_at: get_granularity(created_at),
+                    recipient_chain: 'axelarnet',
+                    recipient_address: recipient,
+                    denom,
+                    amount,
+                    transfer_id,
+                  },
+                },
+                true,
+              );
+
+              await saveTimeSpent(
+                _id,
+              );
+            }
+          }
+        }
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       else if (
@@ -2293,15 +2341,22 @@ module.exports = async (
                 let transfers_data = _response?.data
                   .filter(t => t?.source?.id) || [];
 
-                if (transfers_data.length < 1 && sign_batch) {
+                if (
+                  transfers_data.length < 1 &&
+                  sign_batch
+                ) {
                   _response = await read(
                     'transfers',
                     {
                       bool: {
                         must: [
                           { match: { 'source.recipient_address': deposit_address } },
-                          { match: { 'confirm_deposit.transfer_id': transfer_id } },
                         ],
+                        should: [
+                          { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                          { match: { 'vote.transfer_id': transfer_id } },
+                        ],
+                        minimum_should_match: 1,
                       },
                     },
                     {
@@ -2536,7 +2591,7 @@ module.exports = async (
                         amount = Number(
                           formatUnits(
                             BigNumber.from(amount).toString(),
-                            decimals
+                            decimals,
                           )
                         );
 
@@ -2562,7 +2617,7 @@ module.exports = async (
                             source.fee = Number(
                               formatUnits(
                                 BigNumber.from(fee.amount).toString(),
-                                decimals
+                                decimals,
                               )
                             );
                           }
@@ -3197,7 +3252,7 @@ module.exports = async (
                           amount = Number(
                             formatUnits(
                               BigNumber.from(amount).toString(),
-                              decimals
+                              decimals,
                             )
                           );
 
@@ -3223,7 +3278,7 @@ module.exports = async (
                               source.fee = Number(
                                 formatUnits(
                                   BigNumber.from(fee.amount).toString(),
-                                  decimals
+                                  decimals,
                                 )
                               );
                             }
