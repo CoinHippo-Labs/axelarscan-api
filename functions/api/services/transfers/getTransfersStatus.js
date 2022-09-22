@@ -907,7 +907,7 @@ module.exports = async (
           confirm_deposit?.height;
 
         if (
-          axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
+          cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
           height &&
           [
             'voted',

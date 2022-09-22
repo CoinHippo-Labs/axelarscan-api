@@ -23,7 +23,6 @@ const chains_data = _.concat(
   cosmos_chains_data,
 );
 const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const cosmos_non_axelarnet_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet.id);
 
 const {
   endpoints,
@@ -265,7 +264,7 @@ module.exports = async (
             typeof value === 'number'
           ) ||
           (
-            axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
+            cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
             (vote || confirm_deposit)
           )
         );
