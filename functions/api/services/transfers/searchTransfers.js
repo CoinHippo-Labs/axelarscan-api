@@ -257,17 +257,18 @@ module.exports = async (
         value,
       } = { ...source };
 
-      return id && (
-        !(
-          recipient_chain &&
-          typeof amount === 'number' &&
-          typeof value === 'number'
-        ) ||
+      return id &&
         (
-          cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
-          (vote || confirm_deposit)
-        )
-      );
+          !(
+            recipient_chain &&
+            typeof amount === 'number' &&
+            typeof value === 'number'
+          ) ||
+          (
+            axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
+            (vote || confirm_deposit)
+          )
+        );
     });
 
     if (

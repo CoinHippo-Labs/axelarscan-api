@@ -876,7 +876,10 @@ module.exports = async (
       };
     });
 
-    if (response.length > 0 && endpoints?.api) {
+    if (
+      response.length > 0 &&
+      endpoints?.api
+    ) {
       const api = axios.create({ baseURL: endpoints.api });
 
       for (const d of response) {
@@ -904,7 +907,7 @@ module.exports = async (
           confirm_deposit?.height;
 
         if (
-          cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
+          axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
           height &&
           [
             'voted',

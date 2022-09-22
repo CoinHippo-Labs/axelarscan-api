@@ -856,7 +856,7 @@ module.exports = async (
       }
     } catch (error) {}
 
-    // IBC Transfer
+    // IBC Transfer & Axelar Transfer
     try {
       const txHashes = tx_responses
         .filter(t =>
@@ -864,13 +864,18 @@ module.exports = async (
           [
             'RouteIBCTransfersRequest',
             'MsgAcknowledgement',
+            'MsgTimeout',
+            'ExecutePendingTransfersRequest',
           ].findIndex(s =>
             t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes(s)) > -1
           ) > -1
         )
         .map(t => t.txhash);
 
-      if (txHashes.length > 0 && endpoints?.api) {
+      if (
+        txHashes.length > 0 &&
+        endpoints?.api
+      ) {
         const api = axios.create({ baseURL: endpoints.api });
 
         for (const txhash of txHashes) {
