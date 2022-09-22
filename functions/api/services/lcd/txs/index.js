@@ -477,6 +477,7 @@ module.exports = async (
                     );
                     const voter = inner_message.sender;
                     const unconfirmed = logs?.findIndex(l => l?.log?.includes('not enough votes')) > -1;
+                    const failed = logs?.findIndex(l => l?.log?.includes('failed')) > -1;
 
                     let sender_chain,
                       vote,
@@ -543,7 +544,8 @@ module.exports = async (
                           (
                             (!vote && Array.isArray(vote_events)) ||
                             (
-                              has_status_on_vote_events && vote_events.findIndex(e =>
+                              has_status_on_vote_events &&
+                              vote_events.findIndex(e =>
                                 [
                                   'STATUS_UNSPECIFIED',
                                   'STATUS_COMPLETED',
@@ -744,6 +746,7 @@ module.exports = async (
                           if (
                             !confirmation &&
                             !unconfirmed &&
+                            !failed &&
                             !transfer_id &&
                             _transfer_id
                           ) {
@@ -780,6 +783,7 @@ module.exports = async (
                       confirmation,
                       late,
                       unconfirmed,
+                      failed,
                     };
 
                     _records.push(record);
@@ -811,10 +815,15 @@ module.exports = async (
             confirmation,
             late,
             unconfirmed,
+            failed,
             participants,
           } = { ...record };
 
-          if (confirmation || unconfirmed) {
+          if (
+            confirmation ||
+            unconfirmed ||
+            failed
+          ) {
             write(
               'evm_polls',
               poll_id,
@@ -826,6 +835,7 @@ module.exports = async (
                 transaction_id,
                 transfer_id,
                 confirmation,
+                failed,
                 participants: participants ||
                   undefined,
               },
