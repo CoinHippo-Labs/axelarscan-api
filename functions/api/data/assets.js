@@ -4,7 +4,7 @@ module.exports = {
       id: 'uaxl',
       symbol: 'AXL',
       name: 'Axelar',
-      image: '/logos/assets/axl.png',
+      image: '/logos/assets/axl.svg',
       decimals: 6,
       coingecko_id: 'axelar-network',
       contracts: [
@@ -2809,7 +2809,7 @@ module.exports = {
       id: 'uaxl',
       symbol: 'AXL',
       name: 'Axelar',
-      image: '/logos/assets/axl.png',
+      image: '/logos/assets/axl.svg',
       decimals: 6,
       coingecko_id: 'axelar-network',
       contracts: [
@@ -3965,7 +3965,7 @@ module.exports = {
       id: 'uaxl',
       symbol: 'AXL',
       name: 'Axelar',
-      image: '/logos/assets/axl.png',
+      image: '/logos/assets/axl.svg',
       decimals: 6,
       coingecko_id: 'axelar-network',
       contracts: [
@@ -4111,7 +4111,7 @@ module.exports = {
       id: 'uaxl',
       symbol: 'AXL',
       name: 'Axelar',
-      image: '/logos/assets/axl.png',
+      image: '/logos/assets/axl.svg',
       decimals: 6,
       coingecko_id: 'axelar-network',
       contracts: [
