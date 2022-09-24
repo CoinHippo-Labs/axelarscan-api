@@ -391,9 +391,8 @@ module.exports = {
           'juno-',
         ],
         endpoints: {
-          lcd: 'https://lcd-juno.whispernode.com',
+          lcd: 'https://rest-juno.ecostake.com',
           lcds: [
-            'https://rest-juno.ecostake.com',
             'https://api.juno.pupmos.network',
           ],
           cosmostation: 'https://api-juno.cosmostation.io/v1',

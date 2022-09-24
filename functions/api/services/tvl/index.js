@@ -264,16 +264,21 @@ module.exports = async (
         } = { ...c };
         const {
           lcd,
+        } = { ...endpoints };
+        let {
           lcds,
         } = { ...endpoints };
+
+        lcds = _.concat(
+          lcd || [],
+          lcds || [],
+        );
 
         return [
           id,
           axios.create(
             {
-              baseURL:
-                lcd ||
-                _.head(lcds),
+              baseURL: lcds[_.random(lcds.length)],
             },
           ),
         ];
@@ -374,8 +379,11 @@ module.exports = async (
           } = { ...c };
 
           let lcd = lcds[id];
-          let lcd_url = c?.endpoints?.lcd ||
-              _.head(c?.endpoints?.lcds);
+          let lcd_urls = _.concat(
+            c?.endpoints?.lcd || [],
+            c?.endpoints?.lcds || [],
+          );
+          let lcd_url = lcd_urls[_.random(lcd_urls.length)];
 
           const ibc_data = ibc?.find(i =>
             i?.chain_id === id ||
@@ -404,8 +412,11 @@ module.exports = async (
             prefix_chain_ids = override.prefix_chain_ids ||
               prefix_chain_ids;
 
-            lcd_url = override.endpoints?.lcd ||
-              _.head(override.endpoints?.lcds) ||
+            lcd_urls = _.concat(
+              override?.endpoints?.lcd || [],
+              override?.endpoints?.lcds || [],
+            );
+            lcd_url = lcd_urls[_.random(lcd_urls.length)] ||
               lcd_url;
             lcd = axios.create(
               {
