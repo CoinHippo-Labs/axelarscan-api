@@ -300,6 +300,12 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'http://rpc.axelarscan.io:1317',
+          lcds: [
+            'https://axelar-lcd.quickapi.com',
+            'https://api-1.axelar.nodes.guru',
+            'https://api-axelar-ia.cosmosia.notional.ventures',
+            'https://axelar-api.polkachu.com',
+          ],
           cosmostation: 'https://api-axelar.cosmostation.io/v1',
         },
         coingecko_id: 'axelar-network',
@@ -327,10 +333,15 @@ module.exports = {
           'cosmoshub-',
         ],
         endpoints: {
-          lcd: 'https://lcd-cosmoshub.whispernode.com',
+          lcd: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
           lcds: [
-            'https://rest-cosmoshub.ecostake.com',
-            'https://cosmos-lcd.quickapi.com',
+            'https://cosmos-api.lavenderfive.com',
+            'https://lcd-cosmoshub.blockapsis.com',
+            // 'https://cosmos-lcd.quickapi.com',
+            // 'https://lcd-cosmoshub.whispernode.com',
+            // 'https://rest-cosmoshub.ecostake.com',
+            // 'https://api.cosmoshub.pupmos.network',
+            // 'https://cosmos-api.polkachu.com',
           ],
           cosmostation: 'https://api.cosmostation.io/v1',
         },
@@ -358,12 +369,15 @@ module.exports = {
           'osmosis-',
         ],
         endpoints: {
-          lcd: 'https://rest-osmosis.ecostake.com',
+          lcd: 'https://lcd.osmosis.zone',
           lcds: [
-            'https://osmosis-api.polkachu.com',
-            'https://lcd.osmosis.zone',
+            'https://osmosis-lcd.quickapi.com',
+            'https://lcd-osmosis.blockapsis.com',
+            'https://osmosis-api.lavenderfive.com',
+            'https://rest-osmosis.ecostake.com',
             'https://api-osmosis-ia.cosmosia.notional.ventures',
             'https://api.osmosis.interbloc.org',
+            'https://osmosis-api.polkachu.com',
           ],
           cosmostation: 'https://api-osmosis.cosmostation.io/v1',
         },
@@ -391,9 +405,9 @@ module.exports = {
           'juno-',
         ],
         endpoints: {
-          lcd: 'https://rest-juno.ecostake.com',
+          lcd: 'https://api-juno-ia.cosmosia.notional.ventures',
           lcds: [
-            'https://api.juno.pupmos.network',
+            'https://rest-juno.ecostake.com',
           ],
           cosmostation: 'https://api-juno.cosmostation.io/v1',
         },
@@ -423,8 +437,8 @@ module.exports = {
         endpoints: {
           lcd: 'https://emoney.validator.network/api',
           lcds: [
-            'https://lcd.emoney.ezstaking.io',
-            'https://api-emoney-ia.notional.ventures',
+            'https://api-emoney-ia.cosmosia.notional.ventures',
+            'https://api.emoney.freak12techno.io',
           ],
           cosmostation: 'https://api-emoney.cosmostation.io/v1',
         },
@@ -458,6 +472,11 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://public.lcd.injective.network',
+          lcds: [
+            'https://injective-lcd.quickapi.com',
+            'https://api-injective-ia.cosmosia.notional.ventures',
+            'https://injective-api.polkachu.com',
+          ],
           cosmostation: 'https://api-inj.cosmostation.io/v1',
         },
       },
@@ -484,9 +503,10 @@ module.exports = {
           'crescent-',
         ],
         endpoints: {
-          lcd: 'https://api.crescent.pupmos.network',
+          lcd: 'https://mainnet.crescent.network:1317',
           lcds: [
-            'https://mainnet.crescent.network:1317',
+            'https://api.crescent.pupmos.network',
+            'https://crescent-api.polkachu.com',
           ],
           cosmostation: 'https://api-crescent.cosmostation.io/v1',
         },
@@ -516,6 +536,7 @@ module.exports = {
           lcd: 'https://lcd-kujira.whispernode.com',
           lcds: [
             'https://lcd.kaiyo.kujira.setten.io',
+            'https://kujira-api.lavenderfive.com',
             'https://kujira-api.polkachu.com',
             'https://rest-kujira.ecostake.com',
             'https://api.kujira.chaintools.tech',
@@ -547,9 +568,12 @@ module.exports = {
           'secret-',
         ],
         endpoints: {
-          lcd: 'https://api.secret.forbole.com',
+          lcd: 'https://api.scrt.network',
           lcds: [
+            'https://secret-api.lavenderfive.com',
+            'https://scrt-lcd.blockpane.com',
             'https://secret.api.consensus.one',
+            'https://api.secret.forbole.com',
             'https://secretnetwork-lcd.stakely.io',
           ],
           cosmostation: 'https://api-secret.cosmostation.io/v1',
@@ -580,10 +604,7 @@ module.exports = {
         endpoints: {
           lcd: 'https://api.stargaze.pupmos.network',
           lcds: [
-            'https://api.stargaze.ezstaking.io',
-            'https://api.stars.kingnodes.com',
             'https://api-stargaze-ia.cosmosia.notional.ventures',
-            'https://stargaze.c29r3.xyz:443/api',
           ],
           cosmostation: 'https://api-stargaze.cosmostation.io/v1',
         },
@@ -614,9 +635,9 @@ module.exports = {
           lcd: 'https://rest.assetmantle.one',
           lcds: [
             'https://rest-assetmantle.ecostake.com',
-            'https://lcd.asset-mantle.ezstaking.io',
             'https://api.assetmantle.nodestake.top',
             'https://api-assetmantle-ia.cosmosia.notional.ventures',
+            'https://assetmantle-api.polkachu.com',
           ],
           cosmostation: 'https://api-asset-mantle.cosmostation.io/v1',
         },
@@ -647,6 +668,7 @@ module.exports = {
           lcd: 'https://rest-fetchhub.fetch.ai',
           lcds: [
             'https://api-fetchhub-ia.cosmosia.notional.ventures',
+            'https://fetch-api.polkachu.com',
           ],
           cosmostation: 'https://api-fetchai.cosmostation.io/v1',
         },
@@ -676,8 +698,9 @@ module.exports = {
         endpoints: {
           lcd: 'https://api-mainnet.blockchain.ki',
           lcds: [
-            'https://lcd.kichain.ezstaking.io',
             'https://api-kichain-ia.notional.ventures',
+            'https://api.kichain.chaintools.tech',
+            'https://kichain-api.polkachu.com',
           ],
           cosmostation: 'https://api-kichain.cosmostation.io/v1',
         },
@@ -707,9 +730,15 @@ module.exports = {
         endpoints: {
           lcd: 'https://rest-evmos.ecostake.com',
           lcds: [
-            'https://lcd-evmos.whispernode.com',
             'https://rest.bd.evmos.org:1317',
-            'https://lcd.evmos.ezstaking.io',
+            'https://evmos-api.lavenderfive.com',
+            'https://api-evmos-ia.cosmosia.notional.ventures',
+            'https://lcd.evmos.posthuman.digital',
+            'https://api.evmos.interbloc.org',
+            'https://api.evmos.testnet.run',
+            'https://lcd.evmos.bh.rocks',
+            'https://api.evmos.nodestake.top',
+            'https://evmos-api.polkachu.com',
           ],
           cosmostation: 'https://api-evmos.cosmostation.io/v1',
         },
@@ -741,6 +770,7 @@ module.exports = {
           lcds: [
             'https://api-comdex.zenchainlabs.io',
             'https://api-comdex-ia.cosmosia.notional.ventures',
+            'https://comdex-api.polkachu.com',
           ],
           cosmostation: 'https://api-comdex.cosmostation.io/v1',
         },
@@ -800,10 +830,9 @@ module.exports = {
         endpoints: {
           lcd: 'https://phoenix-lcd.terra.dev',
           lcds: [
-            'https://blockdaemon-terra-lcd.api.bdnodes.net:1317',
+            'https://columbus-lcd.terra.dev',
             'https://terra-lcd.quickapi.com',
             'https://lcd.terra.dev',
-            'https://columbus-lcd.terra.dev',
           ],
         },
         overrides: {
@@ -825,11 +854,10 @@ module.exports = {
               'columbus-',
             ],
             endpoints: {
-              lcd: 'https://blockdaemon-terra-lcd.api.bdnodes.net:1317',
+              lcd: 'https://columbus-lcd.terra.dev',
               lcds: [
                 'https://terra-lcd.quickapi.com',
                 'https://lcd.terra.dev',
-                'https://columbus-lcd.terra.dev',
               ],
             },
             tvl: true,
@@ -1329,7 +1357,6 @@ module.exports = {
         endpoints: {
           lcd: 'https://testnet-api.roninventures.io',
           lcds: [
-            'http://testnet.securesecrets.org:1317',
             'https://lcd.testnet.secretsaturn.net',
             'https://api.pulsar.scrttestnet.com',
           ],

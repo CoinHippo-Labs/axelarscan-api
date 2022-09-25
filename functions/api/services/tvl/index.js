@@ -416,6 +416,7 @@ module.exports = async (
             );
             lcd_url = lcd_urls[_.random(lcd_urls.length - 1)] ||
               lcd_url;
+
             lcd = axios.create(
               {
                 baseURL: lcd_url,
