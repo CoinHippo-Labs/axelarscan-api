@@ -40,12 +40,21 @@ module.exports = async (
   denoms = _.uniq(
     (Array.isArray(denoms) ?
       denoms :
-      (denoms || denom)?.split(',') || []
+      (
+        denoms ||
+        denom ||
+        ''
+      )
+      .split(',')
     )
     .filter(d => d)
     .map(d => {
-      if (typeof d === 'object') return d;
-      return d?.trim().toLowerCase();
+      if (typeof d === 'object') {
+        return d;
+      }
+      else {
+        return d?.trim().toLowerCase();
+      }
     })
   );
 
@@ -92,7 +101,8 @@ module.exports = async (
 
       return {
         denom: _denom,
-        coingecko_id: coingecko_ids?.[_chain] || coingecko_id,
+        coingecko_id: coingecko_ids?.[_chain] ||
+          coingecko_id,
         price: is_stablecoin ?
           1 :
           undefined,
@@ -114,8 +124,11 @@ module.exports = async (
         });
     }
 
-    const updated_at_threshold = current_time.subtract(1, 'hours').valueOf();
-    const to_update_data = data.filter(d => !d?.updated_at || d.updated_at < updated_at_threshold);
+    const updated_at_threshold = current_time.subtract(10, 'minutes').valueOf();
+    const to_update_data = data.filter(d =>
+      !d?.updated_at ||
+      d.updated_at < updated_at_threshold
+    );
     const coingecko_ids = to_update_data
       .map(d => d?.coingecko_id)
       .filter(id => id);
@@ -181,7 +194,8 @@ module.exports = async (
             is_stablecoin,
           } = { ...asset_data };
 
-          let price = market_data?.current_price?.[currency] || current_price;
+          let price = market_data?.current_price?.[currency] ||
+            current_price;
           price = is_stablecoin && Math.abs(price - 1) > stablecoin_threshold ?
             1 :
             price;
@@ -204,21 +218,34 @@ module.exports = async (
         });
     }
 
-    const to_update_cache = data.filter(d => (!d?.updated_at || d.updated_at < updated_at_threshold) && ('symbol' in d));
-    to_update_cache.forEach(d => {
+    const to_update_cache = data.filter(d =>
+      (
+        !d?.updated_at ||
+        d.updated_at < updated_at_threshold
+      ) &&
+      ('denom' in d)
+    );
+
+    for (const d of to_update_cache) {
+      const {
+        denom,
+      } = { ...d };
+
       d.updated_at = moment().valueOf();
+
       const price_timestamp = moment(Number(timestamp) || d.updated_at).startOf('day').valueOf();
       d.price_timestamp = price_timestamp;
-      const id = `${d?.denom}_${price_timestamp}`;
 
-      write(
+      const id = `${denom}_${price_timestamp}`;
+
+      await write(
         collection,
         id,
         {
           ...d,
         },
       );
-    });
+    }
 
     response = data.map(d => {
       const {
@@ -228,7 +255,8 @@ module.exports = async (
 
       return {
         ...d,
-        id: denom || id,
+        id: denom ||
+          id,
       };
     });
   }

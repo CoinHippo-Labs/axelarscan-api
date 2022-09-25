@@ -22,6 +22,7 @@ const transfer_collections = [
   'token_sent_events',
   'ibc_channels',
   'tvls',
+  'assets',
 ];
 
 module.exports = {
