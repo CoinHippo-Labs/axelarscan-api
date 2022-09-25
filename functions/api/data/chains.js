@@ -336,7 +336,7 @@ module.exports = {
           lcd: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
           lcds: [
             'https://cosmos-api.lavenderfive.com',
-            'https://lcd-cosmoshub.blockapsis.com',
+            // 'https://lcd-cosmoshub.blockapsis.com',
             // 'https://cosmos-lcd.quickapi.com',
             // 'https://lcd-cosmoshub.whispernode.com',
             // 'https://rest-cosmoshub.ecostake.com',
@@ -408,6 +408,7 @@ module.exports = {
           lcd: 'https://api-juno-ia.cosmosia.notional.ventures',
           lcds: [
             'https://rest-juno.ecostake.com',
+            // 'https://api.juno.pupmos.network',
           ],
           cosmostation: 'https://api-juno.cosmostation.io/v1',
         },
@@ -881,6 +882,9 @@ module.exports = {
             ],
             endpoints: {
               lcd: 'https://phoenix-lcd.terra.dev',
+              lcds: [
+
+              ],
             },
             tvl: true,
           },
@@ -1536,6 +1540,9 @@ module.exports = {
             ],
             endpoints: {
               lcd: 'https://bombay-lcd.terra.dev',
+              lcds: [
+
+              ],
             },
             tvl: true,
           },
@@ -1558,6 +1565,9 @@ module.exports = {
             ],
             endpoints: {
               lcd: 'https://pisco-lcd.terra.dev',
+              lcds: [
+
+              ],
             },
             tvl: true,
           },

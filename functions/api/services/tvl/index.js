@@ -169,7 +169,7 @@ module.exports = async (
         } = { ...c };
 
         return chains.findIndex(_c =>
-          _c === c?.id ||
+          _c === id ||
           overrides?.[_c]?.tvl
         ) > -1;
       })
@@ -183,10 +183,14 @@ module.exports = async (
           Object.entries({ ...overrides })
             .filter(([k, v]) => chains.includes(k))
             .map(([k, v]) => {
-              return {
+              const _c = {
                 ...c,
                 ...v,
               };
+
+              delete _c.overrides;
+
+              return _c;
             }),
           chains.includes(id) &&
             c,
@@ -376,12 +380,13 @@ module.exports = async (
             prefix_chain_ids,
           } = { ...c };
 
-          let lcd = lcds[id];
           let lcd_urls = _.concat(
             c?.endpoints?.lcd || [],
             c?.endpoints?.lcds || [],
           );
           let lcd_url = lcd_urls[_.random(lcd_urls.length - 1)];
+
+          let lcd = lcds[id];
 
           const ibc_data = ibc?.find(i =>
             i?.chain_id === id ||
@@ -416,7 +421,9 @@ module.exports = async (
             );
             lcd_url = lcd_urls[_.random(lcd_urls.length - 1)] ||
               lcd_url;
+          }
 
+          if (equals_ignore_case(id, original_chain_id)) {
             lcd = axios.create(
               {
                 baseURL: lcd_url,
@@ -575,7 +582,8 @@ module.exports = async (
                 [
                   explorer?.url && explorer.address_path &&
                     `${explorer.url}${explorer.address_path.replace('{address}', a)}`,
-                  `${lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(ibc_denom)}`,
+                  ibc_denom &&
+                    `${lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(ibc_denom)}`,
                   `${lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
                 ].filter(l => l),
               ) :
@@ -585,15 +593,17 @@ module.exports = async (
                 [
                   axelarnet.explorer?.url && axelarnet.explorer.address_path &&
                     `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', a)}`,
-                  `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom_data.base_denom)}`,
+                  denom_data.base_denom &&
+                    `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom_data.base_denom)}`,
                   `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}`,
                 ].filter(l => l)
               ),
             supply_urls: !(is_native && id !== axelarnet.id) && escrow_addresses?.length > 0 ?
               [
-                `${lcd_url}/cosmos/bank/v1beta1/supply/${encodeURIComponent(ibc_denom)}`,
+                ibc_denom &&
+                  `${lcd_url}/cosmos/bank/v1beta1/supply/${encodeURIComponent(ibc_denom)}`,
                 `${lcd_url}/cosmos/bank/v1beta1/supply`,
-              ] :
+              ].filter(l => l) :
               [],
           };
 
