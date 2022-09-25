@@ -264,12 +264,10 @@ module.exports = async (
         } = { ...c };
         const {
           lcd,
-        } = { ...endpoints };
-        let {
           lcds,
         } = { ...endpoints };
 
-        lcds = _.concat(
+        const _lcds = _.concat(
           lcd || [],
           lcds || [],
         );
@@ -278,7 +276,7 @@ module.exports = async (
           id,
           axios.create(
             {
-              baseURL: lcds[_.random(lcds.length)],
+              baseURL: _lcds[_.random(_lcds.length - 1)],
             },
           ),
         ];
@@ -383,7 +381,7 @@ module.exports = async (
             c?.endpoints?.lcd || [],
             c?.endpoints?.lcds || [],
           );
-          let lcd_url = lcd_urls[_.random(lcd_urls.length)];
+          let lcd_url = lcd_urls[_.random(lcd_urls.length - 1)];
 
           const ibc_data = ibc?.find(i =>
             i?.chain_id === id ||
@@ -416,7 +414,7 @@ module.exports = async (
               override?.endpoints?.lcd || [],
               override?.endpoints?.lcds || [],
             );
-            lcd_url = lcd_urls[_.random(lcd_urls.length)] ||
+            lcd_url = lcd_urls[_.random(lcd_urls.length - 1)] ||
               lcd_url;
             lcd = axios.create(
               {
@@ -715,9 +713,11 @@ module.exports = async (
       .filter(l => l);
 
     const percent_diff_supply = evm_escrow_address ?
-      Math.abs(
-        evm_escrow_balance - total_on_evm
-      ) * 100 / (evm_escrow_balance || 1) :
+      evm_escrow_balance ?
+        Math.abs(
+          evm_escrow_balance - total_on_evm
+        ) * 100 / (evm_escrow_balance || 1) :
+        null :
       Math.abs(
         total - (total_on_evm + total_on_cosmos)
       ) * 100 / (total || 1);
