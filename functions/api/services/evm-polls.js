@@ -1,8 +1,19 @@
+const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
+const config = require('config-yml');
 const {
   read,
 } = require('./index');
+const {
+  equals_ignore_case,
+} = require('../utils');
+
+const environment = process.env.ENVIRONMENT || config?.environment;
+
+const {
+  endpoints,
+} = { ...config?.[environment] };
 
 module.exports = async (
   params = {},
@@ -64,6 +75,7 @@ module.exports = async (
   if (depositAddress) {
     must.push({ match: { deposit_address: depositAddress } });
   }
+
   if (voter) {
     const _voter = voter.toLowerCase();
 
@@ -87,8 +99,88 @@ module.exports = async (
         .split(' ')
     );
 
+    let start_proxy_height;
+
+    if (
+      [
+        'unsubmitted',
+      ].includes(vote) &&
+      endpoints?.lcd
+    ) {
+      const lcd = axios.create({ baseURL: endpoints.lcd });
+
+      const limit = 50;
+      let page_key = true;
+      let transactions_data = [];
+
+      while (page_key) {
+        const has_page_key = page_key &&
+          typeof page_key !== 'boolean';
+
+        const _response = await lcd.get(
+          '/cosmos/tx/v1beta1/txs',
+          {
+            params: {
+              events: `message.action='RegisterProxy'`,
+              'pagination.key': has_page_key ?
+                page_key :
+                undefined,
+              'pagination.limit': limit,
+              'pagination.offset': has_page_key ?
+                undefined :
+                transactions_data.length,
+            },
+          },
+        ).catch(error => { return { data: { error } }; });
+
+        const {
+          tx_responses,
+          txs,
+          pagination,
+        } = { ..._response?.data };
+        const {
+          next_key,
+        } = { ...pagination };
+
+        const transaction_data = tx_responses?.find((t, i) =>
+          !t?.code &&
+          txs?.[i]?.body?.messages?.findIndex(m =>
+            m?.['@type']?.includes('RegisterProxy') &&
+            (
+              equals_ignore_case(m.sender, operator_address) ||
+              equals_ignore_case(m.proxy_addr, voter)
+            )
+          ) > -1
+        );
+
+        const {
+          height,
+        } = { ...transaction_data };
+
+        if (height) {
+          start_proxy_height = Number(height);
+
+          page_key = false;
+        }
+        else {
+          transactions_data = _.concat(
+            transactions_data,
+            tx_responses || [],
+          );
+
+          page_key = next_key ||
+            tx_responses?.length === limit;
+        }
+      }
+    }
+
     must.push({
       bool: {
+        must: [
+          start_proxy_height &&
+            { range: { height: { gte: start_proxy_height } } },
+        ]
+        .filter(m => m),
         should: [
           { exists: { field: _voter } },
           operator_address &&
