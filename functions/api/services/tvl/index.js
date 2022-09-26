@@ -542,12 +542,12 @@ module.exports = async (
               Math.abs(
                 source_escrow_balance - total_supply
               ) * 100 / source_escrow_balance :
-              0 :
+              null :
             supply && escrow_balance ?
               Math.abs(
                 escrow_balance - supply
               ) * 100 / escrow_balance :
-              0;
+              null;
 
           const total = id === axelarnet.id ?
             await getAxelarnetSupply(
@@ -724,14 +724,16 @@ module.exports = async (
       .filter(l => l);
 
     const percent_diff_supply = evm_escrow_address ?
-      evm_escrow_balance ?
+      evm_escrow_balance && total_on_evm ?
         Math.abs(
           evm_escrow_balance - total_on_evm
-        ) * 100 / (evm_escrow_balance || 1) :
+        ) * 100 / evm_escrow_balance :
         null :
-      Math.abs(
-        total - (total_on_evm + total_on_cosmos)
-      ) * 100 / (total || 1);
+      total ?
+        Math.abs(
+          total - (total_on_evm + total_on_cosmos)
+        ) * 100 / total :
+        null;
 
     data.push({
       asset,

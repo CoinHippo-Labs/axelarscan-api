@@ -69,11 +69,16 @@ module.exports = async (
             must: [
               { match: { price_timestamp } },
             ],
-            should: denoms.map(d => {
-              return {
-                match: { denoms: typeof d === 'object' ? d?.denom : d },
-              };
-            }),
+            should: denoms
+              .map(d => {
+                return {
+                  match: {
+                    denom: typeof d === 'object' ?
+                      d?.denom :
+                      d,
+                  },
+                };
+              }),
             minimum_should_match: 1,
           },
         },
@@ -87,10 +92,12 @@ module.exports = async (
         d :
         { denom: d };
 
-      const _denom = denom_data?.denom || d;
+      const _denom = denom_data?.denom ||
+        d;
       const _chain = _denom === 'uluna' && !['terra-2'].includes(chain) ?
         'terra' :
-        denom_data?.chain || chain;
+        denom_data?.chain ||
+          chain;
 
       const asset_data = assets_data.find(a => equals_ignore_case(a?.id, _denom));
       const {
@@ -133,10 +140,14 @@ module.exports = async (
       .map(d => d?.coingecko_id)
       .filter(id => id);
 
-    if (coingecko_ids.length > 0 && endpoints?.coingecko) {
+    if (
+      coingecko_ids.length > 0 &&
+      endpoints?.coingecko
+    ) {
       const coingecko = axios.create({ baseURL: endpoints.coingecko });
 
       let _data;
+
       if (timestamp) {
         for (const coingecko_id of coingecko_ids) {
           const _response = await coingecko.get(
@@ -223,7 +234,8 @@ module.exports = async (
         !d?.updated_at ||
         d.updated_at < updated_at_threshold
       ) &&
-      ('denom' in d)
+      ('denom' in d) &&
+      ('price' in d)
     );
 
     for (const d of to_update_cache) {
