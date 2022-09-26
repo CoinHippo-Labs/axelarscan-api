@@ -83,14 +83,28 @@ module.exports = async (
     tx_response.height = height;
 
     /* start custom evm deposit confirmation */
-    const log_index = logs?.findIndex(l => l?.events?.findIndex(e => equals_ignore_case(e?.type, 'depositConfirmation')) > -1);
+    const log_index = logs?.findIndex(l =>
+      l?.events?.findIndex(e =>
+        [
+          'depositConfirmation',
+          'eventConfirmation',
+        ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+      ) > -1
+    );
+
     if (log_index > -1) {
       const log = logs?.[log_index];
       const {
         events,
       } = { ...log };
 
-      const event_index = events.findIndex(e => equals_ignore_case(e?.type, 'depositConfirmation'));
+      const event_index = events.findIndex(e =>
+        [
+          'depositConfirmation',
+          'eventConfirmation',
+        ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+      );
+
       const event = events[event_index];
 
       const {
@@ -195,7 +209,16 @@ module.exports = async (
           const message = messages[i];
 
           if (typeof message?.amount === 'string') {
-            const event = _.head(logs.flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'depositConfirmation'))));
+            const event = _.head(
+              logs.flatMap(l =>
+                l?.events?.filter(e =>
+                  [
+                    'depositConfirmation',
+                    'eventConfirmation',
+                  ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+                )
+              )
+            );
             const {
               attributes,
             } = { ...event };
@@ -2090,8 +2113,24 @@ module.exports = async (
           messages.findIndex(m => _.last(m?.['@type']?.split('.'))?.replace('Request', '')?.includes(s)) > -1
         ) > -1
       ) {
-        const message = _.head(logs?.flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'message'))));
-        const event = _.head(logs?.flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'depositConfirmation') || e?.type?.includes('ConfirmDeposit'))));
+        const message = _.head(
+          logs?.flatMap(l =>
+            l?.events?.filter(e =>
+              equals_ignore_case(e?.type, 'message')
+            )
+          )
+        );
+        const event = _.head(
+          logs?.flatMap(l =>
+            l?.events?.filter(e =>
+              [
+                'depositConfirmation',
+                'eventConfirmation',
+              ].findIndex(s => equals_ignore_case(e?.type, s)) > -1 ||
+              e?.type?.includes('ConfirmDeposit')
+            )
+          )
+        );
 
         const {
           attributes,
@@ -2144,6 +2183,7 @@ module.exports = async (
         ) {
           transaction_id = to_hex(to_json(transaction_id));
         }
+
         if (transaction_id === poll_id) {
           transaction_id = null;
         }
@@ -2833,7 +2873,12 @@ module.exports = async (
                 events,
               } = { ...logs?.[i] };
 
-              const event = events?.find(e => equals_ignore_case(e?.type, 'depositConfirmation'));
+              const event = events?.find(e =>
+                [
+                  'depositConfirmation',
+                  'eventConfirmation',
+                ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+              );
               const vote_event = events?.find(e => e?.type?.includes('vote'));
 
               const {
@@ -2856,11 +2901,29 @@ module.exports = async (
                   )?.value
                 );
                 const voter = inner_message.sender;
-                const unconfirmed = logs?.findIndex(l => l?.log?.includes('not enough votes')) > -1;
-                const failed = logs?.findIndex(l => l?.log?.includes('failed')) > -1;
+                const unconfirmed = logs?.findIndex(l => l?.log?.includes('not enough votes')) > -1 &&
+                  events?.findIndex(e =>
+                    [
+                      'EVMEventConfirmed',
+                    ].findIndex(s => e?.type?.includes(s)) > -1
+                  ) < 0;
+                const failed =
+                  (
+                    logs?.findIndex(l => l?.log?.includes('failed')) > -1 ||
+                    events?.findIndex(e =>
+                      [
+                        'EVMEventFailed',
+                      ].findIndex(s => e?.type?.includes(s)) > -1
+                    ) > -1
+                  ) &&
+                  events?.findIndex(e =>
+                    [
+                      'EVMEventCompleted',
+                    ].findIndex(s => e?.type?.includes(s)) > -1
+                  ) < 0;
 
                 let sender_chain,
-                  vote,
+                  vote = true,
                   confirmation,
                   late,
                   transaction_id,
@@ -2910,6 +2973,11 @@ module.exports = async (
                       vote_events.findIndex(e => e?.status) > -1;
 
                     confirmation = !!event ||
+                      events?.findIndex(e =>
+                        [
+                          'EVMEventConfirmed',
+                        ].findIndex(s => e?.type?.includes(s)) > -1
+                      ) > -1 ||
                       (
                         vote_event &&
                         has_status_on_vote_events &&
@@ -2922,7 +2990,10 @@ module.exports = async (
 
                     late = !vote_event &&
                       (
-                        (!vote && Array.isArray(vote_events)) ||
+                        (
+                          !vote &&
+                          Array.isArray(vote_events)
+                        ) ||
                         (
                           has_status_on_vote_events &&
                           vote_events.findIndex(e =>
@@ -2941,6 +3012,7 @@ module.exports = async (
                 transaction_id = _.head(inner_message.vote?.events)?.tx_id ||
                   attributes?.find(a => a?.key === 'txID')?.value ||
                   poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
+
                 if (transaction_id === poll_id) {
                   transaction_id = null;
                 }
@@ -3092,7 +3164,10 @@ module.exports = async (
                     } = { ...__response };
 
                     end_block_events = end_block_events?.filter(e =>
-                      equals_ignore_case(e?.type, 'depositConfirmation') &&
+                      [
+                        'depositConfirmation',
+                        'eventConfirmation',
+                      ].findIndex(s => equals_ignore_case(e?.type, s)) > -1 &&
                       e.attributes?.length > 0
                     )
                     .map(e => {
@@ -3500,12 +3575,27 @@ module.exports = async (
                         height,
                         created_at: record.created_at,
                         sender_chain,
+                        recipient_chain,
                         transaction_id,
+                        deposit_address,
                         transfer_id,
-                        confirmation,
-                        failed,
+                        confirmation: confirmation ||
+                          undefined,
+                        failed: failed ||
+                          undefined,
                         participants: participants ||
                           undefined,
+                        [voter.toLowerCase()]: {
+                          id: txhash,
+                          type,
+                          height,
+                          created_at,
+                          voter,
+                          vote,
+                          confirmed: confirmation &&
+                            !unconfirmed,
+                          late,
+                        },
                       },
                     );
                   }
