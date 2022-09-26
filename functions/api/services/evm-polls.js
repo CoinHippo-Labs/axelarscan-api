@@ -1,0 +1,194 @@
+const _ = require('lodash');
+const moment = require('moment');
+const {
+  read,
+} = require('./index');
+
+module.exports = async (
+  params = {},
+) => {
+  const {
+    pollId,
+    chain,
+    status,
+    transactionId,
+    transferId,
+    depositAddress,
+    voter,
+    vote,
+    from,
+    size,
+    sort,
+  } = { ...params };
+  let {
+    query,
+    fromTime,
+    toTime,
+  } = { ...params };
+
+  const must = [],
+    should = [],
+    must_not = [];
+
+  if (pollId) {
+    must.push({ match: { _id: pollId } });
+  }
+  if (chain) {
+    must.push({ match: { sender_chain: chain } });
+  }
+  if (status) {
+    switch (status) {
+      case 'success':
+      case 'completed':
+        must.push({ match: { success: true } });
+        break;
+      case 'failed':
+        must.push({ match: { failed: true } });
+        must_not.push({ match: { success: true } });
+        break;
+      case 'comfirmed':
+        must.push({ match: { confirmation: true } });
+        must_not.push({ match: { success: true } });
+        must_not.push({ match: { failed: true } });
+        break;
+      default:
+        break;
+    }
+  }
+  if (transactionId) {
+    must.push({ match: { transaction_id: transactionId } });
+  }
+  if (transferId) {
+    must.push({ match: { transfer_id: transferId } });
+  }
+  if (depositAddress) {
+    must.push({ match: { deposit_address: depositAddress } });
+  }
+  if (voter) {
+    const _voter = voter.toLowerCase();
+
+    const _response = await read(
+      'axelard',
+      {
+        bool: {
+          must: [
+            { match: { type: 'proxy' } },
+            { match: { stdout: _voter } },
+          ],
+        },
+      },
+      {
+        size: 1,
+      },
+    );
+
+    const operator_address = _.last(
+      (_.head(_response?.data)?.id || '')
+        .split(' ')
+    );
+
+    must.push({
+      bool: {
+        should: [
+          { exists: { field: _voter } },
+          operator_address &&
+            { match: { participants: operator_address } },
+          [
+            'unsubmitted',
+          ].includes(vote) &&
+            {
+              bool: {
+                should: [
+                  { match: { success: true } },
+                  { match: { failed: true } },
+                ],
+                minimum_should_match: 1,
+                must_not: [
+                  { exists: { field: 'participants' } },
+                ],
+              },
+            },
+        ]
+        .filter(s => s),
+        minimum_should_match: 1,
+      },
+    });
+  
+    if (vote) {
+      switch (vote) {
+        case 'yes':
+          must.push({ match: { [`${_voter}.vote`]: true } });
+          break;
+        case 'no':
+          must.push({ match: { [`${_voter}.vote`]: false } });
+          break;
+        case 'unsubmitted':
+          must.push({
+            bool: {
+              must: [
+                {
+                  bool: {
+                    should: [
+                      { match: { success: true } },
+                      { match: { failed: true } },
+                      { match: { confirmation: true } },
+                    ],
+                  },
+                },
+              ],
+              should: [
+                { match: { participants: operator_address } },
+                {
+                  bool: {
+                    must_not: [
+                      { exists: { field: 'participants' } },
+                    ],
+                  },
+                },
+              ],
+              minimum_should_match: 1,
+              must_not: [
+                { exists: { field: voter } },
+              ],
+            },
+          });
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  if (fromTime) {
+    fromTime = Number(fromTime) * 1000;
+    toTime = toTime ?
+      Number(toTime) * 1000 :
+      moment().valueOf();
+    must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
+  }
+  if (!query) {
+    query = {
+      bool: {
+        must,
+        should,
+        must_not,
+        minimum_should_match: should.length > 0 ? 1 : 0,
+      },
+    };
+  }
+
+  return await read(
+    'evm_polls',
+    query,
+    {
+      from: typeof from === 'number' ?
+        from :
+        0,
+      size: typeof size === 'number' ?
+        size :
+        25,
+      sort: sort ||
+        [{ 'created_at.ms': 'desc' }],
+      track_total_hits: true,
+    },
+  );
+};

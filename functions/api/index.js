@@ -268,6 +268,17 @@ exports.handler = async (
       break;
     case '/{function}':
       switch (req.params.function?.toLowerCase()) {
+        case 'evm-polls':
+          try {
+            response = await require('./services/evm-polls')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'evm-votes':
           try {
             response = await require('./services/evm-votes')(params);

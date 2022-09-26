@@ -107,7 +107,8 @@ module.exports = async (
       size: typeof size === 'number' ?
         size :
         25,
-      sort: sort || [{ 'created_at.ms': 'desc' }],
+      sort: sort ||
+        [{ 'created_at.ms': 'desc' }],
       track_total_hits: true,
     },
   );

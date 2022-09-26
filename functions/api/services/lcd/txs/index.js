@@ -501,6 +501,12 @@ module.exports = async (
                           'EVMEventCompleted',
                         ].findIndex(s => e?.type?.includes(s)) > -1
                       ) < 0;
+                    const success =
+                      events?.findIndex(e =>
+                        [
+                          'EVMEventCompleted',
+                        ].findIndex(s => e?.type?.includes(s)) > -1
+                      ) > -1;
 
                     let sender_chain,
                       vote = true,
@@ -779,11 +785,14 @@ module.exports = async (
 
                         if (equals_ignore_case(transaction_id, _transaction_id)) {
                           if (
-                            !confirmation &&
-                            !unconfirmed &&
-                            !failed &&
-                            !transfer_id &&
-                            _transfer_id
+                            (
+                              !confirmation &&
+                              !unconfirmed &&
+                              !failed &&
+                              !transfer_id &&
+                              _transfer_id
+                            ) ||
+                            success
                           ) {
                             confirmation = true;
                           }
@@ -819,6 +828,7 @@ module.exports = async (
                       late,
                       unconfirmed,
                       failed,
+                      success,
                     };
 
                     _records.push(record);
@@ -854,13 +864,15 @@ module.exports = async (
             late,
             unconfirmed,
             failed,
+            success,
             participants,
           } = { ...record };
 
           if (
             confirmation ||
             unconfirmed ||
-            failed
+            failed ||
+            success
           ) {
             write(
               'evm_polls',
@@ -877,6 +889,8 @@ module.exports = async (
                 confirmation: confirmation ||
                   undefined,
                 failed: failed ||
+                  undefined,
+                success: success ||
                   undefined,
                 participants: participants ||
                   undefined,
