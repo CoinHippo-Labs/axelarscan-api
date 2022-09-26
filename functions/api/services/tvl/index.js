@@ -219,7 +219,7 @@ module.exports = async (
       updated_at,
     } = { ...cache_data };
 
-    if (moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) < 3) {
+    if (moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) < 5) {
       return cache_data;
     }
   }
@@ -281,6 +281,7 @@ module.exports = async (
           axios.create(
             {
               baseURL: _lcds[_.random(_lcds.length - 1)],
+              timeout: 1000,
             },
           ),
         ];
@@ -427,6 +428,7 @@ module.exports = async (
             lcd = axios.create(
               {
                 baseURL: lcd_url,
+                timeout: 1000,
               },
             );
           }

@@ -19,7 +19,10 @@ const getContractSupply = async (
     decimals,
   } = { ...contract_data };
 
-  if (contract_address && provider) {
+  if (
+    contract_address &&
+    provider
+  ) {
     try {
       const contract = new Contract(
         contract_address,
@@ -33,7 +36,7 @@ const getContractSupply = async (
   return Number(
     formatUnits(
       BigNumber.from((supply || 0).toString()),
-      decimals || 18
+      decimals || 18,
     )
   );
 };
@@ -49,7 +52,10 @@ const getEVMBalance = async (
     decimals,
   } = { ...contract_data };
 
-  if (address && contract_address && provider) {
+  if (
+    address &&
+    contract_address &&
+    provider) {
     try {
       if (contract_address === AddressZero) {
         balance = await provider.getBalance(address);
@@ -68,7 +74,7 @@ const getEVMBalance = async (
   return Number(
     formatUnits(
       BigNumber.from((balance || 0).toString()),
-      decimals || 18
+      decimals || 18,
     )
   );
 };
@@ -90,7 +96,11 @@ const getCosmosBalance = async (
     denom,
   ].filter(d => d);
 
-  if (address && denoms.length > 0 && lcd) {
+  if (
+    address &&
+    denoms.length > 0 &&
+    lcd
+  ) {
     try {
       const paths = [
         '/cosmos/bank/v1beta1/balances/{address}/by_denom',
@@ -102,7 +112,8 @@ const getCosmosBalance = async (
 
         for (const path of paths) {
           const response = await lcd.get(
-            path.replace('{address}', address)
+            path
+              .replace('{address}', address)
               .replace('{denom}', encodeURIComponent(denom)),
             {
               params: {
@@ -117,7 +128,10 @@ const getCosmosBalance = async (
 
           balance = amount;
 
-          if (balance && balance !== '0') {
+          if (
+            balance &&
+            balance !== '0'
+          ) {
             valid = true;
             break;
           }
@@ -133,7 +147,7 @@ const getCosmosBalance = async (
   return Number(
     formatUnits(
       BigNumber.from((balance || 0).toString()),
-      decimals || 6
+      decimals || 6,
     )
   );
 };
@@ -153,7 +167,10 @@ const getCosmosSupply = async (
     denom,
   ].filter(d => d);
 
-  if (denoms.length > 0 && lcd) {
+  if (
+    denoms.length > 0 &&
+    lcd
+  ) {
     try {
       for (const denom of denoms) {
         const response = await lcd.get(
@@ -171,7 +188,10 @@ const getCosmosSupply = async (
         }
       }
 
-      if (!(supply && supply !== '0')) {
+      if (!(
+        supply &&
+        supply !== '0'
+      )) {
         const response = await lcd.get(
           '/cosmos/bank/v1beta1/supply',
           {
@@ -189,7 +209,7 @@ const getCosmosSupply = async (
   return Number(
     formatUnits(
       BigNumber.from((supply || 0).toString()),
-      decimals || 6
+      decimals || 6,
     )
   );
 };
@@ -210,7 +230,10 @@ const getAxelarnetSupply = async (
     denom,
   ].filter(d => d);
 
-  if (denoms.length > 0 && cli) {
+  if (
+    denoms.length > 0 &&
+    cli
+  ) {
     try {
       for (const denom of denoms) {
         const response = await cli.get(
@@ -244,7 +267,7 @@ const getAxelarnetSupply = async (
   return Number(
     formatUnits(
       BigNumber.from((supply || 0).toString()),
-      decimals || 6
+      decimals || 6,
     )
   );
 };

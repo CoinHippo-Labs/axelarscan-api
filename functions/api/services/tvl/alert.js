@@ -42,7 +42,7 @@ module.exports = async (
   const _response = await read(
     'tvls',
     {
-      range: { updated_at: { gt: moment().subtract(5, 'minutes').unix() } },
+      range: { updated_at: { gt: moment().subtract(6, 'minutes').unix() } },
     },
     {
       size: 100,
