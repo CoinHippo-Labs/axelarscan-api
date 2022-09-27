@@ -1595,7 +1595,9 @@ module.exports = {
               symbol: 'ETH',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://ropsten.etherscan.io'],
+            blockExplorerUrls: [
+              'https://ropsten.etherscan.io',
+            ],
           },
         ],
         explorer: {
@@ -1632,7 +1634,9 @@ module.exports = {
               symbol: 'MATIC',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://mumbai.polygonscan.com'],
+            blockExplorerUrls: [
+              'https://mumbai.polygonscan.com',
+            ],
           },
         ],
         explorer: {
@@ -1668,7 +1672,9 @@ module.exports = {
               symbol: 'AVAX',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.snowtrace.io'],
+            blockExplorerUrls: [
+              'https://testnet.snowtrace.io',
+            ],
           },
         ],
         explorer: {
@@ -1705,7 +1711,9 @@ module.exports = {
               symbol: 'FTM',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.ftmscan.com'],
+            blockExplorerUrls: [
+              'https://testnet.ftmscan.com',
+            ],
           },
         ],
         explorer: {
@@ -1741,7 +1749,9 @@ module.exports = {
               symbol: 'DEV',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://moonbase.moonscan.io'],
+            blockExplorerUrls: [
+              'https://moonbase.moonscan.io',
+            ],
           },
         ],
         explorer: {
@@ -1754,7 +1764,7 @@ module.exports = {
           contract_0_path: '/address/{address}',
           transaction_path: '/tx/{tx}',
         },
-        image: '/logos/chains/moonbeam.svg',
+        image: '/logos/chains/moonbase.png',
         color: '#53cbc8',
         website: 'https://moonbeam.network',
         gateway_address: '',
@@ -1809,7 +1819,9 @@ module.exports = {
               symbol: 'ETH',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://ropsten.etherscan.io'],
+            blockExplorerUrls: [
+              'https://ropsten.etherscan.io',
+            ],
           },
         ],
         explorer: {
@@ -1845,7 +1857,9 @@ module.exports = {
               symbol: 'AVAX',
               decimals: 18,
             },
-            blockExplorerUrls: ['https://testnet.snowtrace.io'],
+            blockExplorerUrls: [
+              'https://testnet.snowtrace.io',
+            ],
           },
         ],
         explorer: {

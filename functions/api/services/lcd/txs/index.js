@@ -515,6 +515,7 @@ module.exports = async (
                       transaction_id,
                       deposit_address,
                       transfer_id,
+                      event,
                       participants;
 
                     switch (type) {
@@ -590,6 +591,17 @@ module.exports = async (
                               ) > -1
                             )
                           );
+
+                        event = _.head(
+                          Object.entries({
+                            ...vote_events?.find(e =>
+                              Object.values({ ...e })
+                                .filter(v => typeof v === 'object')
+                            ),
+                          })
+                          .filter(([k, v]) => typeof v === 'object')
+                          .map(([k, v]) => k)
+                        );
                         break;
                       default:
                         break;
@@ -868,46 +880,41 @@ module.exports = async (
             participants,
           } = { ...record };
 
-          if (
-            confirmation ||
-            unconfirmed ||
-            failed ||
-            success
-          ) {
-            write(
-              'evm_polls',
-              poll_id,
-              {
-                id: poll_id,
+          write(
+            'evm_polls',
+            poll_id,
+            {
+              id: poll_id,
+              height,
+              created_at,
+              sender_chain,
+              recipient_chain,
+              transaction_id,
+              deposit_address,
+              transfer_id,
+              confirmation: confirmation ||
+                undefined,
+              failed: failed ||
+                undefined,
+              success: success ||
+                undefined,
+              event: event ||
+                undefined,
+              participants: participants ||
+                undefined,
+              [voter.toLowerCase()]: {
+                id,
+                type,
                 height,
-                created_at,
-                sender_chain,
-                recipient_chain,
-                transaction_id,
-                deposit_address,
-                transfer_id,
-                confirmation: confirmation ||
-                  undefined,
-                failed: failed ||
-                  undefined,
-                success: success ||
-                  undefined,
-                participants: participants ||
-                  undefined,
-                [voter.toLowerCase()]: {
-                  id,
-                  type,
-                  height,
-                  created_at: created_at?.ms,
-                  voter,
-                  vote,
-                  confirmed: confirmation &&
-                    !unconfirmed,
-                  late,
-                },
+                created_at: created_at?.ms,
+                voter,
+                vote,
+                confirmed: confirmation &&
+                  !unconfirmed,
+                late,
               },
-            );
-          }
+            },
+          );
 
           write(
             'evm_votes',

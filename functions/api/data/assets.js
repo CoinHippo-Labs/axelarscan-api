@@ -590,7 +590,7 @@ module.exports = {
       id: 'weth-wei',
       symbol: 'WETH',
       name: 'Wrapped Ether',
-      image: '/logos/assets/eth.svg',
+      image: '/logos/assets/weth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
       contracts: [
@@ -692,7 +692,7 @@ module.exports = {
       id: 'wbnb-wei',
       symbol: 'WBNB',
       name: 'WBNB',
-      image: '/logos/assets/bnb.png',
+      image: '/logos/assets/wbnb.png',
       decimals: 18,
       coingecko_id: 'binancecoin',
       contracts: [
@@ -794,7 +794,7 @@ module.exports = {
       id: 'wavax-wei',
       symbol: 'WAVAX',
       name: 'Avalanche',
-      image: '/logos/assets/avax.svg',
+      image: '/logos/assets/wavax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
       contracts: [
@@ -896,7 +896,7 @@ module.exports = {
       id: 'wmatic-wei',
       symbol: 'WMATIC',
       name: 'Matic',
-      image: '/logos/assets/matic.svg',
+      image: '/logos/assets/wmatic.svg',
       decimals: 18,
       coingecko_id: 'matic-network',
       contracts: [
@@ -998,7 +998,7 @@ module.exports = {
       id: 'wftm-wei',
       symbol: 'WFTM',
       name: 'Fantom',
-      image: '/logos/assets/ftm.svg',
+      image: '/logos/assets/wftm.svg',
       decimals: 18,
       coingecko_id: 'fantom',
       contracts: [
@@ -1100,7 +1100,7 @@ module.exports = {
       id: 'wglmr-wei',
       symbol: 'WGLMR',
       name: 'Moonbeam',
-      image: '/logos/assets/glmr.svg',
+      image: '/logos/assets/wglmr.svg',
       decimals: 18,
       coingecko_id: 'moonbeam',
       contracts: [
@@ -2980,7 +2980,7 @@ module.exports = {
       id: 'uausdc',
       symbol: 'aUSDC',
       name: 'USD Coin',
-      image: '/logos/assets/usdc.svg',
+      image: '/logos/assets/ausdc.svg',
       decimals: 6,
       coingecko_id: 'usd-coin',
       contracts: [
@@ -3137,7 +3137,7 @@ module.exports = {
       id: 'weth-wei',
       symbol: 'WETH',
       name: 'Ethereum',
-      image: '/logos/assets/eth.svg',
+      image: '/logos/assets/weth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
       contracts: [
@@ -3257,7 +3257,7 @@ module.exports = {
       id: 'wbnb-wei',
       symbol: 'WBNB',
       name: 'WBNB',
-      image: '/logos/assets/bnb.png',
+      image: '/logos/assets/wbnb.png',
       decimals: 18,
       coingecko_id: 'binancecoin',
       contracts: [
@@ -3353,7 +3353,7 @@ module.exports = {
       id: 'wavax-wei',
       symbol: 'WAVAX',
       name: 'Avalanche',
-      image: '/logos/assets/avax.svg',
+      image: '/logos/assets/wavax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
       contracts: [
@@ -3467,7 +3467,7 @@ module.exports = {
       id: 'wmatic-wei',
       symbol: 'WMATIC',
       name: 'Polygon',
-      image: '/logos/assets/matic.svg',
+      image: '/logos/assets/wmatic.svg',
       decimals: 18,
       coingecko_id: 'matic-network',
       contracts: [
@@ -3581,7 +3581,7 @@ module.exports = {
       id: 'wftm-wei',
       symbol: 'WFTM',
       name: 'Fantom',
-      image: '/logos/assets/ftm.svg',
+      image: '/logos/assets/wftm.svg',
       decimals: 18,
       coingecko_id: 'fantom',
       contracts: [
@@ -3695,7 +3695,7 @@ module.exports = {
       id: 'wdev-wei',
       symbol: 'WDEV',
       name: 'Dev',
-      image: '/logos/assets/dev.svg',
+      image: '/logos/assets/wdev.svg',
       decimals: 18,
       coingecko_id: 'moonbeam',
       contracts: [
@@ -4141,7 +4141,7 @@ module.exports = {
       id: 'weth-wei',
       symbol: 'WETH',
       name: 'Ethereum',
-      image: '/logos/assets/eth.svg',
+      image: '/logos/assets/weth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
       contracts: [
@@ -4161,7 +4161,7 @@ module.exports = {
       id: 'wavax-wei',
       symbol: 'WAVAX',
       name: 'Avalanche',
-      image: '/logos/assets/avax.svg',
+      image: '/logos/assets/wavax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
       contracts: [

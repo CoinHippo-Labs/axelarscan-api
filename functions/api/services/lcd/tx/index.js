@@ -2935,6 +2935,7 @@ module.exports = async (
                   transaction_id,
                   deposit_address,
                   transfer_id,
+                  event,
                   participants;
 
                 switch (type) {
@@ -3010,6 +3011,17 @@ module.exports = async (
                           ) > -1
                         )
                       );
+
+                    event = _.head(
+                      Object.entries({
+                        ...vote_events?.find(e =>
+                          Object.values({ ...e })
+                            .filter(v => typeof v === 'object')
+                        ),
+                      })
+                      .filter(([k, v]) => typeof v === 'object')
+                      .map(([k, v]) => k)
+                    );
                     break;
                   default:
                     break;
@@ -3395,11 +3407,14 @@ module.exports = async (
                         }
 
                         if (!price) {
-                          const __response = await assets_price({
-                            chain: original_sender_chain,
-                            denom: asset || denom,
-                            timestamp: created_at,
-                          });
+                          const __response = await assets_price(
+                            {
+                              chain: original_sender_chain,
+                              denom: asset ||
+                                denom,
+                              timestamp: created_at,
+                            },
+                          );
 
                           const _price = _.head(__response)?.price;
                           if (_price) {
@@ -3453,7 +3468,9 @@ module.exports = async (
                           decimals,
                         } = { ...asset_data };
 
-                        decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals || decimals || 18;
+                        decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals ||
+                          decimals ||
+                          18;
 
                         if (asset_data) {
                           amount = Number(
@@ -3463,7 +3480,10 @@ module.exports = async (
                             )
                           );
 
-                          if (!source.fee && endpoints?.lcd) {
+                          if (
+                            !source.fee &&
+                            endpoints?.lcd
+                          ) {
                             const lcd = axios.create({ baseURL: endpoints.lcd });
 
                             const __response = await lcd.get(
@@ -3573,46 +3593,41 @@ module.exports = async (
                 }
 
                 if (voter) {
-                  if (
-                    confirmation ||
-                    unconfirmed ||
-                    failed ||
-                    success
-                  ) {
-                    await write(
-                      'evm_polls',
-                      poll_id,
-                      {
-                        id: poll_id,
+                  await write(
+                    'evm_polls',
+                    poll_id,
+                    {
+                      id: poll_id,
+                      height,
+                      created_at: record.created_at,
+                      sender_chain,
+                      recipient_chain,
+                      transaction_id,
+                      deposit_address,
+                      transfer_id,
+                      confirmation: confirmation ||
+                        undefined,
+                      failed: failed ||
+                        undefined,
+                        success: success ||
+                        undefined,
+                      event: event ||
+                        undefined,
+                      participants: participants ||
+                        undefined,
+                      [voter.toLowerCase()]: {
+                        id: txhash,
+                        type,
                         height,
-                        created_at: record.created_at,
-                        sender_chain,
-                        recipient_chain,
-                        transaction_id,
-                        deposit_address,
-                        transfer_id,
-                        confirmation: confirmation ||
-                          undefined,
-                        failed: failed ||
-                          undefined,
-                          success: success ||
-                          undefined,
-                        participants: participants ||
-                          undefined,
-                        [voter.toLowerCase()]: {
-                          id: txhash,
-                          type,
-                          height,
-                          created_at,
-                          voter,
-                          vote,
-                          confirmed: confirmation &&
-                            !unconfirmed,
-                          late,
-                        },
+                        created_at,
+                        voter,
+                        vote,
+                        confirmed: confirmation &&
+                          !unconfirmed,
+                        late,
                       },
-                    );
-                  }
+                    },
+                  );
 
                   await write(
                     'evm_votes',
