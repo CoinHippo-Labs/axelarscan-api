@@ -618,6 +618,10 @@ module.exports = async (
                     attributes?.find(a => a?.key === 'txID')?.value ||
                     poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
 
+                  transaction_id = Array.isArray(transaction_id) ?
+                    to_hex(transaction_id) :
+                    transaction_id;
+
                   if (transaction_id === poll_id) {
                     transaction_id = null;
                   }
@@ -625,6 +629,10 @@ module.exports = async (
                   deposit_address = _.head(inner_message.vote?.events)?.transfer?.to ||
                     attributes?.find(a => a?.key === 'depositAddress')?.value ||
                     poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
+
+                  deposit_address = Array.isArray(deposit_address) ?
+                    to_hex(deposit_address) :
+                    deposit_address;
 
                   transfer_id = Number(
                     attributes?.find(a => a?.key === 'transferID')?.value
@@ -662,12 +670,20 @@ module.exports = async (
                     transaction_id = transfer_data?.vote?.transaction_id ||
                       confirm_deposit?.transaction_id ||
                       transfer_data?.source?.id;
+
+                    transaction_id = Array.isArray(transaction_id) ?
+                      to_hex(transaction_id) :
+                      transaction_id;
                     }
                     if (!deposit_address) {
                       deposit_address = transfer_data?.vote?.deposit_address ||
                         confirm_deposit?.deposit_address ||
                         transfer_data?.source?.recipient_address ||
                         transfer_data?.link?.deposit_address;
+
+                      deposit_address = Array.isArray(deposit_address) ?
+                        to_hex(deposit_address) :
+                        deposit_address;
                     }
                     if (!transfer_id) {
                       transfer_id = transfer_data?.vote?.transfer_id ||
@@ -927,6 +943,7 @@ module.exports = async (
                 late,
               },
             },
+            true,
           );
 
           write(
