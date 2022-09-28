@@ -281,7 +281,7 @@ module.exports = async (
           axios.create(
             {
               baseURL: _lcds[_.random(_lcds.length - 1)],
-              timeout: 1000,
+              timeout: 2000,
             },
           ),
         ];
@@ -428,7 +428,7 @@ module.exports = async (
             lcd = axios.create(
               {
                 baseURL: lcd_url,
-                timeout: 1000,
+                timeout: 2000,
               },
             );
           }

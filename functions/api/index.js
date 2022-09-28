@@ -323,6 +323,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'total-supply':
+          try {
+            response = await require('./services/total-supply')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'tvl-alert':
           try {
             response = await require('./services/tvl/alert')(params);

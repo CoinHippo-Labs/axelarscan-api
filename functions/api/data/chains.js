@@ -371,8 +371,9 @@ module.exports = {
         endpoints: {
           lcd: 'https://lcd.osmosis.zone',
           lcds: [
+            // 'https://osmosis-lcd.quickapi.com',
             'https://lcd-osmosis.blockapsis.com',
-            'https://osmosis-api.lavenderfive.com',
+            // 'https://osmosis-api.lavenderfive.com',
             'https://rest-osmosis.ecostake.com',
             'https://api-osmosis-ia.cosmosia.notional.ventures',
             'https://api.osmosis.interbloc.org',
