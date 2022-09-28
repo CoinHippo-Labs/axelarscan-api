@@ -58,63 +58,70 @@ module.exports = async (
     })
   );
 
+  const query_timestamp = Number(timestamp) ||
+    current_time.valueOf();
+
   if (denoms.length > 0) {
-    const price_timestamp = moment(Number(timestamp) || current_time.valueOf()).startOf('day').valueOf();
+    const price_timestamp = moment(query_timestamp).startOf('day').valueOf();
 
-    const response_cache = current_time.diff(moment(price_timestamp), 'hours') > 4 &&
-      await read(
-        collection,
-        {
-          bool: {
-            must: [
-              { match: { price_timestamp } },
-            ],
-            should: denoms
-              .map(d => {
-                return {
-                  match: {
-                    denom: typeof d === 'object' ?
-                      d?.denom :
-                      d,
-                  },
-                };
-              }),
-            minimum_should_match: 1,
-          },
+    const response_cache = await read(
+      collection,
+      {
+        bool: {
+          must: [
+            { match: { price_timestamp } },
+          ],
+          should: denoms
+            .map(d => {
+              return {
+                match: {
+                  denom: typeof d === 'object' ?
+                    d?.denom :
+                    d,
+                },
+              };
+            }),
+          minimum_should_match: 1,
         },
-        {
-          size: denoms.length,
-        },
-      );
+      },
+      {
+        size: denoms.length,
+      },
+    );
 
-    const data = denoms.map(d => {
-      const denom_data = typeof d === 'object' ?
-        d :
-        { denom: d };
+    const data = denoms
+      .map(d => {
+        const denom_data = typeof d === 'object' ?
+          d :
+          {
+            denom: d,
+          };
 
-      const _denom = denom_data?.denom ||
-        d;
-      const _chain = _denom === 'uluna' && !['terra-2'].includes(chain) ?
-        'terra' :
-        denom_data?.chain ||
-          chain;
+        const _denom = denom_data?.denom ||
+          d;
+        const _chain =
+          _denom === 'uluna' &&
+          !['terra-2'].includes(chain) ?
+            'terra' :
+            denom_data?.chain ||
+              chain;
 
-      const asset_data = assets_data.find(a => equals_ignore_case(a?.id, _denom));
-      const {
-        coingecko_id,
-        coingecko_ids,
-        is_stablecoin,
-      } = { ...asset_data };
-
-      return {
-        denom: _denom,
-        coingecko_id: coingecko_ids?.[_chain] ||
+        const asset_data = assets_data.find(a => equals_ignore_case(a?.id, _denom));
+        const {
           coingecko_id,
-        price: is_stablecoin ?
-          1 :
-          undefined,
-      };
-    });
+          coingecko_ids,
+          is_stablecoin,
+        } = { ...asset_data };
+
+        return {
+          denom: _denom,
+          coingecko_id: coingecko_ids?.[_chain] ||
+            coingecko_id,
+          price: is_stablecoin ?
+            1 :
+            undefined,
+        };
+      });
 
     if (response_cache?.data) {
       response_cache.data
@@ -131,11 +138,16 @@ module.exports = async (
         });
     }
 
-    const updated_at_threshold = current_time.subtract(10, 'minutes').valueOf();
+    const updated_at_threshold = current_time.subtract(5, 'minutes').valueOf();
+
     const to_update_data = data.filter(d =>
       !d?.updated_at ||
-      d.updated_at < updated_at_threshold
+      (
+        current_time.diff(moment(query_timestamp), 'hours') < 4 &&
+        d.updated_at < updated_at_threshold
+      )
     );
+
     const coingecko_ids = to_update_data
       .map(d => d?.coingecko_id)
       .filter(id => id);
@@ -232,7 +244,10 @@ module.exports = async (
     const to_update_cache = data.filter(d =>
       (
         !d?.updated_at ||
-        d.updated_at < updated_at_threshold
+        (
+          current_time.diff(moment(query_timestamp), 'hours') < 4 &&
+          d.updated_at < updated_at_threshold
+        )
       ) &&
       ('denom' in d) &&
       ('price' in d)
@@ -259,18 +274,19 @@ module.exports = async (
       );
     }
 
-    response = data.map(d => {
-      const {
-        id,
-        denom,
-      } = { ...d };
-
-      return {
-        ...d,
-        id: denom ||
+    response = data
+      .map(d => {
+        const {
           id,
-      };
-    });
+          denom,
+        } = { ...d };
+
+        return {
+          ...d,
+          id: denom ||
+            id,
+        };
+      });
   }
 
   return response;
