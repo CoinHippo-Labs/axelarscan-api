@@ -6,7 +6,7 @@ module.exports = {
       name: 'Axelar',
       image: '/logos/assets/axl.svg',
       decimals: 6,
-      coingecko_id: 'axelar-network',
+      coingecko_id: 'axelar',
       contracts: [
         {
           contract_address: '0x467719aD09025FcC6cF6F8311755809d45a5E5f3',
@@ -2811,7 +2811,7 @@ module.exports = {
       name: 'Axelar',
       image: '/logos/assets/axl.svg',
       decimals: 6,
-      coingecko_id: 'axelar-network',
+      coingecko_id: 'axelar',
       contracts: [
         {
           contract_address: '0x08006a6C38AA63F22Da7694FDA6A8272f89c4c6b',
@@ -2882,7 +2882,7 @@ module.exports = {
           contract_address: '0x772df70ff68c8dea1863794824410e90e46cd433',
           chain_id: 3,
           decimals: 6,
-          symbol: 'axlUSDC',
+          is_native: true,
         },
         {
           contract_address: '0x3fb643de114d5dc03dde8dfdbc06c60dcaf7d3c4',
@@ -2988,6 +2988,7 @@ module.exports = {
           contract_address: '0x526f0A95EDC3DF4CBDB7bb37d4F7Ed451dB8e369',
           chain_id: 3,
           decimals: 6,
+          is_native: true,
         },
         {
           contract_address: '0xc2fA98faB811B785b81c64Ac875b31CC9E40F9D2',
@@ -3080,6 +3081,7 @@ module.exports = {
           contract_address: '0x5db5f7d211FA88266Fb316948da0D45798e5a22f',
           chain_id: 3,
           decimals: 8,
+          is_native: true,
         },
       ],
       ibc: [
@@ -3967,7 +3969,7 @@ module.exports = {
       name: 'Axelar',
       image: '/logos/assets/axl.svg',
       decimals: 6,
-      coingecko_id: 'axelar-network',
+      coingecko_id: 'axelar',
       contracts: [
         {
           contract_address: '0x321c017c08b681b1a34909eb159ed128772a5bbe',
@@ -4113,7 +4115,7 @@ module.exports = {
       name: 'Axelar',
       image: '/logos/assets/axl.svg',
       decimals: 6,
-      coingecko_id: 'axelar-network',
+      coingecko_id: 'axelar',
       contracts: [
         {
           contract_address: '0x4ecfcCeC5A50103d257965fe379209D924a4601E',

@@ -308,7 +308,7 @@ module.exports = {
           ],
           cosmostation: 'https://api-axelar.cosmostation.io/v1',
         },
-        coingecko_id: 'axelar-network',
+        coingecko_id: 'axelar',
       },
       {
         id: 'cosmoshub',
@@ -371,7 +371,6 @@ module.exports = {
         endpoints: {
           lcd: 'https://lcd.osmosis.zone',
           lcds: [
-            'https://osmosis-lcd.quickapi.com',
             'https://lcd-osmosis.blockapsis.com',
             'https://osmosis-api.lavenderfive.com',
             'https://rest-osmosis.ecostake.com',
@@ -832,7 +831,6 @@ module.exports = {
           lcd: 'https://phoenix-lcd.terra.dev',
           lcds: [
             'https://columbus-lcd.terra.dev',
-            'https://terra-lcd.quickapi.com',
             'https://lcd.terra.dev',
           ],
         },
@@ -857,7 +855,6 @@ module.exports = {
             endpoints: {
               lcd: 'https://columbus-lcd.terra.dev',
               lcds: [
-                'https://terra-lcd.quickapi.com',
                 'https://lcd.terra.dev',
               ],
             },
@@ -1195,7 +1192,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://testnet.rpc.axelarscan.io:1317',
         },
-        coingecko_id: 'axelar-network',
+        coingecko_id: 'axelar',
       },
       {
         id: 'cosmoshub',
@@ -1795,7 +1792,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://devnet.rpc.axelarscan.io:1317',
         },
-        coingecko_id: 'axelar-network',
+        coingecko_id: 'axelar',
       },
     ],
   },
@@ -1903,7 +1900,7 @@ module.exports = {
         endpoints: {
           lcd: 'http://testnet-2.rpc.axelarscan.io:1317',
         },
-        coingecko_id: 'axelar-network',
+        coingecko_id: 'axelar',
       },
     ],
   },

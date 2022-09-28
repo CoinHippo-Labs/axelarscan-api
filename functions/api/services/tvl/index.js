@@ -519,8 +519,10 @@ module.exports = async (
           }
 
           const supply = lcd ?
-            is_native && id !== axelarnet.id ?
-              source_escrow_balance :
+            is_native ?
+              id !== axelarnet.id ?
+                source_escrow_balance :
+                0 :
               escrow_addresses?.length > 0 ?
                 await getCosmosSupply(
                   denom_data,
@@ -529,34 +531,40 @@ module.exports = async (
                 0 :
             0;
 
-          const total_supply = is_native && id !== axelarnet.id ?
-            await getAxelarnetSupply(
-              {
-                ...denom_data,
-                denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
-              },
-              cli,
-            ) :
-            0;
+          const total_supply =
+            is_native &&
+            id !== axelarnet.id ?
+              await getAxelarnetSupply(
+                {
+                  ...denom_data,
+                  denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
+                },
+                cli,
+              ) :
+              0;
 
-          const percent_diff_supply = is_native && id !== axelarnet.id ?
-            total_supply && source_escrow_balance ?
-              Math.abs(
-                source_escrow_balance - total_supply
-              ) * 100 / source_escrow_balance :
-              null :
-            supply && escrow_balance ?
-              Math.abs(
-                escrow_balance - supply
-              ) * 100 / escrow_balance :
-              null;
+          const percent_diff_supply =
+            is_native &&
+            id !== axelarnet.id ?
+              total_supply && source_escrow_balance ?
+                Math.abs(
+                  source_escrow_balance - total_supply
+                ) * 100 / source_escrow_balance :
+                null :
+              supply && escrow_balance ?
+                Math.abs(
+                  escrow_balance - supply
+                ) * 100 / escrow_balance :
+                null;
 
-          const total = id === axelarnet.id ?
-            await getAxelarnetSupply(
-              denom_data,
-              cli,
-            ) :
-            0;
+          const total =
+            id === axelarnet.id &&
+            !is_native ?
+              await getAxelarnetSupply(
+                denom_data,
+                cli,
+              ) :
+              0;
 
           result = {
             denom_data,
@@ -636,10 +644,12 @@ module.exports = async (
                       .map(_v => _v?.supply || 0)
                   ) :
                   ibc?.findIndex(i => i?.is_native) > -1 ?
-                    total - _.sum(
-                      Object.values(evm_tvl)
-                        .map(_v => _v?.supply || 0)
-                    ) :
+                    total ?
+                      total - _.sum(
+                        Object.values(evm_tvl)
+                          .map(_v => _v?.supply || 0)
+                      ) :
+                      0 :
                     supply :
                 supply,
             },
@@ -680,20 +690,25 @@ module.exports = async (
         'escrow_balance',
     );
 
-    const total = _.sum(
-      Object.values(tvl)
-        .map(t => {
-          const {
-            gateway_balance,
-            total,
-          } = { ...t };
+    const total = ibc?.findIndex(i =>
+      i?.is_native &&
+      i.chain_id === axelarnet.id
+    ) > -1 ?
+      total_on_evm + total_on_cosmos :
+      _.sum(
+        Object.values(tvl)
+          .map(t => {
+            const {
+              gateway_balance,
+              total,
+            } = { ...t };
 
-          return (contracts?.findIndex(c => c?.is_native) > -1 ?
-            gateway_balance :
-            total
-          ) || 0;
-        })
-    );
+            return (contracts?.findIndex(c => c?.is_native) > -1 ?
+              gateway_balance :
+              total
+            ) || 0;
+          })
+      );
 
     const evm_escrow_address = ibc?.findIndex(i => i?.is_native) > -1 ?
       get_address(

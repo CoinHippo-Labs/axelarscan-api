@@ -2795,10 +2795,11 @@ module.exports = async (
           }
         }
       }
-      // ConfirmTransferKey
+      // ConfirmTransferKey & ConfirmGatewayTx
       else if (
         [
           'ConfirmTransferKey',
+          'ConfirmGatewayTx',
         ].findIndex(s =>
           messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
@@ -2813,7 +2814,12 @@ module.exports = async (
               events,
             } = { ...logs?.[i] };
 
-            const event = events?.find(e => e?.type?.includes('ConfirmKeyTransferStarted'));
+            const event = events?.find(e =>
+              [
+                'ConfirmKeyTransferStarted',
+                'ConfirmGatewayTxStarted',
+              ].findIndex(s => e?.type?.includes(s)) > -1
+            );
 
             const {
               attributes,
@@ -2917,12 +2923,38 @@ module.exports = async (
                         'EVMEventFailed',
                       ].findIndex(s => e?.type?.includes(s)) > -1
                     ) > -1
-                  ) &&
-                  events?.findIndex(e =>
-                    [
-                      'EVMEventCompleted',
-                    ].findIndex(s => e?.type?.includes(s)) > -1
-                  ) < 0;
+                  );
+
+                let end_block_events;
+
+                if (
+                  !unconfirmed &&
+                  !failed &&
+                  attributes
+                ) {
+                  const _response = await rpc(
+                    '/block_results',
+                    {
+                      height,
+                    },
+                  );
+
+                  end_block_events = _response?.end_block_events ||
+                    [];
+
+                  const completed_events = end_block_events
+                    .filter(e =>
+                      [
+                        'EVMEventCompleted',
+                      ].findIndex(s => e?.type?.includes(s)) > -1 &&
+                      e.attributes?.length > 0
+                    );
+
+                  for (const e of completed_events) {
+                    events.push(e);
+                  }
+                }
+
                 const success =
                   events?.findIndex(e =>
                     [
@@ -3188,49 +3220,51 @@ module.exports = async (
                     !transaction_id ||
                     !transfer_id
                   ) {
-                    const __response = await rpc(
-                      '/block_results',
-                      {
-                        height,
-                      },
-                    );
-
-                    let {
-                      end_block_events,
-                    } = { ...__response };
-
-                    end_block_events = end_block_events?.filter(e =>
-                      [
-                        'depositConfirmation',
-                        'eventConfirmation',
-                      ].findIndex(s => equals_ignore_case(e?.type, s)) > -1 &&
-                      e.attributes?.length > 0
-                    )
-                    .map(e => {
-                      const {
-                        attributes,
-                      } = { ...e };
-
-                      return Object.fromEntries(
-                        attributes.map(a => {
-                          const {
-                            key,
-                            value,
-                          } = { ...a };
-
-                          return [
-                            key,
-                            value,
-                          ];
-                        })
+                    if (!end_block_events) {
+                      const _response = await rpc(
+                        '/block_results',
+                        {
+                          height,
+                        },
                       );
-                    }) || [];
+
+                      end_block_events = _response?.end_block_events ||
+                        [];
+                    }
+
+                    const confirmation_events = end_block_events
+                      .filter(e =>
+                        [
+                          'depositConfirmation',
+                          'eventConfirmation',
+                        ].findIndex(s => e?.type?.includes(s)) > -1 &&
+                        e.attributes?.length > 0
+                      )
+                      .map(e => {
+                        const {
+                          attributes,
+                        } = { ...e };
+
+                        return Object.fromEntries(
+                          attributes.map(a => {
+                            const {
+                              key,
+                              value,
+                            } = { ...a };
+
+                            return [
+                              key,
+                              value,
+                            ];
+                          })
+                        );
+                      });
 
                     const _transaction_id = _.head(
-                      end_block_events.map(e => e.txID)
+                      confirmation_events.map(e => e.txID)
                     );
                     const _transfer_id = _.head(
-                      end_block_events.map(e => Number(e.transferID))
+                      confirmation_events.map(e => Number(e.transferID))
                     );
 
                     if (equals_ignore_case(transaction_id, _transaction_id)) {
