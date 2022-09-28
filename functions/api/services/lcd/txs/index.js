@@ -532,7 +532,23 @@ module.exports = async (
                         [
                           'EVMEventCompleted',
                         ].findIndex(s => e?.type?.includes(s)) > -1 &&
-                        e.attributes?.length > 0
+                        e.attributes?.findIndex(a =>
+                          [
+                            'eventID',
+                            'event_id',
+                          ].findIndex(k => k === a?.key) > -1 &&
+                          equals_ignore_case(
+                            (a.value || '')
+                              .split('"')
+                              .join(''),
+                            attributes?.find(_a =>
+                              [
+                                'eventID',
+                                'event_id',
+                              ].findIndex(k => k === _a?.key) > -1
+                            )?.value,
+                          )
+                        ) > -1
                       );
 
                     for (const e of completed_events) {
@@ -823,7 +839,23 @@ module.exports = async (
                             'depositConfirmation',
                             'eventConfirmation',
                           ].findIndex(s => e?.type?.includes(s)) > -1 &&
-                          e.attributes?.length > 0
+                          e.attributes?.findIndex(a =>
+                            [
+                              'eventID',
+                              'event_id',
+                            ].findIndex(k => k === a?.key) > -1 &&
+                            equals_ignore_case(
+                              (a.value || '')
+                                .split('"')
+                                .join(''),
+                              attributes?.find(_a =>
+                                [
+                                  'eventID',
+                                  'event_id',
+                                ].findIndex(k => k === _a?.key) > -1
+                              )?.value,
+                            )
+                          ) > -1
                         )
                         .map(e => {
                           const {
