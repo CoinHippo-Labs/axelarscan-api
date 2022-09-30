@@ -291,7 +291,7 @@ module.exports = async (
   // axelarnet lcd
   const axelarnet_lcd = axios.create(
     {
-      baseURL: endpoints?.lcd,
+      baseURL: axelarnet.endpoints?.lcd,
     },
   );
   const cli = axios.create(

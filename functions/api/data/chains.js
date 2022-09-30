@@ -299,10 +299,8 @@ module.exports = {
           'axelar-',
         ],
         endpoints: {
-          lcd: 'http://rpc.axelarscan.io:1317',
+          lcd: 'https://lcd-axelar.imperator.co',
           lcds: [
-            'https://axelar-lcd.quickapi.com',
-            'https://api-1.axelar.nodes.guru',
             'https://api-axelar-ia.cosmosia.notional.ventures',
             'https://axelar-api.polkachu.com',
           ],
@@ -336,12 +334,7 @@ module.exports = {
           lcd: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
           lcds: [
             'https://cosmos-api.lavenderfive.com',
-            // 'https://lcd-cosmoshub.blockapsis.com',
-            // 'https://cosmos-lcd.quickapi.com',
-            // 'https://lcd-cosmoshub.whispernode.com',
-            // 'https://rest-cosmoshub.ecostake.com',
-            // 'https://api.cosmoshub.pupmos.network',
-            // 'https://cosmos-api.polkachu.com',
+            'https://lcd-cosmoshub.blockapsis.com',
           ],
           cosmostation: 'https://api.cosmostation.io/v1',
         },
@@ -371,9 +364,7 @@ module.exports = {
         endpoints: {
           lcd: 'https://lcd.osmosis.zone',
           lcds: [
-            // 'https://osmosis-lcd.quickapi.com',
             'https://lcd-osmosis.blockapsis.com',
-            // 'https://osmosis-api.lavenderfive.com',
             'https://rest-osmosis.ecostake.com',
             'https://api-osmosis-ia.cosmosia.notional.ventures',
             'https://api.osmosis.interbloc.org',
@@ -474,7 +465,6 @@ module.exports = {
         endpoints: {
           lcd: 'https://public.lcd.injective.network',
           lcds: [
-            'https://injective-lcd.quickapi.com',
             'https://api-injective-ia.cosmosia.notional.ventures',
             'https://injective-api.polkachu.com',
           ],
