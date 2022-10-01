@@ -1181,7 +1181,7 @@ module.exports = {
           'axelar-',
         ],
         endpoints: {
-          lcd: 'http://testnet.rpc.axelarscan.io:1317',
+          lcd: 'https://testnet.lcd.axelarscan.io',
         },
         coingecko_id: 'axelar',
       },
@@ -1781,7 +1781,7 @@ module.exports = {
           'axelar-',
         ],
         endpoints: {
-          lcd: 'http://devnet.rpc.axelarscan.io:1317',
+          lcd: 'https://devnet.lcd.axelarscan.io',
         },
         coingecko_id: 'axelar',
       },
@@ -1889,7 +1889,7 @@ module.exports = {
           'axelar-',
         ],
         endpoints: {
-          lcd: 'http://testnet-2.rpc.axelarscan.io:1317',
+          lcd: 'https://testnet-2.lcd.axelarscan.io',
         },
         coingecko_id: 'axelar',
       },

@@ -12,9 +12,9 @@ external_api:
 
 mainnet:
   endpoints:
-    rpc: "http://rpc.axelarscan.io:26657"
-    lcd: "http://rpc.axelarscan.io:1317"
-    cli: "http://rpc.axelarscan.io:3333"
+    rpc: "https://rpc.axelarscan.io"
+    lcd: "https://lcd.axelarscan.io"
+    cli: "https://cli.axelarscan.io"
     api: "https://api.axelarscan.io"
     app: "https://axelarscan.io"
     cosmostation: "https://api-axelar.cosmostation.io/v1"
@@ -110,9 +110,9 @@ mainnet:
 
 testnet:
   endpoints:
-    rpc: "http://testnet.rpc.axelarscan.io:26657"
-    lcd: "http://testnet.rpc.axelarscan.io:1317"
-    cli: "http://testnet.rpc.axelarscan.io:3333"
+    rpc: "https://testnet.rpc.axelarscan.io"
+    lcd: "https://testnet.lcd.axelarscan.io"
+    cli: "https://testnet.cli.axelarscan.io"
     api: "https://testnet.api.axelarscan.io"
     app: "https://testnet.axelarscan.io"
     cosmostation: "https://api-axelar-testnet.cosmostation.io/v1"
@@ -207,9 +207,9 @@ testnet:
 
 devnet:
   endpoints:
-    rpc: "http://devnet.rpc.axelarscan.io:26657"
-    lcd: "http://devnet.rpc.axelarscan.io:1317"
-    cli: "http://devnet.rpc.axelarscan.io:3333"
+    rpc: "https://devnet.rpc.axelarscan.io"
+    lcd: "https://devnet.lcd.axelarscan.io"
+    cli: "https://devnet.cli.axelarscan.io"
     api: "https://devnet.api.axelarscan.io"
     app: "https://devnet.axelarscan.io"
   num_blocks_avg_block_time: 100
@@ -220,9 +220,9 @@ devnet:
 
 testnet-2:
   endpoints:
-    rpc: "http://testnet-2.rpc.axelarscan.io:26657"
-    lcd: "http://testnet-2.rpc.axelarscan.io:1317"
-    cli: "http://testnet-2.rpc.axelarscan.io:3333"
+    rpc: "https://testnet-2.rpc.axelarscan.io"
+    lcd: "https://testnet-2.lcd.axelarscan.io"
+    cli: "https://testnet-2.cli.axelarscan.io"
     api: "https://testnet-2.api.axelarscan.io"
     app: "https://testnet-2.axelarscan.io"
   num_blocks_avg_block_time: 100
