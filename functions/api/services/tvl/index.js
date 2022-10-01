@@ -278,22 +278,19 @@ module.exports = async (
 
         return [
           id,
-          axios.create(
-            {
-              baseURL: _lcds[_.random(_lcds.length - 1)],
-              timeout: 2000,
-            },
-          ),
+          _lcds
+            .map(url =>
+              axios.create(
+                {
+                  baseURL: url,
+                  timeout: 1500,
+                },
+              )
+            ),
         ];
       })
   );
 
-  // axelarnet lcd
-  const axelarnet_lcd = axios.create(
-    {
-      baseURL: axelarnet.endpoints?.lcd,
-    },
-  );
   const cli = axios.create(
     {
       baseURL: endpoints?.cli,
@@ -387,7 +384,7 @@ module.exports = async (
           );
           let lcd_url = lcd_urls[_.random(lcd_urls.length - 1)];
 
-          let lcd = lcds[id];
+          let _lcds = lcds[id];
 
           const ibc_data = ibc?.find(i =>
             i?.chain_id === id ||
@@ -425,12 +422,15 @@ module.exports = async (
           }
 
           if (equals_ignore_case(id, original_chain_id)) {
-            lcd = axios.create(
-              {
-                baseURL: lcd_url,
-                timeout: 2000,
-              },
-            );
+            _lcds = lcd_urls
+              .map(url =>
+                axios.create(
+                  {
+                    baseURL: url,
+                    timeout: 1500,
+                  },
+                )
+              );
           }
 
           let result;
@@ -500,7 +500,7 @@ module.exports = async (
               escrow_balance += await getCosmosBalance(
                 escrow_address,
                 denom_data,
-                axelarnet_lcd,
+                lcds[axelarnet.id],
               );
             }
           }
@@ -513,12 +513,12 @@ module.exports = async (
                   ...denom_data,
                   denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
                 },
-                lcd,
+                _lcds,
               );
             }
           }
 
-          const supply = lcd ?
+          const supply = _lcds ?
             is_native ?
               id !== axelarnet.id ?
                 source_escrow_balance :
@@ -526,7 +526,7 @@ module.exports = async (
               escrow_addresses?.length > 0 ?
                 await getCosmosSupply(
                   denom_data,
-                  lcd,
+                  _lcds,
                 ) :
                 0 :
             0;
@@ -546,12 +546,12 @@ module.exports = async (
           const percent_diff_supply =
             is_native &&
             id !== axelarnet.id ?
-              total_supply && source_escrow_balance ?
+              total_supply > 0 && source_escrow_balance > 0 ?
                 Math.abs(
                   source_escrow_balance - total_supply
                 ) * 100 / source_escrow_balance :
                 null :
-              supply && escrow_balance ?
+              supply > 0 && escrow_balance > 0 ?
                 Math.abs(
                   escrow_balance - supply
                 ) * 100 / escrow_balance :
@@ -728,7 +728,7 @@ module.exports = async (
           base_denom: asset,
           denom: ibc?.find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
         },
-        axelarnet_lcd,
+        lcds[axelarnet.id],
       );
 
     const evm_escrow_address_urls = evm_escrow_address &&
@@ -741,12 +741,12 @@ module.exports = async (
       .filter(l => l);
 
     const percent_diff_supply = evm_escrow_address ?
-      evm_escrow_balance && total_on_evm ?
+      evm_escrow_balance > 0 && total_on_evm > 0 ?
         Math.abs(
           evm_escrow_balance - total_on_evm
         ) * 100 / evm_escrow_balance :
         null :
-      total ?
+      total > 0 ?
         Math.abs(
           total - (total_on_evm + total_on_cosmos)
         ) * 100 / total :

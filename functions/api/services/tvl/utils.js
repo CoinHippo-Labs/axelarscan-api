@@ -82,7 +82,7 @@ const getEVMBalance = async (
 const getCosmosBalance = async (
   address,
   denom_data,
-  lcd,
+  lcds,
 ) => {
   let balance;
   const {
@@ -96,10 +96,14 @@ const getCosmosBalance = async (
     denom,
   ].filter(d => d);
 
+  lcds = typeof lcds === 'string' ?
+    [lcds] :
+    lcds;
+
   if (
     address &&
     denoms.length > 0 &&
-    lcd
+    lcds
   ) {
     try {
       const paths = [
@@ -107,38 +111,44 @@ const getCosmosBalance = async (
         '/cosmos/bank/v1beta1/balances/{address}/{denom}',
       ];
 
-      for (const denom of denoms) {
-        let valid = false;
+      let valid = false;
 
-        for (const path of paths) {
-          const response = await lcd.get(
-            path
-              .replace(
-                '{address}',
-                address,
-              )
-              .replace(
-                '{denom}',
-                encodeURIComponent(denom),
-              ),
-            {
-              params: {
-                denom,
+      for (const lcd of lcds) {
+        for (const denom of denoms) {
+          for (const path of paths) {
+            const response = await lcd.get(
+              path
+                .replace(
+                  '{address}',
+                  address,
+                )
+                .replace(
+                  '{denom}',
+                  encodeURIComponent(denom),
+                ),
+              {
+                params: {
+                  denom,
+                },
               },
-            },
-          ).catch(error => { return { data: { error } }; });
+            ).catch(error => { return { data: { error } }; });
 
-          const {
-            amount,
-          } = { ...response?.data?.balance };
+            const {
+              amount,
+            } = { ...response?.data?.balance };
 
-          balance = amount;
+            balance = amount;
 
-          if (
-            balance &&
-            balance !== '0'
-          ) {
-            valid = true;
+            if (
+              balance &&
+              balance !== '0'
+            ) {
+              valid = true;
+              break;
+            }
+          }
+
+          if (valid) {
             break;
           }
         }
@@ -160,7 +170,7 @@ const getCosmosBalance = async (
 
 const getCosmosSupply = async (
   denom_data,
-  lcd,
+  lcds,
 ) => {
   let supply;
   const {
@@ -173,41 +183,61 @@ const getCosmosSupply = async (
     denom,
   ].filter(d => d);
 
+  lcds = typeof lcds === 'string' ?
+    [lcds] :
+    lcds;
+
   if (
     denoms.length > 0 &&
-    lcd
+    lcds
   ) {
     try {
-      for (const denom of denoms) {
-        const response = await lcd.get(
-          `/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`,
-        ).catch(error => { return { data: { error } }; });
+      let valid = false;
 
-        const {
-          amount,
-        } = { ...response?.data?.amount };
+      for (const lcd of lcds) {
+        for (const denom of denoms) {
+          const response = await lcd.get(
+            `/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`,
+          ).catch(error => { return { data: { error } }; });
 
-        supply = amount;
+          const {
+            amount,
+          } = { ...response?.data?.amount };
 
-        if (supply && supply !== '0') {
+          supply = amount;
+
+          if (
+            supply &&
+            supply !== '0'
+          ) {
+            valid = true;
+            break;
+          }
+        }
+
+        if (!valid) {
+          const response = await lcd.get(
+            '/cosmos/bank/v1beta1/supply',
+            {
+              params: {
+                'pagination.limit': 2000,
+              },
+            },
+          ).catch(error => { return { data: { error } }; });
+
+          supply = response?.data?.supply?.find(s => equals_ignore_case(s?.denom, denom))?.amount;
+
+          if (
+            supply &&
+            supply !== '0'
+          ) {
+            valid = true;
+          }
+        }
+
+        if (valid) {
           break;
         }
-      }
-
-      if (!(
-        supply &&
-        supply !== '0'
-      )) {
-        const response = await lcd.get(
-          '/cosmos/bank/v1beta1/supply',
-          {
-            params: {
-              'pagination.limit': 2000,
-            },
-          },
-        ).catch(error => { return { data: { error } }; });
-
-        supply = response?.data?.supply?.find(s => equals_ignore_case(s?.denom, denom))?.amount;
       }
     } catch (error) {}
   }
@@ -263,7 +293,10 @@ const getAxelarnetSupply = async (
 
         supply = amount;
 
-        if (supply && supply !== '0') {
+        if (
+          supply &&
+          supply !== '0'
+        ) {
           break;
         }
       }
