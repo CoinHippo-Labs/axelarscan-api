@@ -25,7 +25,7 @@ module.exports = async (
   path = '',
   params = {},
   cache = false,
-  cache_timeout = 1,
+  cache_timeout = 60,
   no_index = false,
 ) => {
   let response,
@@ -64,6 +64,23 @@ module.exports = async (
       cache = false;
     }
 
+    // always cache with minimum timeout
+    if (
+      cache_id &&
+      !cache
+    ) {
+      cache = true;
+      cache_timeout = 5;
+    }
+
+    // set min / max cache timeout
+    if (cache_timeout < 5) {
+      cache_timeout = 5;
+    }
+    else if (cache_timeout > 300) {
+      cache_timeout = 300;
+    }
+
     // get from cache
     if (cache) {
       response_cache = await get(
@@ -79,7 +96,7 @@ module.exports = async (
 
       if (
         response_cache &&
-        moment().diff(moment(updated_at * 1000), 'minutes', true) <= cache_timeout
+        moment().diff(moment(updated_at * 1000), 'seconds', true) <= cache_timeout
       ) {
         response = response_cache;
         cache_hit = true;

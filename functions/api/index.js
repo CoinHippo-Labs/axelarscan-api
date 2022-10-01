@@ -70,13 +70,15 @@ exports.handler = async (
       path = path || '';
       cache = typeof cache === 'boolean' ?
         cache :
-        typeof cache === 'string' && equals_ignore_case(cache, 'true');
+        typeof cache === 'string' &&
+        equals_ignore_case(cache, 'true');
       cache_timeout = !isNaN(cache_timeout) ?
         Number(cache_timeout) :
         undefined;
       no_index = typeof no_index === 'boolean' ?
         no_index :
-        typeof no_index === 'string' && equals_ignore_case(no_index, 'true');
+        typeof no_index === 'string' &&
+        equals_ignore_case(no_index, 'true');
 
       delete params.module;
       delete params.path;

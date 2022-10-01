@@ -115,7 +115,7 @@ module.exports = async (
                 params: {
                   cmd: `axelard q evm command ${chain} ${command_id} -oj`,
                   cache: true,
-                  cache_timeout: 1,
+                  cache_timeout: 30,
                 },
               },
             ).catch(error => { return { data: { error } }; });

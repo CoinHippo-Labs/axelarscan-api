@@ -25,7 +25,7 @@ mainnet:
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
   store_blocks: 100000
-  cache_timeout_minutes: 15
+  cache_timeout_seconds: 300
   percent_diff_escrow_supply_threshold: 2.0
   percent_diff_total_supply_threshold: 2.0
   alert_asset_value_threshold: 10000
@@ -123,7 +123,7 @@ testnet:
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
   store_blocks: 100000
-  cache_timeout_minutes: 15
+  cache_timeout_seconds: 300
   percent_diff_escrow_supply_threshold: 2.0
   percent_diff_total_supply_threshold: 2.0
   alert_asset_value_threshold: 10000
@@ -216,7 +216,7 @@ devnet:
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
   store_blocks: 100000
-  cache_timeout_minutes: 15
+  cache_timeout_seconds: 300
 
 testnet-2:
   endpoints:
@@ -229,4 +229,4 @@ testnet-2:
   num_blocks_per_heartbeat: 50
   fraction_heartbeat_block: 1
   store_blocks: 100000
-  cache_timeout_minutes: 15
+  cache_timeout_seconds: 300

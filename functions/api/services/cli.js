@@ -43,7 +43,7 @@ module.exports = async (
   path = '',
   params = {},
   cache = false,
-  cache_timeout = 15,
+  cache_timeout = 300,
 ) => {
   let response,
     cache_hit = false;
@@ -61,8 +61,28 @@ module.exports = async (
     const cache_id = cmd;
     let response_cache;
 
+    // always cache with minimum timeout
+    if (
+      cache_id &&
+      !cache
+    ) {
+      cache = true;
+      cache_timeout = 5;
+    }
+
+    // set min / max cache timeout
+    if (cache_timeout < 5) {
+      cache_timeout = 5;
+    }
+    else if (cache_timeout > 300) {
+      cache_timeout = 300;
+    }
+
     // get from cache
-    if (cache && cache_id?.startsWith('axelard')) {
+    if (
+      cache &&
+      cache_id?.startsWith('axelard')
+    ) {
       response_cache = await get(
         'axelard',
         cache_id,
@@ -72,14 +92,21 @@ module.exports = async (
         updated_at,
       } = { ...response_cache };
 
-      if (response_cache && moment().diff(moment(updated_at * 1000), 'minutes', true) <= cache_timeout) {
+      if (
+        response_cache &&
+        moment().diff(moment(updated_at * 1000), 'seconds', true) <= cache_timeout
+      ) {
         response = response_cache;
         cache_hit = true;
       }
     }
 
     // cache miss
-    if (!response) {
+    if (
+      !response &&
+      cmd?.startsWith('axelard q ') &&
+      cmd.endsWith(' -oj')
+    ) {
       const _response = await cli.get(
         path,
         { params },
@@ -94,9 +121,13 @@ module.exports = async (
 
     const {
       stdout,
+      stderr,
     } = { ...response };
 
-    if (stdout) {
+    if (
+      stdout &&
+      !stderr
+    ) {
       if (cmd?.startsWith('axelard q snapshot proxy ')) {
         response.type = 'proxy';
       }
@@ -170,7 +201,7 @@ module.exports = async (
                       params: {
                         cmd: `axelard q evm command ${chain} ${command_id} -oj`,
                         cache: true,
-                        cache_timeout: 1,
+                        cache_timeout: 30,
                       },
                     },
                   ).catch(error => { return { data: { error } }; });
@@ -488,7 +519,11 @@ module.exports = async (
       }
 
       // save cache
-      if (cache && cache_id?.startsWith('axelard') && !cache_hit) {
+      if (
+        cache &&
+        cache_id?.startsWith('axelard q ') &&
+        !cache_hit
+      ) {
         await write(
           'axelard',
           cache_id,
