@@ -9,7 +9,7 @@ log_level: debug # [debug|info]
 
 mainnet:
   endpoints:
-    ws: "ws://agent.axelarscan.io:26657"
+    ws: "ws://ws.axelarscan.io"
     api: "https://api.axelarscan.io"
   num_prev_blocks_fetch_tx: 2
   num_reindex_processes: 2
@@ -19,7 +19,7 @@ mainnet:
 
 testnet:
   endpoints:
-    ws: "ws://testnet.agent.axelarscan.io:26657"
+    ws: "ws://testnet.ws.axelarscan.io"
     api: "https://testnet.api.axelarscan.io"
   num_prev_blocks_fetch_tx: 2
   num_reindex_processes: 2
@@ -29,7 +29,7 @@ testnet:
 
 devnet:
   endpoints:
-    ws: "ws://devnet.agent.axelarscan.io:26657"
+    ws: "ws://devnet.ws.axelarscan.io"
     api: "https://devnet.api.axelarscan.io"
   num_prev_blocks_fetch_tx: 0
   num_reindex_processes: 2
@@ -39,7 +39,7 @@ devnet:
 
 testnet-2:
   endpoints:
-    ws: "ws://testnet-2.agent.axelarscan.io:26657"
+    ws: "ws://testnet-2.ws.axelarscan.io"
     api: "https://testnet-2.api.axelarscan.io"
   num_prev_blocks_fetch_tx: 1
   num_reindex_processes: 2
