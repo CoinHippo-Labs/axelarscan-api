@@ -67,7 +67,9 @@ module.exports = async (
     // always cache with minimum timeout
     if (
       cache_id &&
-      !cache
+      !cache &&
+      Object.keys({ ...params })
+        .findIndex(k => k?.includes('pagination')) < 0
     ) {
       cache = true;
       cache_timeout = 5;

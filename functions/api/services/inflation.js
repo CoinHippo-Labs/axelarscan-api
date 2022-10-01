@@ -81,5 +81,5 @@ module.exports = async (
     externalChainVotingInflationRate,
     numEVMChains,
     inflation,
-  }
+  };
 };

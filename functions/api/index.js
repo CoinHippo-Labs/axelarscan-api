@@ -118,22 +118,6 @@ exports.handler = async (
             };
           }
           break;
-        case 'cli':
-          try {
-            response = await cli(
-              path,
-              params,
-              cache,
-              cache_timeout,
-            );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
         case 'index':
           try {
             response = await crud(params);
@@ -317,6 +301,28 @@ exports.handler = async (
         case 'batches':
           try {
             response = await require('./services/batches')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'chain-maintainers':
+          try {
+            response = await require('./services/chain-maintainers')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'proxy-address':
+          try {
+            response = await require('./services/proxy-address')(params);
           } catch (error) {
             response = {
               error: true,

@@ -2,7 +2,6 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
-// const cli = require('../../cli');
 const {
   read,
   write,
@@ -130,20 +129,6 @@ module.exports = async (
           chain_id;
 
         if (chain_id) {
-          /*const ___response = await cli(
-            '',
-            {
-              cmd: `axelard q ibc-transfer escrow-address ${port_id} ${channel_id} -oj`,
-            },
-          );
-
-          const {
-            stdout,
-          } = { ...___response };
-
-          escrow_address = stdout?.trim() ||
-            escrow_address;*/
-
           escrow_address =
             get_address(
               `${version}\x00${port_id}/${channel_id}`,
