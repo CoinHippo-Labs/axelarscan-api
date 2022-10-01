@@ -21,7 +21,15 @@ module.exports.exec = async params => {
 
   if (
     cmd?.startsWith('axelard q ') &&
-    cmd.endsWith(' -oj')
+    cmd.endsWith(' -oj') &&
+    [
+      'bank',
+      'evm',
+      'multisig',
+      'nexus',
+      'params',
+      'snapshot',
+    ].includes(cmd.split(' ')[2])
   ) {
     cmd = `/home/axelard/.axelar${['testnet', 'devnet', 'testnet-2'].includes(environment) ? `_${environment}` : ''}/bin/${cmd}`;
 

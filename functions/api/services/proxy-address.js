@@ -14,7 +14,7 @@ module.exports = async (
 
   if (operator_address) {
     const _response = await cli(
-      null,
+      undefined,
       {
         cmd: `axelard q snapshot proxy ${operator_address} -oj`,
         cache: true,

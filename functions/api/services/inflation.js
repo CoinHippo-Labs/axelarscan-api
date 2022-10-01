@@ -25,7 +25,7 @@ module.exports = async (
     null;
 
   response = await cli(
-    null,
+    undefined,
     {
       cmd: 'axelard q params subspace reward KeyMgmtRelativeInflationRate -oj',
     },
@@ -43,7 +43,7 @@ module.exports = async (
   );
 
   response = await cli(
-    null,
+    undefined,
     {
       cmd: 'axelard q params subspace reward ExternalChainVotingInflationRate -oj',
     },

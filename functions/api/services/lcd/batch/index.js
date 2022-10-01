@@ -97,7 +97,8 @@ module.exports = async (
       commands,
     } = { ..._.head(_response?.data) };
 
-    commands = commands || [];
+    commands = commands ||
+      [];
 
     if (command_ids) {
       const _commands = _.cloneDeep(commands);
@@ -110,12 +111,10 @@ module.exports = async (
 
           if (!command) {
             const __response = await cli.get(
-              path,
+              '',
               {
                 params: {
                   cmd: `axelard q evm command ${chain} ${command_id} -oj`,
-                  cache: true,
-                  cache_timeout: 30,
                 },
               },
             ).catch(error => { return { data: { error } }; });
@@ -227,27 +226,31 @@ module.exports = async (
 
       const command_events = __response?.data;
 
-      commands = commands.map(c => {
-        if (c?.id && !c.transactionHash) {
-          const command_event = command_events?.find(_c => equals_ignore_case(_c?.command_id, c.id));
+      commands = commands
+        .map(c => {
+          if (
+            c?.id &&
+            !c.transactionHash
+          ) {
+            const command_event = command_events?.find(_c => equals_ignore_case(_c?.command_id, c.id));
 
-          if (command_event) {
-            const {
-              transactionHash,
-              transactionIndex,
-              logIndex,
-              block_timestamp,
-            } = { ...command_event };
+            if (command_event) {
+              const {
+                transactionHash,
+                transactionIndex,
+                logIndex,
+                block_timestamp,
+              } = { ...command_event };
 
-            c.transactionHash = transactionHash;
-            c.transactionIndex = transactionIndex;
-            c.logIndex = logIndex;
-            c.block_timestamp = block_timestamp;
+              c.transactionHash = transactionHash;
+              c.transactionIndex = transactionIndex;
+              c.logIndex = logIndex;
+              c.block_timestamp = block_timestamp;
+            }
           }
-        }
 
-        return c;
-      });
+          return c;
+        });
     }
 
     lcd_response = {

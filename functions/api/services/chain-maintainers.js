@@ -15,7 +15,7 @@ module.exports = async (
 
   if (chain) {
     const _response = await cli(
-      null,
+      undefined,
       {
         cmd: `axelard q nexus chain-maintainers ${chain} ${height ? `--height ${height} ` : ''}-oj`,
         cache: true,
