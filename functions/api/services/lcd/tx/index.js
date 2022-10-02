@@ -711,7 +711,11 @@ module.exports = async (
           amount,
         } = { ...record };
 
-        if (recipient_address?.length >= 65 && txhash && amount) {
+        if (
+          recipient_address?.length >= 65 &&
+          txhash &&
+          amount
+        ) {
           const _response = await read(
             'deposit_addresses',
             {
@@ -730,31 +734,11 @@ module.exports = async (
             sender_chain,
             recipient_chain,
             asset,
-            denom,
           } = { ...link };
           let {
+            denom,
             price,
           } = { ...link };
-
-          if (link && !price) {
-            const __response = await assets_price({
-              chain: original_sender_chain,
-              denom: asset || denom,
-              timestamp: created_at,
-            });
-
-            const _price = _.head(__response)?.price;
-            if (_price) {
-              price = _price;
-              link.price = price;
-
-              await write(
-                'deposit_addresses',
-                id,
-                link,
-              );
-            }
-          }
 
           record.original_sender_chain = original_sender_chain ||
             normalize_original_chain(
@@ -779,7 +763,10 @@ module.exports = async (
           if (record.denom) {
             const asset_data = assets_data.find(a =>
               equals_ignore_case(a?.id, record.denom) ||
-              a?.ibc?.findIndex(i => i?.chain_id === record.sender_chain && equals_ignore_case(i?.ibc_denom, record.denom)) > -1
+              a?.ibc?.findIndex(i =>
+                i?.chain_id === record.sender_chain &&
+                equals_ignore_case(i?.ibc_denom, record.denom)
+              ) > -1
             );
 
             if (asset_data) {
@@ -790,7 +777,11 @@ module.exports = async (
                 decimals,
               } = { ...asset_data };
 
-              decimals = ibc?.find(i => i?.chain_id === record.sender_chain)?.decimals || decimals || 6;
+              decimals = ibc?.find(i =>
+                i?.chain_id === record.sender_chain
+              )?.decimals ||
+                decimals ||
+                6;
 
               if (
                 !record.fee &&
@@ -847,6 +838,43 @@ module.exports = async (
 
               record.denom = asset_data.id ||
                 record.denom;
+
+              denom = record.denom ||
+                asset ||
+                denom;
+            }
+            else {
+              denom = asset ||
+                denom;
+            }
+          }
+          else {
+            denom = asset ||
+              denom;
+          }
+
+          if (
+            link &&
+            !price
+          ) {
+            const __response = await assets_price(
+              {
+                chain: original_sender_chain,
+                denom,
+                timestamp: created_at,
+              },
+            );
+
+            const _price = _.head(__response)?.price;
+            if (_price) {
+              price = _price;
+              link.price = price;
+
+              await write(
+                'deposit_addresses',
+                id,
+                link,
+              );
             }
           }
 
@@ -899,7 +927,10 @@ module.exports = async (
               ) - 1,
             };
           })
-          .filter(e => e.height > 0 && e.attributes?.length > 0)
+          .filter(e =>
+            e.height > 0 &&
+            e.attributes?.length > 0
+          )
           .map(e => {
             let {
               attributes,
@@ -922,7 +953,10 @@ module.exports = async (
               packet_sequence,
             };
           })
-          .filter(e => e.packet_data && typeof e.packet_data === 'object');
+          .filter(e =>
+            e.packet_data &&
+            typeof e.packet_data === 'object'
+          );
 
         for (const record of recv_packets) {
           const {
@@ -968,16 +1002,17 @@ module.exports = async (
                   }
                 }
 
-                const index = tx_responses?.findIndex(t => {
-                  const send_packet = _.head(
-                    t?.logs?.flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'send_packet')))
-                  );
-                  const {
-                    attributes,
-                  } = { ...send_packet };
+                const index = (tx_responses || [])
+                  .findIndex(t => {
+                    const send_packet = _.head(
+                      t?.logs?.flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'send_packet')))
+                    );
+                    const {
+                      attributes,
+                    } = { ...send_packet };
 
-                  return packet_sequence === attributes?.find(a => a?.key === 'packet_sequence')?.value;
-                });
+                    return packet_sequence === attributes?.find(a => a?.key === 'packet_sequence')?.value;
+                  });
 
                 if (index > -1) {
                   const _data = {
@@ -1047,10 +1082,10 @@ module.exports = async (
                         sender_chain,
                         recipient_chain,
                         asset,
-                        denom,
                       } = { ...link };
                       let {
                         original_sender_chain,
+                        denom,
                         price,
                       } = { ...link };
 
@@ -1072,7 +1107,12 @@ module.exports = async (
                         } = { ...chain_data };
 
                         if (chain_data) {
-                          original_sender_chain = Object.values({ ...overrides }).find(o => o?.prefix_chain_ids?.findIndex(p => chain_id?.startsWith(p)) > -1 || o?.endpoints?.lcd === _lcd || o?.endpoints?.lcds?.includes(_lcd))?.id ||
+                          original_sender_chain = Object.values({ ...overrides })
+                            .find(o =>
+                              o?.prefix_chain_ids?.findIndex(p => chain_id?.startsWith(p)) > -1 ||
+                              o?.endpoints?.lcd === _lcd ||
+                              o?.endpoints?.lcds?.includes(_lcd)
+                            )?.id ||
                             _.last(Object.keys({ ...overrides })) ||
                             chain_data.id;
 
@@ -1081,29 +1121,6 @@ module.exports = async (
                             link.original_sender_chain = original_sender_chain;
                           }
                         }
-                      }
-
-                      if (link && !price) {
-                        const __response = await assets_price({
-                          chain: original_sender_chain,
-                          denom: asset || denom,
-                          timestamp: created_at,
-                        });
-
-                        const _price = _.head(__response)?.price;
-                        if (_price) {
-                          price = _price;
-                          link.price = price;
-                          link_updated = true;
-                        }
-                      }
-
-                      if (link_updated) {
-                        await write(
-                          'deposit_addresses',
-                          id,
-                          link,
-                        );
                       }
 
                       _record.original_sender_chain = original_sender_chain ||
@@ -1120,7 +1137,11 @@ module.exports = async (
                       if (_record.denom) {
                         const asset_data = assets_data.find(a =>
                           equals_ignore_case(a?.id, _record.denom) ||
-                          a?.ibc?.findIndex(i => i?.chain_id === _record.sender_chain && equals_ignore_case(i?.ibc_denom, _record.denom)) > -1);
+                          a?.ibc?.findIndex(i =>
+                            i?.chain_id === _record.sender_chain &&
+                            equals_ignore_case(i?.ibc_denom, _record.denom)
+                          ) > -1
+                        );
 
                         if (asset_data) {
                           const {
@@ -1130,9 +1151,16 @@ module.exports = async (
                             decimals,
                           } = { ...asset_data };
 
-                          decimals = ibc?.find(i => i?.chain_id === _record.sender_chain)?.decimals || decimals || 6;
+                          decimals = ibc?.find(i =>
+                            i?.chain_id === _record.sender_chain
+                          )?.decimals ||
+                            decimals ||
+                            6;
 
-                          if (!_record.fee && endpoints?.lcd) {
+                          if (
+                            !_record.fee &&
+                            endpoints?.lcd
+                          ) {
                             const lcd = axios.create({ baseURL: endpoints.lcd });
 
                             const __response = await lcd.get(
@@ -1184,7 +1212,47 @@ module.exports = async (
 
                           _record.denom = asset_data.id ||
                             _record.denom;
+
+                          denom = _record.denom ||
+                            asset ||
+                            denom;
                         }
+                        else {
+                          denom = asset ||
+                            denom;
+                        }
+                      }
+                      else {
+                        denom = asset ||
+                          denom;
+                      }
+
+                      if (
+                        link &&
+                        !price
+                      ) {
+                        const __response = await assets_price(
+                          {
+                            chain: original_sender_chain,
+                            denom,
+                            timestamp: created_at,
+                          },
+                        );
+
+                        const _price = _.head(__response)?.price;
+                        if (_price) {
+                          price = _price;
+                          link.price = price;
+                          link_updated = true;
+                        }
+                      }
+
+                      if (link_updated) {
+                        await write(
+                          'deposit_addresses',
+                          id,
+                          link,
+                        );
                       }
 
                       if (
