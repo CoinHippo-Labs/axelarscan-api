@@ -140,13 +140,14 @@ module.exports = async (
 
     const updated_at_threshold = current_time.subtract(5, 'minutes').valueOf();
 
-    const to_update_data = data.filter(d =>
-      !d?.updated_at ||
-      (
-        current_time.diff(moment(query_timestamp), 'hours') < 4 &&
-        d.updated_at < updated_at_threshold
-      )
-    );
+    const to_update_data = data
+      .filter(d =>
+        !d?.updated_at ||
+        (
+          current_time.diff(moment(query_timestamp), 'hours') < 4 &&
+          d.updated_at < updated_at_threshold
+        )
+      );
 
     const coingecko_ids = to_update_data
       .map(d => d?.coingecko_id)

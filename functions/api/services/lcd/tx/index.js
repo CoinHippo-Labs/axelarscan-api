@@ -579,7 +579,8 @@ module.exports = async (
             sender_chain;
         }
 
-        id = deposit_address || txhash;
+        id = deposit_address ||
+          txhash;
         type = record['@type']?.split('.')[0]?.replace('/', '');
         original_sender_chain = normalize_original_chain(sender_chain);
         original_recipient_chain = normalize_original_chain(recipient_chain);
@@ -855,11 +856,15 @@ module.exports = async (
 
           if (
             link &&
-            !price
+            (
+              !price ||
+              price <= 0 ||
+              !equals_ignore_case(link.denom, denom)
+            )
           ) {
             const __response = await assets_price(
               {
-                chain: original_sender_chain,
+                chain: original_recipient_chain,
                 denom,
                 timestamp: created_at,
               },
@@ -869,6 +874,7 @@ module.exports = async (
             if (_price) {
               price = _price;
               link.price = price;
+              link.denom = denom;
 
               await write(
                 'deposit_addresses',
@@ -879,7 +885,7 @@ module.exports = async (
           }
 
           if (
-            price &&
+            price > 0 &&
             typeof amount === 'number'
           ) {
             record.value = amount * price;
@@ -1229,7 +1235,11 @@ module.exports = async (
 
                       if (
                         link &&
-                        !price
+                        (
+                          !price ||
+                          price <= 0 ||
+                          !equals_ignore_case(link.denom, denom)
+                        )
                       ) {
                         const __response = await assets_price(
                           {
@@ -1243,6 +1253,7 @@ module.exports = async (
                         if (_price) {
                           price = _price;
                           link.price = price;
+                          link.denom = denom;
                           link_updated = true;
                         }
                       }
@@ -1256,7 +1267,7 @@ module.exports = async (
                       }
 
                       if (
-                        price &&
+                        price > 0 &&
                         typeof amount === 'number'
                       ) {
                         _record.value = amount * price;
@@ -1414,29 +1425,30 @@ module.exports = async (
             const events = [];
             let event;
 
-            attributes.forEach((a, i) => {
-              const {
-                key,
-                value,
-              } = { ...a };
-
-              if (
-                ['packet_data'].includes(key) ||
-                i === attributes.length - 1
-              ) {
-                if (event) {
-                  events.push(event);
-                }
-                event = {};
-              }
-
-              event = {
-                ...event,
-                [key]: ['packet_data'].includes(key) ?
-                  to_json(value) :
+            attributes
+              .forEach((a, i) => {
+                const {
+                  key,
                   value,
-              };
-            });
+                } = { ...a };
+
+                if (
+                  ['packet_data'].includes(key) ||
+                  i === attributes.length - 1
+                ) {
+                  if (event) {
+                    events.push(event);
+                  }
+                  event = {};
+                }
+
+                event = {
+                  ...event,
+                  [key]: ['packet_data'].includes(key) ?
+                    to_json(value) :
+                    value,
+                };
+              });
 
             return events;
           })
@@ -1455,7 +1467,10 @@ module.exports = async (
             const created_at = moment(timestamp).utc().valueOf();
             const asset_data = assets_data.find(a =>
               equals_ignore_case(a?.id, denom) ||
-              a?.ibc?.findIndex(i => i?.chain_id === axelarnet.id && equals_ignore_case(i?.ibc_denom, denom)) > -1
+              a?.ibc?.findIndex(i =>
+                i?.chain_id === axelarnet.id &&
+                equals_ignore_case(i?.ibc_denom, denom)
+              ) > -1
             );
             const {
               ibc,
@@ -1464,7 +1479,9 @@ module.exports = async (
               decimals,
             } = { ...asset_data };
 
-            decimals = ibc?.find(i => i?.chain_id === axelarnet.id)?.decimals ||
+            decimals = ibc?.find(i =>
+              i?.chain_id === axelarnet.id
+            )?.decimals ||
               decimals ||
               6;
 
@@ -2323,7 +2340,10 @@ module.exports = async (
         if (
           id &&
           !status_code &&
-          (transfer_id || poll_id)
+          (
+            transfer_id ||
+            poll_id
+          )
         ) {
           switch (type) {
             case 'ConfirmDeposit':
@@ -2351,7 +2371,10 @@ module.exports = async (
                 if (recipient_chain) {
                   const command_id = transfer_id
                     .toString(16)
-                    .padStart(64, '0');
+                    .padStart(
+                      64,
+                      '0',
+                    );
 
                   _response = await read(
                     'batches',
@@ -2704,7 +2727,10 @@ module.exports = async (
                         updated = true;
                       }
 
-                      if (!price) {
+                      if (
+                        !price ||
+                        price <= 0
+                      ) {
                         const ___response = await assets_price({
                           chain: original_sender_chain,
                           denom: asset || denom,
@@ -2822,7 +2848,7 @@ module.exports = async (
                     }
 
                     if (
-                      price &&
+                      price > 0 &&
                       typeof amount === 'number'
                     ) {
                       source.value = amount * price;
@@ -3558,7 +3584,10 @@ module.exports = async (
                           updated = true;
                         }
 
-                        if (!price) {
+                        if (
+                          !price ||
+                          price <= 0
+                        ) {
                           const __response = await assets_price(
                             {
                               chain: original_sender_chain,
@@ -3679,7 +3708,7 @@ module.exports = async (
                       }
 
                       if (
-                        price &&
+                        price > 0 &&
                         typeof amount === 'number'
                       ) {
                         source.value = amount * price;

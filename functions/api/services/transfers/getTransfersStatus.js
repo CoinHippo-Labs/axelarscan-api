@@ -311,7 +311,7 @@ module.exports = async (
         }
       }
       else {
-        for (const chain_data of cosmos_non_axelarnet_chains_data) {
+        for (const chain_data of cosmos_chains_data) {
           if (
             !sourceChain ||
             equals_ignore_case(chain_data?.id, sourceChain)
@@ -402,10 +402,10 @@ module.exports = async (
                       sender_chain,
                       recipient_chain,
                       asset,
-                      denom,
                     } = { ...link };
                     let {
                       original_sender_chain,
+                      denom,
                       price,
                     } = { ...link };
 
@@ -432,29 +432,6 @@ module.exports = async (
                       }
                     }
 
-                    if (link && !price) {
-                      const ___response = await assets_price({
-                        chain: original_sender_chain,
-                        denom: asset || denom,
-                        timestamp: created_at,
-                      });
-
-                      const _price = _.head(___response)?.price;
-                      if (_price) {
-                        price = _price;
-                        link.price = price;
-                        link_updated = true;
-                      }
-                    }
-
-                    if (link_updated) {
-                      await write(
-                        'deposit_addresses',
-                        id,
-                        link,
-                      );
-                    }
-
                     source.original_sender_chain = original_sender_chain ||
                       normalize_original_chain(
                         source.sender_chain ||
@@ -474,10 +451,13 @@ module.exports = async (
                       source.denom = source.denom ||
                         asset;
 
-                      if (source.denom && typeof source.amount === 'string') {
+                      if (source.denom) {
                         const asset_data = assets_data.find(a =>
                           equals_ignore_case(a?.id, source.denom) ||
-                          a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, source.denom)) > -1
+                          a?.ibc?.findIndex(i =>
+                            i?.chain_id === chain_data?.id &&
+                            equals_ignore_case(i?.ibc_denom, source.denom)
+                          ) > -1
                         );
 
                         const {
@@ -487,34 +467,92 @@ module.exports = async (
                           decimals,
                         } = { ...asset_data };
 
-                        decimals = ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || decimals || 6;
+                        decimals = ibc?.find(i =>
+                          i?.chain_id === chain_data?.id
+                        )?.decimals ||
+                          decimals ||
+                          6;
 
                         if (asset_data) {
-                          source.amount = Number(
-                            formatUnits(
-                              BigNumber.from(source.amount).toString(),
-                              decimals
-                            )
-                          );
+                          if (typeof source.amount === 'string') {
+                            source.amount = Number(
+                              formatUnits(
+                                BigNumber.from(source.amount).toString(),
+                                decimals,
+                              )
+                            );
+                          }
+
                           source.denom = asset_data.id ||
                             source.denom;
+
+                          denom = source.denom ||
+                            asset ||
+                            denom;
+                        }
+                        else {
+                          denom = asset ||
+                            denom;
                         }
                       }
-
-                      if (price && typeof source.amount === 'number') {
-                        source.value = source.amount * price;
+                      else {
+                        denom = asset ||
+                          denom;
                       }
+                    }
 
-                      if (source.recipient_address) {
-                        await write(
-                          'transfers',
-                          `${source.id}_${source.recipient_address}`.toLowerCase(),
-                          {
-                            source,
-                            link,
-                          },
-                        );
+                    if (
+                      link &&
+                      (
+                        !price ||
+                        price <= 0 ||
+                        !equals_ignore_case(link.denom, denom)
+                      )
+                    ) {
+                      const ___response = await assets_price(
+                        {
+                          chain: equals_ignore_case(original_sender_chain, axelarnet.id) ?
+                            original_recipient_chain :
+                            original_sender_chain,
+                          denom,
+                          timestamp: created_at,
+                        },
+                      );
+
+                      const _price = _.head(___response)?.price;
+                      if (_price) {
+                        price = _price;
+                        link.price = price;
+                        link.denom = denom;
+                        link_updated = true;
                       }
+                    }
+
+                    if (link_updated) {
+                      await write(
+                        'deposit_addresses',
+                        id,
+                        link,
+                      );
+                    }
+
+                    if (
+                      price > 0 &&
+                      typeof source.amount === 'number'
+                    ) {
+                      source.value = source.amount * price;
+                    }
+
+                    if (source.recipient_address) {
+                      await write(
+                        'transfers',
+                        `${source.id}_${source.recipient_address}`.toLowerCase(),
+                        {
+                          source,
+                          link: link ||
+                            undefined,
+                        },
+                      );
                     }
 
                     data = {
