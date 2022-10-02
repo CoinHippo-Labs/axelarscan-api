@@ -1,5 +1,8 @@
 const cli = require('./cli');
 const {
+  is_operator_address,
+} = require('../utils/address');
+const {
   to_json,
 } = require('../utils');
 
@@ -12,7 +15,7 @@ module.exports = async (
     operator_address,
   } = { ...params };
 
-  if (operator_address) {
+  if (is_operator_address(operator_address)) {
     const _response = await cli(
       undefined,
       {

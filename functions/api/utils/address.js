@@ -8,28 +8,38 @@ const {
 const to_hash = (
   string,
   length,
-) =>
-  tmhash(string)
-    .slice(
-      0,
-      length,
-    )
-    .toString('hex')
-    .toUpperCase();
+) => {
+  try {
+    return tmhash(string)
+      .slice(
+        0,
+        length,
+      )
+      .toString('hex')
+      .toUpperCase();
+  } catch (error) {}
+
+  return null;
+};
 
 const hex_to_bech32 = (
   address,
   prefix,
-) =>
-  bech32.encode(
-    prefix,
-    bech32.toWords(
-      Buffer.from(
-        address,
-        'hex',
+) => {
+  try {
+    return bech32.encode(
+      prefix,
+      bech32.toWords(
+        Buffer.from(
+          address,
+          'hex',
+        ),
       ),
-    ),
-  );
+    );
+  } catch (error) {}
+
+  return null;
+};
 
 const get_address = (
   string,
@@ -44,7 +54,29 @@ const get_address = (
     prefix,
   );
 
+const is_operator_address = (
+  address,
+) => {
+  const prefix = 'axelarvaloper1';
+
+  try {
+    if (
+      typeof address === 'string' &&
+      address.startsWith(prefix)
+    ) {
+      bech32.decode(
+        address,
+      );
+
+      return true;
+    }
+  } catch (error) {}
+
+  return false;
+};
+
 module.exports = {
   to_hash,
   get_address,
+  is_operator_address,
 };

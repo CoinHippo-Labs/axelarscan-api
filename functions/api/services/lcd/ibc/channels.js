@@ -7,7 +7,6 @@ const {
   write,
 } = require('../../index');
 const {
-  to_hash,
   get_address,
 } = require('../../../utils/address');
 
