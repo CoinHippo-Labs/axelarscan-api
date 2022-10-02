@@ -203,9 +203,9 @@ module.exports = async (
                     recipient_chain,
                     sender_address,
                     asset,
-                    denom,
                   } = { ...link };
                   let {
+                    denom,
                     price,
                   } = { ...link };
 
@@ -217,17 +217,29 @@ module.exports = async (
                       updated = true;
                     }
 
-                    if (!price) {
-                      const ___response = await assets_price({
-                        chain: original_sender_chain,
-                        denom: asset || denom,
-                        timestamp: created_at,
-                      });
+                    denom = source.denom ||
+                      asset ||
+                      denom;
+
+                    if (
+                      !price ||
+                      price <= 0 ||
+                      !equals_ignore_case(link.denom, denom) ||
+                      ['uluna'].includes(denom)
+                    ) {
+                      const ___response = await assets_price(
+                        {
+                          chain: original_sender_chain,
+                          denom,
+                          timestamp: created_at,
+                        },
+                      );
 
                       const _price = _.head(___response)?.price;
                       if (_price) {
                         price = _price;
                         link.price = price;
+                        link.denom = denom;
                         updated = true;
                       }
                     }
@@ -260,7 +272,10 @@ module.exports = async (
                     source.denom = source.denom ||
                       asset;
 
-                    if (source.denom && typeof source.amount === 'string') {
+                    if (
+                      source.denom &&
+                      typeof source.amount === 'string'
+                    ) {
                       const asset_data = assets_data.find(a => equals_ignore_case(a?.id, source.denom));
 
                       const {
@@ -270,13 +285,17 @@ module.exports = async (
                         decimals,
                       } = { ...asset_data };
 
-                      decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals || decimals || 18;
+                      decimals = contracts?.find(c =>
+                        c?.chain_id === chain_id
+                      )?.decimals ||
+                        decimals ||
+                        18;
 
                       if (asset_data) {
                         source.amount = Number(
                           formatUnits(
                             BigNumber.from(source.amount).toString(),
-                            decimals
+                            decimals,
                           )
                         );
                       }
@@ -421,9 +440,14 @@ module.exports = async (
                       } = { ...chain_data };
 
                       if (chain_data) {
-                        original_sender_chain = Object.values({ ...overrides }).find(o => o?.endpoints?.lcd === _lcd || o?.endpoints?.lcds?.includes(_lcd))?.id ||
-                          _.last(Object.keys({ ...overrides })) ||
-                          chain_data.id;
+                        original_sender_chain =
+                          Object.values({ ...overrides })
+                            .find(o =>
+                              o?.endpoints?.lcd === _lcd ||
+                              o?.endpoints?.lcds?.includes(_lcd)
+                            )?.id ||
+                            _.last(Object.keys({ ...overrides })) ||
+                            chain_data.id;
 
                         if (link) {
                           link_updated = link.original_sender_chain !== original_sender_chain;
@@ -506,7 +530,8 @@ module.exports = async (
                       (
                         !price ||
                         price <= 0 ||
-                        !equals_ignore_case(link.denom, denom)
+                        !equals_ignore_case(link.denom, denom) ||
+                        ['uluna'].includes(denom)
                       )
                     ) {
                       const ___response = await assets_price(
@@ -695,7 +720,10 @@ module.exports = async (
             a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, source.denom)) > -1
           );
 
-          if (chain_data && asset_data) {
+          if (
+            chain_data &&
+            asset_data
+          ) {
             const {
               chain_id,
             } = { ...chain_data };
@@ -707,20 +735,36 @@ module.exports = async (
               decimals,
             } = { ...asset_data };
 
-            decimals = contracts?.find(c => c?.chain_id === chain_id)?.decimals || ibc?.find(i => i?.chain_id === chain_data?.id)?.decimals || decimals || 6;
+            decimals =
+              contracts?.find(c =>
+                c?.chain_id === chain_id
+              )?.decimals ||
+              ibc?.find(i =>
+                i?.chain_id === chain_data?.id
+              )?.decimals ||
+                decimals ||
+                6;
 
             if (typeof source.amount === 'string') {
               source.amount = Number(
                 formatUnits(
                   BigNumber.from(source.amount).toString(),
-                  decimals
+                  decimals,
                 )
               );
-              source.denom = asset_data.id ||
-                source.denom;
             }
 
-            if (!source.fee && endpoints?.lcd) {
+            source.denom = asset_data.id ||
+              source.denom;
+
+            denom = source.denom ||
+              asset ||
+              denom;
+
+            if (
+              !source.fee &&
+              endpoints?.lcd
+            ) {
               const lcd = axios.create({ baseURL: endpoints.lcd });
 
               const ___response = await lcd.get(
@@ -742,7 +786,7 @@ module.exports = async (
                 source.fee = Number(
                   formatUnits(
                     BigNumber.from(amount).toString(),
-                    decimals
+                    decimals,
                   )
                 );
               }
@@ -765,20 +809,35 @@ module.exports = async (
       }
 
       if (
-        !price &&
-        (link || source)
+        (
+          !price ||
+          price <= 0 ||
+          !equals_ignore_case(link?.denom, denom) ||
+          ['uluna'].includes(denom)
+        ) &&
+        (
+          link ||
+          source
+        )
       ) {
-        const ___response = await assets_price({
-          chain: original_sender_chain || source?.original_sender_chain,
-          denom: asset || source?.asset || denom || source?.denom,
-          timestamp:  moment(source?.created_at?.ms || undefined).utc().valueOf(),
-        });
+        const ___response = await assets_price(
+          {
+            chain: original_sender_chain ||
+              source?.original_sender_chain,
+            denom: denom ||
+              asset ||
+              source?.asset ||
+              source?.denom,
+            timestamp:  moment(source?.created_at?.ms || undefined).utc().valueOf(),
+          },
+        );
 
         const _price = _.head(___response)?.price;
         if (_price) {
           price = _price;
           if (link) {
             link.price = price;
+            link.denom = denom;
 
             await write(
               'deposit_addresses',
@@ -790,7 +849,10 @@ module.exports = async (
       }
 
       if (source) {
-        if (price && typeof source.amount === 'number') {
+        if (
+          price > 0 &&
+          typeof source.amount === 'number'
+        ) {
           source.value = source.amount * price;
         }
 
@@ -816,7 +878,10 @@ module.exports = async (
     response = [data]
       .filter(t => t);
   }
-  else if (depositAddress || recipientAddress) {
+  else if (
+    depositAddress ||
+    recipientAddress
+  ) {
     const _response = await read(
       'deposit_addresses',
       {
@@ -836,7 +901,8 @@ module.exports = async (
       },
     );
 
-    const links = _response?.data || [];
+    const links = _response?.data ||
+      [];
 
     if (links.length > 0) {
       const should = [];
@@ -846,7 +912,10 @@ module.exports = async (
           deposit_address,
         } = { ...link };
 
-        if (deposit_address && should.findIndex(s => equals_ignore_case(s.match['source.recipient_address'], deposit_address)) < 0) {
+        if (
+          deposit_address &&
+          should.findIndex(s => equals_ignore_case(s.match['source.recipient_address'], deposit_address)) < 0
+        ) {
           should.push({ match: { 'source.recipient_address': deposit_address } });
         }
       }

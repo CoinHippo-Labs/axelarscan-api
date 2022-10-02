@@ -859,7 +859,8 @@ module.exports = async (
             (
               !price ||
               price <= 0 ||
-              !equals_ignore_case(link.denom, denom)
+              !equals_ignore_case(link.denom, denom) ||
+              ['uluna'].includes(denom)
             )
           ) {
             const __response = await assets_price(
@@ -1238,7 +1239,8 @@ module.exports = async (
                         (
                           !price ||
                           price <= 0 ||
-                          !equals_ignore_case(link.denom, denom)
+                          !equals_ignore_case(link.denom, denom) ||
+                          ['uluna'].includes(denom)
                         )
                       ) {
                         const __response = await assets_price(
@@ -2331,10 +2333,10 @@ module.exports = async (
         const {
           id,
           status_code,
-          transfer_id,
         } = { ...record };
         let {
           recipient_chain,
+          transfer_id,
         } = { ...record };
 
         if (
@@ -2345,6 +2347,26 @@ module.exports = async (
             poll_id
           )
         ) {
+          if (
+            !transfer_id &&
+            poll_id
+          ) {
+            const _response = await get(
+              'evm_polls',
+              poll_id,
+            );
+
+            if (_response) {
+              transaction_id = _response.transaction_id ||
+                transaction_id;
+              transfer_id = _response.transfer_id ||
+                transfer_id;
+
+              record.transaction_id = transaction_id;
+              record.transfer_id = transfer_id;
+            }
+          }
+
           switch (type) {
             case 'ConfirmDeposit':
               try {
@@ -2717,6 +2739,8 @@ module.exports = async (
                         recipient_chain,
                         sender_address,
                         asset,
+                      } = { ...link };
+                      let {
                         denom,
                       } = { ...link };
 
@@ -2727,20 +2751,29 @@ module.exports = async (
                         updated = true;
                       }
 
+                      denom = source.denom ||
+                        asset ||
+                        denom;
+
                       if (
                         !price ||
-                        price <= 0
+                        price <= 0 ||
+                        !equals_ignore_case(link.denom, denom) ||
+                        ['uluna'].includes(denom)
                       ) {
-                        const ___response = await assets_price({
-                          chain: original_sender_chain,
-                          denom: asset || denom,
-                          timestamp: created_at,
-                        });
+                        const ___response = await assets_price(
+                          {
+                            chain: original_sender_chain,
+                            denom,
+                            timestamp: created_at,
+                          },
+                        );
 
                         const _price = _.head(___response)?.price;
                         if (_price) {
                           price = _price;
                           link.price = price;
+                          link.denom = denom;
                           updated = true;
                         }
                       }
@@ -3574,6 +3607,8 @@ module.exports = async (
                           recipient_chain,
                           sender_address,
                           asset,
+                        } = { ...link };
+                        let {
                           denom,
                         } = { ...link };
 
@@ -3584,15 +3619,20 @@ module.exports = async (
                           updated = true;
                         }
 
+                        denom = source.denom ||
+                          asset ||
+                          denom;
+
                         if (
                           !price ||
-                          price <= 0
+                          price <= 0 ||
+                          !equals_ignore_case(link.denom, denom) ||
+                          ['uluna'].includes(denom)
                         ) {
                           const __response = await assets_price(
                             {
                               chain: original_sender_chain,
-                              denom: asset ||
-                                denom,
+                              denom,
                               timestamp: created_at,
                             },
                           );
@@ -3601,6 +3641,7 @@ module.exports = async (
                           if (_price) {
                             price = _price;
                             link.price = price;
+                            link.denom = denom;
                             updated = true;
                           }
                         }

@@ -162,11 +162,14 @@ module.exports = async (
             const contract_data = contracts?.find(c => c.chain_id === chain_id);
 
             if (contract_data) {
-              decimals = contract_data.decimals || decimals || 18;
+              decimals = contract_data.decimals ||
+                decimals ||
+                18;
+
               amount = Number(
                 formatUnits(
                   BigNumber.from(amount || '0').toString(),
-                  decimals
+                  decimals,
                 )
               );
 

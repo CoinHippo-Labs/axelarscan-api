@@ -741,12 +741,15 @@ module.exports = async (
       .filter(l => l);
 
     const percent_diff_supply = evm_escrow_address ?
-      evm_escrow_balance > 0 && total_on_evm > 0 ?
+      evm_escrow_balance > 0 &&
+      total_on_evm > 0 ?
         Math.abs(
           evm_escrow_balance - total_on_evm
         ) * 100 / evm_escrow_balance :
         null :
-      total > 0 ?
+      total > 0 &&
+      total_on_evm >=0 &&
+      total_on_cosmos >= 0 ?
         Math.abs(
           total - (total_on_evm + total_on_cosmos)
         ) * 100 / total :

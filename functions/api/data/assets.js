@@ -2748,11 +2748,11 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
-      name: 'Terra',
-      image: '/logos/assets/luna.png',
+      symbol: 'LUNAC',
+      name: 'Terra Classic',
+      image: '/logos/assets/lunac.png',
       decimals: 6,
-      coingecko_id: 'terra-luna-2',
+      coingecko_id: 'terra-luna',
       coingecko_ids: {
         'terra': 'terra-luna',
       },
@@ -3915,9 +3915,9 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
-      name: 'Terra',
-      image: '/logos/assets/luna.png',
+      symbol: 'LUNAC',
+      name: 'Terra Classic',
+      image: '/logos/assets/lunac.png',
       decimals: 6,
       coingecko_id: 'terra-luna',
       contracts: [
@@ -4061,9 +4061,9 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
-      name: 'Terra',
-      image: '/logos/assets/luna.png',
+      symbol: 'LUNAC',
+      name: 'Terra Classic',
+      image: '/logos/assets/lunac.png',
       decimals: 6,
       coingecko_id: 'terra-luna',
       contracts: [
@@ -4209,9 +4209,9 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
-      name: 'Terra',
-      image: '/logos/assets/luna.png',
+      symbol: 'LUNAC',
+      name: 'Terra Classic',
+      image: '/logos/assets/lunac.png',
       decimals: 6,
       coingecko_id: 'terra-luna',
       contracts: [
