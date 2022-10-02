@@ -859,8 +859,7 @@ module.exports = async (
             (
               !price ||
               price <= 0 ||
-              !equals_ignore_case(link.denom, denom) ||
-              ['uluna'].includes(denom)
+              !equals_ignore_case(link.denom, denom)
             )
           ) {
             const __response = await assets_price(
@@ -1239,8 +1238,7 @@ module.exports = async (
                         (
                           !price ||
                           price <= 0 ||
-                          !equals_ignore_case(link.denom, denom) ||
-                          ['uluna'].includes(denom)
+                          !equals_ignore_case(link.denom, denom)
                         )
                       ) {
                         const __response = await assets_price(
@@ -2758,8 +2756,7 @@ module.exports = async (
                       if (
                         !price ||
                         price <= 0 ||
-                        !equals_ignore_case(link.denom, denom) ||
-                        ['uluna'].includes(denom)
+                        !equals_ignore_case(link.denom, denom)
                       ) {
                         const ___response = await assets_price(
                           {
@@ -3626,8 +3623,7 @@ module.exports = async (
                         if (
                           !price ||
                           price <= 0 ||
-                          !equals_ignore_case(link.denom, denom) ||
-                          ['uluna'].includes(denom)
+                          !equals_ignore_case(link.denom, denom)
                         ) {
                           const __response = await assets_price(
                             {
