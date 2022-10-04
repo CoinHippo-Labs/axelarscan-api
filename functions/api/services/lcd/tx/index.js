@@ -2648,7 +2648,12 @@ module.exports = async (
                     input,
                   } = { ...transaction };
 
-                  const asset_data = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.contract_address, to)) > -1);
+                  const asset_data = assets_data.find(a =>
+                    a?.contracts?.findIndex(c =>
+                      c?.chain_id === chain_id &&
+                      equals_ignore_case(c?.contract_address, to)
+                    ) > -1
+                  );
 
                   let _amount;
 

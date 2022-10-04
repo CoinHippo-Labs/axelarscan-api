@@ -153,6 +153,13 @@ module.exports = async (
                 }
 
                 if (depositAddress) {
+                  const asset_data = assets_data.find(a =>
+                    a?.contracts?.findIndex(c =>
+                      c?.chain_id === chain_id &&
+                      equals_ignore_case(c?.contract_address, to)
+                    ) > -1
+                  );
+
                   const _amount = _.head(
                     (logs || [])
                       .map(l => l?.data)
@@ -191,7 +198,7 @@ module.exports = async (
                     sender_address: from,
                     recipient_address: depositAddress,
                     amount: BigNumber.from(`0x${transaction.data?.substring(10 + 64) || input?.substring(10 + 64) || _amount || '0'}`).toString(),
-                    denom: assets_data.find(a => a?.contracts?.findIndex(c => equals_ignore_case(c?.contract_address, to)) > -1)?.id,
+                    denom: asset_data?.id,
                   };
 
                   const link = _.head(__response?.data);
@@ -269,7 +276,8 @@ module.exports = async (
                       source.recipient_chain
                     );
                     source.denom = source.denom ||
-                      asset;
+                      asset ||
+                      denom;
 
                     if (
                       source.denom &&
@@ -300,7 +308,10 @@ module.exports = async (
                       }
                     }
 
-                    if (price && typeof source.amount === 'number') {
+                    if (
+                      price > 0 &&
+                      typeof source.amount === 'number'
+                    ) {
                       source.value = source.amount * price;
                     }
 
@@ -699,7 +710,8 @@ module.exports = async (
         source.recipient_chain = recipient_chain ||
           source.recipient_chain;
         source.denom = source.denom ||
-          asset;
+          asset ||
+          denom;
         source.original_sender_chain = original_sender_chain ||
           normalize_original_chain(
             source.sender_chain ||
@@ -715,7 +727,10 @@ module.exports = async (
           const chain_data = chains_data.find(c => equals_ignore_case(c?.id, source.sender_chain));
           const asset_data = assets_data.find(a =>
             equals_ignore_case(a?.id, source.denom) ||
-            a?.ibc?.findIndex(i => i?.chain_id === chain_data?.id && equals_ignore_case(i?.ibc_denom, source.denom)) > -1
+            a?.ibc?.findIndex(i =>
+              i?.chain_id === chain_data?.id &&
+              equals_ignore_case(i?.ibc_denom, source.denom)
+            ) > -1
           );
 
           if (
