@@ -46,6 +46,7 @@ module.exports = async (
       moment().valueOf();
     must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
+
   if (!query) {
     query = {
       bool: {
@@ -59,7 +60,16 @@ module.exports = async (
 
   response = await read(
     'transfers',
-    query,
+    {
+      ...query,
+      bool: {
+        ...query.bool,
+        must_not: _.concat(
+          query.bool?.must_not || [],
+          { match: { 'source.status': 'failed' } },
+        ),
+      },
+    },
     {
       aggs: {
         source_chains: {

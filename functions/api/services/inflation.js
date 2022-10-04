@@ -93,7 +93,7 @@ module.exports = async (
 
   const inflation = parseFloat(
     (
-      (uptimeRate * (tendermintInflationRate || 0) * (1 - (communityTax || 0))) +
+      (uptimeRate * (tendermintInflationRate || 0)) +
       (heartbeatRate * (keyMgmtRelativeInflationRate || 0) * (tendermintInflationRate || 0)) +
       (
         externalChainVotingInflationRate *
@@ -107,7 +107,7 @@ module.exports = async (
   );
 
   return {
-    equation: `inflation = (uptimeRate * tendermintInflationRate * (1 - communityTax)) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${evm_chains_data
+    equation: `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${evm_chains_data
       .map(c => `(1 - ${c?.id}UnsubmittedVoteRate)`)
       .join(' + ')
     }))`,
