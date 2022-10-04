@@ -72,7 +72,11 @@ module.exports = async (
           ...d,
           value: (total * price) ||
             0,
-          value_diff: (total * percent_diff_supply * price) ||
+          value_diff: (
+            total *
+            (percent_diff_supply / 100) *
+            price
+          ) ||
             0,
         };
       }),
@@ -112,7 +116,7 @@ module.exports = async (
               return (
                 (
                   (supply || escrow_balance) *
-                  percent_diff_supply *
+                  (percent_diff_supply / 100) *
                   price
                 ) ||
                   0
