@@ -187,7 +187,8 @@ module.exports = async (
               sender_chain;
           }
 
-          id = deposit_address || txhash;
+          id = deposit_address ||
+            txhash;
           type = record['@type']?.split('.')[0]?.replace('/', '');
           original_sender_chain = normalize_original_chain(sender_chain);
           original_recipient_chain = normalize_original_chain(recipient_chain);
@@ -217,6 +218,7 @@ module.exports = async (
 
             const {
               source,
+              link,
             } = { ..._.head(_response?.data) };
 
             if (source?.sender_address) {
@@ -229,9 +231,19 @@ module.exports = async (
             sender_chain ||
             chain
           );
-          if (!original_sender_chain?.startsWith(sender_chain)) {
-            original_sender_chain = sender_chain;
+
+          if (
+            !original_sender_chain?.startsWith(sender_chain) ||
+            original_sender_chain !== link?.original_sender_chain
+          ) {
+            original_sender_chain = !original_sender_chain?.startsWith(sender_chain) ?
+              link?.original_sender_chain?.startsWith(sender_chain) ?
+                link.original_sender_chain :
+                sender_chain :
+              link?.original_sender_chain ||
+              original_sender_chain;
           }
+
           recipient_address = recipient_addr;
           recipient_chain = normalize_chain(recipient_chain);
 

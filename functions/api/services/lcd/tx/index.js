@@ -2567,11 +2567,20 @@ module.exports = async (
                       sender_chain ||
                       record.sender_chain
                   );
+
                   if (
                     link?.original_sender_chain &&
-                    !link.original_sender_chain?.startsWith(sender_chain)
+                    (
+                      !link.original_sender_chain?.startsWith(sender_chain) ||
+                      link.original_sender_chain !== transfer_data.link?.original_sender_chain
+                    )
                   ) {
-                    link.original_sender_chain = sender_chain;
+                    link.original_sender_chain = !link.original_sender_chain?.startsWith(sender_chain) ?
+                      transfer_data.link?.original_sender_chain?.startsWith(sender_chain) ?
+                        transfer_data.link.original_sender_chain :
+                        sender_chain :
+                      transfer_data.link?.original_sender_chain ||
+                      link.original_sender_chain;
 
                     await write(
                       'deposit_addresses',
