@@ -64,9 +64,9 @@ module.exports = async (
       ...query,
       bool: {
         ...query.bool,
-        must_not: _.concat(
-          query.bool?.must_not || [],
-          { match: { 'source.status': 'failed' } },
+        must: _.concat(
+          query.bool?.must || [],
+          { exists: { field: 'confirm_deposit' } },
         ),
       },
     },
