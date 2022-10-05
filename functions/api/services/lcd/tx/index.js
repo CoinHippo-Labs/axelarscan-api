@@ -3123,8 +3123,9 @@ module.exports = async (
                   transaction_id,
                   deposit_address,
                   transfer_id,
-                  event,
-                  participants;
+                  event_name,
+                  participants,
+                  confirmation_events;
 
                 switch (type) {
                   case 'VoteConfirmDeposit':
@@ -3200,7 +3201,7 @@ module.exports = async (
                         )
                       );
 
-                    event = _.head(
+                    event_name = _.head(
                       Object.entries({
                         ...vote_events?.find(e =>
                           Object.values({ ...e })
@@ -3372,7 +3373,8 @@ module.exports = async (
 
                   if (
                     !transaction_id ||
-                    !transfer_id
+                    !transfer_id ||
+                    !confirmation_events
                   ) {
                     if (!end_block_events) {
                       const _response = await rpc(
@@ -3386,7 +3388,7 @@ module.exports = async (
                         [];
                     }
 
-                    const confirmation_events = end_block_events
+                    confirmation_events = end_block_events
                       .filter(e =>
                         [
                           'depositConfirmation',
@@ -3416,25 +3418,28 @@ module.exports = async (
                         } = { ...e };
 
                         return Object.fromEntries(
-                          attributes.map(a => {
-                            const {
-                              key,
-                              value,
-                            } = { ...a };
+                          attributes
+                            .map(a => {
+                              const {
+                                key,
+                                value,
+                              } = { ...a };
 
-                            return [
-                              key,
-                              value,
-                            ];
-                          })
+                              return [
+                                key,
+                                value,
+                              ];
+                            })
                         );
                       });
 
                     const _transaction_id = _.head(
-                      confirmation_events.map(e => e.txID)
+                      confirmation_events
+                        .map(e => e.txID)
                     );
                     const _transfer_id = _.head(
-                      confirmation_events.map(e => Number(e.transferID))
+                      confirmation_events
+                        .map(e => Number(e.transferID))
                     );
 
                     if (equals_ignore_case(transaction_id, _transaction_id)) {
@@ -3483,6 +3488,7 @@ module.exports = async (
                   unconfirmed,
                   failed,
                   success,
+                  event: event_name,
                 };
 
                 if (
@@ -3843,9 +3849,11 @@ module.exports = async (
                         undefined,
                         success: success ||
                         undefined,
-                      event: event ||
+                      event: event_name ||
                         undefined,
                       participants: participants ||
+                        undefined,
+                      confirmation_events: confirmation_events ||
                         undefined,
                       [voter.toLowerCase()]: {
                         id: txhash,
