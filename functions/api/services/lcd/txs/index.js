@@ -670,6 +670,13 @@ module.exports = async (
                         .filter(([k, v]) => typeof v === 'object')
                         .map(([k, v]) => k)
                       );
+
+                      const _response = await get(
+                        'evm_polls',
+                        poll_id,
+                      );
+
+                      confirmation_events = _response?.confirmation_events;
                       break;
                     default:
                       break;
@@ -833,7 +840,7 @@ module.exports = async (
                     if (
                       !transaction_id ||
                       !transfer_id ||
-                      !confirmation_events
+                      !(confirmation_events?.length > 0)
                     ) {
                       if (!end_block_events) {
                         const _response = await rpc(
