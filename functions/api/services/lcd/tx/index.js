@@ -3382,6 +3382,7 @@ module.exports = async (
                         'depositConfirmation',
                         'eventConfirmation',
                         'transferKeyConfirmation',
+                        'TokenSent',
                         'ContractCall',
                       ].findIndex(s => e?.type?.includes(s)) > -1 &&
                       e.attributes?.findIndex(a =>
