@@ -831,7 +831,7 @@ module.exports = async (
                   if (
                     !transaction_id ||
                     !transfer_id ||
-                    !(confirmation_events?.length > 0)
+                    !(confirmation_events?.findIndex(e => e?.type) > -1)
                   ) {
                     if (!end_block_events) {
                       const _response = await rpc(
@@ -850,6 +850,7 @@ module.exports = async (
                         [
                           'depositConfirmation',
                           'eventConfirmation',
+                          'transferKeyConfirmation',
                           'ContractCall',
                         ].findIndex(s => e?.type?.includes(s)) > -1 &&
                         e.attributes?.findIndex(a =>
@@ -874,21 +875,34 @@ module.exports = async (
                         const {
                           attributes,
                         } = { ...e };
+                        let {
+                          type,
+                        } = { ...e };
 
-                        return Object.fromEntries(
-                          attributes
-                            .map(a => {
-                              const {
-                                key,
-                                value,
-                              } = { ...a };
+                        type = type ?
+                          _.last(
+                            type
+                              .split('.')
+                          ) :
+                          undefined;
 
-                              return [
-                                key,
-                                value,
-                              ];
-                            })
-                        );
+                        return {
+                          type,
+                          ...Object.fromEntries(
+                            attributes
+                              .map(a => {
+                                const {
+                                  key,
+                                  value,
+                                } = { ...a };
+
+                                return [
+                                  key,
+                                  value,
+                                ];
+                              })
+                          ),
+                        };
                       });
 
                     const _transaction_id = _.head(
