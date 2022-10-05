@@ -637,11 +637,13 @@ module.exports = async (
           typeof price !== 'number' &&
           (asset || denom)
         ) {
-          let _response = await assets_price({
-            chain: original_sender_chain,
-            denom: asset || denom,
-            timestamp: moment(timestamp).utc().valueOf(),
-          });
+          let _response = await assets_price(
+            {
+              chain: original_sender_chain,
+              denom: asset || denom,
+              timestamp: moment(timestamp).utc().valueOf(),
+            },
+          );
 
           let _price = _.head(_response)?.price;
           if (_price) {
@@ -2381,7 +2383,7 @@ module.exports = async (
                     },
                   );
 
-                const link = _.head(_response?.data);
+                let link = _.head(_response?.data);
 
                 recipient_chain = normalize_chain(
                   link?.recipient_chain ||
@@ -2567,6 +2569,10 @@ module.exports = async (
                       sender_chain ||
                       record.sender_chain
                   );
+
+                  if (!link) {
+                    link = transfer_data.link;
+                  }
 
                   if (
                     link?.original_sender_chain &&

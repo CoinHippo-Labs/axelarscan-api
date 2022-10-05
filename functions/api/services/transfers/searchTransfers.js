@@ -86,7 +86,7 @@ module.exports = async (
               { exists: { field: 'sign_batch' } },
             ],
             should: evm_chains_data.map(c => {
-              return { match: { 'source.recipient_chain': c?.id } };
+              return { match: { 'source.original_recipient_chain': c?.id } };
             }),
             minimum_should_match: 1,
           },
@@ -96,9 +96,23 @@ module.exports = async (
             must: [
               { exists: { field: 'ibc_send' } },
             ],
-            should: cosmos_chains_data.map(c => {
-              return { match: { 'source.recipient_chain': c?.id } };
-            }),
+            should: cosmos_chains_data
+              .flatMap(c => {
+                const {
+                  id,
+                  overrides,
+                } = { ...c };
+
+                _.uniq(
+                  _.concat(
+                    id,
+                    Object.keys({ ...overrides }),
+                  )
+                )
+                .map(id => {
+                  return { match_phrase: { 'source.original_recipient_chain': id } };
+                })
+              }),
             must_not: [
               { exists: { field: 'ibc_send.failed_txhash' } },
             ],
@@ -108,7 +122,7 @@ module.exports = async (
         _should.push({
           bool: {
             must: [
-              { match: { 'source.recipient_chain': axelarnet.id } },
+              { match: { 'source.original_recipient_chain': axelarnet.id } },
             ],
             should: [
               { exists: { field: 'axelar_transfer' } },
@@ -134,7 +148,7 @@ module.exports = async (
                     { exists: { field: 'sign_batch' } },
                   ],
                   should: evm_chains_data.map(c => {
-                    return { match: { 'source.recipient_chain': c?.id } };
+                    return { match: { 'source.original_recipient_chain': c?.id } };
                   }),
                   minimum_should_match: 1,
                 },
@@ -144,16 +158,30 @@ module.exports = async (
                   must: [
                     { exists: { field: 'ibc_send' } },
                   ],
-                  should: cosmos_chains_data.map(c => {
-                    return { match: { 'source.recipient_chain': c?.id } };
-                  }),
+                  should: cosmos_chains_data
+                    .flatMap(c => {
+                      const {
+                        id,
+                        overrides,
+                      } = { ...c };
+
+                      _.uniq(
+                        _.concat(
+                          id,
+                          Object.keys({ ...overrides }),
+                        )
+                      )
+                      .map(id => {
+                        return { match_phrase: { 'source.original_recipient_chain': id } };
+                      })
+                    }),
                   minimum_should_match: 1,
                 },
               },
               {
                 bool: {
                   must: [
-                    { match: { 'source.recipient_chain': axelarnet.id } },
+                    { match: { 'source.original_recipient_chain': axelarnet.id } },
                   ],
                   should: [
                     { exists: { field: 'axelar_transfer' } },
@@ -170,10 +198,26 @@ module.exports = async (
     }
   }
   if (sourceChain) {
-    must.push({ match: { 'source.sender_chain': sourceChain } });
+    const field = sourceChain === 'terra' ?
+      'link' :
+      'source';
+
+    must.push({ match_phrase: { [`${field}.original_sender_chain`]: sourceChain } });
+
+    if (sourceChain === 'terra') {
+      must_not.push({ match_phrase: { [`${field}.original_sender_chain`]: `${sourceChain}-2` } });
+    }
   }
   if (destinationChain) {
-    must.push({ match: { 'source.recipient_chain': destinationChain } });
+    const field = destinationChain === 'terra' ?
+      'link' :
+      'source';
+
+    must.push({ match_phrase: { [`${field}.original_recipient_chain`]: destinationChain } });
+
+    if (destinationChain === 'terra') {
+      must_not.push({ match_phrase: { [`${field}.original_recipient_chain`]: `${destinationChain}-2` } });
+    }
   }
   if (asset) {
     must.push({ match_phrase: { 'source.denom': asset } });

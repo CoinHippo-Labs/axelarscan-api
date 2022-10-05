@@ -235,15 +235,9 @@ module.exports = async (
             chain
           );
 
-          if (
-            !original_sender_chain?.startsWith(sender_chain) ||
-            original_sender_chain !== link?.original_sender_chain
-          ) {
+          if (!original_sender_chain?.startsWith(sender_chain)) {
             original_sender_chain = !original_sender_chain?.startsWith(sender_chain) ?
-              link?.original_sender_chain?.startsWith(sender_chain) ?
-                link.original_sender_chain :
-                sender_chain :
-              link?.original_sender_chain ||
+              sender_chain :
               original_sender_chain;
           }
 
