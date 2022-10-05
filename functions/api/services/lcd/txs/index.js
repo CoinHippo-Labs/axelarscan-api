@@ -121,8 +121,11 @@ module.exports = async (
           ].findIndex(s =>
             t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes(s)) > -1
           ) > -1
-        )
-        .map(async t => {
+        );
+
+        for (let i = 0; i < records.length; i++) {
+          const t = records[i];
+
           const {
             txhash,
             code,
@@ -256,11 +259,13 @@ module.exports = async (
             typeof price !== 'number' &&
             (asset || denom)
           ) {
-            let _response = await assets_price({
-              chain: original_sender_chain,
-              denom: asset || denom,
-              timestamp: moment(timestamp).utc().valueOf(),
-            });
+            let _response = await assets_price(
+              {
+                chain: original_sender_chain,
+                denom: asset || denom,
+                timestamp: moment(timestamp).utc().valueOf(),
+              },
+            );
 
             let _price = _.head(_response)?.price;
             if (_price) {
@@ -279,7 +284,7 @@ module.exports = async (
             }
           }
 
-          return {
+          records[i] = {
             ...record,
             id,
             type,
@@ -292,7 +297,7 @@ module.exports = async (
             recipient_address,
             price,
           };
-        });
+        }
 
       if (records.length > 0) {
         for (const record of records) {
@@ -462,6 +467,9 @@ module.exports = async (
         const _records = [];
 
         if (messages) {
+          let end_block_events;
+          const polls_data = {};
+
           for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
             const {
@@ -522,22 +530,22 @@ module.exports = async (
                       ) > -1
                     );
 
-                  let end_block_events;
-
                   if (
                     !unconfirmed &&
                     !failed &&
                     attributes
                   ) {
-                    const _response = await rpc(
-                      '/block_results',
-                      {
-                        height,
-                      },
-                    );
+                    if (!end_block_events) {
+                      const _response = await rpc(
+                        '/block_results',
+                        {
+                          height,
+                        },
+                      );
 
-                    end_block_events = _response?.end_block_events ||
-                      [];
+                      end_block_events = _response?.end_block_events ||
+                        [];
+                    }
 
                     const completed_events = end_block_events
                       .filter(e =>
@@ -664,25 +672,41 @@ module.exports = async (
                         Object.entries({
                           ...vote_events?.find(e =>
                             Object.values({ ...e })
-                              .filter(v => typeof v === 'object')
+                              .filter(v =>
+                                typeof v === 'object' &&
+                                !Array.isArray(v)
+                              )
                           ),
                         })
-                        .filter(([k, v]) => typeof v === 'object')
+                        .filter(([k, v]) =>
+                          typeof v === 'object' &&
+                          !Array.isArray(v)
+                        )
                         .map(([k, v]) => k)
                       );
 
-                      const _response = await get(
-                        'evm_polls',
-                        poll_id,
-                      );
+                      const poll_data = polls_data[poll_id] ||
+                        await get(
+                          'evm_polls',
+                          poll_id,
+                        );
 
-                      confirmation_events = _response?.confirmation_events;
+                      if (poll_data) {
+                        sender_chain = poll_data.sender_chain;
+                        transaction_id = poll_data.transaction_id;
+                        deposit_address = poll_data.deposit_address;
+                        transfer_id = poll_data.transfer_id;
+                        participants = poll_data.participants;
+                        confirmation_events = poll_data.confirmation_events;
+                        polls_data[poll_id] = poll_data;
+                      }
                       break;
                     default:
                       break;
                   }
 
-                  transaction_id = _.head(inner_message.vote?.events)?.tx_id ||
+                  transaction_id = transaction_id ||
+                    _.head(inner_message.vote?.events)?.tx_id ||
                     attributes?.find(a => a?.key === 'txID')?.value ||
                     poll_id?.replace(`${sender_chain}_`, '').split('_')[0];
 
@@ -694,7 +718,8 @@ module.exports = async (
                     transaction_id = null;
                   }
 
-                  deposit_address = _.head(inner_message.vote?.events)?.transfer?.to ||
+                  deposit_address = deposit_address ||
+                    _.head(inner_message.vote?.events)?.transfer?.to ||
                     attributes?.find(a => a?.key === 'depositAddress')?.value ||
                     poll_id?.replace(`${sender_chain}_`, '').split('_')[1];
 
@@ -702,9 +727,10 @@ module.exports = async (
                     to_hex(deposit_address) :
                     deposit_address;
 
-                  transfer_id = Number(
-                    attributes?.find(a => a?.key === 'transferID')?.value
-                  );
+                  transfer_id = transfer_id ||
+                    Number(
+                      attributes?.find(a => a?.key === 'transferID')?.value
+                    );
 
                   if (
                     !transaction_id ||
@@ -804,6 +830,97 @@ module.exports = async (
 
                   if (
                     !transaction_id ||
+                    !transfer_id ||
+                    !(confirmation_events?.length > 0)
+                  ) {
+                    if (!end_block_events) {
+                      const _response = await rpc(
+                        '/block_results',
+                        {
+                          height,
+                        },
+                      );
+
+                      end_block_events = _response?.end_block_events ||
+                        [];
+                    }
+
+                    confirmation_events = end_block_events
+                      .filter(e =>
+                        [
+                          'depositConfirmation',
+                          'eventConfirmation',
+                          'ContractCall',
+                        ].findIndex(s => e?.type?.includes(s)) > -1 &&
+                        e.attributes?.findIndex(a =>
+                          [
+                            'eventID',
+                            'event_id',
+                          ].findIndex(k => k === a?.key) > -1 &&
+                          equals_ignore_case(
+                            (a.value || '')
+                              .split('"')
+                              .join(''),
+                            attributes?.find(_a =>
+                              [
+                                'eventID',
+                                'event_id',
+                              ].findIndex(k => k === _a?.key) > -1
+                            )?.value,
+                          )
+                        ) > -1
+                      )
+                      .map(e => {
+                        const {
+                          attributes,
+                        } = { ...e };
+
+                        return Object.fromEntries(
+                          attributes
+                            .map(a => {
+                              const {
+                                key,
+                                value,
+                              } = { ...a };
+
+                              return [
+                                key,
+                                value,
+                              ];
+                            })
+                        );
+                      });
+
+                    const _transaction_id = _.head(
+                      confirmation_events
+                        .map(e => e.txID)
+                    );
+                    const _transfer_id = _.head(
+                      confirmation_events
+                        .map(e => Number(e.transferID))
+                    );
+
+                    if (equals_ignore_case(transaction_id, _transaction_id)) {
+                      if (
+                        (
+                          !confirmation &&
+                          !unconfirmed &&
+                          !failed &&
+                          !transfer_id &&
+                          _transfer_id
+                        ) ||
+                        success
+                      ) {
+                        confirmation = true;
+                      }
+
+                      transfer_id = _transfer_id ||
+                        transfer_id;
+                    }
+                  }
+
+                  if (
+                    !transaction_id ||
                     !transfer_id
                   ) {
                     const _response = await read(
@@ -835,96 +952,6 @@ module.exports = async (
                         transaction_id;
                       transfer_id = vote_data.transfer_id ||
                         transfer_id;
-                    }
-
-                    if (
-                      !transaction_id ||
-                      !transfer_id ||
-                      !(confirmation_events?.length > 0)
-                    ) {
-                      if (!end_block_events) {
-                        const _response = await rpc(
-                          '/block_results',
-                          {
-                            height,
-                          },
-                        );
-
-                        end_block_events = _response?.end_block_events ||
-                          [];
-                      }
-
-                      confirmation_events = end_block_events
-                        .filter(e =>
-                          [
-                            'depositConfirmation',
-                            'eventConfirmation',
-                          ].findIndex(s => e?.type?.includes(s)) > -1 &&
-                          e.attributes?.findIndex(a =>
-                            [
-                              'eventID',
-                              'event_id',
-                            ].findIndex(k => k === a?.key) > -1 &&
-                            equals_ignore_case(
-                              (a.value || '')
-                                .split('"')
-                                .join(''),
-                              attributes?.find(_a =>
-                                [
-                                  'eventID',
-                                  'event_id',
-                                ].findIndex(k => k === _a?.key) > -1
-                              )?.value,
-                            )
-                          ) > -1
-                        )
-                        .map(e => {
-                          const {
-                            attributes,
-                          } = { ...e };
-
-                          return Object.fromEntries(
-                            attributes
-                              .map(a => {
-                                const {
-                                  key,
-                                  value,
-                                } = { ...a };
-
-                                return [
-                                  key,
-                                  value,
-                                ];
-                              })
-                          );
-                        });
-
-                      const _transaction_id = _.head(
-                        confirmation_events
-                          .map(e => e.txID)
-                      );
-                      const _transfer_id = _.head(
-                        confirmation_events
-                          .map(e => Number(e.transferID))
-                      );
-
-                      if (equals_ignore_case(transaction_id, _transaction_id)) {
-                        if (
-                          (
-                            !confirmation &&
-                            !unconfirmed &&
-                            !failed &&
-                            !transfer_id &&
-                            _transfer_id
-                          ) ||
-                          success
-                        ) {
-                          confirmation = true;
-                        }
-
-                        transfer_id = _transfer_id ||
-                          transfer_id;
-                      }
                     }
                   }
 
@@ -1024,7 +1051,8 @@ module.exports = async (
                 undefined,
               participants: participants ||
                 undefined,
-              confirmation_events: confirmation_events ||
+              confirmation_events: confirmation_events?.length > 0 ?
+                confirmation_events :
                 undefined,
               [voter.toLowerCase()]: {
                 id,
