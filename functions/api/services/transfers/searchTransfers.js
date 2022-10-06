@@ -198,25 +198,17 @@ module.exports = async (
     }
   }
   if (sourceChain) {
-    const field = sourceChain === 'terra' ?
-      'link' :
-      'source';
-
-    must.push({ match_phrase: { [`${field}.original_sender_chain`]: sourceChain } });
+    must.push({ match_phrase: { 'source.original_sender_chain': sourceChain } });
 
     if (sourceChain === 'terra') {
-      must_not.push({ match_phrase: { [`${field}.original_sender_chain`]: `${sourceChain}-2` } });
+      must_not.push({ match_phrase: { 'source.original_sender_chain': `${sourceChain}-2` } });
     }
   }
   if (destinationChain) {
-    const field = destinationChain === 'terra' ?
-      'link' :
-      'source';
-
-    must.push({ match_phrase: { [`${field}.original_recipient_chain`]: destinationChain } });
+    must.push({ match_phrase: { 'source.original_recipient_chain': destinationChain } });
 
     if (destinationChain === 'terra') {
-      must_not.push({ match_phrase: { [`${field}.original_recipient_chain`]: `${destinationChain}-2` } });
+      must_not.push({ match_phrase: { 'source.original_recipient_chain': `${destinationChain}-2` } });
     }
   }
   if (asset) {

@@ -885,7 +885,7 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
-        name: 'Ethereum',
+        name: 'Ethereum Ropsten',
         short_name: 'ETH',
         chain_id: 3,
         provider_params: [
@@ -920,6 +920,45 @@ module.exports = {
         color: '#c0c2c3',
         website: 'https://ethereum.org',
         gateway_address: '0xBC6fcce7c5487d43830a219CA6E7B83238B41e71',
+      },
+      {
+        id: 'ethereum-2',
+        maintainer_id: 'ethereum-2',
+        name: 'Ethereum',
+        short_name: 'ETH',
+        chain_id: 5,
+        provider_params: [
+          {
+            chainId: '0x5',
+            chainName: 'Ethereum Goerli',
+            rpcUrls: [
+              'https://rpc.ankr.com/eth_goerli',
+              'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://goerli.etherscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Etherscan',
+          url: 'https://goerli.etherscan.io',
+          icon: '/logos/explorers/etherscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/ethereum.svg',
+        color: '#c0c2c3',
+        website: 'https://ethereum.org',
+        gateway_address: '',
       },
       {
         id: 'binance',
