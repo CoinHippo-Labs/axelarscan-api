@@ -114,13 +114,21 @@ module.exports = async (
       const chain = attributes?.find(a => a?.key === 'chain')?.value;
       const token_address = attributes?.find(a => a?.key === 'tokenAddress')?.value;
 
-      if (chain && token_address) {
+      if (
+        chain &&
+        token_address
+      ) {
         const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
         const {
           chain_id,
         } = { ...chain_data };
 
-        const asset_data = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.contract_address, token_address)) > -1);
+        const asset_data = assets_data.find(a =>
+          a?.contracts?.findIndex(c =>
+            c?.chain_id === chain_id &&
+            equals_ignore_case(c?.contract_address, token_address)
+          ) > -1
+        );
         const {
           id,
         } = { ...asset_data };
@@ -429,7 +437,8 @@ module.exports = async (
       types = _.uniq(
         _.concat(
           types,
-          messages.flatMap(m => m?.inner_message?.['@type']),
+          messages
+            .flatMap(m => m?.inner_message?.['@type']),
         )
         .filter(t => t)
       );
@@ -474,7 +483,8 @@ module.exports = async (
           )
         )
     );
-    types = types.filter(t => !types.includes(`${t}Request`));
+    types = types
+      .filter(t => !types.includes(`${t}Request`));
 
     transaction_data.types = types;
     /* end add message types field */

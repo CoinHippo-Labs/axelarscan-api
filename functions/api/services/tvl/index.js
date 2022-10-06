@@ -28,6 +28,7 @@ const {
 } = require('../../utils/address');
 
 const environment = process.env.ENVIRONMENT || config?.environment;
+const private_rpcs_avalanche = process.env.PRIVATE_RPCS_AVALANCHE
 
 const data = require('../../data');
 const evm_chains_data = data?.chains?.[environment]?.evm || [];
@@ -236,8 +237,34 @@ module.exports = async (
           rpcUrls,
         } = { ..._.head(provider_params) };
 
-        const rpcs = (rpcUrls || [])
+        let rpcs;
+
+        switch (id) {
+          case 'avalanche':
+            if (private_rpcs_avalanche) {
+              rpcs = _.concat(
+                private_rpcs_avalanche
+                  .split(','),
+                rpcUrls,
+              );
+            }
+            break;
+          default:
+            rpcs = rpcUrls;
+            break;
+        }
+
+        if (!(rpcs?.length > 0)) {
+          rpcs = rpcUrls ||
+            [];
+        }
+
+        rpcs =
+          _.uniq(
+            rpcs,
+          )
           .filter(url => url);
+
         const provider = rpcs.length === 1 ?
           new JsonRpcProvider(rpcs[0]) :
           new FallbackProvider(

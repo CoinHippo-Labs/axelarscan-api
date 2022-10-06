@@ -977,58 +977,59 @@ module.exports = async (
   }
 
   if (Array.isArray(response)) {
-    response = response.map(d => {
-      const {
-        source,
-        link,
-        confirm_deposit,
-        vote,
-        sign_batch,
-        ibc_send,
-        axelar_transfer,
-      } = { ...d };
-      const {
-        amount,
-        value,
-      } = { ...source };
-      let {
-        price,
-      } = { ...link };
-
-      if (
-        typeof price !== 'number' &&
-        typeof amount === 'number' &&
-        typeof value === 'number'
-      ) {
-        price = value / amount;
-      }
-
-      return {
-        ...d,
-        link: link && {
-          ...link,
+    response = response
+      .map(d => {
+        const {
+          source,
+          link,
+          confirm_deposit,
+          vote,
+          sign_batch,
+          ibc_send,
+          axelar_transfer,
+        } = { ...d };
+        const {
+          amount,
+          value,
+        } = { ...source };
+        let {
           price,
-        },
-        status: ibc_send ?
-          ibc_send.failed_txhash &&
-          !ibc_send.ack_txhash ?
-            'ibc_failed' :
-            ibc_send.recv_txhash ?
-              'executed' :
-              'ibc_sent' :
-          sign_batch?.executed ?
-            'executed' :
-             sign_batch ?
-              'batch_signed' :
-              axelar_transfer ?
+        } = { ...link };
+
+        if (
+          typeof price !== 'number' &&
+          typeof amount === 'number' &&
+          typeof value === 'number'
+        ) {
+          price = value / amount;
+        }
+
+        return {
+          ...d,
+          link: link && {
+            ...link,
+            price,
+          },
+          status: ibc_send ?
+            ibc_send.failed_txhash &&
+            !ibc_send.ack_txhash ?
+              'ibc_failed' :
+              ibc_send.recv_txhash ?
                 'executed' :
-                vote ?
-                  'voted' :
-                  confirm_deposit ?
-                    'deposit_confirmed' :
-                    'asset_sent',
-      };
-    });
+                'ibc_sent' :
+            sign_batch?.executed ?
+              'executed' :
+               sign_batch ?
+                'batch_signed' :
+                axelar_transfer ?
+                  'executed' :
+                  vote ?
+                    'voted' :
+                    confirm_deposit ?
+                      'deposit_confirmed' :
+                      'asset_sent',
+        };
+      });
 
     if (
       response.length > 0 &&
@@ -1069,6 +1070,21 @@ module.exports = async (
             'ibc_sent',
           ].includes(status)
         ) {
+          if (
+            confirm_deposit?.id &&
+            !confirm_deposit.transfer_id
+          ) {
+            await api.post(
+              '',
+              {
+                module: 'lcd',
+                path: `/cosmos/tx/v1beta1/txs/${confirm_deposit.id}`,
+              },
+            ).catch(error => { return { data: { error } }; });
+
+            await (0.5 * 1000);
+          }
+
           for (let i = 1; i <= 7; i++) {
             api.post(
               '',
@@ -1079,6 +1095,8 @@ module.exports = async (
               },
             ).catch(error => { return { data: { error } }; });
           }
+
+          await (1 * 1000);
         }
         else if (
           evm_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&

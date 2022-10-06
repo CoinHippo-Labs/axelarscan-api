@@ -173,6 +173,7 @@ resource "aws_lambda_function" "function" {
       TRANSFERS_INDEXER_USERNAME = var.transfers_indexer_username
       TRANSFERS_INDEXER_PASSWORD = var.transfers_indexer_password
       LOG_LEVEL                  = var.log_level
+      PRIVATE_RPCS_AVALANCHE     = var.private_rpcs_avalanche
     }
   }
   kms_key_arn      = ""
