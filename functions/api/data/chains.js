@@ -885,7 +885,7 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
-        name: 'Ethereum Ropsten',
+        name: 'Ropsten',
         short_name: 'ETH',
         chain_id: 3,
         provider_params: [
@@ -920,6 +920,7 @@ module.exports = {
         color: '#c0c2c3',
         website: 'https://ethereum.org',
         gateway_address: '0xBC6fcce7c5487d43830a219CA6E7B83238B41e71',
+        no_inflation: true,
       },
       {
         id: 'ethereum-2',

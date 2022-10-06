@@ -15,6 +15,9 @@ module.exports = async (
 ) => {
   let response;
 
+  const _evm_chains_data = evm_chains_data
+    .filter(c => !c?.no_inflation);
+
   let {
     uptimeRate,
     heartbeatRate,
@@ -27,10 +30,10 @@ module.exports = async (
   heartbeatRate = heartbeatRate ||
     1;
   numEVMChains = numEVMChains ||
-    evm_chains_data.length;
+    _evm_chains_data.length;
   unsubmittedVoteRates = unsubmittedVoteRates ||
     Object.fromEntries(
-      evm_chains_data
+      _evm_chains_data
         .map(c =>
           [
             c?.id,
@@ -107,7 +110,7 @@ module.exports = async (
   );
 
   return {
-    equation: `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${evm_chains_data
+    equation: `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${_evm_chains_data
       .map(c => `(1 - ${c?.id}UnsubmittedVoteRate)`)
       .join(' + ')
     }))`,

@@ -253,18 +253,19 @@ const saveTimeSpent = async (
 };
 
 const get_distinguish_chain_id = chain => {
-  const chain_data = chains_data.find(c => {
-    const {
-      id,
-      overrides,
-    } = { ...c };
+  const chain_data = chains_data
+    .find(c => {
+      const {
+        id,
+        overrides,
+      } = { ...c };
 
-    return equals_ignore_case(id, chain) ||
-      Object.keys({ ...overrides })
-        .findIndex(k =>
-          equals_ignore_case(k, chain)
-        ) > -1;
-  });
+      return equals_ignore_case(id, chain) ||
+        Object.keys({ ...overrides })
+          .findIndex(k =>
+            equals_ignore_case(k, chain)
+          ) > -1;
+    });
 
   const {
     id,
@@ -285,7 +286,61 @@ const get_distinguish_chain_id = chain => {
   );
 };
 
+const get_others_version_chain_ids = chain => {
+  const chain_data = chains_data
+    .find(c => {
+      const {
+        id,
+        overrides,
+      } = { ...c };
+
+      return equals_ignore_case(id, chain) ||
+        Object.keys({ ...overrides })
+          .findIndex(k =>
+            equals_ignore_case(k, chain)
+          ) > -1;
+    });
+
+  const {
+    id,
+    overrides,
+  } = { ...chain_data };
+
+  const _id = equals_ignore_case(id, chain) ?
+    id :
+    Object.keys({ ...overrides })
+      .find(k =>
+        equals_ignore_case(k, chain)
+      );
+
+  return chains_data
+    .filter(c =>
+      (
+        !equals_ignore_case(c?.id, _id) &&
+        c?.id?.startsWith(_id)
+      ) ||
+      Object.keys({ ...c?.overrides })
+        .findIndex(k =>
+          !equals_ignore_case(k, _id) &&
+          k?.startsWith(_id)
+        ) > -1
+    )
+    .flatMap(c => {
+      return _.concat(
+        !equals_ignore_case(c?.id, _id) &&
+          c?._id,
+        Object.keys({ ...c?.overrides })
+          .filter(k =>
+            !equals_ignore_case(k, _id) &&
+            k?.startsWith(_id)
+          ),
+      )
+      .filter(id => id);
+    });
+};
+
 module.exports = {
   saveTimeSpent,
   get_distinguish_chain_id,
+  get_others_version_chain_ids,
 };
