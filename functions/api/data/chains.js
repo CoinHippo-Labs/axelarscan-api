@@ -916,7 +916,7 @@ module.exports = {
           contract_0_path: '/address/{address}',
           transaction_path: '/tx/{tx}',
         },
-        image: '/logos/chains/ethereum.svg',
+        image: '/logos/chains/ropsten.svg',
         color: '#c0c2c3',
         website: 'https://ethereum.org',
         gateway_address: '0xBC6fcce7c5487d43830a219CA6E7B83238B41e71',
