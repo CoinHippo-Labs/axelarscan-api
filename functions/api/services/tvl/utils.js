@@ -242,12 +242,13 @@ const getCosmosSupply = async (
     } catch (error) {}
   }
 
-  return Number(
-    formatUnits(
-      BigNumber.from((supply || 0).toString()),
-      decimals || 6,
-    )
-  );
+  return supply &&
+    Number(
+      formatUnits(
+        BigNumber.from(supply.toString()),
+        decimals || 6,
+      )
+    );
 };
 
 const getAxelarnetSupply = async (
@@ -303,12 +304,13 @@ const getAxelarnetSupply = async (
     } catch (error) {}
   }
 
-  return Number(
-    formatUnits(
-      BigNumber.from((supply || 0).toString()),
-      decimals || 6,
-    )
-  );
+  return supply &&
+    Number(
+      formatUnits(
+        BigNumber.from(supply.toString()),
+        decimals || 6,
+      )
+    );
 };
 
 module.exports = {

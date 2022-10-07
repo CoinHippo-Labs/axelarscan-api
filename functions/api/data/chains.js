@@ -303,6 +303,7 @@ module.exports = {
           lcds: [
             'https://api-axelar-ia.cosmosia.notional.ventures',
             'https://axelar-api.polkachu.com',
+            'https://lcd.axelarscan.io',
           ],
           cosmostation: 'https://api-axelar.cosmostation.io/v1',
         },

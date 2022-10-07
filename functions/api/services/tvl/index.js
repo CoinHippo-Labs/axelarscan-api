@@ -573,12 +573,14 @@ module.exports = async (
           const percent_diff_supply =
             is_native &&
             id !== axelarnet.id ?
-              total_supply > 0 && source_escrow_balance > 0 ?
+              total_supply > 0 &&
+              source_escrow_balance > 0 ?
                 Math.abs(
                   source_escrow_balance - total_supply
                 ) * 100 / source_escrow_balance :
                 null :
-              supply > 0 && escrow_balance > 0 ?
+              supply > 0 &&
+              escrow_balance > 0 ?
                 Math.abs(
                   escrow_balance - supply
                 ) * 100 / escrow_balance :
@@ -775,8 +777,9 @@ module.exports = async (
         ) * 100 / evm_escrow_balance :
         null :
       total > 0 &&
-      total_on_evm >=0 &&
-      total_on_cosmos >= 0 ?
+      total_on_evm >= 0 &&
+      total_on_cosmos >= 0 &&
+      total_on_evm + total_on_cosmos > 0 ?
         Math.abs(
           total - (total_on_evm + total_on_cosmos)
         ) * 100 / total :
