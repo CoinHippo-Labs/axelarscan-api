@@ -223,7 +223,10 @@ module.exports = async (
                   [
                     'depositConfirmation',
                     'eventConfirmation',
-                  ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+                  ].findIndex(s =>
+                    equals_ignore_case(e?.type, s) ||
+                    e?.type?.includes(s)
+                  ) > -1
                 )
               )
             );
@@ -254,7 +257,10 @@ module.exports = async (
         [
           'VoteRequest',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s) || m?.inner_message?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s) ||
+            m?.inner_message?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         const fields = [

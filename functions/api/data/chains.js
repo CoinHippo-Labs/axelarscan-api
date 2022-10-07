@@ -959,7 +959,7 @@ module.exports = {
         image: '/logos/chains/ethereum.svg',
         color: '#c0c2c3',
         website: 'https://ethereum.org',
-        gateway_address: '',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'binance',
