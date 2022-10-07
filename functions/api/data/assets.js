@@ -793,7 +793,7 @@ module.exports = {
     {
       id: 'wavax-wei',
       symbol: 'WAVAX',
-      name: 'Avalanche',
+      name: 'Wrapped AVAX',
       image: '/logos/assets/wavax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
@@ -895,7 +895,7 @@ module.exports = {
     {
       id: 'wmatic-wei',
       symbol: 'WMATIC',
-      name: 'Matic',
+      name: 'Wrapped Matic',
       image: '/logos/assets/wmatic.svg',
       decimals: 18,
       coingecko_id: 'matic-network',
@@ -997,7 +997,7 @@ module.exports = {
     {
       id: 'wftm-wei',
       symbol: 'WFTM',
-      name: 'Fantom',
+      name: 'Wrapped Fantom',
       image: '/logos/assets/wftm.svg',
       decimals: 18,
       coingecko_id: 'fantom',
@@ -1099,7 +1099,7 @@ module.exports = {
     {
       id: 'wglmr-wei',
       symbol: 'WGLMR',
-      name: 'Moonbeam',
+      name: 'Wrapped Moonbeam',
       image: '/logos/assets/wglmr.svg',
       decimals: 18,
       coingecko_id: 'moonbeam',
@@ -2827,6 +2827,12 @@ module.exports = {
           symbol: 'wAXL',
         },
         {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 5,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
+        {
           contract_address: '0xfC3B4feb754d8082F745940347600D373f03dcaC',
           chain_id: 97,
           decimals: 6,
@@ -2998,6 +3004,11 @@ module.exports = {
           is_native: true,
         },
         {
+          contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
+          chain_id: 5,
+          decimals: 6,
+        },
+        {
           contract_address: '0xc2fA98faB811B785b81c64Ac875b31CC9E40F9D2',
           chain_id: 97,
           decimals: 6,
@@ -3145,7 +3156,7 @@ module.exports = {
     {
       id: 'weth-wei',
       symbol: 'WETH',
-      name: 'Ethereum',
+      name: 'Wrapped Ether',
       image: '/logos/assets/weth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
@@ -3277,6 +3288,12 @@ module.exports = {
           symbol: 'axlWBNB',
         },
         {
+          contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
+          chain_id: 5,
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
           contract_address: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
           chain_id: 97,
           decimals: 18,
@@ -3361,7 +3378,7 @@ module.exports = {
     {
       id: 'wavax-wei',
       symbol: 'WAVAX',
-      name: 'Avalanche',
+      name: 'Wrapped AVAX',
       image: '/logos/assets/wavax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
@@ -3369,6 +3386,12 @@ module.exports = {
         {
           contract_address: '0x72af7e1e7e0d38bcf033c541598f5a0301d051a5',
           chain_id: 3,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 5,
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -3475,7 +3498,7 @@ module.exports = {
     {
       id: 'wmatic-wei',
       symbol: 'WMATIC',
-      name: 'Polygon',
+      name: 'Wrapped Matic',
       image: '/logos/assets/wmatic.svg',
       decimals: 18,
       coingecko_id: 'matic-network',
@@ -3483,6 +3506,12 @@ module.exports = {
         {
           contract_address: '0xEAE61FD42A56F435a913d1570fF301a532d027b2',
           chain_id: 3,
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
+          chain_id: 5,
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -3589,7 +3618,7 @@ module.exports = {
     {
       id: 'wftm-wei',
       symbol: 'WFTM',
-      name: 'Fantom',
+      name: 'Wrapped Fantom',
       image: '/logos/assets/wftm.svg',
       decimals: 18,
       coingecko_id: 'fantom',
@@ -3597,6 +3626,12 @@ module.exports = {
         {
           contract_address: '0xd9774230a31bf49c3d9372eeb55aa10df1807238',
           chain_id: 3,
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
+          chain_id: 5,
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -3703,7 +3738,7 @@ module.exports = {
     {
       id: 'wdev-wei',
       symbol: 'WDEV',
-      name: 'Dev',
+      name: 'Wrapped Dev',
       image: '/logos/assets/wdev.svg',
       decimals: 18,
       coingecko_id: 'moonbeam',
@@ -3711,6 +3746,12 @@ module.exports = {
         {
           contract_address: '0xDc6B192eFa7eBab24063e20c962E74C88A012D3c',
           chain_id: 3,
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 5,
           decimals: 18,
           symbol: 'axlWDEV',
         },
@@ -4163,7 +4204,7 @@ module.exports = {
     {
       id: 'weth-wei',
       symbol: 'WETH',
-      name: 'Ethereum',
+      name: 'Wrapped Ether',
       image: '/logos/assets/weth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
@@ -4183,7 +4224,7 @@ module.exports = {
     {
       id: 'wavax-wei',
       symbol: 'WAVAX',
-      name: 'Avalanche',
+      name: 'Wrapped AVAX',
       image: '/logos/assets/wavax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
