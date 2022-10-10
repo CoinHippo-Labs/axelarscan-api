@@ -592,7 +592,7 @@ module.exports = {
       name: 'Wrapped Ether',
       image: '/logos/assets/weth.svg',
       decimals: 18,
-      coingecko_id: 'ethereum',
+      coingecko_id: 'weth',
       contracts: [
         {
           contract_address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -694,7 +694,7 @@ module.exports = {
       name: 'WBNB',
       image: '/logos/assets/wbnb.png',
       decimals: 18,
-      coingecko_id: 'binancecoin',
+      coingecko_id: 'wbnb',
       contracts: [
         {
           contract_address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
@@ -796,7 +796,7 @@ module.exports = {
       name: 'Wrapped AVAX',
       image: '/logos/assets/wavax.svg',
       decimals: 18,
-      coingecko_id: 'avalanche-2',
+      coingecko_id: 'wrapped-avax',
       contracts: [
         {
           contract_address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
@@ -898,7 +898,7 @@ module.exports = {
       name: 'Wrapped Matic',
       image: '/logos/assets/wmatic.svg',
       decimals: 18,
-      coingecko_id: 'matic-network',
+      coingecko_id: 'wmatic',
       contracts: [
         {
           contract_address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
@@ -1000,7 +1000,7 @@ module.exports = {
       name: 'Wrapped Fantom',
       image: '/logos/assets/wftm.svg',
       decimals: 18,
-      coingecko_id: 'fantom',
+      coingecko_id: 'wrapped-fantom',
       contracts: [
         {
           contract_address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
@@ -1102,7 +1102,7 @@ module.exports = {
       name: 'Wrapped Moonbeam',
       image: '/logos/assets/wglmr.svg',
       decimals: 18,
-      coingecko_id: 'moonbeam',
+      coingecko_id: 'wrapped-moonbeam',
       contracts: [
         {
           contract_address: '0xAcc15dC74880C9944775448304B263D191c6077F',
@@ -3159,7 +3159,7 @@ module.exports = {
       name: 'Wrapped Ether',
       image: '/logos/assets/weth.svg',
       decimals: 18,
-      coingecko_id: 'ethereum',
+      coingecko_id: 'weth',
       contracts: [
         {
           contract_address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
@@ -3279,7 +3279,7 @@ module.exports = {
       name: 'WBNB',
       image: '/logos/assets/wbnb.png',
       decimals: 18,
-      coingecko_id: 'binancecoin',
+      coingecko_id: 'wbnb',
       contracts: [
         {
           contract_address: '0x653044Df3e853e8FF96c8D9a7Ab7A90E34c4d484',
@@ -3381,7 +3381,7 @@ module.exports = {
       name: 'Wrapped AVAX',
       image: '/logos/assets/wavax.svg',
       decimals: 18,
-      coingecko_id: 'avalanche-2',
+      coingecko_id: 'wrapped-avax',
       contracts: [
         {
           contract_address: '0x72af7e1e7e0d38bcf033c541598f5a0301d051a5',
@@ -3501,7 +3501,7 @@ module.exports = {
       name: 'Wrapped Matic',
       image: '/logos/assets/wmatic.svg',
       decimals: 18,
-      coingecko_id: 'matic-network',
+      coingecko_id: 'wmatic',
       contracts: [
         {
           contract_address: '0xEAE61FD42A56F435a913d1570fF301a532d027b2',
@@ -3621,7 +3621,7 @@ module.exports = {
       name: 'Wrapped Fantom',
       image: '/logos/assets/wftm.svg',
       decimals: 18,
-      coingecko_id: 'fantom',
+      coingecko_id: 'wrapped-fantom',
       contracts: [
         {
           contract_address: '0xd9774230a31bf49c3d9372eeb55aa10df1807238',
@@ -3741,7 +3741,7 @@ module.exports = {
       name: 'Wrapped Dev',
       image: '/logos/assets/wdev.svg',
       decimals: 18,
-      coingecko_id: 'moonbeam',
+      coingecko_id: 'wrapped-moonbeam',
       contracts: [
         {
           contract_address: '0xDc6B192eFa7eBab24063e20c962E74C88A012D3c',
@@ -4207,7 +4207,7 @@ module.exports = {
       name: 'Wrapped Ether',
       image: '/logos/assets/weth.svg',
       decimals: 18,
-      coingecko_id: 'ethereum',
+      coingecko_id: 'weth',
       contracts: [
         {
           contract_address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
@@ -4227,7 +4227,7 @@ module.exports = {
       name: 'Wrapped AVAX',
       image: '/logos/assets/wavax.svg',
       decimals: 18,
-      coingecko_id: 'avalanche-2',
+      coingecko_id: 'wrapped-avax',
       contracts: [
         {
           contract_address: '0x5e39FF8ce8D4d35f984E9Be4f6c8674E85E03B4A',
