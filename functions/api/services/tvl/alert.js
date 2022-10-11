@@ -8,17 +8,21 @@ const {
   equals_ignore_case,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm || [];
-const cosmos_chains_data = data?.chains?.[environment]?.cosmos || [];
+const evm_chains_data = data?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = data?.chains?.[environment]?.cosmos ||
+  [];
 const chains_data = _.concat(
   evm_chains_data,
   cosmos_chains_data,
 );
 const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const assets_data = data?.assets?.[environment] || [];
+const assets_data = data?.assets?.[environment] ||
+  [];
 
 const {
   endpoints,
@@ -42,7 +46,16 @@ module.exports = async (
   const _response = await read(
     'tvls',
     {
-      range: { updated_at: { gt: moment().subtract(6, 'minutes').unix() } },
+      range: {
+        updated_at: {
+          gt: moment()
+            .subtract(
+              5,
+              'minutes',
+            )
+            .unix(),
+        },
+      },
     },
     {
       size: 100,
@@ -100,7 +113,9 @@ module.exports = async (
       ) ||
       (
         Object.values({ ...d.tvl })
-          .findIndex(_d => _d?.is_abnormal_supply) > -1 &&
+          .findIndex(_d =>
+            _d?.is_abnormal_supply
+          ) > -1 &&
         _.sum(
           Object.values({ ...d.tvl })
             .map(_d => {
@@ -115,7 +130,10 @@ module.exports = async (
 
               return (
                 (
-                  (supply || escrow_balance) *
+                  (
+                    supply ||
+                    escrow_balance
+                  ) *
                   (percent_diff_supply / 100) *
                   price
                 ) ||
@@ -141,11 +159,13 @@ module.exports = async (
     data = _data;
   }
 
-  const timestamp = (
-    updated_at ?
-      moment(updated_at * 1000) :
-      moment()
-  ).format();
+  const timestamp =
+    (
+      updated_at ?
+        moment(updated_at * 1000) :
+        moment()
+    )
+    .format();
 
   let native_on_evm_total_status = 'ok',
     native_on_evm_escrow_status = 'ok',
@@ -173,7 +193,9 @@ module.exports = async (
           tvl,
         } = { ...d };
 
-        const asset_data = assets_data.find(a => a?.id === asset);
+        const asset_data = assets_data.find(a =>
+          a?.id === asset
+        );
 
         const {
           symbol,
@@ -181,13 +203,19 @@ module.exports = async (
           ibc,
         } = { ...asset_data };
 
-        const native_chain_id = contracts?.find(c => c?.is_native)?.chain_id ||
-          ibc?.find(i => i?.is_native)?.chain_id;
+        const native_chain_id =
+          contracts?.find(c =>
+            c?.is_native
+          )?.chain_id ||
+          ibc?.find(i =>
+            i?.is_native
+          )?.chain_id;
 
-        const native_chain = chains_data.find(c =>
-          c?.id === native_chain_id ||
-          c?.chain_id === native_chain_id
-        )?.id;
+        const native_chain =
+          chains_data.find(c =>
+            c?.id === native_chain_id ||
+            c?.chain_id === native_chain_id
+          )?.id;
 
         const native_on = evm_chains_data.findIndex(c => c?.id === native_chain) > -1 ?
           'evm' :
@@ -227,7 +255,7 @@ module.exports = async (
                     )
                   ),
                 endpoints?.app &&
-                  `${endpoints.app}/tvl`,
+                `${endpoints.app}/tvl`,
               )
               .filter(l => l)
             ),
@@ -303,7 +331,7 @@ module.exports = async (
                     )
                   ),
                 endpoints?.app &&
-                  `${endpoints.app}/tvl`,
+                `${endpoints.app}/tvl`,
               )
               .filter(l => l)
             ),
@@ -311,63 +339,77 @@ module.exports = async (
         }
       });
 
-    native_on_evm_total_status = details.findIndex(d =>
-      d.native_on === 'evm' &&
-      typeof d.percent_diff_supply === 'number'
-    ) > -1 ?
-      'alert' :
-      'ok';
-    native_on_evm_escrow_status = details.findIndex(d =>
-      d.native_on === 'evm' &&
-      d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1
-    ) > -1 ?
-      'alert' :
-      'ok';
-    native_on_cosmos_evm_escrow_status = details.findIndex(d =>
-      d.native_on === 'cosmos' &&
-      typeof d.percent_diff_supply === 'number'
-    ) > -1 ?
-      'alert' :
-      'ok';
-    native_on_cosmos_escrow_status = details.findIndex(d =>
-      d.native_on === 'cosmos' &&
-      d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1
-    ) > -1 ?
-      'alert' :
-      'ok';
+    native_on_evm_total_status =
+      details.findIndex(d =>
+        d.native_on === 'evm' &&
+        typeof d.percent_diff_supply === 'number'
+      ) > -1 ?
+        'alert' :
+        'ok';
+    native_on_evm_escrow_status =
+      details.findIndex(d =>
+        d.native_on === 'evm' &&
+        d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1
+      ) > -1 ?
+        'alert' :
+        'ok';
+    native_on_cosmos_evm_escrow_status =
+      details.findIndex(d =>
+        d.native_on === 'cosmos' &&
+        typeof d.percent_diff_supply === 'number'
+      ) > -1 ?
+        'alert' :
+        'ok';
+    native_on_cosmos_escrow_status =
+      details.findIndex(d =>
+        d.native_on === 'cosmos' &&
+        d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1
+      ) > -1 ?
+        'alert' :
+        'ok';
 
-    const evm_details = [
-      native_on_evm_total_status,
-      native_on_evm_escrow_status,
-    ].findIndex(s => s !== 'ok') > -1 ?
-      details
-        .filter(d => d.native_on === 'evm') :
-      undefined;
+    const evm_details =
+      [
+        native_on_evm_total_status,
+        native_on_evm_escrow_status,
+      ]
+      .findIndex(s => s !== 'ok') > -1 ?
+        details
+          .filter(d => d.native_on === 'evm') :
+        undefined;
 
-    const cosmos_details = [
-      native_on_cosmos_evm_escrow_status,
-      native_on_cosmos_escrow_status,
-    ].findIndex(s => s !== 'ok') > -1 ?
-      details
-        .filter(d => d.native_on === 'cosmos') :
-      undefined;
+    const cosmos_details =
+      [
+        native_on_cosmos_evm_escrow_status,
+        native_on_cosmos_escrow_status,
+      ]
+      .findIndex(s => s !== 'ok') > -1 ?
+        details
+          .filter(d => d.native_on === 'cosmos') :
+        undefined;
 
     status = 'alert';
 
-    summary = evm_details && cosmos_details ?
-      {
-        evm: evm_details
-          .map(d => d.symbol)
-          .join(', '),
-        cosmos: cosmos_details
-          .map(d => d.symbol)
-          .join(', '),
-      } :
-      evm_details || cosmos_details ?
-        (evm_details || cosmos_details)
+    summary =
+      evm_details &&
+      cosmos_details ?
+        {
+          evm: evm_details
+            .map(d => d.symbol)
+            .join(', '),
+          cosmos: cosmos_details
+            .map(d => d.symbol)
+            .join(', '),
+        } :
+        evm_details ||
+        cosmos_details ?
+          (
+            evm_details ||
+            cosmos_details
+          )
           .map(d => d.symbol)
           .join(', ') :
-        undefined;
+          undefined;
 
     links = _.uniq(
       details

@@ -4,9 +4,11 @@ const {
   sleep,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
-const assets_data = require('../../data')?.assets?.[environment] || [];
+const assets_data = require('../../data')?.assets?.[environment] ||
+  [];
 
 module.exports = async context => {
   for (const asset_data of assets_data) {
@@ -18,6 +20,7 @@ module.exports = async context => {
       {
         asset: id,
       },
+      true,
     );
   }
 

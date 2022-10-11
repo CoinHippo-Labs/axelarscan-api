@@ -14,6 +14,7 @@ const getContractSupply = async (
   provider,
 ) => {
   let supply;
+
   const {
     contract_address,
     decimals,
@@ -26,19 +27,26 @@ const getContractSupply = async (
     try {
       const contract = new Contract(
         contract_address,
-        ['function totalSupply() view returns (uint256)'],
+        [
+          'function totalSupply() view returns (uint256)',
+        ],
         provider,
       );
+
       supply = await contract.totalSupply();
     } catch (error) {}
   }
 
-  return Number(
-    formatUnits(
-      BigNumber.from((supply || 0).toString()),
-      decimals || 18,
-    )
-  );
+  return supply &&
+    Number(
+      formatUnits(
+        BigNumber.from(
+          supply.toString()
+        ),
+        decimals ||
+        18,
+      )
+    );
 };
 
 const getEVMBalance = async (
@@ -47,6 +55,7 @@ const getEVMBalance = async (
   provider,
 ) => {
   let balance;
+
   const {
     contract_address,
     decimals,
@@ -58,25 +67,36 @@ const getEVMBalance = async (
     provider) {
     try {
       if (contract_address === AddressZero) {
-        balance = await provider.getBalance(address);
+        balance = await provider.getBalance(
+          address,
+        );
       }
       else {
         const contract = new Contract(
           contract_address,
-          ['function balanceOf(address owner) view returns (uint256)'],
+          [
+            'function balanceOf(address owner) view returns (uint256)',
+          ],
           provider,
         );
-        balance = await contract.balanceOf(address);
+
+        balance = await contract.balanceOf(
+          address,
+        );
       }
     } catch (error) {}
   }
 
-  return Number(
-    formatUnits(
-      BigNumber.from((balance || 0).toString()),
-      decimals || 18,
-    )
-  );
+  return balance &&
+    Number(
+      formatUnits(
+        BigNumber.from(
+          balance.toString()
+        ),
+        decimals ||
+        18,
+      )
+    );
 };
 
 const getCosmosBalance = async (
@@ -85,16 +105,19 @@ const getCosmosBalance = async (
   lcds,
 ) => {
   let balance;
+
   const {
     base_denom,
     denom,
     decimals,
   } = { ...denom_data };
 
-  const denoms = [
-    base_denom,
-    denom,
-  ].filter(d => d);
+  const denoms =
+    [
+      base_denom,
+      denom,
+    ]
+    .filter(d => d);
 
   lcds = typeof lcds === 'string' ?
     [lcds] :
@@ -106,10 +129,11 @@ const getCosmosBalance = async (
     lcds
   ) {
     try {
-      const paths = [
-        '/cosmos/bank/v1beta1/balances/{address}/by_denom',
-        '/cosmos/bank/v1beta1/balances/{address}/{denom}',
-      ];
+      const paths =
+        [
+          '/cosmos/bank/v1beta1/balances/{address}/by_denom',
+          '/cosmos/bank/v1beta1/balances/{address}/{denom}',
+        ];
 
       let valid = false;
 
@@ -160,12 +184,16 @@ const getCosmosBalance = async (
     } catch (error) {}
   }
 
-  return Number(
-    formatUnits(
-      BigNumber.from((balance || 0).toString()),
-      decimals || 6,
-    )
-  );
+  return balance &&
+    Number(
+      formatUnits(
+        BigNumber.from(
+          balance.toString()
+        ),
+        decimals ||
+        6,
+      )
+    );
 };
 
 const getCosmosSupply = async (
@@ -173,15 +201,18 @@ const getCosmosSupply = async (
   lcds,
 ) => {
   let supply;
+
   const {
     base_denom,
     denom,
     decimals,
   } = { ...denom_data };
 
-  const denoms = [
-    denom,
-  ].filter(d => d);
+  const denoms =
+    [
+      denom,
+    ]
+    .filter(d => d);
 
   lcds = typeof lcds === 'string' ?
     [lcds] :
@@ -225,12 +256,18 @@ const getCosmosSupply = async (
             },
           ).catch(error => { return { data: { error } }; });
 
-          supply = response?.data?.supply?.find(s => equals_ignore_case(s?.denom, denom))?.amount;
+          supply = response?.data?.supply?.find(s =>
+            equals_ignore_case(s?.denom, denom)
+          )?.amount;
 
           if (
             supply &&
             supply !== '0'
           ) {
+            valid = true;
+          }
+          else if (response?.data?.supply) {
+            supply = 0;
             valid = true;
           }
         }
@@ -245,8 +282,11 @@ const getCosmosSupply = async (
   return supply &&
     Number(
       formatUnits(
-        BigNumber.from(supply.toString()),
-        decimals || 6,
+        BigNumber.from(
+          supply.toString()
+        ),
+        decimals ||
+        6,
       )
     );
 };
@@ -256,16 +296,19 @@ const getAxelarnetSupply = async (
   cli,
 ) => {
   let supply;
+
   const {
     base_denom,
     denom,
     decimals,
   } = { ...denom_data };
 
-  const denoms = [
-    base_denom,
-    denom,
-  ].filter(d => d);
+  const denoms =
+    [
+      base_denom,
+      denom,
+    ]
+    .filter(d => d);
 
   if (
     denoms.length > 0 &&
@@ -307,8 +350,11 @@ const getAxelarnetSupply = async (
   return supply &&
     Number(
       formatUnits(
-        BigNumber.from(supply.toString()),
-        decimals || 6,
+        BigNumber.from(
+          supply.toString()
+        ),
+        decimals ||
+        6,
       )
     );
 };
