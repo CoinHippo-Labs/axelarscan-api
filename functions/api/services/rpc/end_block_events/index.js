@@ -8,10 +8,11 @@ module.exports = async (
 ) => {
   let response;
 
-  events = events.filter(e =>
-    e?.type &&
-    e.attributes?.length > 0
-  );
+  events = events
+    .filter(e =>
+      e?.type &&
+      e.attributes?.length > 0
+    );
 
   for (const event of events) {
     const {

@@ -15,7 +15,8 @@ const {
   to_json,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const {
   endpoints,
@@ -32,7 +33,11 @@ module.exports = async (
     cache_hit = false;
 
   if (endpoints?.lcd) {
-    const lcd = axios.create({ baseURL: endpoints.lcd });
+    const lcd = axios.create(
+      {
+        baseURL: endpoints.lcd,
+      },
+    );
 
     const {
       cmd,
@@ -46,6 +51,7 @@ module.exports = async (
       .filter(p => p)
       .join('_')
       .toLowerCase();
+
     let response_cache;
 
     if (!cache) {
@@ -98,7 +104,12 @@ module.exports = async (
 
       if (
         response_cache &&
-        moment().diff(moment(updated_at * 1000), 'seconds', true) <= cache_timeout
+        moment()
+          .diff(
+            moment(updated_at * 1000),
+            'seconds',
+            true,
+          ) <= cache_timeout
       ) {
         response = response_cache;
         cache_hit = true;
@@ -141,21 +152,26 @@ module.exports = async (
           ) {
             const api = endpoints.cosmostation;
 
-            const cosmostation = axios.create({ baseURL: api });
+            const cosmostation = axios.create(
+              {
+                baseURL: api,
+              },
+            );
+
             const _path = `/tx/hash/${hash}`;
 
-            const __response = await cosmostation.get(
+            const _response = await cosmostation.get(
               _path,
             ).catch(error => { return { data: { error } }; });
 
             const {
               tx,
-            } = { ...__response?.data?.data };
+            } = { ..._response?.data?.data };
 
             if (tx) {
               data = {
                 url: `${api}${_path}`,
-                tx_response: __response.data.data,
+                tx_response: _response.data.data,
                 tx,
               };
             }
@@ -169,38 +185,45 @@ module.exports = async (
               chain_id,
             } = { ...endpoints.mintscan };
 
-            const mintscan = axios.create({ baseURL: api });
+            const mintscan = axios.create(
+              {
+                baseURL: api,
+              },
+            );
+
             const _path = `/block/${chain_id}/${height}`;
 
-            const __response = await mintscan.get(
+            const _response = await mintscan.get(
               _path,
             ).catch(error => { return { data: { error } }; });
 
             const {
               txs,
-            } = { ..._.head(__response?.data) };
+            } = { ..._.head(_response?.data) };
 
             if (txs) {
               data = {
                 url: `${api}${_path}`,
-                tx_responses: txs.map(d => {
-                  const {
-                    data,
-                  } = { ...d };
+                tx_responses: txs
+                  .map(d => {
+                    const {
+                      data,
+                    } = { ...d };
 
-                  return {
-                    ...data,
-                  };
-                }),
-                txs: txs.map(d => {
-                  const {
-                    tx,
-                  } = { ...d?.data };
+                    return {
+                      ...data,
+                    };
+                  }),
+                txs: txs
+                  .map(d => {
+                    const {
+                      tx,
+                    } = { ...d?.data };
 
-                  return {
-                    ...tx,
-                  };
-                }),
+                    return {
+                      ...tx,
+                    };
+                  }),
               };
             }
           }
@@ -212,13 +235,18 @@ module.exports = async (
 
     if (response) {
       // save cache
-      if (cache && !cache_hit) {
+      if (
+        cache &&
+        !cache_hit
+      ) {
         await write(
           'cosmos',
           cache_id,
           {
             response: JSON.stringify(response),
-            updated_at: moment().unix(),
+            updated_at:
+              moment()
+                .unix(),
           },
         );
       }

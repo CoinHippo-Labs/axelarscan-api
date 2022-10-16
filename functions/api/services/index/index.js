@@ -32,16 +32,21 @@ const crud = async (
   } = { ...params };
 
   // normalize
-  path = path || '';
+  path = path ||
+    '';
   use_raw_data = typeof use_raw_data === 'boolean' ?
     use_raw_data :
-    typeof use_raw_data !== 'string' || equals_ignore_case(use_raw_data, 'true');
+    typeof use_raw_data !== 'string' ||
+    equals_ignore_case(use_raw_data, 'true');
   update_only = typeof update_only === 'boolean' ?
     update_only :
-    typeof update_only !== 'string' || equals_ignore_case(update_only, 'true');
+    typeof update_only !== 'string' ||
+    equals_ignore_case(update_only, 'true');
   track_total_hits = typeof track_total_hits === 'boolean' ?
     track_total_hits :
-    typeof track_total_hits !== 'string' || equals_ignore_case(track_total_hits, 'true');
+    typeof track_total_hits !== 'string' ||
+    equals_ignore_case(track_total_hits, 'true');
+
   if (!isNaN(height)) {
     height = Number(height);
   }
@@ -58,34 +63,47 @@ const crud = async (
     delete params.use_raw_data;
     delete params.update_only;
 
-    const object_fields = [
-      'query',
-      'aggs',
-      'sort',
-      'fields',
-    ];
-    object_fields.forEach(f => {
-      if (params[f]) {
-        try {
-          params[f] = params[f].startsWith('[') && params[f].endsWith(']') ?
-            JSON.parse(params[f]) :
-            normalize_obj(JSON.parse(params[f]));
-        } catch (error) {}
-      }
-    });
+    const object_fields =
+      [
+        'query',
+        'aggs',
+        'sort',
+        'fields',
+      ];
+
+    object_fields
+      .forEach(f => {
+        if (params[f]) {
+          try {
+            params[f] =
+              params[f].startsWith('[') &&
+              params[f].endsWith(']') ?
+                JSON.parse(params[f]) :
+                normalize_obj(
+                  JSON.parse(params[f])
+                );
+          } catch (error) {}
+        }
+      });
 
     // change indexer info
     if (transfer_collections.includes(collection)) {
       indexer_url = process.env.TRANSFERS_INDEXER_URL;
       indexer_username = process.env.TRANSFERS_INDEXER_USERNAME;
       indexer_password = process.env.TRANSFERS_INDEXER_PASSWORD;
+
       // return if indexer is not exist
       if (!indexer_url) {
         return response;
       }
     }
 
-    const indexer = axios.create({ baseURL: indexer_url });
+    const indexer = axios.create(
+      {
+        baseURL: indexer_url,
+      },
+    );
+
     const auth = {
       username: indexer_username,
       password: indexer_password,
@@ -94,7 +112,8 @@ const crud = async (
     // request to indexer
     switch (method) {
       case 'get':
-        path = path || `/${collection}/_doc/${id}`;
+        path = path ||
+          `/${collection}/_doc/${id}`;
 
         response = await indexer.get(
           path,
@@ -120,7 +139,8 @@ const crud = async (
         break;
       case 'set':
       case 'update':
-        path = path || `/${collection}/_doc/${id}`;
+        path = path ||
+          `/${collection}/_doc/${id}`;
 
         if (path.includes('/_update_by_query')) {
           try {
@@ -172,7 +192,10 @@ const crud = async (
               } = { ..._response?.data };
 
               if (_source) {
-                path = path.replace('_doc', '_update');
+                path = path.replace(
+                  '_doc',
+                  '_update',
+                );
               }
             }
 
@@ -193,7 +216,8 @@ const crud = async (
         break;
       case 'query':
       case 'search':
-        path = path || `/${collection}/_search`;
+        path = path ||
+          `/${collection}/_search`;
 
         const search_data = use_raw_data ?
           params :
@@ -202,33 +226,38 @@ const crud = async (
               bool: {
                 // set query for each field
                 must: Object.entries({ ...params })
-                  .filter(([k, v]) => ![
-                    'query',
-                    'aggs',
-                    'from',
-                    'size',
-                    'sort',
-                    'fields',
-                    '_source',
-                  ].includes(k)
-                ).map(([k, v]) => {
-                  // overide field from params
-                  switch (k) {
-                    case 'id':
-                      if (!v && id) {
-                        v = id;
-                      }
-                      break;
-                    default:
-                      break;
-                  }
-                  // set match query
-                  return {
-                    match: {
-                      [`${k}`]: v,
-                    },
-                  };
-                }),
+                  .filter(([k, v]) =>
+                    ![
+                      'query',
+                      'aggs',
+                      'from',
+                      'size',
+                      'sort',
+                      'fields',
+                      '_source',
+                    ].includes(k)
+                  )
+                  .map(([k, v]) => {
+                    // override field from params
+                    switch (k) {
+                      case 'id':
+                        if (
+                          !v &&
+                          id
+                        ) {
+                          v = id;
+                        }
+                        break;
+                      default:
+                        break;
+                    }
+                    // set match query
+                    return {
+                      match: {
+                        [`${k}`]: v,
+                      },
+                    };
+                  }),
               },
             },
           };
@@ -255,31 +284,34 @@ const crud = async (
           aggregations,
         } = { ...response?.data };
 
-        response = hits?.hits || aggregations ?
-          {
-            data: {
-              data: hits?.hits?.map(d => {
-                const {
-                  _id,
-                  _source,
-                  fields,
-                } = { ...d };
+        response =
+          hits?.hits ||
+          aggregations ?
+            {
+              data: {
+                data: hits?.hits?.map(d => {
+                  const {
+                    _id,
+                    _source,
+                    fields,
+                  } = { ...d };
 
-                return {
-                  ..._source,
-                  ...fields,
-                  id: _id,
-                };
-              }),
-              total: hits?.total?.value,
-              aggs: aggregations,
-            },
-          } :
-          response;
+                  return {
+                    ..._source,
+                    ...fields,
+                    id: _id,
+                  };
+                }),
+                total: hits?.total?.value,
+                aggs: aggregations,
+              },
+            } :
+            response;
         break;
       case 'delete':
       case 'remove':
-        path = path || `/${collection}/_doc/${id}`;
+        path = path ||
+          `/${collection}/_doc/${id}`;
 
         response = await indexer.delete(
           path,
@@ -305,24 +337,29 @@ const crud = async (
 const get = async (
   collection,
   id,
-) => await crud({
-  method: 'get',
-  collection,
-  id,
-});
+) =>
+  await crud(
+    {
+      method: 'get',
+      collection,
+      id,
+    },
+  );
 
 const read = async (
   collection,
   query,
   params = {},
 ) =>
-  await crud({
-    method: 'query',
-    collection,
-    query,
-    use_raw_data: true,
-    ...params,
-  });
+  await crud(
+    {
+      method: 'query',
+      collection,
+      query,
+      use_raw_data: true,
+      ...params,
+    },
+  );
 
 const write = async (
   collection,
@@ -331,30 +368,34 @@ const write = async (
   update_only = false,
   is_update = true,
 ) =>
-  await crud({
-    method: 'set',
-    collection,
-    id,
-    path: is_update ?
-      `/${collection}/_update/${id}` :
-      undefined,
-    update_only,
-    ...data,
-  });
+  await crud(
+    {
+      method: 'set',
+      collection,
+      id,
+      path: is_update ?
+        `/${collection}/_update/${id}` :
+        undefined,
+      update_only,
+      ...data,
+    },
+  );
 
 const delete_by_query = async (
   collection,
   query,
   params = {},
 ) =>
-  await crud({
-    method: 'query',
-    collection,
-    path: `/${collection}/_delete_by_query`,
-    query,
-    use_raw_data: true,
-    ...params,
-  });
+  await crud(
+    {
+      method: 'query',
+      collection,
+      path: `/${collection}/_delete_by_query`,
+      query,
+      use_raw_data: true,
+      ...params,
+    },
+  );
 
 module.exports = {
   crud,

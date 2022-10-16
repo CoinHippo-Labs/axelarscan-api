@@ -26,7 +26,10 @@ const onEmit = async (
   data,
   env = environment,
 ) => {
-  if (chain_config && data) {
+  if (
+    chain_config &&
+    data
+  ) {
     try {
       // chain configuration
       const {
@@ -54,21 +57,37 @@ const onEmit = async (
       data.id = `${transactionHash}_${transactionIndex}_${logIndex}`;
 
       // construct returnValues from arguments
-      if (args && abi) {
-        const inputs = abi.find(a => a?.name === event)?.inputs || [];
+      if (
+        args &&
+        abi
+      ) {
+        const {
+          inputs,
+        } = abi.find(a => a?.name === event);
         const returnValues = {};
-        inputs.forEach((input, i) => {
-          if (input?.name) {
-            returnValues[input.name] = args[i];
-          }
-        });
+
+        if (inputs) {
+          inputs
+            .forEach((input, i) => {
+              const {
+                name,
+              } = { ...input };
+
+              if (name) {
+                returnValues[name] = args[i];
+              }
+            });
+        }
+
         data.returnValues = returnValues;
         delete data.args;
       }
 
       // normalize
       try {
-        data = JSON.parse(JSON.stringify(data));
+        data = JSON.parse(
+          JSON.stringify(data)
+        );
       } catch (error) {}
 
       if (events_name.includes(event)) {
@@ -105,7 +124,11 @@ const getPastEvents = async (
   filters,
   options,
 ) => {
-  if (chain_config && filters && options) {
+  if (
+    chain_config &&
+    filters &&
+    options
+  ) {
     // chain configuration
     const {
       id,
@@ -140,17 +163,19 @@ const getPastEvents = async (
       'get past gateway events',
       {
         chain,
-        contract_address: contract.address,
+        contract_address: address,
         options,
       },
     );
 
     // query events from contract
-    const events = await contract.queryFilter(
-      filters,
-      fromBlock,
-      toBlock,
-    ).catch(error => { return { error }; });
+    const events = await contract
+      .queryFilter(
+        filters,
+        fromBlock,
+        toBlock,
+      )
+      .catch(error => { return { error }; });
 
     if (!events?.error) {
       if (events) {
@@ -166,19 +191,23 @@ const getPastEvents = async (
       return;
     }
     else {
+      const {
+        message,
+      } = { ...events.error };
+
       log(
         'warn',
         service_name,
         'get past gateway events',
         {
           chain,
-          contract_address: contract.address,
+          contract_address: address,
           options,
-          error: events.error.message,
+          error: message,
         },
       );
 
-      await sleep(3 * 1000);
+      await sleep(1.5 * 1000);
 
       return await getPastEvents(
         chain_config,
@@ -204,19 +233,20 @@ const sync = async (
     const chain = id;
 
     // number of block per past events querying
-    const num_query_block = past_events_block_per_request || 100;
+    const num_query_block = past_events_block_per_request ||
+      100;
 
     // get latest block
     let latest_events_block,
       latest_block;
 
     try {
-      const latest_gmp_block = await getLatestEventBlock(chain);
+      const latest_event_block = await getLatestEventBlock(chain);
 
       // block for each events group
       const {
         gateway_block,
-      } = { ...latest_gmp_block?.latest };
+      } = { ...latest_event_block?.latest };
 
       // set latest block from api & rpc response
       latest_events_block = gateway_block - num_query_block;
@@ -241,19 +271,32 @@ const sync = async (
     // iterate until cover all
     while (!synced) {
       /* start if statement for checking & set the query filters options of each round */
-      if (typeof latest_block !== 'number' || typeof options.fromBlock !== 'number') {
+      if (
+        typeof latest_block !== 'number' ||
+        typeof options.fromBlock !== 'number'
+      ) {
         synced = true;
       }
       else if (latest_block - options.fromBlock >= num_query_block) {
-        options.fromBlock = options.fromBlock + (options.toBlock === latest_block ? 0 : num_query_block);
+        options.fromBlock = options.fromBlock +
+          (options.toBlock === latest_block ?
+            0 :
+            num_query_block
+          );
+
         options.toBlock = options.fromBlock + num_query_block - 1;
+
         if (options.toBlock > latest_block) {
           options.toBlock = latest_block;
         }
       }
       else {
-        options.fromBlock = options.toBlock === latest_block ? options.fromBlock : options.toBlock;
+        options.fromBlock = options.toBlock === latest_block ?
+          options.fromBlock :
+          options.toBlock;
+
         options.toBlock = latest_block;
+
         synced = true;
       }
       /* end if statement */

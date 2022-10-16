@@ -1,13 +1,25 @@
 const {
   providers: { FallbackProvider, JsonRpcProvider },
 } = require('ethers');
-const config = require('config-yml');
 const _ = require('lodash');
 const moment = require('moment');
+const config = require('config-yml');
+
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const {
   log_level,
 } = { ...config };
+
+const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos ||
+  [];
+const chains_data = _.concat(
+  evm_chains_data,
+  cosmos_chains_data,
+);
 
 const log = (
   level = 'info',
@@ -20,7 +32,23 @@ const log = (
     level = level.toLowerCase();
 
     // generate log message
-    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;
+    const log_message = `${level === 'error' ?
+      'ERR' :
+      level === 'warn' ?
+        'WARN' :
+        level === 'debug' ?
+          'DBG' :
+          'INF'
+    } [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ?
+      data :
+      typeof data === 'object' ?
+        JSON.stringify(
+          data,
+          null,
+          2,
+        ) :
+        data
+    }`;
 
     switch (level) {
       case 'error':
@@ -30,7 +58,10 @@ const log = (
         console.warn(log_message);
         break;
       case 'debug':
-        if (log_level === 'debug') {
+        if (
+          log_level === 'debug' ||
+          process.env.LOG_LEVEL === 'debug'
+        ) {
           console.debug(log_message);
         }
         break;
@@ -41,23 +72,43 @@ const log = (
   } catch (error) {}
 };
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const capitalize = s => typeof s !== 'string' ?
-  '' :
-  s.trim()
-    .split('-').join(' ')
-    .split('_').join(' ')
-    .split(' ')
-    .map(c => c.trim())
-    .filter(c => c)
-    .map(c => `${c.substr(0, 1).toUpperCase()}${c.substr(1)}`)
-    .join(' ');
+const sleep = ms => new Promise(resolve =>
+  setTimeout(
+    resolve,
+    ms,
+  )
+);
 
 const equals_ignore_case = (
   a,
   b,
-) => (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
+) =>
+  (!a && !b) ||
+  a?.toLowerCase() === b?.toLowerCase();
+
+const capitalize = s =>
+  typeof s !== 'string' ?
+    '' :
+    s.trim()
+      .split('-')
+      .join(' ')
+      .split('_')
+      .join(' ')
+      .split(' ')
+      .map(c => c.trim())
+      .filter(c => c)
+      .map(c =>
+        `${
+          c.substr(
+            0,
+            1,
+          )
+          .toUpperCase()
+        }${
+          c.substr(1)
+        }`
+      )
+      .join(' ');
 
 const get_params = req => {
   return {
@@ -83,14 +134,15 @@ const to_json = s => {
 const to_hex = byte_array => {
   let string = '0x';
 
-  byte_array.forEach(byte =>
-    string += (
-      '0' +
-      (byte & 0xFF)
-        .toString(16)
-    )
-    .slice(-2)
-  );
+  byte_array
+    .forEach(byte =>
+      string += (
+        '0' +
+        (byte & 0xFF)
+          .toString(16)
+      )
+      .slice(-2)
+    );
 
   return string;
 };
@@ -109,20 +161,36 @@ const decode_base64 = s => {
 };
 
 const get_granularity = time => {
-  return time && {
-    ms: moment(time).valueOf(),
-    hour: moment(time).startOf('hour').valueOf(),
-    day: moment(time).startOf('day').valueOf(),
-    week: moment(time).startOf('week').valueOf(),
-    month: moment(time).startOf('month').valueOf(),
-    quarter: moment(time).startOf('quarter').valueOf(),
-    year: moment(time).startOf('year').valueOf(),
-  };
+  return time &&
+    {
+      ms: moment(time)
+        .valueOf(),
+      hour: moment(time)
+        .startOf('hour')
+        .valueOf(),
+      day: moment(time)
+        .startOf('day')
+        .valueOf(),
+      week: moment(time)
+        .startOf('week')
+        .valueOf(),
+      month: moment(time)
+        .startOf('month')
+        .valueOf(),
+      quarter: moment(time)
+        .startOf('quarter')
+        .valueOf(),
+      year: moment(time)
+        .startOf('year')
+        .valueOf(),
+    };
 };
 
 const normalize_original_chain = chain => {
   if (chain) {
-    chain = chain.trim().toLowerCase();
+    chain = chain
+      .trim()
+      .toLowerCase();
   }
 
   return chain;
@@ -133,25 +201,37 @@ const normalize_chain = chain => {
 
   if (chain) {
     chain = chain
-      .split('-')
-      .filter(c => !regex.test(c))
-      .join('')
       .trim()
       .toLowerCase();
+
+    if (
+      chains_data.findIndex(c =>
+        equals_ignore_case(c?.id, chain)
+      ) < 0
+    ) {
+      chain = chain
+        .split('-')
+        .filter(c =>
+          !regex.test(c)
+        )
+        .join('');
+    }
   }
 
   return chain;
 };
 
-const transfer_actions = [
-  'ConfirmDeposit',
-  'ConfirmERC20Deposit',
-];
+const transfer_actions =
+  [
+    'ConfirmDeposit',
+    'ConfirmERC20Deposit',
+  ];
 
-const vote_types = [
-  'VoteConfirmDeposit',
-  'Vote',
-];
+const vote_types =
+  [
+    'VoteConfirmDeposit',
+    'Vote',
+  ];
 
 const getTransaction = async (
   provider,
@@ -160,7 +240,10 @@ const getTransaction = async (
 ) => {
   let output;
 
-  if (provider && tx_hash) {
+  if (
+    provider &&
+    tx_hash
+  ) {
     output = {
       id: tx_hash,
       chain,
@@ -168,9 +251,13 @@ const getTransaction = async (
 
     try {
       // get transaction
-      output.transaction = await provider.getTransaction(tx_hash);
+      output.transaction = await provider.getTransaction(
+        tx_hash,
+      );
       // get receipt
-      output.receipt = await provider.getTransactionReceipt(tx_hash);
+      output.receipt = await provider.getTransactionReceipt(
+        tx_hash,
+      );
     } catch (error) {}
   }
 
@@ -183,13 +270,22 @@ const getBlockTime = async (
 ) => {
   let output;
 
-  if (provider && block_number) {
+  if (
+    provider &&
+    block_number
+  ) {
     try {
       // get block
-      const block = await provider.getBlock(block_number);
+      const block = await provider.getBlock(
+        block_number,
+      );
 
-      if (block?.timestamp) {
-        output = block.timestamp;
+      const {
+        timestamp,
+      } = { ...block };
+
+      if (timestamp) {
+        output = timestamp;
       }
     } catch (error) {}
   }
@@ -197,7 +293,10 @@ const getBlockTime = async (
   return output;
 };
 
-const getProvider = chain_data => {
+const getProvider = (
+  chain_data,
+  _rpcs,
+) => {
   const {
     provider_params,
   } = { ...chain_data };
@@ -205,19 +304,31 @@ const getProvider = chain_data => {
     rpcUrls,
   } = { ..._.head(provider_params) };
 
-  const rpcs = rpcUrls?.filter(url => url) || [];
-  const provider = rpcs.length === 1 ?
-    new JsonRpcProvider(rpcs[0]) :
-    new FallbackProvider(
-      rpcs.map((url, i) => {
-        return {
-          provider: new JsonRpcProvider(url),
-          priority: i + 1,
-          stallTimeout: 1000,
-        };
-      }),
-      rpcs.length / 3,
-    );
+  /* start normalize rpcs */
+  let rpcs = _rpcs ||
+    rpcUrls;
+  if (!Array.isArray(rpcs)) {
+    rpcs = [rpcs];
+  }
+  rpcs = rpcs
+    .filter(url => url);
+  /* end normalize rpcs */
+
+  const provider = rpcs.length > 0 ?
+    rpcs.length === 1 ?
+      new JsonRpcProvider(rpcs[0]) :
+      new FallbackProvider(
+        rpcs
+          .map((url, i) => {
+            return {
+              provider: new JsonRpcProvider(url),
+              priority: i + 1,
+              stallTimeout: 1000,
+            };
+          }),
+        rpcs.length / 3,
+      ) :
+    null;
 
   return provider;
 };
@@ -225,8 +336,8 @@ const getProvider = chain_data => {
 module.exports = {
   log,
   sleep,
-  capitalize,
   equals_ignore_case,
+  capitalize,
   get_params,
   to_json,
   to_hex,

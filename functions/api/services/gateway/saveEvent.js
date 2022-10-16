@@ -1,6 +1,5 @@
 const {
   BigNumber,
-  providers: { FallbackProvider, JsonRpcProvider },
   utils: { formatUnits },
 } = require('ethers');
 const _ = require('lodash');
@@ -16,13 +15,17 @@ const {
   get_granularity,
   getTransaction,
   getBlockTime,
+  getProvider,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm || [];
-const assets_data = data?.assets?.[environment] || [];
+const evm_chains_data = data?.chains?.[environment]?.evm ||
+  [];
+const assets_data = data?.assets?.[environment] ||
+  [];
 
 const {
   gateway,
@@ -53,7 +56,11 @@ module.exports = async (
     endpoints,
   } = { ...chains?.[chain] }
 
-  if (!(event && chain && contractAddress)) {
+  if (!(
+    event &&
+    chain &&
+    contractAddress
+  )) {
     response = {
       error: true,
       code: 400,
@@ -67,7 +74,13 @@ module.exports = async (
       message: 'chain not valid',
     };
   }
-  else if (!(endpoints?.rpc && equals_ignore_case(contracts?.[chain]?.address, contractAddress))) {
+  else if (!(
+    endpoints?.rpc &&
+    equals_ignore_case(
+      contracts?.[chain]?.address,
+      contractAddress
+    )
+  )) {
     response = {
       error: true,
       code: 500,
@@ -76,19 +89,10 @@ module.exports = async (
   }
   else {
     // setup provider
-    const rpcs = endpoints.rpc;
-    const provider = rpcs.length === 1 ?
-      new JsonRpcProvider(rpcs[0]) :
-      new FallbackProvider(
-        rpcs.map((url, i) => {
-          return {
-            provider: new JsonRpcProvider(url),
-            priority: i + 1,
-            stallTimeout: 1000,
-          };
-        }),
-        rpcs.length / 3,
-      );
+    const provider = getProvider(
+      null,
+      endpoints.rpc,
+    );
 
     const {
       _id,
@@ -100,7 +104,9 @@ module.exports = async (
     const event_name = event.event;
 
     // initial variables
-    let id = _id || `${transactionHash}_${transactionIndex}_${logIndex}`;
+    let id = _id ||
+      `${transactionHash}_${transactionIndex}_${logIndex}`;
+
     event.id = id;
     event.chain = chain;
     event.contract_address = contractAddress;
@@ -136,18 +142,26 @@ module.exports = async (
           if (block_timestamp) {
             event = {
               ...event,
-              created_at: get_granularity(moment(block_timestamp * 1000).utc()),
+              created_at: get_granularity(
+                moment(block_timestamp * 1000)
+                  .utc()
+              ),
             };
           }
 
-          const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
+          const chain_data = evm_chains_data.find(c =>
+            equals_ignore_case(c?.id, chain)
+          );
           const {
             chain_id,
           } = { ...chain_data };
 
           const asset_data = assets_data.find(a =>
             equals_ignore_case(a?.symbol, symbol) ||
-            a?.contracts?.findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.symbol, symbol)) > -1
+            a?.contracts?.findIndex(c =>
+              c?.chain_id === chain_id &&
+              equals_ignore_case(c?.symbol, symbol)
+            ) > -1
           );
 
           if (asset_data) {
@@ -159,7 +173,9 @@ module.exports = async (
               decimals,
             } = { ...asset_data };
 
-            const contract_data = contracts?.find(c => c.chain_id === chain_id);
+            const contract_data = contracts?.find(c =>
+              c.chain_id === chain_id
+            );
 
             if (contract_data) {
               decimals = contract_data.decimals ||
@@ -168,19 +184,30 @@ module.exports = async (
 
               amount = Number(
                 formatUnits(
-                  BigNumber.from(amount || '0').toString(),
+                  BigNumber.from(amount || '0')
+                    .toString(),
                   decimals,
                 )
               );
 
-              const _response = await assets_price({
-                denom: id,
-                timestamp: moment((block_timestamp || 0) * 1000).valueOf(),
-              });
+              const _response = await assets_price(
+                {
+                  denom: id,
+                  timestamp:
+                    moment(
+                      (
+                        block_timestamp ||
+                        0
+                      ) * 1000
+                    )
+                    .valueOf(),
+                },
+              );
 
               let {
                 price,
               } = { ..._.head(_response) };
+
               price = typeof price === 'number' ?
                 price :
                 undefined;
@@ -280,7 +307,9 @@ module.exports = async (
             );
 
             if (batch_id) {
-              const index = commands?.findIndex(c => equals_ignore_case(c?.id, commandId));
+              const index = commands?.findIndex(c =>
+                equals_ignore_case(c?.id, commandId)
+              );
 
               if (index > -1) {
                 commands[index] = {
@@ -292,7 +321,7 @@ module.exports = async (
                 let command_events
 
                 if (commands.findIndex(c => !c?.transactionHash) > -1) {
-                  const __response = await read(
+                  const _response = await read(
                     'command_events',
                     {
                       bool: {
@@ -318,30 +347,36 @@ module.exports = async (
                     },
                   );
 
-                  command_events = __response?.data;
+                  command_events = _response?.data;
                 }
 
-                commands = commands.map(c => {
-                  if (c?.id && !c.transactionHash) {
-                    const command_event = command_events?.find(_c => equals_ignore_case(_c?.command_id, c.id));
+                commands = commands
+                  .map(c => {
+                    if (
+                      c?.id &&
+                      !c.transactionHash
+                    ) {
+                      const command_event = command_events?.find(_c =>
+                        equals_ignore_case(_c?.command_id, c.id)
+                      );
 
-                    if (command_event) {
-                      const {
-                        transactionHash,
-                        transactionIndex,
-                        logIndex,
-                        block_timestamp,
-                      } = { ...command_event };
+                      if (command_event) {
+                        const {
+                          transactionHash,
+                          transactionIndex,
+                          logIndex,
+                          block_timestamp,
+                        } = { ...command_event };
 
-                      c.transactionHash = transactionHash;
-                      c.transactionIndex = transactionIndex;
-                      c.logIndex = logIndex;
-                      c.block_timestamp = block_timestamp;
+                        c.transactionHash = transactionHash;
+                        c.transactionIndex = transactionIndex;
+                        c.logIndex = logIndex;
+                        c.block_timestamp = block_timestamp;
+                      }
                     }
-                  }
 
-                  return c;
-                });
+                    return c;
+                  });
 
                 await write(
                   'batches',

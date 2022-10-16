@@ -45,7 +45,10 @@ module.exports = async (
       signatures,
     } = { ...last_commit };
 
-    if (height && signatures) {
+    if (
+      height &&
+      signatures
+    ) {
       const {
         timestamp,
       } = { ..._.head(signatures) };
@@ -55,8 +58,11 @@ module.exports = async (
         height,
         {
           height: Number(height),
-          timestamp: moment(timestamp).valueOf(),
-          validators: signatures.map(s => s?.validator_address),
+          timestamp:
+            moment(timestamp)
+              .valueOf(),
+          validators: signatures
+            .map(s => s?.validator_address),
         },
       );
     }

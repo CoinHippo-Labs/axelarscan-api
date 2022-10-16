@@ -275,6 +275,163 @@ module.exports = {
         website: 'https://aurora.dev',
         gateway_address: '0x304acf330bbE08d1e512eefaa92F6a57871fD895',
       },
+      {
+        id: 'arbitrum',
+        maintainer_id: 'arbitrum',
+        name: 'Arbitrum',
+        short_name: 'ARB',
+        chain_id: 42161,
+        provider_params: [
+          {
+            chainId: '0xa4b1',
+            chainName: 'Arbitrum',
+            rpcUrls: [
+              'https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+              'https://rpc.ankr.com/arbitrum',
+              'https://arb1.arbitrum.io/rpc',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://arbiscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Arbiscan',
+          url: 'https://arbiscan.io',
+          icon: '/logos/explorers/arbiscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/arbitrum.svg',
+        color: '#28a0f0',
+        website: 'https://arbitrum.io',
+        gateway_address: '',
+      },
+      {
+        id: 'optimism',
+        maintainer_id: 'optimism',
+        name: 'Optimism',
+        short_name: 'OPT',
+        chain_id: 10,
+        provider_params: [
+          {
+            chainId: '0xa',
+            chainName: 'Optimism',
+            rpcUrls: [
+              'https://rpc.ankr.com/optimism',
+              'https://mainnet.optimism.io',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://optimistic.etherscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Etherscan',
+          url: 'https://optimistic.etherscan.io',
+          icon: '/logos/explorers/etherscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/optimism.svg',
+        color: '#dc2626',
+        website: 'https://optimism.io',
+        gateway_address: '',
+      },
+      {
+        id: 'celo',
+        maintainer_id: 'celo',
+        name: 'Celo',
+        short_name: 'CELO',
+        chain_id: 42220,
+        provider_params: [
+          {
+            chainId: '0xa4ec',
+            chainName: 'Celo',
+            rpcUrls: [
+              'https://rpc.ankr.com/celo',
+              'https://forno.celo.org',
+            ],
+            nativeCurrency: {
+              name: 'Celo',
+              symbol: 'CELO',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://celoscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Celoscan',
+          url: 'https://celoscan.io',
+          icon: '/logos/explorers/celoscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/celo.svg',
+        color: '#35d07f',
+        website: 'https://celo.org',
+        gateway_address: '',
+      },
+      {
+        id: 'kava',
+        maintainer_id: 'kava',
+        name: 'Kava',
+        short_name: 'KAVA',
+        chain_id: 2222,
+        provider_params: [
+          {
+            chainId: '0x8ae',
+            chainName: 'Kava',
+            rpcUrls: [
+              'https://evm.kava.io',
+              'https://evm2.kava.io',
+            ],
+            nativeCurrency: {
+              name: 'Kava',
+              symbol: 'KAVA',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://explorer.kava.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Kava',
+          url: 'https://explorer.kava.io',
+          icon: '/logos/explorers/kava.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/kava.svg',
+        color: '#ff433e',
+        website: 'https://kava.io',
+        gateway_address: '',
+      },
     ],
     cosmos: [
       {
@@ -800,6 +957,34 @@ module.exports = {
       },
       {
         id: 'terra',
+        name: 'Terra Classic',
+        short_name: 'TERRAC',
+        explorer: {
+          name: 'TerraFinder',
+          url: 'https://finder.terra.money/classic',
+          icon: '/logos/explorers/terra.png',
+          block_path: '/blocks/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/terra.png',
+        color: '#ffd83d',
+        website: 'https://terra.money',
+        prefix_address: 'terra',
+        prefix_chain_ids: [
+          'columbus-',
+        ],
+        endpoints: {
+          lcd: 'https://columbus-lcd.terra.dev',
+          lcds: [
+            'https://lcd.terra.dev',
+          ],
+        },
+      },
+      {
+        id: 'terra-2',
         name: 'Terra',
         short_name: 'TERRA',
         explorer: {
@@ -821,62 +1006,6 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://phoenix-lcd.terra.dev',
-          lcds: [
-            'https://columbus-lcd.terra.dev',
-            'https://lcd.terra.dev',
-          ],
-        },
-        overrides: {
-          terra: {
-            id: 'terra',
-            name: 'Terra Classic',
-            explorer: {
-              name: 'TerraFinder',
-              url: 'https://finder.terra.money/classic',
-              icon: '/logos/explorers/terra.png',
-              block_path: '/blocks/{block}',
-              address_path: '/address/{address}',
-              contract_path: '/address/{address}',
-              contract_0_path: '/address/{address}',
-              transaction_path: '/tx/{tx}',
-            },
-            image: '/logos/chains/terra.png',
-            prefix_chain_ids: [
-              'columbus-',
-            ],
-            endpoints: {
-              lcd: 'https://columbus-lcd.terra.dev',
-              lcds: [
-                'https://lcd.terra.dev',
-              ],
-            },
-            tvl: true,
-          },
-          'terra-2': {
-            id: 'terra-2',
-            name: 'Terra',
-            explorer: {
-              name: 'TerraFinder',
-              url: 'https://finder.terra.money/mainnet',
-              icon: '/logos/explorers/terra.png',
-              block_path: '/blocks/{block}',
-              address_path: '/address/{address}',
-              contract_path: '/address/{address}',
-              contract_0_path: '/address/{address}',
-              transaction_path: '/tx/{tx}',
-            },
-            image: '/logos/chains/terra-2.svg',
-            prefix_chain_ids: [
-              'phoenix-',
-            ],
-            endpoints: {
-              lcd: 'https://phoenix-lcd.terra.dev',
-              lcds: [
-
-              ],
-            },
-            tvl: true,
-          },
         },
       },
     ],
@@ -1197,6 +1326,158 @@ module.exports = {
         color: '#88d060',
         website: 'https://aurora.dev',
         gateway_address: '0x304acf330bbE08d1e512eefaa92F6a57871fD895',
+      },
+      {
+        id: 'arbitrum',
+        maintainer_id: 'arbitrum',
+        name: 'Arbitrum',
+        short_name: 'ARB',
+        chain_id: 421613,
+        provider_params: [
+          {
+            chainId: '0x66eed',
+            chainName: 'Arbitrum Goerli',
+            rpcUrls: [
+              'https://goerli-rollup.arbitrum.io/rpc',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://goerli.arbiscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Arbiscan',
+          url: 'https://goerli.arbiscan.io',
+          icon: '/logos/explorers/arbiscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/arbitrum.svg',
+        color: '#28a0f0',
+        website: 'https://arbitrum.io',
+        gateway_address: '',
+      },
+      {
+        id: 'optimism',
+        maintainer_id: 'optimism',
+        name: 'Optimism',
+        short_name: 'OPT',
+        chain_id: 420,
+        provider_params: [
+          {
+            chainId: '0x1a4',
+            chainName: 'Optimism Goerli',
+            rpcUrls: [
+              'https://goerli.optimism.io',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://goerli-optimism.etherscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Etherscan',
+          url: 'https://goerli-optimism.etherscan.io',
+          icon: '/logos/explorers/etherscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/optimism.svg',
+        color: '#dc2626',
+        website: 'https://optimism.io',
+        gateway_address: '',
+      },
+      {
+        id: 'celo',
+        maintainer_id: 'celo',
+        name: 'Celo',
+        short_name: 'CELO',
+        chain_id: 44787,
+        provider_params: [
+          {
+            chainId: '0xaef3',
+            chainName: 'Celo Alfajores',
+            rpcUrls: [
+              'https://alfajores-forno.celo-testnet.org',
+            ],
+            nativeCurrency: {
+              name: 'Celo',
+              symbol: 'CELO',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://alfajores.celoscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Celoscan',
+          url: 'https://alfajores.celoscan.io',
+          icon: '/logos/explorers/celoscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/celo.svg',
+        color: '#35d07f',
+        website: 'https://celo.org',
+        gateway_address: '',
+      },
+      {
+        id: 'kava',
+        maintainer_id: 'kava',
+        name: 'Kava',
+        short_name: 'KAVA',
+        chain_id: 2221,
+        provider_params: [
+          {
+            chainId: '0x8ad',
+            chainName: 'Kava Testnet',
+            rpcUrls: [
+              'https://evm.testnet.kava.io',
+            ],
+            nativeCurrency: {
+              name: 'Kava',
+              symbol: 'KAVA',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://explorer.testnet.kava.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Kava',
+          url: 'https://explorer.testnet.kava.io',
+          icon: '/logos/explorers/kava.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/kava.svg',
+        color: '#ff433e',
+        website: 'https://kava.io',
+        gateway_address: '',
       },
     ],
     cosmos: [
@@ -1524,6 +1805,31 @@ module.exports = {
       },
       {
         id: 'terra',
+        name: 'Terra Classic',
+        short_name: 'TERRAC',
+        explorer: {
+          name: 'TerraFinder',
+          url: 'https://finder.terra.money/testnet',
+          icon: '/logos/explorers/terra.png',
+          block_path: '/blocks/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/terra.png',
+        color: '#ffd83d',
+        website: 'https://terra.money',
+        prefix_address: 'terra',
+        prefix_chain_ids: [
+          'bombay-',
+        ],
+        endpoints: {
+          lcd: 'https://bombay-lcd.terra.dev',
+        },
+      },
+      {
+        id: 'terra-2',
         name: 'Terra',
         short_name: 'TERRA',
         explorer: {
@@ -1545,61 +1851,6 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://pisco-lcd.terra.dev',
-          lcds: [
-            'https://bombay-lcd.terra.dev',
-          ],
-        },
-        overrides: {
-          terra: {
-            id: 'terra',
-            name: 'Terra Classic',
-            explorer: {
-              name: 'TerraFinder',
-              url: 'https://finder.terra.money/testnet',
-              icon: '/logos/explorers/terra.png',
-              block_path: '/blocks/{block}',
-              address_path: '/address/{address}',
-              contract_path: '/address/{address}',
-              contract_0_path: '/address/{address}',
-              transaction_path: '/tx/{tx}',
-            },
-            image: '/logos/chains/terra.png',
-            prefix_chain_ids: [
-              'bombay-',
-            ],
-            endpoints: {
-              lcd: 'https://bombay-lcd.terra.dev',
-              lcds: [
-
-              ],
-            },
-            tvl: true,
-          },
-          'terra-2': {
-            id: 'terra-2',
-            name: 'Terra',
-            explorer: {
-              name: 'TerraFinder',
-              url: 'https://finder.terra.money/testnet',
-              icon: '/logos/explorers/terra.png',
-              block_path: '/blocks/{block}',
-              address_path: '/address/{address}',
-              contract_path: '/address/{address}',
-              contract_0_path: '/address/{address}',
-              transaction_path: '/tx/{tx}',
-            },
-            image: '/logos/chains/terra-2.svg',
-            prefix_chain_ids: [
-              'pisco-',
-            ],
-            endpoints: {
-              lcd: 'https://pisco-lcd.terra.dev',
-              lcds: [
-
-              ],
-            },
-            tvl: true,
-          },
         },
       },
     ],

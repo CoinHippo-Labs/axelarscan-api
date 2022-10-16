@@ -20,16 +20,21 @@ const {
   vote_types,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm || [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos || [];
+const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+  [];
 const chains_data = _.concat(
   evm_chains_data,
   cosmos_chains_data,
 );
 const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const cosmos_non_axelarnet_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet.id);
+const cosmos_non_axelarnet_chains_data =
+  cosmos_chains_data
+    .filter(c => c?.id !== axelarnet.id);
 
 const {
   endpoints,

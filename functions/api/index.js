@@ -29,16 +29,25 @@ exports.handler = async (
     get_params,
   } = require('./utils');
 
-  const environment = process.env.ENVIRONMENT || config?.environment;
+  const environment = process.env.ENVIRONMENT ||
+    config?.environment;
 
-  const evm_chains_data = require('./data')?.chains?.[environment]?.evm || [];
-  const cosmos_chains_data = require('./data')?.chains?.[environment]?.cosmos || [];
-  const assets_data = require('./data')?.assets?.[environment] || [];
+  const evm_chains_data = require('./data')?.chains?.[environment]?.evm ||
+    [];
+  const cosmos_chains_data = require('./data')?.chains?.[environment]?.cosmos ||
+    [];
+  const assets_data = require('./data')?.assets?.[environment] ||
+    [];
 
   // parse function event to req
   const req = {
     body: {
-      ...(event.body && JSON.parse(event.body)),
+      ...(
+        event.body &&
+        JSON.parse(
+          event.body
+        )
+      ),
     },
     query: {
       ...event.queryStringParameters,
@@ -47,7 +56,10 @@ exports.handler = async (
       ...event.pathParameters,
     },
     method: event.requestContext?.http?.method,
-    url: event.routeKey?.replace('ANY ', ''),
+    url: event.routeKey?.replace(
+      'ANY ',
+      '',
+    ),
     headers: event.headers,
   };
   const params = get_params(req);
@@ -66,8 +78,11 @@ exports.handler = async (
         no_index,
       } = { ...params };
 
-      const _module = params.module?.trim().toLowerCase();
-      path = path || '';
+      const _module = (params.module || '')
+        .trim()
+        .toLowerCase();
+      path = path ||
+        '';
       cache = typeof cache === 'boolean' ?
         cache :
         typeof cache === 'string' &&
@@ -182,7 +197,7 @@ exports.handler = async (
             case 'assets':
               response = assets_data;
               break;
-          };
+          }
           break;
         default:
           break;
@@ -212,7 +227,6 @@ exports.handler = async (
             };
           }
           break;
-          break;
         case 'transfers-stats':
           try {
             response = await searchTransfersStats(params);
@@ -231,9 +245,12 @@ exports.handler = async (
           break;
         case 'assets':
           response = assets_data
-            .map(a => Object.fromEntries(
-              Object.entries({ ...a })
-                .filter(([k, v]) => !['coingecko_id'].includes(k))
+            .map(a =>
+              Object.fromEntries(
+                Object.entries({ ...a })
+                  .filter(([k, v]) =>
+                    !['coingecko_id'].includes(k)
+                  )
               )
             );
           break;

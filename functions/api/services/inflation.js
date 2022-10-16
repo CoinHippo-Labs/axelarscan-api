@@ -6,9 +6,11 @@ const {
   to_json,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm || [];
+const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+  [];
 
 module.exports = async (
   params = {},

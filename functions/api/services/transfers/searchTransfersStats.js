@@ -12,11 +12,14 @@ const {
   equals_ignore_case,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm || [];
-const cosmos_chains_data = data?.chains?.[environment]?.cosmos || [];
+const evm_chains_data = data?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = data?.chains?.[environment]?.cosmos ||
+  [];
 const chains_data = _.concat(
   evm_chains_data,
   cosmos_chains_data,
@@ -65,7 +68,8 @@ module.exports = async (
       bool: {
         ...query.bool,
         must: _.concat(
-          query.bool?.must || [],
+          query.bool?.must ||
+          [],
           { exists: { field: 'confirm_deposit' } },
         ),
       },
@@ -159,7 +163,12 @@ module.exports = async (
         fromTime /= 1000;
         toTime /= 1000;
         query = {
-          range: { 'event.block_timestamp': { gte: fromTime, lte: toTime } },
+          range: {
+            'event.block_timestamp': {
+              gte: fromTime,
+              lte: toTime,
+            },
+          },
         };
       }
 
@@ -212,7 +221,9 @@ module.exports = async (
                       d.key = chains_data.find(c =>
                         equals_ignore_case(c?.id, d.key) ||
                         c?.overrides?.[d.key] ||
-                        c?.prefix_chain_ids?.findIndex(p => d.key?.startsWith(p)) > -1
+                        c?.prefix_chain_ids?.findIndex(p =>
+                          d.key?.startsWith(p)
+                        ) > -1
                       )?.id ||
                         d.key;
 

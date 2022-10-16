@@ -23,17 +23,22 @@ const {
 const IAxelarGateway = require('../data/contracts/interfaces/IAxelarGateway.json');
 const IBurnableMintableCappedERC20 = require('../data/contracts/interfaces/IBurnableMintableCappedERC20.json');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm || [];
-const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos || [];
+const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos ||
+  [];
 const chains_data = _.concat(
   evm_chains_data,
   cosmos_chains_data,
 );
 const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const cosmos_non_axelarnet_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet.id);
-const assets_data = require('../data')?.assets?.[environment] || [];
+const cosmos_non_axelarnet_chains_data = cosmos_chains_data
+  .filter(c => c?.id !== axelarnet.id);
+const assets_data = require('../data')?.assets?.[environment] ||
+  [];
 
 const {
   endpoints,
@@ -49,7 +54,11 @@ module.exports = async (
     cache_hit = false;
 
   if (endpoints?.cli) {
-    const cli = axios.create({ baseURL: endpoints.cli });
+    const cli = axios.create(
+      {
+        baseURL: endpoints.cli,
+      },
+    );
 
     const {
       cmd,
@@ -59,6 +68,7 @@ module.exports = async (
     } = { ...params };
 
     const cache_id = cmd;
+
     let response_cache;
 
     // always cache with minimum timeout
@@ -94,7 +104,12 @@ module.exports = async (
 
       if (
         response_cache &&
-        moment().diff(moment(updated_at * 1000), 'seconds', true) <= cache_timeout
+        moment()
+          .diff(
+            moment(updated_at * 1000),
+            'seconds',
+            true,
+          ) <= cache_timeout
       ) {
         response = response_cache;
         cache_hit = true;
@@ -151,9 +166,15 @@ module.exports = async (
           } = { ...data };
 
           batch_id = id;
+
           let chain = cmd.split(' ')[4]?.toLowerCase();
-          const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
+
+          const chain_data = evm_chains_data.find(c =>
+            equals_ignore_case(c?.id, chain)
+          );
+
           const provider = getProvider(chain_data);
+
           const {
             chain_id,
             gateway_address,
@@ -183,19 +204,22 @@ module.exports = async (
             commands,
           } = { ..._.head(_response?.data) };
 
-          commands = commands || [];
+          commands = commands ||
+            [];
 
           if (command_ids) {
             const _commands = _.cloneDeep(commands);
 
             for (const command_id of command_ids) {
               if (command_id) {
-                const index = commands.findIndex(c => equals_ignore_case(c?.id, command_id));
+                const index = commands.findIndex(c =>
+                  equals_ignore_case(c?.id, command_id)
+                );
 
                 let command = commands[index];
 
                 if (!command) {
-                  const __response = await cli.get(
+                  const _response = await cli.get(
                     path,
                     {
                       params: {
@@ -206,7 +230,7 @@ module.exports = async (
                     },
                   ).catch(error => { return { data: { error } }; });
 
-                  command = to_json(__response?.data?.stdout);
+                  command = to_json(_response?.data?.stdout);
                 }
 
                 if (command) {
@@ -221,7 +245,9 @@ module.exports = async (
                   if (!executed) {
                     try {
                       if (gateway_contract) {
-                        executed = await gateway_contract.isCommandExecuted(`0x${command_id}`);
+                        executed = await gateway_contract.isCommandExecuted(
+                          `0x${command_id}`,
+                        );
                       }
                     } catch (error) {}
                   }
@@ -231,18 +257,28 @@ module.exports = async (
                     salt &&
                     (
                       command_ids.length < 15 ||
-                      _commands.filter(c => c?.salt && !c.deposit_address).length < 15 ||
+                      _commands.filter(c =>
+                        c?.salt &&
+                        !c.deposit_address
+                      ).length < 15 ||
                       Math.random(0, 1) < 0.3
                     )
                   ) {
                     try {
-                      const asset_data = assets_data.find(a => a?.contracts?.findIndex(c => c?.chain_id === chain_id && !c?.is_native) > -1);
+                      const asset_data = assets_data.find(a =>
+                        a?.contracts?.findIndex(c =>
+                          c?.chain_id === chain_id &&
+                          !c?.is_native
+                        ) > -1
+                      );
 
                       const {
                         contracts,
                       } = { ...asset_data };
 
-                      const contract_data = contracts?.find(c => c?.chain_id === chain_id);
+                      const contract_data = contracts?.find(c =>
+                        c?.chain_id === chain_id
+                      );
 
                       const {
                         contract_address,
@@ -256,7 +292,9 @@ module.exports = async (
                         );
 
                       if (erc20_contract) {
-                        deposit_address = await erc20_contract.depositAddress(salt);
+                        deposit_address = await erc20_contract.depositAddress(
+                          salt,
+                        );
                       }
                     } catch (error) {}
                   }
@@ -282,7 +320,7 @@ module.exports = async (
             .filter(c => c);
 
           if (commands.findIndex(c => !c?.transactionHash) > -1) {
-            const __response = await read(
+            const _response = await read(
               'command_events',
               {
                 bool: {
@@ -311,29 +349,35 @@ module.exports = async (
               },
             );
 
-            const command_events = __response?.data;
+            const command_events = _response?.data;
 
-            commands = commands.map(c => {
-              if (c?.id && !c.transactionHash) {
-                const command_event = command_events?.find(_c => equals_ignore_case(_c?.command_id, c.id));
+            commands = commands
+              .map(c => {
+                if (
+                  c?.id &&
+                  !c.transactionHash
+                ) {
+                  const command_event = command_events?.find(_c =>
+                    equals_ignore_case(_c?.command_id, c.id)
+                  );
 
-                if (command_event) {
-                  const {
-                    transactionHash,
-                    transactionIndex,
-                    logIndex,
-                    block_timestamp,
-                  } = { ...command_event };
+                  if (command_event) {
+                    const {
+                      transactionHash,
+                      transactionIndex,
+                      logIndex,
+                      block_timestamp,
+                    } = { ...command_event };
 
-                  c.transactionHash = transactionHash;
-                  c.transactionIndex = transactionIndex;
-                  c.logIndex = logIndex;
-                  c.block_timestamp = block_timestamp;
+                    c.transactionHash = transactionHash;
+                    c.transactionIndex = transactionIndex;
+                    c.logIndex = logIndex;
+                    c.block_timestamp = block_timestamp;
+                  }
                 }
-              }
 
-              return c;
-            });
+                return c;
+              });
           }
 
           data = {
@@ -344,10 +388,12 @@ module.exports = async (
           };
 
           if (created_at) {
-            created_at = moment(Number(created_at) * 1000).utc().valueOf();
+            created_at = moment(Number(created_at) * 1000)
+              .utc()
+              .valueOf();
           }
           else {
-            const __response = await read(
+            const _response = await read(
               'batches',
               {
                 match_phrase: { batch_id },
@@ -359,12 +405,14 @@ module.exports = async (
 
             const {
               ms,
-            } = { ..._.head(__response?.data)?.created_at };
+            } = { ..._.head(_response?.data)?.created_at };
 
-            created_at = (ms ?
-              moment(ms) :
-              moment()
-            ).valueOf();
+            created_at =
+              (ms ?
+                moment(ms) :
+                moment()
+              )
+              .valueOf();
           }
 
           data = {
@@ -379,7 +427,12 @@ module.exports = async (
             command_ids &&
             gateway_contract
           ) {
-            const _command_ids = command_ids.filter(c => parseInt(c, 16) >= 1);
+            const _command_ids = command_ids.filter(c =>
+              parseInt(
+                c,
+                16,
+              ) >= 1
+            );
 
             let sign_batch = {
               chain,
@@ -388,7 +441,10 @@ module.exports = async (
             };
 
             for (const command_id of _command_ids) {
-              const transfer_id = parseInt(command_id, 16);
+              const transfer_id = parseInt(
+                command_id,
+                16,
+              );
 
               sign_batch = {
                 ...sign_batch,
@@ -396,7 +452,7 @@ module.exports = async (
                 transfer_id,
               };
 
-              const __response = await read(
+              const _response = await read(
                 'transfers',
                 {
                   bool: {
@@ -413,26 +469,30 @@ module.exports = async (
                 },
               );
 
-              if (__response?.data?.length > 0) {
+              if (_response?.data?.length > 0) {
                 let {
                   executed,
                   transactionHash,
                   transactionIndex,
                   logIndex,
                   block_timestamp,
-                } = { ..._.head(__response.data).sign_batch };
+                } = { ..._.head(_response.data).sign_batch };
 
                 executed = !!executed ||
-                  commands.find(c => c?.id === command_id)?.executed;
+                  commands.find(c =>
+                    c?.id === command_id
+                  )?.executed;
 
                 if (!executed) {
                   try {
-                    executed = await gateway_contract.isCommandExecuted(`0x${command_id}`);
+                    executed = await gateway_contract.isCommandExecuted(
+                      `0x${command_id}`,
+                    );
                   } catch (error) {}
                 }
 
                 if (!transactionHash) {
-                  const ___response = await read(
+                  const _response = await read(
                     'command_events',
                     {
                       bool: {
@@ -447,7 +507,7 @@ module.exports = async (
                     },
                   );
 
-                  const command_event = _.head(___response?.data);
+                  const command_event = _.head(_response?.data);
 
                   if (command_event) {
                     transactionHash = command_event.transactionHash;
@@ -466,7 +526,7 @@ module.exports = async (
                   block_timestamp,
                 };
 
-                const transfers_data = __response.data
+                const transfers_data = _response.data
                   .filter(t => t?.source?.id);
 
                 for (const transfer_data of transfers_data) {
@@ -492,7 +552,9 @@ module.exports = async (
                         source: {
                           ...source,
                           sender_chain: normalize_chain(
-                            cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
+                            cosmos_non_axelarnet_chains_data.find(c =>
+                              sender_address?.startsWith(c?.prefix_address)
+                            )?.id ||
                             sender_chain
                           ),
                         },
@@ -529,7 +591,9 @@ module.exports = async (
           cache_id,
           {
             ...response,
-            updated_at: moment().unix(),
+            updated_at:
+              moment()
+                .unix(),
           },
         );
       }

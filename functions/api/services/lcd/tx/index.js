@@ -33,17 +33,23 @@ const {
 } = require('../../../utils');
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm || [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos || [];
+const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+  [];
 const chains_data = _.concat(
   evm_chains_data,
   cosmos_chains_data,
 );
 const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const cosmos_non_axelarnet_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet.id);
-const assets_data = require('../../../data')?.assets?.[environment] || [];
+const cosmos_non_axelarnet_chains_data =
+  cosmos_chains_data
+    .filter(c => c?.id !== axelarnet.id);
+const assets_data = require('../../../data')?.assets?.[environment] ||
+  [];
 
 const {
   endpoints,
@@ -88,12 +94,15 @@ module.exports = async (
         [
           'depositConfirmation',
           'eventConfirmation',
-        ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+        ].findIndex(s =>
+          equals_ignore_case(e?.type, s)
+        ) > -1
       ) > -1
     );
 
     if (log_index > -1) {
       const log = logs?.[log_index];
+
       const {
         events,
       } = { ...log };
@@ -102,7 +111,9 @@ module.exports = async (
         [
           'depositConfirmation',
           'eventConfirmation',
-        ].findIndex(s => equals_ignore_case(e?.type, s)) > -1
+        ].findIndex(s =>
+          equals_ignore_case(e?.type, s)
+        ) > -1
       );
 
       const event = events[event_index];
@@ -111,14 +122,24 @@ module.exports = async (
         attributes,
       } = { ...event };
 
-      const chain = attributes?.find(a => a?.key === 'chain')?.value;
-      const token_address = attributes?.find(a => a?.key === 'tokenAddress')?.value;
+      const chain =
+        attributes?.find(a =>
+          a?.key === 'chain'
+        )?.value;
+
+      const token_address =
+        attributes?.find(a =>
+          a?.key === 'tokenAddress'
+        )?.value;
 
       if (
         chain &&
         token_address
       ) {
-        const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
+        const chain_data = evm_chains_data.find(c =>
+          equals_ignore_case(c?.id, chain)
+        );
+
         const {
           chain_id,
         } = { ...chain_data };
@@ -129,6 +150,7 @@ module.exports = async (
             equals_ignore_case(c?.contract_address, token_address)
           ) > -1
         );
+
         const {
           id,
         } = { ...asset_data };
@@ -138,14 +160,21 @@ module.exports = async (
         }
       }
 
-      const amount_index = attributes?.findIndex(a => a?.key === 'amount');
+      const amount_index =
+        attributes?.findIndex(a =>
+          a?.key === 'amount'
+        );
+
       if (amount_index > -1) {
-        let attr = attributes[amount_index];
+        const attr = attributes[amount_index];
+
         const {
           value,
         } = { ...attr };
 
-        const _value = value.split('');
+        const _value = value
+          .split('');
+
         let amount = '';
 
         for (const c of _value) {
@@ -175,7 +204,10 @@ module.exports = async (
     delete transaction_data.raw_log;
     delete transaction_data.events;
 
-    transaction_data.timestamp = moment(timestamp).utc().valueOf();
+    transaction_data.timestamp =
+      moment(timestamp)
+        .utc()
+        .valueOf();
 
     /* start convert byte array to hex */
     if (messages) {
@@ -183,7 +215,9 @@ module.exports = async (
         [
           'LinkRequest',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         for (let i = 0; i < messages.length; i++) {
@@ -203,15 +237,18 @@ module.exports = async (
           'ConfirmTokenRequest',
           'CreateDeployTokenRequest',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
-        const fields = [
-          'tx_id',
-          'burner_address',
-          'burn_address',
-          'address',
-        ];
+        const fields =
+          [
+            'tx_id',
+            'burner_address',
+            'burn_address',
+            'address',
+          ];
 
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i];
@@ -219,29 +256,38 @@ module.exports = async (
           if (typeof message?.amount === 'string') {
             const event = _.head(
               logs.flatMap(l =>
-                l?.events?.filter(e =>
-                  [
-                    'depositConfirmation',
-                    'eventConfirmation',
-                  ].findIndex(s =>
-                    equals_ignore_case(e?.type, s) ||
-                    e?.type?.includes(s)
-                  ) > -1
-                )
+                (l?.events || [])
+                  .filter(e =>
+                    [
+                      'depositConfirmation',
+                      'eventConfirmation',
+                    ].findIndex(s =>
+                      equals_ignore_case(e?.type, s) ||
+                      e?.type?.includes(s)
+                    ) > -1
+                  )
               )
             );
+
             const {
               attributes,
             } = { ...event };
 
-            const amount = attributes?.find(a => a?.key === 'amount')?.value;
-            const denom = transaction_data.denom ||
+            const amount =
+              attributes?.find(a =>
+                a?.key === 'amount'
+              )?.value;
+
+            const denom =
+              transaction_data.denom ||
               message.denom;
 
-            message.amount = [{
-              amount,
-              denom,
-            }];
+            message.amount = [
+              {
+                amount,
+                denom,
+              },
+            ];
           }
 
           for (const field of fields) {
@@ -263,14 +309,15 @@ module.exports = async (
           ) > -1
         ) > -1
       ) {
-        const fields = [
-          'tx_id',
-          'to',
-          'sender',
-          'payload_hash',
-          'pre_operators',
-          'new_operators',
-        ];
+        const fields =
+          [
+            'tx_id',
+            'to',
+            'sender',
+            'payload_hash',
+            'pre_operators',
+            'new_operators',
+          ];
 
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i];
@@ -290,6 +337,7 @@ module.exports = async (
                   if (Array.isArray(result[field])) {
                     result[field] = to_hex(result[field]);
                   }
+
                   if (Array.isArray(result.transfer?.[field])) {
                     result.transfer[field] = to_hex(result.transfer[field]);
                   }
@@ -311,18 +359,23 @@ module.exports = async (
                   if (Array.isArray(event[field])) {
                     event[field] = to_hex(event[field]);
                   }
+
                   if (Array.isArray(event.transfer?.[field])) {
                     event.transfer[field] = to_hex(event.transfer[field]);
                   }
+
                   if (Array.isArray(event.contract_call?.[field])) {
                     event.contract_call[field] = to_hex(event.contract_call[field]);
                   }
+
                   if (Array.isArray(event.contract_call_with_token?.[field])) {
                     event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
                   }
+
                   if (Array.isArray(event.token_sent?.[field])) {
                     event.token_sent[field] = to_hex(event.token_sent[field]);
                   }
+
                   if (Array.isArray(event.multisig_operatorship_transferred?.[field])) {
                     event.multisig_operatorship_transferred[field] = to_hex(event.multisig_operatorship_transferred[field]);
                   }
@@ -344,18 +397,23 @@ module.exports = async (
                   if (Array.isArray(event[field])) {
                     event[field] = to_hex(event[field]);
                   }
+
                   if (Array.isArray(event.transfer?.[field])) {
                     event.transfer[field] = to_hex(event.transfer[field]);
                   }
+
                   if (Array.isArray(event.contract_call?.[field])) {
                     event.contract_call[field] = to_hex(event.contract_call[field]);
                   }
+
                   if (Array.isArray(event.contract_call_with_token?.[field])) {
                     event.contract_call_with_token[field] = to_hex(event.contract_call_with_token[field]);
                   }
+
                   if (Array.isArray(event.token_sent?.[field])) {
                     event.token_sent[field] = to_hex(event.token_sent[field]);
                   }
+
                   if (Array.isArray(event.multisig_operatorship_transferred?.[field])) {
                     event.multisig_operatorship_transferred[field] = to_hex(event.multisig_operatorship_transferred[field]);
                   }
@@ -384,29 +442,33 @@ module.exports = async (
     /* start add addresses field */
     let addresses = [];
 
-    const address_fields = [
-      'voter',
-      'delegator_address',
-      'signer',
-      'sender',
-      'recipient',
-      'spender',
-      'receiver',
-      'depositAddress',
-    ];
+    const address_fields =
+      [
+        'voter',
+        'delegator_address',
+        'signer',
+        'sender',
+        'recipient',
+        'spender',
+        'receiver',
+        'depositAddress',
+      ];
 
     if (logs) {
       addresses = _.uniq(
         _.concat(
           addresses,
-          logs.flatMap(l =>
-            (l?.events || [])
-              .flatMap(e =>
-                (e?.attributes || [])
-                  .filter(a => address_fields.includes(a?.key))
-                  .map(a => a.value)
-              )
-          ),
+          logs
+            .flatMap(l =>
+              (l?.events || [])
+                .flatMap(e =>
+                  (e?.attributes || [])
+                    .filter(a =>
+                      address_fields.includes(a?.key)
+                    )
+                    .map(a => a.value)
+                )
+            ),
         )
         .filter(a =>
           typeof a === 'string' &&
@@ -419,13 +481,17 @@ module.exports = async (
       addresses = _.uniq(
         _.concat(
           addresses,
-          messages.flatMap(m =>
-            _.concat(
-              address_fields.map(f => m[f]),
-              address_fields.map(f => m.inner_message?.[f]),
-            )
-          ),
-        ).filter(a =>
+          messages
+            .flatMap(m =>
+              _.concat(
+                address_fields
+                  .map(f => m[f]),
+                address_fields
+                  .map(f => m.inner_message?.[f]),
+              )
+            ),
+        )
+        .filter(a =>
           typeof a === 'string' &&
           a.startsWith(axelarnet.prefix_address)
         )
@@ -444,7 +510,9 @@ module.exports = async (
         _.concat(
           types,
           messages
-            .flatMap(m => m?.inner_message?.['@type']),
+            .flatMap(m =>
+              m?.inner_message?.['@type']
+            ),
         )
         .filter(t => t)
       );
@@ -455,15 +523,20 @@ module.exports = async (
       types = _.uniq(
         _.concat(
           types,
-          logs.flatMap(l =>
-            (l?.events || [])
-              .filter(e => equals_ignore_case(e?.type, 'message'))
-              .flatMap(e =>
-                (e.attributes || [])
-                  .filter(a => a?.key === 'action')
-                  .map(a => a.value)
-              )
-          ),
+          logs
+            .flatMap(l =>
+              (l?.events || [])
+                .filter(e =>
+                  equals_ignore_case(e?.type, 'message')
+                )
+                .flatMap(e =>
+                  (e.attributes || [])
+                    .filter(a =>
+                      a?.key === 'action'
+                    )
+                    .map(a => a.value)
+                )
+            ),
         )
         .filter(t => t)
       );
@@ -474,7 +547,8 @@ module.exports = async (
       types = _.uniq(
         _.concat(
           types,
-          messages.flatMap(m => m?.['@type']),
+          messages
+            .flatMap(m => m?.['@type']),
         )
         .filter(t => t)
       );
@@ -485,12 +559,16 @@ module.exports = async (
         .map(t =>
           capitalize(
             _.last(
-              t.split('.'))
+              t.split('.')
+            )
           )
         )
     );
+
     types = types
-      .filter(t => !types.includes(`${t}Request`));
+      .filter(t =>
+        !types.includes(`${t}Request`)
+      );
 
     transaction_data.types = types;
     /* end add message types field */

@@ -90,7 +90,8 @@ module.exports = async (
           _.concat(
             response?.latest?.token_sent_block,
             response?.latest?.batches_executed_block,
-          ).filter(b => b),
+          )
+          .filter(b => b),
         ),
       },
     };

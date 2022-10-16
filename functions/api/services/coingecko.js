@@ -12,7 +12,11 @@ module.exports = async (
   let response;
 
   if (endpoints?.coingecko) {
-    const coingecko = axios.create({ baseURL: endpoints.coingecko });
+    const coingecko = axios.create(
+      {
+        baseURL: endpoints.coingecko,
+      },
+    );
 
     const _response = await coingecko.get(
       path,

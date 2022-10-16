@@ -233,16 +233,17 @@ module.exports = async (
     } = { ...cache_data };
 
     if (
-      moment().diff(
-        moment(
-          (
-            updated_at ||
-            0
-          ) * 1000
-        ),
-        'minutes',
-        true,
-      ) < 30
+      moment()
+        .diff(
+          moment(
+            (
+              updated_at ||
+              0
+            ) * 1000
+          ),
+          'minutes',
+          true,
+        ) < 30
     ) {
       return cache_data;
     }
@@ -571,16 +572,17 @@ module.exports = async (
                       data?.length > 0 &&
                       data
                         .filter(d =>
-                          moment().diff(
-                            moment(
-                              (
-                                d?.updated_at ||
-                                0
-                              ) * 1000
-                            ),
-                            'minutes',
-                            true,
-                          ) > 240
+                          moment()
+                            .diff(
+                              moment(
+                                (
+                                  d?.updated_at ||
+                                  0
+                                ) * 1000
+                              ),
+                              'minutes',
+                              true,
+                            ) > 240
                         )
                         .length < 1
                     ) {
@@ -1021,7 +1023,9 @@ module.exports = async (
 
   response = {
     data,
-    updated_at: moment().unix(),
+    updated_at:
+      moment()
+        .unix(),
   };
 
   if (

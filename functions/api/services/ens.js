@@ -12,7 +12,11 @@ module.exports = async (
   let response;
 
   if (endpoints?.ens) {
-    const ens = axios.create({ baseURL: endpoints.ens });
+    const ens = axios.create(
+      {
+        baseURL: endpoints.ens,
+      },
+    );
 
     const _response = await ens.get(
       path,

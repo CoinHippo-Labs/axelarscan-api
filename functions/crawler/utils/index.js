@@ -15,7 +15,23 @@ const log = (
     level = level.toLowerCase();
 
     // generate log message
-    const log_message = `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;
+    const log_message = `${level === 'error' ?
+      'ERR' :
+      level === 'warn' ?
+        'WARN' :
+        level === 'debug' ?
+          'DBG' :
+          'INF'
+    } [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ?
+      data :
+      typeof data === 'object' ?
+        JSON.stringify(
+          data,
+          null,
+          2,
+        ) :
+        data
+    }`;
 
     switch (level) {
       case 'error':
@@ -25,7 +41,11 @@ const log = (
         console.warn(log_message);
         break;
       case 'debug':
-        if (log_level === 'debug' || process.env.LOG_LEVEL === 'debug' || !process.env.ENVIRONMENT) {
+        if (
+          log_level === 'debug' ||
+          process.env.LOG_LEVEL === 'debug' ||
+          !process.env.ENVIRONMENT
+        ) {
           console.debug(log_message);
         }
         break;
@@ -36,7 +56,12 @@ const log = (
   } catch (error) {}
 };
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = ms => new Promise(resolve =>
+  setTimeout(
+    resolve,
+    ms,
+  )
+);
 
 module.exports = {
   log,

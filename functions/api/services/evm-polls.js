@@ -9,7 +9,8 @@ const {
   equals_ignore_case,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const {
   endpoints,
@@ -107,7 +108,11 @@ module.exports = async (
       ].includes(vote) &&
       endpoints?.lcd
     ) {
-      const lcd = axios.create({ baseURL: endpoints.lcd });
+      const lcd = axios.create(
+        {
+          baseURL: endpoints.lcd,
+        },
+      );
 
       const limit = 50;
       let page_key = true;
@@ -165,7 +170,8 @@ module.exports = async (
         else {
           transactions_data = _.concat(
             transactions_data,
-            tx_responses || [],
+            tx_responses ||
+            [],
           );
 
           page_key = next_key ||

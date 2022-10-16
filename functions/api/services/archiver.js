@@ -1,33 +1,47 @@
 const axios = require('axios');
 const moment = require('moment');
 const config = require('config-yml');
-const { delete_by_query } = require('./index');
-const { log } = require('../utils');
+const {
+  delete_by_query,
+} = require('./index');
+const {
+  log,
+} = require('../utils');
 
 const service_name = 'archiver';
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const {
   endpoints,
 } = { ...config?.[environment] };
+
 let {
   store_blocks,
   cache_timeout_seconds,
 } = { ...config?.[environment] };
-store_blocks = store_blocks || 100000;
-cache_timeout_seconds = cache_timeout_seconds || 300;
+
+store_blocks = store_blocks ||
+  100000;
+cache_timeout_seconds = cache_timeout_seconds ||
+  300;
 
 module.exports = async () => {
-  const collections = [
-    'blocks',
-  ];
+  const collections =
+    [
+      'blocks',
+    ];
 
   if (
     collections.length > 0 &&
     endpoints?.rpc
   ) {
     // initial rpc
-    const rpc = axios.create({ baseURL: endpoints.rpc });
+    const rpc = axios.create(
+      {
+        baseURL: endpoints.rpc,
+      },
+    );
 
     const response = await rpc.get(
       '/status',
@@ -55,7 +69,9 @@ module.exports = async () => {
           collection,
           {
             range: {
-              height: { lt: latest_block - store_blocks },
+              height: {
+                lt: latest_block - store_blocks,
+              },
             },
           },
         );
@@ -70,10 +86,11 @@ module.exports = async () => {
     }
   }
 
-  const cache_collections = [
-    'axelard',
-    'cosmos',
-  ];
+  const cache_collections =
+    [
+      'axelard',
+      'cosmos',
+    ];
 
   for (const collection of cache_collections) {
     log(
@@ -90,21 +107,32 @@ module.exports = async () => {
       collection,
       {
         bool: {
-          must: [{
-            range: {
-              updated_at: { lt: moment().subtract(cache_timeout_seconds, 'seconds').unix() },
-            },
-          }],
-          must_not: collection === 'axelard' ?
-            [{
-              bool: {
-                should: [
-                  { exists: { field: 'type' } },
-                  { match: { type: 'proxy' } },
-                ],
-                minimum_should_match: 1, 
+          must: [
+            {
+              range: {
+                updated_at: {
+                  lt: moment()
+                    .subtract(
+                      cache_timeout_seconds,
+                      'seconds',
+                    )
+                    .unix(),
+                },
               },
-            }] :
+            },
+          ],
+          must_not: collection === 'axelard' ?
+            [
+              {
+                bool: {
+                  should: [
+                    { exists: { field: 'type' } },
+                    { match: { type: 'proxy' } },
+                  ],
+                  minimum_should_match: 1, 
+                },
+              },
+            ] :
             [],
         },
       },

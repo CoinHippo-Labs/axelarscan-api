@@ -9,12 +9,16 @@ const environment = process.env.ENVIRONMENT;
 
 // create request object from environment
 const API = (env = environment) => {
-  // initial config parameters of this environment
   const {
     api,
   } = { ...config?.[env] };
+
   return api &&
-    axios.create({ baseURL: api });
+    axios.create(
+      {
+        baseURL: api,
+      },
+    );
 };
 
 const getLatestEventBlock = async chain => {
@@ -23,7 +27,10 @@ const getLatestEventBlock = async chain => {
   // create api request object
   const api = API();
 
-  if (api && chain) {
+  if (
+    api &&
+    chain
+  ) {
     const params = {
       chain,
     };
@@ -31,7 +38,7 @@ const getLatestEventBlock = async chain => {
     log(
       'info',
       service_name,
-      'get latest gmp block',
+      'get latest event block',
       { ...params },
     );
 
@@ -45,7 +52,7 @@ const getLatestEventBlock = async chain => {
     log(
       'debug',
       service_name,
-      'latest gmp block',
+      'latest event block',
       {
         output,
         ...params,
@@ -67,7 +74,12 @@ const saveEvent = async (
   // create api request object
   const api = API(env);
 
-  if (api && event && chain && contractAddress) {
+  if (
+    api &&
+    event &&
+    chain &&
+    contractAddress
+  ) {
     const params = {
       chain,
       contractAddress,

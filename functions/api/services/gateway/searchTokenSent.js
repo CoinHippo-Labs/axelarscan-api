@@ -76,7 +76,8 @@ module.exports = async (
       size: typeof size === 'number' ?
         size :
         100,
-      sort: sort || [{ 'event.block_timestamp': 'desc' }],
+      sort: sort ||
+        [{ 'event.block_timestamp': 'desc' }],
     },
   );
 

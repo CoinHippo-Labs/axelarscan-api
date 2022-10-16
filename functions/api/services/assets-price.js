@@ -10,10 +10,12 @@ const {
   equals_ignore_case,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const data = require('../data');
-const assets_data = data?.assets?.[environment] || [];
+const assets_data = data?.assets?.[environment] ||
+  [];
 const currency = 'usd';
 const stablecoin_threshold = 0.01;
 const collection = 'assets';
@@ -62,7 +64,9 @@ module.exports = async (
     current_time.valueOf();
 
   if (denoms.length > 0) {
-    const price_timestamp = moment(query_timestamp).startOf('day').valueOf();
+    const price_timestamp = moment(query_timestamp)
+      .startOf('day')
+      .valueOf();
 
     const response_cache = await read(
       collection,
@@ -106,7 +110,9 @@ module.exports = async (
             denom_data?.chain ||
               chain;
 
-        const asset_data = assets_data.find(a => equals_ignore_case(a?.id, _denom));
+        const asset_data = assets_data.find(a =>
+          equals_ignore_case(a?.id, _denom)
+        );
         const {
           coingecko_id,
           coingecko_ids,
@@ -127,7 +133,9 @@ module.exports = async (
       response_cache.data
         .filter(a => a)
         .forEach(a => {
-          const data_index = data.findIndex(d => equals_ignore_case(d.denom, a?.denom));
+          const data_index = data.findIndex(d =>
+            equals_ignore_case(d.denom, a?.denom)
+          );
 
           if (data_index > -1) {
             data[data_index] = {
@@ -138,13 +146,22 @@ module.exports = async (
         });
     }
 
-    const updated_at_threshold = current_time.subtract(5, 'minutes').valueOf();
+    const updated_at_threshold =
+      current_time
+        .subtract(
+          5,
+          'minutes',
+        )
+        .valueOf();
 
     const to_update_data = data
       .filter(d =>
         !d?.updated_at ||
         (
-          current_time.diff(moment(query_timestamp), 'hours') < 4 &&
+          current_time.diff(
+            moment(query_timestamp),
+            'hours',
+          ) < 4 &&
           d.updated_at < updated_at_threshold
         )
       );
@@ -157,7 +174,11 @@ module.exports = async (
       coingecko_ids.length > 0 &&
       endpoints?.coingecko
     ) {
-      const coingecko = axios.create({ baseURL: endpoints.coingecko });
+      const coingecko = axios.create(
+        {
+          baseURL: endpoints.coingecko,
+        },
+      );
 
       let _data;
 
@@ -168,7 +189,8 @@ module.exports = async (
             {
               params: {
                 id: coingecko_id,
-                date: moment(Number(timestamp)).format('DD-MM-YYYY'),
+                date: moment(Number(timestamp))
+                  .format('DD-MM-YYYY'),
                 localization: 'false',
               },
             },
@@ -179,7 +201,8 @@ module.exports = async (
           } = { ..._response?.data };
 
           _data = _.concat(
-            _data || [],
+            _data ||
+            [],
             !error && _response?.data ?
               _response.data :
               [],
@@ -192,7 +215,8 @@ module.exports = async (
           {
             params: {
               vs_currency: currency,
-              ids: coingecko_ids.join(','),
+              ids: coingecko_ids
+                .join(','),
               per_page: 250,
             },
           },
@@ -220,18 +244,24 @@ module.exports = async (
 
           let price = market_data?.current_price?.[currency] ||
             current_price;
-          price = is_stablecoin && Math.abs(price - 1) > stablecoin_threshold ?
-            1 :
-            price;
+          price =
+            is_stablecoin &&
+            Math.abs(price - 1) > stablecoin_threshold ?
+              1 :
+              price;
 
           return {
-            denom: to_update_data.find(d => equals_ignore_case(d?.coingecko_id, id))?.denom,
+            denom: to_update_data.find(d =>
+              equals_ignore_case(d?.coingecko_id, id)
+            )?.denom,
             coingecko_id: id,
             price,
           };
         })
         .forEach(a => {
-          const data_index = data.findIndex(d => equals_ignore_case(d.denom, a?.denom));
+          const data_index = data.findIndex(d =>
+            equals_ignore_case(d.denom, a?.denom)
+          );
 
           if (data_index > -1) {
             data[data_index] = {
@@ -246,7 +276,10 @@ module.exports = async (
       (
         !d?.updated_at ||
         (
-          current_time.diff(moment(query_timestamp), 'hours') < 4 &&
+          current_time.diff(
+            moment(query_timestamp),
+            'hours',
+          ) < 4 &&
           d.updated_at < updated_at_threshold
         )
       ) &&
@@ -261,7 +294,13 @@ module.exports = async (
 
       d.updated_at = moment().valueOf();
 
-      const price_timestamp = moment(Number(timestamp) || d.updated_at).startOf('day').valueOf();
+      const price_timestamp =
+        moment(
+          Number(timestamp) ||
+          d.updated_at
+        )
+        .startOf('day')
+        .valueOf();
       d.price_timestamp = price_timestamp;
 
       const id = `${denom}_${price_timestamp}`;
@@ -284,7 +323,8 @@ module.exports = async (
 
         return {
           ...d,
-          id: denom ||
+          id:
+            denom ||
             id,
         };
       });

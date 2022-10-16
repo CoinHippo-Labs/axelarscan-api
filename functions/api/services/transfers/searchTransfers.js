@@ -14,11 +14,14 @@ const {
   equals_ignore_case,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm || [];
-const cosmos_chains_data = data?.chains?.[environment]?.cosmos || [];
+const evm_chains_data = data?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = data?.chains?.[environment]?.cosmos ||
+  [];
 const chains_data = _.concat(
   evm_chains_data,
   cosmos_chains_data,
@@ -261,7 +264,8 @@ module.exports = async (
     size: typeof size === 'number' ?
       size :
       100,
-    sort: sort || [{ 'source.created_at.ms': 'desc' }],
+    sort: sort ||
+      [{ 'source.created_at.ms': 'desc' }],
     track_total_hits: true,
   };
 
@@ -276,38 +280,48 @@ module.exports = async (
       data,
     } = { ...response };
 
-    data = data.filter(d => {
-      const {
-        source,
-        confirm_deposit,
-        vote,
-      } = { ...d };
-      const {
-        id,
-        recipient_chain,
-        amount,
-        value,
-      } = { ...source };
+    data = data
+      .filter(d => {
+        const {
+          source,
+          confirm_deposit,
+          vote,
+        } = { ...d };
+        const {
+          id,
+          recipient_chain,
+          amount,
+          value,
+        } = { ...source };
 
-      return id &&
-        (
-          !(
-            recipient_chain &&
-            typeof amount === 'number' &&
-            typeof value === 'number'
-          ) ||
+        return id &&
           (
-            cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, recipient_chain)) > -1 &&
-            (vote || confirm_deposit)
-          )
-        );
-    });
+            !(
+              recipient_chain &&
+              typeof amount === 'number' &&
+              typeof value === 'number'
+            ) ||
+            (
+              cosmos_chains_data.findIndex(c =>
+                equals_ignore_case(c?.id, recipient_chain)
+              ) > -1 &&
+              (
+                vote ||
+                confirm_deposit
+              )
+            )
+          );
+      });
 
     if (
       data.length > 0 &&
       endpoints?.api
     ) {
-      const api = axios.create({ baseURL: endpoints.api });
+      const api = axios.create(
+        {
+          baseURL: endpoints.api,
+        },
+      );
 
       for (const d of data) {
         const {
@@ -342,16 +356,17 @@ module.exports = async (
       data,
     } = { ...response };
 
-    data = data.filter(d => {
-      const {
-        time_spent,
-      } = { ...d };
-      const {
-        total,
-      } = { ...time_spent };
+    data = data
+      .filter(d => {
+        const {
+          time_spent,
+        } = { ...d };
+        const {
+          total,
+        } = { ...time_spent };
 
-      return !total;
-    });
+        return !total;
+      });
 
     if (data.length > 0) {
       for (const d of data) {
@@ -376,58 +391,60 @@ module.exports = async (
   }
 
   if (Array.isArray(response?.data)) {
-    response.data = response.data.map(d => {
-      const {
-        source,
-        link,
-        confirm_deposit,
-        vote,
-        sign_batch,
-        ibc_send,
-        axelar_transfer,
-      } = { ...d };
-      const {
-        amount,
-        value,
-      } = { ...source };
-      let {
-        price,
-      } = { ...link };
-
-      if (
-        typeof price !== 'number' &&
-        typeof amount === 'number' &&
-        typeof value === 'number'
-      ) {
-        price = value / amount;
-      }
-
-      return {
-        ...d,
-        link: link && {
-          ...link,
+    response.data = response.data
+      .map(d => {
+        const {
+          source,
+          link,
+          confirm_deposit,
+          vote,
+          sign_batch,
+          ibc_send,
+          axelar_transfer,
+        } = { ...d };
+        const {
+          amount,
+          value,
+        } = { ...source };
+        let {
           price,
-        },
-        status: ibc_send ?
-          ibc_send.failed_txhash &&
-          !ibc_send.ack_txhash ?
-            'ibc_failed' :
-            ibc_send.recv_txhash ?
-              'executed' :
-              'ibc_sent' :
-          sign_batch?.executed ?
-            'executed' :
-             sign_batch ?
-              'batch_signed' :
-              axelar_transfer ?
+        } = { ...link };
+
+        if (
+          typeof price !== 'number' &&
+          typeof amount === 'number' &&
+          typeof value === 'number'
+        ) {
+          price = value / amount;
+        }
+
+        return {
+          ...d,
+          link: link &&
+            {
+              ...link,
+              price,
+            },
+          status: ibc_send ?
+            ibc_send.failed_txhash &&
+            !ibc_send.ack_txhash ?
+              'ibc_failed' :
+              ibc_send.recv_txhash ?
                 'executed' :
-                vote ?
-                  'voted' :
-                  confirm_deposit ?
-                    'deposit_confirmed' :
-                    'asset_sent',
-      };
-    });
+                'ibc_sent' :
+            sign_batch?.executed ?
+              'executed' :
+               sign_batch ?
+                'batch_signed' :
+                axelar_transfer ?
+                  'executed' :
+                  vote ?
+                    'voted' :
+                    confirm_deposit ?
+                      'deposit_confirmed' :
+                      'asset_sent',
+        };
+      });
   }
 
   return response;

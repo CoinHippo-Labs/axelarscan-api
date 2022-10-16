@@ -8,11 +8,14 @@ const {
   equals_ignore_case,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
-const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos || [];
+const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos ||
+  [];
 const axelarnet = cosmos_chains_data.find(c => c?.id === 'axelarnet');
-const assets_data = require('../data')?.assets?.[environment] || [];
+const assets_data = require('../data')?.assets?.[environment] ||
+  [];
 
 module.exports = async (
   params = {},
@@ -24,7 +27,9 @@ module.exports = async (
   asset = asset ||
     'uaxl';
 
-  const asset_data = assets_data.find(a => equals_ignore_case(a?.id, asset));
+  const asset_data = assets_data.find(a =>
+    equals_ignore_case(a?.id, asset)
+  );
   const {
     id,
     ibc,
@@ -48,7 +53,7 @@ module.exports = async (
   return !isNaN(amount) ?
     Number(
       formatUnits(
-        BigNumber.from(amount || '0'),
+        BigNumber.from(amount),
         decimals,
       )
     ) :

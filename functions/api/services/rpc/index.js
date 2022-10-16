@@ -7,7 +7,8 @@ const {
   decode_base64,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
 
 const {
   endpoints,
@@ -21,7 +22,11 @@ module.exports = async (
   let response;
 
   if (endpoints?.rpc) {
-    const rpc = axios.create({ baseURL: endpoints.rpc });
+    const rpc = axios.create(
+      {
+        baseURL: endpoints.rpc,
+      },
+    );
 
     const _response = await rpc.get(
       path,
@@ -57,18 +62,30 @@ module.exports = async (
         ) {
           latest_block_height = Number(latest_block_height);
 
-          const lcd = axios.create({ baseURL: endpoints.lcd });
+          const lcd = axios.create(
+            {
+              baseURL: endpoints.lcd,
+            },
+          );
 
-          const __response = await lcd.get(
+          const _response = await lcd.get(
             `/cosmos/base/tendermint/v1beta1/blocks/${latest_block_height - num_blocks_avg_block_time}`,
           ).catch(error => { return { data: { error } }; });
 
           const {
             time,
-          } = { ...__response?.data?.block?.header };
+          } = { ..._response?.data?.block?.header };
 
-          if (time && num_blocks_avg_block_time) {
-            data.avg_block_time = moment(latest_block_time).diff(moment(time), 'seconds') / num_blocks_avg_block_time;
+          if (
+            time &&
+            num_blocks_avg_block_time
+          ) {
+            data.avg_block_time = moment(latest_block_time)
+              .diff(
+                moment(time),
+                'seconds',
+              ) /
+              num_blocks_avg_block_time;
           }
         }
       }
@@ -95,7 +112,8 @@ module.exports = async (
             events,
           } = { ...t };
 
-          log = to_json(log) || log;
+          log = to_json(log) ||
+            log;
 
           events = events?.map(e => {
             let {

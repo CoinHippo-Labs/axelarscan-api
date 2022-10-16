@@ -1,28 +1,36 @@
 const {
   Contract,
-  providers: { FallbackProvider, JsonRpcProvider },
 } = require('ethers');
 const config = require('config-yml');
 const gateway_subscriber = require('./services/subscriber/gateway/subscribe');
+const {
+  getProvider,
+} = require('./services/utils');
 const IAxelarGateway = require('./data/contracts/interfaces/IAxelarGateway.json');
 
 // setup arguments
-const args = require('command-line-args')([{
-  name: 'environment',
-  alias: 'e',
-  type: String,
-  defaultValue: 'testnet',
-}, {
-  name: 'chain',
-  alias: 'c',
-  type: String,
-  defaultValue: 'ethereum',
-}, {
-  name: 'block',
-  alias: 'b',
-  type: Number,
-  multiple: true,
-}]);
+const args = require('command-line-args')(
+  [
+    {
+      name: 'environment',
+      alias: 'e',
+      type: String,
+      defaultValue: 'testnet',
+    },
+    {
+      name: 'chain',
+      alias: 'c',
+      type: String,
+      defaultValue: 'avalanche',
+    },
+    {
+      name: 'block',
+      alias: 'b',
+      type: Number,
+      multiple: true,
+    },
+  ]
+);
 const {
   environment,
   chain,
@@ -38,27 +46,14 @@ const {
 
 // setup all chains' configuration including provider and contracts
 const chains_config = Object.entries({ ...chains })
-  .filter(([k, v]) => v?.endpoints?.rpc?.length > 0)
   .map(([k, v]) => {
-    // setup provider
-    const rpcs = v.endpoints.rpc;
-    const provider = rpcs.length === 1 ?
-      new JsonRpcProvider(rpcs[0]) :
-      new FallbackProvider(
-        rpcs.map((url, i) => {
-          return {
-            provider: new JsonRpcProvider(url),
-            priority: i + 1,
-            stallTimeout: 1000,
-          };
-        }),
-        rpcs.length / 3,
-      );
-
     return {
       ...v,
       id: k,
-      provider,
+      provider: getProvider(
+        k,
+        environment,
+      ),
       gateway: {
         ...gateway_contracts?.[k],
         abi: IAxelarGateway.abi,
@@ -68,11 +63,12 @@ const chains_config = Object.entries({ ...chains })
 
 // get the specific chain's configuration
 const chain_config = chains_config.find(c => c?.id === chain);
+
 if (chain_config) {
   // chain configuration
   const {
-    provider,
     gateway,
+    provider,
   } = { ...chain_config };
 
   // contract parameters
@@ -81,7 +77,7 @@ if (chain_config) {
     abi,
   } = { ...gateway };
 
-  // initial contracts
+  // initial contract
   const gateway_contract = new Contract(
     address,
     abi,
@@ -101,8 +97,10 @@ if (chain_config) {
     // setup specific block range from args
     const fromBlock = block?.[0],
       toBlock = block?.[1];
+
     // number of block per past events querying
-    const num_query_block = past_events_block_per_request || 100;
+    const num_query_block = past_events_block_per_request ||
+      100;
 
     // initial blockchain query filters options data
     const options = {
@@ -110,25 +108,39 @@ if (chain_config) {
       toBlock,
       environment,
     };
+
     // flag to check whether is it query all data from specific block range
     let synced = false;
 
     // iterate until cover all
     while (!synced) {
       /* start if statement for checking & set the query filters options of each round */
-      if (typeof toBlock !== 'number' || typeof options.fromBlock !== 'number') {
+      if (
+        typeof toBlock !== 'number' ||
+        typeof options.fromBlock !== 'number'
+      ) {
         synced = true;
       }
       else if (toBlock - options.fromBlock >= num_query_block) {
-        options.fromBlock = options.fromBlock + (options.toBlock === toBlock ? 0 : num_query_block);
+        options.fromBlock = options.fromBlock +
+          (options.toBlock === toBlock ?
+            0 :
+            num_query_block
+          );
+
         options.toBlock = options.fromBlock + num_query_block - 1;
+
         if (options.toBlock > toBlock) {
           options.toBlock = toBlock;
         }
       }
       else {
-        options.fromBlock = options.toBlock === toBlock ? options.fromBlock : options.toBlock;
+        options.fromBlock = options.toBlock === toBlock ?
+          options.fromBlock :
+          options.toBlock;
+
         options.toBlock = toBlock;
+
         synced = true;
       }
       /* end if statement */

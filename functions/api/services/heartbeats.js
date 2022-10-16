@@ -24,7 +24,10 @@ module.exports = async (
   if (sender) {
     must.push({ match: { sender } });
   }
-  if (fromBlock || toBlock) {
+  if (
+    fromBlock ||
+    toBlock
+  ) {
     const range = {};
     if (fromBlock) {
       range.gte = fromBlock;
@@ -55,7 +58,8 @@ module.exports = async (
       size: typeof size === 'number' ?
         size :
         200,
-      sort: sort || [{ period_height: 'desc' }],
+      sort: sort ||
+        [{ period_height: 'desc' }],
       track_total_hits: true,
     },
   );
