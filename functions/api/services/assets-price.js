@@ -292,7 +292,8 @@ module.exports = async (
         denom,
       } = { ...d };
 
-      d.updated_at = moment().valueOf();
+      d.updated_at = moment()
+        .valueOf();
 
       const price_timestamp =
         moment(

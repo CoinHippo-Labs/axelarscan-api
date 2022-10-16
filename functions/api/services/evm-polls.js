@@ -260,7 +260,8 @@ module.exports = async (
     fromTime = Number(fromTime) * 1000;
     toTime = toTime ?
       Number(toTime) * 1000 :
-      moment().valueOf();
+      moment()
+        .valueOf();
     must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
   }
   if (!query) {

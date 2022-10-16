@@ -3,6 +3,7 @@ const moment = require('moment');
 const config = require('config-yml');
 const {
   get_distinguish_chain_id,
+  get_others_version_chain_ids,
 } = require('./utils');
 const {
   read,
@@ -30,6 +31,11 @@ module.exports = async (
 ) => {
   let response;
 
+  const {
+    sourceChain,
+    destinationChain,
+    asset,
+  } = { ...params };
   let {
     fromTime,
     toTime,
@@ -38,15 +44,35 @@ module.exports = async (
 
   const _query = _.cloneDeep(query);
 
-  const must = [],
+  let must = [],
     should = [],
     must_not = [];
 
+  if (sourceChain) {
+    must.push({ match_phrase: { 'source.original_sender_chain': sourceChain } });
+
+    for (const id of get_others_version_chain_ids(sourceChain)) {
+      must_not.push({ match_phrase: { 'source.original_sender_chain': id } });
+      must_not.push({ match_phrase: { 'source.sender_chain': id } });
+    }
+  }
+  if (destinationChain) {
+    must.push({ match_phrase: { 'source.original_recipient_chain': destinationChain } });
+
+    for (const id of get_others_version_chain_ids(destinationChain)) {
+      must_not.push({ match_phrase: { 'source.original_recipient_chain': id } });
+      must_not.push({ match_phrase: { 'source.recipient_chain': id } });
+    }
+  }
+  if (asset) {
+    must.push({ match_phrase: { 'source.denom': asset } });
+  }
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
     toTime = toTime ?
       Number(toTime) * 1000 :
-      moment().valueOf();
+      moment()
+        .valueOf();
     must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
 
@@ -159,18 +185,41 @@ module.exports = async (
     };
 
     if (!_query) {
+      must = [];
+      should = [];
+      must_not = [];
+
+      if (sourceChain) {
+        must.push({ match_phrase: { 'event.chain': sourceChain } });
+
+        for (const id of get_others_version_chain_ids(sourceChain)) {
+          must_not.push({ match_phrase: { 'event.chain': id } });
+        }
+      }
+      if (destinationChain) {
+        must.push({ match_phrase: { 'event.returnValues.destinationChain': destinationChain } });
+
+        for (const id of get_others_version_chain_ids(destinationChain)) {
+          must_not.push({ match_phrase: { 'event.returnValues.destinationChain': id } });
+        }
+      }
+      if (asset) {
+        must.push({ match_phrase: { 'event.denom': asset } });
+      }
       if (fromTime) {
         fromTime /= 1000;
         toTime /= 1000;
-        query = {
-          range: {
-            'event.block_timestamp': {
-              gte: fromTime,
-              lte: toTime,
-            },
-          },
-        };
+        must.push({ range: { 'event.block_timestamp': { gte: fromTime, lte: toTime } } });
       }
+
+      query = {
+        bool: {
+          must,
+          should,
+          must_not,
+          minimum_should_match: should.length > 0 ? 1 : 0,
+        },
+      };
 
       const _response = await read(
         'token_sent_events',
@@ -208,50 +257,51 @@ module.exports = async (
               _.groupBy(
                 _.concat(
                   response.data,
-                  _response.aggs.source_chains.buckets.flatMap(s => {
-                    const {
-                      destination_chains,
-                    } = { ...s };
-
-                    return destination_chains?.buckets?.flatMap(d => {
+                  _response.aggs.source_chains.buckets
+                    .flatMap(s => {
                       const {
-                        assets,
-                      } = { ...d };
+                        destination_chains,
+                      } = { ...s };
 
-                      d.key = chains_data.find(c =>
-                        equals_ignore_case(c?.id, d.key) ||
-                        c?.overrides?.[d.key] ||
-                        c?.prefix_chain_ids?.findIndex(p =>
-                          d.key?.startsWith(p)
-                        ) > -1
-                      )?.id ||
-                        d.key;
+                      return destination_chains?.buckets?.flatMap(d => {
+                        const {
+                          assets,
+                        } = { ...d };
 
-                      return assets?.buckets?.map(a => {
-                        return {
-                          id: `${s.key}_${d.key}_${a.key}`,
+                        d.key = chains_data.find(c =>
+                          equals_ignore_case(c?.id, d.key) ||
+                          c?.overrides?.[d.key] ||
+                          c?.prefix_chain_ids?.findIndex(p =>
+                            d.key?.startsWith(p)
+                          ) > -1
+                        )?.id ||
+                          d.key;
+
+                        return assets?.buckets?.map(a => {
+                          return {
+                            id: `${s.key}_${d.key}_${a.key}`,
+                            source_chain: s.key,
+                            destination_chain: d.key,
+                            asset: a.key,
+                            num_txs: a.doc_count,
+                            volume: a.volume?.value,
+                          };
+                        }) ||
+                        [{
+                          id: `${s.key}_${d.key}`,
                           source_chain: s.key,
                           destination_chain: d.key,
-                          asset: a.key,
-                          num_txs: a.doc_count,
-                          volume: a.volume?.value,
-                        };
+                          num_txs: d.doc_count,
+                          volume: d.volume?.value,
+                        }];
                       }) ||
                       [{
-                        id: `${s.key}_${d.key}`,
+                        id: `${s.key}`,
                         source_chain: s.key,
-                        destination_chain: d.key,
-                        num_txs: d.doc_count,
-                        volume: d.volume?.value,
+                        num_txs: s.doc_count,
+                        volume: s.volume?.value,
                       }];
-                    }) ||
-                    [{
-                      id: `${s.key}`,
-                      source_chain: s.key,
-                      num_txs: s.doc_count,
-                      volume: s.volume?.value,
-                    }];
-                  }),
+                    }),
                 ),
                 'id',
               )

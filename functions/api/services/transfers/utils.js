@@ -322,11 +322,13 @@ const get_others_version_chain_ids = chain => {
         overrides,
       } = { ...c };
 
-      return equals_ignore_case(id, chain) ||
+      return (
+        equals_ignore_case(id, chain) ||
         Object.keys({ ...overrides })
           .findIndex(k =>
             equals_ignore_case(k, chain)
-          ) > -1;
+          ) > -1
+      );
     });
 
   const {
@@ -341,32 +343,55 @@ const get_others_version_chain_ids = chain => {
         equals_ignore_case(k, chain)
       );
 
-  return chains_data
-    .filter(c =>
-      (
-        !equals_ignore_case(c?.id, _id) &&
-        c?.id?.startsWith(_id)
-      ) ||
-      Object.keys({ ...c?.overrides })
-        .findIndex(k =>
-          !equals_ignore_case(k, _id) &&
-          k?.startsWith(_id)
-        ) > -1
-    )
-    .flatMap(c => {
-      return (
-        _.concat(
+  const [
+    chain_id,
+    chain_version,
+  ] = (chain || '')
+    .split('-')
+    .filter(s => s);
+
+  return _.concat(
+    chains_data
+      .filter(c =>
+        (
           !equals_ignore_case(c?.id, _id) &&
+          c?.id?.startsWith(_id)
+        ) ||
+        Object.keys({ ...c?.overrides })
+          .findIndex(k =>
+            !equals_ignore_case(k, _id) &&
+            k?.startsWith(_id)
+          ) > -1
+      )
+      .flatMap(c => {
+        return (
+          _.concat(
+            !equals_ignore_case(c?.id, _id) &&
             c?.id,
-          Object.keys({ ...c?.overrides })
-            .filter(k =>
-              !equals_ignore_case(k, _id) &&
-              k?.startsWith(_id)
-            ),
+            Object.keys({ ...c?.overrides })
+              .filter(k =>
+                !equals_ignore_case(k, _id) &&
+                k?.startsWith(_id)
+              ),
+          )
+          .filter(id => id)
+        );
+      }),
+    chain_version ?
+      chains_data
+        .filter(c =>
+          (
+            !c?.id?.startsWith(chain_id) &&
+            c?.id?.includes(`-${chain_version}`)
+          ) ||
+          (
+            !equals_ignore_case(c?.id, _id) &&
+            c?.id?.startsWith(chain_id)
+          )
         )
-        .filter(id => id)
-      );
-    });
+        .map(c => c?.id) :
+      [],
+  );
 };
 
 const update_link = async (

@@ -206,6 +206,7 @@ module.exports = async (
 
     for (const id of get_others_version_chain_ids(sourceChain)) {
       must_not.push({ match_phrase: { 'source.original_sender_chain': id } });
+      must_not.push({ match_phrase: { 'source.sender_chain': id } });
     }
   }
   if (destinationChain) {
@@ -213,6 +214,7 @@ module.exports = async (
 
     for (const id of get_others_version_chain_ids(destinationChain)) {
       must_not.push({ match_phrase: { 'source.original_recipient_chain': id } });
+      must_not.push({ match_phrase: { 'source.recipient_chain': id } });
     }
   }
   if (asset) {
@@ -243,7 +245,8 @@ module.exports = async (
     fromTime = Number(fromTime) * 1000;
     toTime = toTime ?
       Number(toTime) * 1000 :
-      moment().valueOf();
+      moment()
+        .valueOf();
     must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
   if (!query) {
