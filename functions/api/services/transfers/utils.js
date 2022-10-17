@@ -566,7 +566,11 @@ const update_source = async (
         const {
           id,
           chain_id,
-        } = { ...chains_data.find(c => equals_ignore_case(c?.id, source.sender_chain)) };
+        } = {
+          ...chains_data.find(c =>
+            equals_ignore_case(c?.id, source.sender_chain)
+          ),
+        };
 
         const asset_data = assets_data.find(a =>
           equals_ignore_case(a?.id, source.denom) ||
@@ -592,7 +596,14 @@ const update_source = async (
             i?.chain_id === id
           )?.decimals ||
           decimals ||
-          18;
+          (
+            [
+              asset_data?.id,
+              source.denom,
+            ].findIndex(s => s?.includes('-wei')) > -1 ?
+              18 :
+              6
+          );
 
         if (asset_data) {
           source.denom =

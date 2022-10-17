@@ -601,7 +601,7 @@ module.exports = async (
         );
       }
       // Link
-      else if (
+      if (
         [
           'LinkRequest',
         ].findIndex(s =>
@@ -615,240 +615,27 @@ module.exports = async (
         );
       }
       // MsgSend
-      else if (
+      if (
         [
           'MsgSend',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
-        const created_at = moment(timestamp).utc().valueOf();
-        const amount_data = _.head(messages.find(m => m?.amount)?.amount);
-
-        const record = {
-          id: txhash,
-          type: 'axelar_transfer',
-          status_code: code,
-          status: code ?
-            'failed' :
-            'success',
-          height,
-          created_at: get_granularity(created_at),
-          sender_chain: axelarnet.id,
-          sender_address: messages.find(m => m?.from_address)?.from_address,
-          recipient_address: messages.find(m => m?.to_address)?.to_address,
-          amount: amount_data?.amount,
-          denom: amount_data?.denom,
-        };
-
-        const {
-          recipient_address,
-        } = { ...record };
-        let {
-          amount,
-        } = { ...record };
-
-        if (
-          recipient_address?.length >= 65 &&
-          txhash &&
-          amount
-        ) {
-          const _response = await read(
-            'deposit_addresses',
-            {
-              match: { deposit_address: recipient_address },
-            },
-            {
-              size: 1,
-            },
-          );
-
-          const link = _.head(_response?.data);
-          const {
-            id,
-            original_sender_chain,
-            original_recipient_chain,
-            sender_chain,
-            recipient_chain,
-            asset,
-          } = { ...link };
-          let {
-            denom,
-            price,
-          } = { ...link };
-
-          record.original_sender_chain = original_sender_chain ||
-            normalize_original_chain(
-              record.sender_chain ||
-              sender_chain
-            );
-          record.original_recipient_chain = original_recipient_chain ||
-            normalize_original_chain(
-              record.recipient_chain ||
-              recipient_chain
-            );
-
-          if (link) {
-            record.sender_chain = sender_chain ||
-              record.sender_chain;
-            record.recipient_chain = recipient_chain ||
-              record.recipient_chain;
-            record.denom = record.denom ||
-              asset;
-          }
-
-          if (record.denom) {
-            const asset_data = assets_data.find(a =>
-              equals_ignore_case(a?.id, record.denom) ||
-              a?.ibc?.findIndex(i =>
-                i?.chain_id === record.sender_chain &&
-                equals_ignore_case(i?.ibc_denom, record.denom)
-              ) > -1
-            );
-
-            if (asset_data) {
-              const {
-                ibc,
-              } = { ...asset_data };
-              let {
-                decimals,
-              } = { ...asset_data };
-
-              decimals = ibc?.find(i =>
-                i?.chain_id === record.sender_chain
-              )?.decimals ||
-                decimals ||
-                6;
-
-              if (
-                !record.fee &&
-                endpoints?.lcd
-              ) {
-                const lcd = axios.create({ baseURL: endpoints.lcd });
-
-                const __response = await lcd.get(
-                  '/axelar/nexus/v1beta1/transfer_fee',
-                  {
-                    params: {
-                      source_chain: record.original_sender_chain,
-                      destination_chain: record.original_recipient_chain,
-                      amount: `${parseUnits((amount || 0).toString(), decimals).toString()}${asset_data.id}`,
-                    },
-                  },
-                ).catch(error => { return { data: { error } }; });
-
-                const {
-                  fee,
-                } = { ...__response?.data };
-
-                if (fee?.amount) {
-                  record.fee = Number(
-                    formatUnits(
-                      BigNumber.from(fee.amount).toString(),
-                      decimals,
-                    )
-                  );
-                }
-              }
-
-              if (typeof amount === 'string') {
-                amount = Number(
-                  formatUnits(
-                    BigNumber.from(amount).toString(),
-                    decimals,
-                  )
-                );
-              }
-
-              if (
-                typeof amount === 'number' &&
-                typeof record.fee === 'number'
-              ) {
-                if (amount < record.fee) {
-                  record.insufficient_fee = true;
-                }
-                else {
-                  record.insufficient_fee = false;
-                  record.amount_received = amount - record.fee;
-                }
-              }
-
-              record.denom = asset_data.id ||
-                record.denom;
-
-              denom = record.denom ||
-                asset ||
-                denom;
-            }
-            else {
-              denom = asset ||
-                denom;
-            }
-          }
-          else {
-            denom = asset ||
-              denom;
-          }
-
-          if (
-            link &&
-            (
-              !price ||
-              price <= 0 ||
-              !equals_ignore_case(link.denom, denom)
-            )
-          ) {
-            const __response = await assets_price(
-              {
-                chain: original_recipient_chain,
-                denom,
-                timestamp: created_at,
-              },
-            );
-
-            const _price = _.head(__response)?.price;
-            if (_price) {
-              price = _price;
-              link.price = price;
-              link.denom = denom;
-
-              await write(
-                'deposit_addresses',
-                id,
-                link,
-              );
-            }
-          }
-
-          if (
-            price > 0 &&
-            typeof amount === 'number'
-          ) {
-            record.value = amount * price;
-          }
-
-          if (recipient_address) {
-            await write(
-              'transfers',
-              `${txhash}_${recipient_address}`.toLowerCase(),
-              {
-                source: {
-                  ...record,
-                  amount,
-                },
-                link: link ||
-                  undefined,
-              },
-            );
-          }
-        }
+        await require('./axelar-send')(
+          lcd_response,
+        );
       }
       // MsgRecvPacket -> MsgTransfer
-      else if (
+      if (
         [
           'MsgRecvPacket',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         const {
@@ -1239,11 +1026,13 @@ module.exports = async (
         }
       }
       // RouteIBCTransfers -> ibc_send
-      else if (
+      if (
         [
           'RouteIBCTransfersRequest',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         let transfer_sent_events;
@@ -1604,11 +1393,13 @@ module.exports = async (
         }
       }
       // MsgAcknowledgement -> ibc_ack
-      else if (
+      if (
         [
           'MsgAcknowledgement',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         const ack_packets = (logs || [])
@@ -1865,11 +1656,13 @@ module.exports = async (
         }
       }
       // MsgTimeout -> ibc_failed
-      else if (
+      if (
         [
           'MsgTimeout',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         const transfer_failed_events = (logs || [])
@@ -1983,11 +1776,13 @@ module.exports = async (
         }
       }
       // ExecutePendingTransfers -> axelar_transfer
-      else if (
+      if (
         [
           'ExecutePendingTransfersRequest',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         const created_at = moment(timestamp).utc().valueOf();
@@ -2129,9 +1924,19 @@ module.exports = async (
         }
       }
       // ConfirmDeposit & ConfirmERC20Deposit
-      else if (
+      if (
         transfer_actions.findIndex(s =>
-          messages.findIndex(m => _.last(m?.['@type']?.split('.'))?.replace('Request', '')?.includes(s)) > -1
+          messages.findIndex(m =>
+            _.last(
+              (m?.['@type'] || '')
+                .split('.')
+            )
+            .replace(
+              'Request',
+              '',
+            )
+            .includes(s)
+          ) > -1
         ) > -1
       ) {
         const message = _.head(
@@ -2874,12 +2679,14 @@ module.exports = async (
         }
       }
       // ConfirmTransferKey & ConfirmGatewayTx
-      else if (
+      if (
         [
           'ConfirmTransferKey',
           'ConfirmGatewayTx',
         ].findIndex(s =>
-          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
         ) > -1
       ) {
         for (let i = 0; i < messages.length; i++) {
@@ -2936,11 +2743,20 @@ module.exports = async (
           }
         }
       }
-
       // VoteConfirmDeposit & Vote
       if (
         vote_types.findIndex(s =>
-          messages.findIndex(m => _.last(m?.inner_message?.['@type']?.split('.'))?.replace('Request', '')?.includes(s)) > -1
+          messages.findIndex(m =>
+            _.last(
+              (m?.inner_message?.['@type'] || '')
+                .split('.')
+            )
+            .replace(
+              'Request',
+              '',
+            )
+            .includes(s)
+          ) > -1
         ) > -1
       ) {
         for (let i = 0; i < messages.length; i++) {
