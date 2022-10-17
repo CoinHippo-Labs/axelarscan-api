@@ -54,7 +54,7 @@ module.exports = async (
       messages,
     } = { ...tx?.body };
 
-    let transfer_sent_events;
+    let transfer_events;
 
     if (
       logs?.length > 0 &&
@@ -132,7 +132,7 @@ module.exports = async (
         }
       }
 
-      transfer_sent_events = (end_block_events || [])
+      transfer_events = (end_block_events || [])
         .filter(e =>
           e?.attributes &&
           [
@@ -263,7 +263,7 @@ module.exports = async (
           decimals ||
           6;
 
-        const transfer_id = (transfer_sent_events || [])
+        const transfer_id = (transfer_events || [])
           .find(e =>
             equals_ignore_case(e?.recipient, receiver) &&
             equals_ignore_case(e?.asset?.denom, denom) &&

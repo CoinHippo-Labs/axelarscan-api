@@ -670,7 +670,7 @@ module.exports = async (
           lcd_response,
         );
       }
-      // MsgTimeout -> ibc_failed
+      // MsgTimeout
       if (
         [
           'MsgTimeout',
@@ -680,117 +680,11 @@ module.exports = async (
           ) > -1
         ) > -1
       ) {
-        const transfer_failed_events = (logs || [])
-          .map(l => {
-            const {
-              events,
-            } = { ...l };
-
-            const e = events?.find(e => equals_ignore_case(_.last(e?.type?.split('.')), 'IBCTransferFailed'));
-            const {
-              attributes,
-            } = { ...e };
-
-            if (attributes) {
-              const transfer_id = (attributes.find(a => a?.key === 'id')?.value || '')
-                .split('"')
-                .join('');
-
-              if (transfer_id) {
-                attributes.push(
-                  {
-                    key: 'transfer_id',
-                    value: transfer_id,
-                  }
-                );
-              }
-            }
-
-            return {
-              ...e,
-              attributes,
-            };
-          })
-          .filter(e => e?.attributes?.length > 0)
-          .map(e => {
-            const {
-              attributes,
-            } = { ...e };
-
-            return Object.fromEntries(
-              attributes
-                .filter(a =>
-                  a?.key &&
-                  a.value
-                )
-                .map(a =>
-                  [
-                    a.key,
-                    a.value,
-                  ]
-                )
-            );
-          })
-          .filter(e => e.transfer_id);
-
-        for (const record of transfer_failed_events) {
-          const {
-            transfer_id,
-          } = { ...record };
-
-          const _response = await read(
-            'transfers',
-            {
-              bool: {
-                should: [
-                  { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                  { match: { 'vote.transfer_id': transfer_id } },
-                ],
-                minimum_should_match: 1,
-                must_not: [
-                  { exists: { field: 'ibc_send.ack_txhash' } },
-                ],
-              },
-            },
-            {
-              size: 1,
-              sort: [{ 'source.created_at.ms': 'desc' }],
-            },
-          );
-
-          if (_response?.data?.length > 0) {
-            const {
-              source,
-              ibc_send,
-            } = { ..._.head(_response.data) };
-            const {
-              id,
-              recipient_address,
-            } = { ...source };
-
-            if (recipient_address) {
-              const _id = `${id}_${recipient_address}`.toLowerCase();
-
-              await write(
-                'transfers',
-                _id,
-                {
-                  ibc_send: {
-                    ...ibc_send,
-                    failed_txhash: txhash,
-                  },
-                },
-                true,
-              );
-
-              await saveTimeSpent(
-                _id,
-              );
-            }
-          }
-        }
+        await require('./ibc-failed')(
+          lcd_response,
+        );
       }
-      // ExecutePendingTransfers -> axelar_transfer
+      // ExecutePendingTransfers
       if (
         [
           'ExecutePendingTransfersRequest',
@@ -800,143 +694,9 @@ module.exports = async (
           ) > -1
         ) > -1
       ) {
-        const created_at = moment(timestamp).utc().valueOf();
-
-        const axelar_transfer_completed_events = (logs || [])
-          .map(l => {
-            const {
-              events,
-            } = { ...l };
-
-            const e = events?.find(e => equals_ignore_case(_.last(e?.type?.split('.')), 'AxelarTransferCompleted'));
-            const {
-              attributes,
-            } = { ...e };
-
-            if (attributes) {
-              const transfer_id = (attributes.find(a => a?.key === 'id')?.value || '')
-                .split('"')
-                .join('');
-
-              if (transfer_id) {
-                attributes.push(
-                  {
-                    key: 'transfer_id',
-                    value: transfer_id,
-                  }
-                );
-              }
-            }
-
-            return {
-              ...e,
-              attributes,
-            };
-          })
-          .filter(e => e?.attributes?.length > 0)
-          .map(e => {
-            const {
-              attributes,
-            } = { ...e };
-
-            return Object.fromEntries(
-              attributes
-                .filter(a =>
-                  a?.key &&
-                  a.value
-                )
-                .map(a =>
-                  [
-                    a.key,
-                    a.value,
-                  ]
-                )
-            );
-          })
-          .filter(e => e.transfer_id);
-
-        for (const record of axelar_transfer_completed_events) {
-          const {
-            recipient,
-            asset,
-            transfer_id,
-          } = { ...record };
-          const {
-            denom,
-          } = { ...to_json(asset) };
-          let {
-            amount,
-          } = { ...to_json(asset) };
-
-          if (amount) {
-            const decimals = 6;
-
-            amount = Number(
-              formatUnits(
-                BigNumber.from(amount).toString(),
-                decimals,
-              )
-            );
-          }
-
-          const _response = await read(
-            'transfers',
-            {
-              bool: {
-                should: [
-                  { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                  { match: { 'vote.transfer_id': transfer_id } },
-                ],
-                minimum_should_match: 1,
-              },
-            },
-            {
-              size: 1,
-              sort: [{ 'source.created_at.ms': 'desc' }],
-            },
-          );
-
-          if (_response?.data?.length > 0) {
-            const {
-              source,
-            } = { ..._.head(_response.data) };
-            const {
-              id,
-              recipient_address,
-            } = { ...source };
-
-            if (recipient_address) {
-              const _id = `${id}_${recipient_address}`.toLowerCase();
-
-              await write(
-                'transfers',
-                _id,
-                {
-                  axelar_transfer: {
-                    id: txhash,
-                    type: 'axelar_transfer',
-                    status_code: code,
-                    status: code ?
-                      'failed' :
-                      'success',
-                    height,
-                    created_at: get_granularity(created_at),
-                    recipient_chain: 'axelarnet',
-                    recipient_address: recipient,
-                    denom,
-                    amount,
-                    transfer_id,
-                  },
-                },
-                true,
-              );
-
-              await saveTimeSpent(
-                _id,
-              );
-            }
-          }
-        }
+        await require('./ibc-transfer')(
+          lcd_response,
+        );
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (

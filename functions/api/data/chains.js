@@ -1013,6 +1013,45 @@ module.exports = {
   testnet: {
     evm: [
       {
+        id: 'ethereum-2',
+        maintainer_id: 'ethereum-2',
+        name: 'Ethereum',
+        short_name: 'ETH',
+        chain_id: 5,
+        provider_params: [
+          {
+            chainId: '0x5',
+            chainName: 'Ethereum Goerli',
+            rpcUrls: [
+              'https://rpc.ankr.com/eth_goerli',
+              'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://goerli.etherscan.io',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Etherscan',
+          url: 'https://goerli.etherscan.io',
+          icon: '/logos/explorers/etherscan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/ethereum.svg',
+        color: '#c0c2c3',
+        website: 'https://ethereum.org',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
+      },
+      {
         id: 'ethereum',
         maintainer_id: 'ethereum',
         name: 'Ropsten',
@@ -1051,45 +1090,6 @@ module.exports = {
         website: 'https://ethereum.org',
         gateway_address: '0xBC6fcce7c5487d43830a219CA6E7B83238B41e71',
         no_inflation: true,
-      },
-      {
-        id: 'ethereum-2',
-        maintainer_id: 'ethereum-2',
-        name: 'Ethereum',
-        short_name: 'ETH',
-        chain_id: 5,
-        provider_params: [
-          {
-            chainId: '0x5',
-            chainName: 'Ethereum Goerli',
-            rpcUrls: [
-              'https://rpc.ankr.com/eth_goerli',
-              'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-            ],
-            nativeCurrency: {
-              name: 'Ethereum',
-              symbol: 'ETH',
-              decimals: 18,
-            },
-            blockExplorerUrls: [
-              'https://goerli.etherscan.io',
-            ],
-          },
-        ],
-        explorer: {
-          name: 'Etherscan',
-          url: 'https://goerli.etherscan.io',
-          icon: '/logos/explorers/etherscan.png',
-          block_path: '/block/{block}',
-          address_path: '/address/{address}',
-          contract_path: '/token/{address}',
-          contract_0_path: '/address/{address}',
-          transaction_path: '/tx/{tx}',
-        },
-        image: '/logos/chains/ethereum.svg',
-        color: '#c0c2c3',
-        website: 'https://ethereum.org',
-        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'binance',

@@ -62,7 +62,7 @@ module.exports = async (
         } = { ...e };
 
         if (attributes) {
-          const transfer_completed_event = events.find(e =>
+          const transfer_event = events.find(e =>
             [
               'IBCTransferCompleted',
             ].findIndex(t =>
@@ -78,7 +78,7 @@ module.exports = async (
 
           const transfer_id =
             (
-              transfer_completed_event?.attributes?.find(a =>
+              transfer_event?.attributes?.find(a =>
                 a?.key === 'id'
               )?.value ||
               ''
