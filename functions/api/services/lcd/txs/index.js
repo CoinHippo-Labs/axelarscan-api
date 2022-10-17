@@ -1,4 +1,3 @@
-const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
@@ -24,10 +23,6 @@ const environment = process.env.ENVIRONMENT ||
 const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
   [];
 
-const {
-  endpoints,
-} = { ...config?.[environment] };
-
 module.exports = async (
   lcd_response = {},
 ) => {
@@ -47,124 +42,13 @@ module.exports = async (
       lcd_response,
     );
 
-    // ConfirmTransferKey & ConfirmGatewayTx
-    try {
-      const records = tx_responses
-        .filter(t =>
-          !t?.code &&
-          [
-            'ConfirmTransferKey',
-            'ConfirmGatewayTx',
-          ].findIndex(s =>
-            t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes(s)) > -1
-          ) > -1
-        )
-        .flatMap(t => {
-          const {
-            timestamp,
-            tx,
-            logs,
-          } = { ...t };
-          let {
-            height,
-          } = { ...t };
-          const {
-            messages,
-          } = { ...tx?.body };
+    await require('./ibc-axelar-transfer')(
+      lcd_response,
+    );
 
-          height = Number(height);
-
-          const _records = [];
-
-          if (messages) {
-            for (let i = 0; i < messages.length; i++) {
-              const message = messages[i];
-
-              if (message) {
-                const created_at = moment(timestamp).utc().valueOf();
-
-                const {
-                  events,
-                } = { ...logs?.[i] };
-
-                const event = events?.find(e =>
-                  [
-                    'ConfirmKeyTransferStarted',
-                    'ConfirmGatewayTxStarted',
-                  ].findIndex(s => e?.type?.includes(s)) > -1
-                );
-
-                const {
-                  attributes,
-                } = { ...event };
-
-                const {
-                  poll_id,
-                  participants,
-                } = { ...to_json(attributes?.find(a => a?.key === 'participants')?.value) };
-
-                const sender_chain = normalize_chain(message.chain);
-                let transaction_id = message.tx_id;
-
-                transaction_id = Array.isArray(transaction_id) ?
-                  to_hex(transaction_id) :
-                  transaction_id;
-
-                if (
-                  poll_id &&
-                  transaction_id
-                ) {
-                  const record = {
-                    height,
-                    created_at: get_granularity(created_at),
-                    sender_chain,
-                    poll_id,
-                    transaction_id,
-                    participants,
-                  };
-
-                  _records.push(record);
-                }
-              }
-            }
-          }
-
-          return _records;
-        })
-        .filter(t =>
-          t?.poll_id &&
-          t.transaction_id
-        );
-
-      if (records.length > 0) {
-        for (const record of records) {
-          const {
-            height,
-            created_at,
-            sender_chain,
-            poll_id,
-            transaction_id,
-            participants,
-          } = { ...record };
-
-          write(
-            'evm_polls',
-            poll_id,
-            {
-              id: poll_id,
-              height,
-              created_at,
-              sender_chain,
-              transaction_id,
-              participants: participants ||
-                undefined,
-            },
-          );
-        }
-
-        await sleep(1 * 1000);
-      }
-    } catch (error) {}
+    await require('./confirm')(
+      lcd_response,
+    );
 
     // VoteConfirmDeposit & Vote
     try {
@@ -836,42 +720,6 @@ module.exports = async (
         }
 
         await sleep(2 * 1000);
-      }
-    } catch (error) {}
-
-    // IBC Transfer & Axelar Transfer
-    try {
-      const txHashes = tx_responses
-        .filter(t =>
-          !t?.code &&
-          [
-            'RouteIBCTransfersRequest',
-            'MsgAcknowledgement',
-            'MsgTimeout',
-            'ExecutePendingTransfersRequest',
-          ].findIndex(s =>
-            t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes(s)) > -1
-          ) > -1
-        )
-        .map(t => t.txhash);
-
-      if (
-        txHashes.length > 0 &&
-        endpoints?.api
-      ) {
-        const api = axios.create({ baseURL: endpoints.api });
-
-        for (const txhash of txHashes) {
-          api.post(
-            '',
-            {
-              module: 'lcd',
-              path: `/cosmos/tx/v1beta1/txs/${txhash}`,
-            },
-          ).catch(error => { return { data: { error } }; });
-        }
-
-        await sleep(1 * 1000);
       }
     } catch (error) {}
   }

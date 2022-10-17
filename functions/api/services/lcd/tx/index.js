@@ -697,6 +697,21 @@ module.exports = async (
         await require('./ibc-transfer')(
           lcd_response,
         );
+      }   
+      // ConfirmTransferKey & ConfirmGatewayTx
+      if (
+        [
+          'ConfirmTransferKey',
+          'ConfirmGatewayTx',
+        ].findIndex(s =>
+          messages.findIndex(m =>
+            m?.['@type']?.includes(s)
+          ) > -1
+        ) > -1
+      ) {
+        await require('./confirm')(
+          lcd_response,
+        );
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (
@@ -1450,71 +1465,6 @@ module.exports = async (
               break;
             default:
               break;
-          }
-        }
-      }
-      // ConfirmTransferKey & ConfirmGatewayTx
-      if (
-        [
-          'ConfirmTransferKey',
-          'ConfirmGatewayTx',
-        ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
-        ) > -1
-      ) {
-        for (let i = 0; i < messages.length; i++) {
-          const message = messages[i];
-
-          if (message) {
-            const created_at = moment(timestamp).utc().valueOf();
-
-            const {
-              events,
-            } = { ...logs?.[i] };
-
-            const event = events?.find(e =>
-              [
-                'ConfirmKeyTransferStarted',
-                'ConfirmGatewayTxStarted',
-              ].findIndex(s => e?.type?.includes(s)) > -1
-            );
-
-            const {
-              attributes,
-            } = { ...event };
-
-            const {
-              poll_id,
-              participants,
-            } = { ...to_json(attributes?.find(a => a?.key === 'participants')?.value) };
-
-            const sender_chain = normalize_chain(message.chain);
-            let transaction_id = message.tx_id;
-
-            transaction_id = Array.isArray(transaction_id) ?
-              to_hex(transaction_id) :
-              transaction_id;
-
-            if (
-              poll_id &&
-              transaction_id
-            ) {
-              await write(
-                'evm_polls',
-                poll_id,
-                {
-                  id: poll_id,
-                  height,
-                  created_at: get_granularity(created_at),
-                  sender_chain,
-                  transaction_id,
-                  participants: participants ||
-                    undefined,
-                },
-              );
-            }
           }
         }
       }
