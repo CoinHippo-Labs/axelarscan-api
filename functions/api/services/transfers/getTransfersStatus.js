@@ -464,6 +464,7 @@ module.exports = async (
       source = await update_source(
         source,
         link,
+        true,
       );
 
       data = {

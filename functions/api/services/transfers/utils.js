@@ -526,6 +526,7 @@ const update_link = async (
 const update_source = async (
   source,
   link,
+  update_only = false,
 ) => {
   if (source) {
     source.sender_chain =
@@ -695,6 +696,7 @@ const update_source = async (
           link: link ||
             undefined,
         },
+        update_only,
       );
     }
   }
