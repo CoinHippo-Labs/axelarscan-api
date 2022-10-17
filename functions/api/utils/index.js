@@ -190,7 +190,9 @@ const normalize_original_chain = chain => {
   if (chain) {
     chain = chain
       .trim()
-      .toLowerCase();
+      .toLowerCase()
+      .split('"')
+      .join('');
   }
 
   return chain;
@@ -202,7 +204,9 @@ const normalize_chain = chain => {
   if (chain) {
     chain = chain
       .trim()
-      .toLowerCase();
+      .toLowerCase()
+      .split('"')
+      .join('');
 
     if (
       chains_data.findIndex(c =>
