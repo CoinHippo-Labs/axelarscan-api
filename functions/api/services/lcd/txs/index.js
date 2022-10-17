@@ -8,14 +8,12 @@ const {
   write,
 } = require('../../index');
 const rpc = require('../../rpc');
-const assets_price = require('../../assets-price');
 const {
   sleep,
   equals_ignore_case,
   to_json,
   to_hex,
   get_granularity,
-  normalize_original_chain,
   normalize_chain,
   vote_types,
 } = require('../../../utils');
@@ -25,16 +23,6 @@ const environment = process.env.ENVIRONMENT ||
 
 const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
-  [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const cosmos_non_axelarnet_chains_data =
-  cosmos_chains_data
-    .filter(c => c?.id !== axelarnet.id);
 
 const {
   endpoints,
@@ -55,204 +43,9 @@ module.exports = async (
       lcd_response,
     );
 
-    // Link
-    try {
-      const records = tx_responses
-        .filter(t =>
-          !t?.code &&
-          [
-            'LinkRequest',
-          ].findIndex(s =>
-            t?.tx?.body?.messages?.findIndex(m => m?.['@type']?.includes(s)) > -1
-          ) > -1
-        );
-
-        for (let i = 0; i < records.length; i++) {
-          const t = records[i];
-
-          const {
-            txhash,
-            code,
-            timestamp,
-            tx,
-            logs,
-          } = { ...t };
-          let {
-            height,
-          } = { ...t };
-          const {
-            messages,
-          } = { ...tx?.body };
-
-          height = Number(height);
-
-          const event = _.head(logs?.flatMap(l => l?.events?.filter(e => equals_ignore_case(e?.type, 'link'))));
-          const {
-            attributes,
-          } = { ...event };
-
-          const created_at = moment(timestamp).utc().valueOf();
-          let sender_chain = attributes?.find(a => a?.key === 'sourceChain')?.value;
-          const deposit_address = attributes?.find(a => a?.key === 'depositAddress')?.value;
-
-          const record = {
-            ..._.head(messages),
-            txhash,
-            height,
-            created_at: get_granularity(created_at),
-            sender_chain,
-            deposit_address,
-          };
-
-          const {
-            sender,
-            chain,
-            recipient_addr,
-            asset,
-            denom,
-          } = { ...record };
-          let {
-            id,
-            type,
-            original_sender_chain,
-            original_recipient_chain,
-            sender_address,
-            recipient_address,
-            recipient_chain,
-            price,
-          } = { ...record };
-
-          if (equals_ignore_case(sender_chain, axelarnet.id)) {
-            const chain_data = cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address));
-            const {
-              id,
-              overrides,
-            } = { ...chain_data };
-
-            sender_chain = _.last(Object.keys({ ...overrides })) ||
-              id ||
-              sender_chain;
-          }
-
-          id = deposit_address ||
-            txhash;
-          type = record['@type']?.split('.')[0]?.replace('/', '');
-          original_sender_chain = normalize_original_chain(sender_chain);
-          original_recipient_chain = normalize_original_chain(recipient_chain);
-          sender_address = sender;
-
-          if (
-            sender_address?.startsWith(axelarnet.prefix_address) &&
-            (
-              evm_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1 ||
-              cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, sender_chain)) > -1
-            )
-          ) {
-            const _response = await read(
-              'transfers',
-              {
-                bool: {
-                  must: [
-                    { match: { 'source.recipient_address': deposit_address } },
-                    { match: { 'source.sender_chain': sender_chain } },
-                  ],
-                },
-              },
-              {
-                size: 1,
-              },
-            );
-
-            const {
-              source,
-              link,
-            } = { ..._.head(_response?.data) };
-
-            if (source?.sender_address) {
-              sender_address = source.sender_address;
-            }
-          }
-
-          sender_chain = normalize_chain(
-            cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id ||
-            sender_chain ||
-            chain
-          );
-
-          if (!original_sender_chain?.startsWith(sender_chain)) {
-            original_sender_chain = !original_sender_chain?.startsWith(sender_chain) ?
-              sender_chain :
-              original_sender_chain;
-          }
-
-          recipient_address = recipient_addr;
-          recipient_chain = normalize_chain(recipient_chain);
-
-          delete record['@type'];
-          delete record.sender;
-          delete record.chain;
-          delete record.recipient_addr;
-
-          if (
-            typeof price !== 'number' &&
-            (asset || denom)
-          ) {
-            let _response = await assets_price(
-              {
-                chain: original_sender_chain,
-                denom: asset || denom,
-                timestamp: moment(timestamp).utc().valueOf(),
-              },
-            );
-
-            let _price = _.head(_response)?.price;
-            if (_price) {
-              price = _price;
-            }
-            else {
-              _response = await get(
-                'deposit_addresses',
-                id,
-              );
-
-              _price = _.head(_response)?.price;
-              if (_price) {
-                price = _price;
-              }
-            }
-          }
-
-          records[i] = {
-            ...record,
-            id,
-            type,
-            original_sender_chain,
-            original_recipient_chain,
-            sender_chain,
-            recipient_chain,
-            sender_address,
-            deposit_address,
-            recipient_address,
-            price,
-          };
-        }
-
-      if (records.length > 0) {
-        for (const record of records) {
-          const {
-            id,
-          } = { ...record };
-
-          write(
-            'deposit_addresses',
-            id,
-            record,
-          );
-        }
-
-        await sleep(1 * 1000);
-      }
-    } catch (error) {}
+    await require('./link')(
+      lcd_response,
+    );
 
     // ConfirmTransferKey & ConfirmGatewayTx
     try {

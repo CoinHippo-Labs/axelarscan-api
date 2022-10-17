@@ -21,7 +21,6 @@ module.exports = async (
 ) => {
   const {
     tx_responses,
-    txs,
   } = { ...lcd_response };
 
   try {
