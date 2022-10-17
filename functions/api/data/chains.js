@@ -314,6 +314,7 @@ module.exports = {
         color: '#28a0f0',
         website: 'https://arbitrum.io',
         gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'optimism',
@@ -353,6 +354,7 @@ module.exports = {
         color: '#dc2626',
         website: 'https://optimism.io',
         gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'celo',
@@ -392,6 +394,7 @@ module.exports = {
         color: '#35d07f',
         website: 'https://celo.org',
         gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'kava',
@@ -431,6 +434,7 @@ module.exports = {
         color: '#ff433e',
         website: 'https://kava.io',
         gateway_address: '',
+        no_inflation: true,
       },
     ],
     cosmos: [
@@ -1365,6 +1369,7 @@ module.exports = {
         color: '#28a0f0',
         website: 'https://arbitrum.io',
         gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'optimism',
@@ -1403,6 +1408,7 @@ module.exports = {
         color: '#dc2626',
         website: 'https://optimism.io',
         gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'celo',
@@ -1441,6 +1447,7 @@ module.exports = {
         color: '#35d07f',
         website: 'https://celo.org',
         gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'kava',
@@ -1479,6 +1486,7 @@ module.exports = {
         color: '#ff433e',
         website: 'https://kava.io',
         gateway_address: '',
+        no_inflation: true,
       },
     ],
     cosmos: [
