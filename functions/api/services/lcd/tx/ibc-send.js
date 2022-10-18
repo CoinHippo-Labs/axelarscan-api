@@ -377,7 +377,7 @@ module.exports = async (
                             {
                               range: {
                                 'source.amount': {
-                                  lte: Math.ceil(amount * 2),
+                                  lte: Math.ceil(amount * 1.2),
                                 },
                               },
                             },

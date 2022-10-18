@@ -686,11 +686,11 @@ module.exports = {
           'kaiyo-',
         ],
         endpoints: {
-          lcd: 'https://lcd-kujira.whispernode.com',
+          lcd: 'https://kujira-api.polkachu.com',
           lcds: [
             'https://lcd.kaiyo.kujira.setten.io',
             'https://kujira-api.lavenderfive.com',
-            'https://kujira-api.polkachu.com',
+            'https://lcd-kujira.whispernode.com',
             'https://rest-kujira.ecostake.com',
             'https://api.kujira.chaintools.tech',
             'https://api-kujira-ia.cosmosia.notional.ventures',
