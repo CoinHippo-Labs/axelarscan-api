@@ -57,15 +57,16 @@ module.exports = async (
           events,
         } = { ...l };
 
-        const e = events?.find(e =>
-          equals_ignore_case(
-            _.last(
-              (e?.type || '')
-                .split('.')
-            ),
-            'AxelarTransferCompleted',
-          )
-        );
+        const e = (events || [])
+          .find(e =>
+            equals_ignore_case(
+              _.last(
+                (e?.type || '')
+                  .split('.')
+              ),
+              'AxelarTransferCompleted',
+            )
+          );
 
         const {
           attributes,
@@ -74,9 +75,10 @@ module.exports = async (
         if (attributes) {
           const transfer_id =
             (
-              attributes.find(a =>
-                a?.key === 'id'
-              )?.value ||
+              attributes
+                .find(a =>
+                  a?.key === 'id'
+                )?.value ||
               ''
             )
             .split('"')

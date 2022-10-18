@@ -930,6 +930,48 @@ module.exports = async (
                         _id,
                       );
                     }
+                    else if (transaction_id) {
+                      switch (event_name) {
+                        case 'token_sent':
+                          try {
+                            const _response = await read(
+                              'token_sent_events',
+                              {
+                                match: { 'event.transactionHash': transaction_id },
+                              },
+                              {
+                                size: 1,
+                              },
+                            );
+
+                            const data = _.head(_response?.data);
+
+                            const {
+                              id,
+                            } = { ...data?.event };
+
+                            if (id) {
+                              await write(
+                                'token_sent_events',
+                                id,
+                                {
+                                  vote: data.vote ?
+                                    data.vote.height < height &&
+                                    !equals_ignore_case(
+                                      data.vote.poll_id,
+                                      poll_id
+                                    ) ?
+                                      record :
+                                      data.vote :
+                                    record,
+                                },
+                                true,
+                              );
+                            }
+                          } catch (error) {}
+                          break;
+                      }
+                    }
                   } catch (error) {}
                 }
               } catch (error) {}
