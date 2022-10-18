@@ -279,10 +279,10 @@ module.exports = async (
 
                     confirmation =
                       (attributes || [])
-                      .findIndex(a =>
-                        a?.key === 'action' &&
-                        a.value === 'confirm'
-                      ) > -1;
+                        .findIndex(a =>
+                          a?.key === 'action' &&
+                          a.value === 'confirm'
+                        ) > -1;
 
                     break;
                   case 'Vote':

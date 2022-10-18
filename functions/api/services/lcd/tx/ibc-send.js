@@ -15,8 +15,8 @@ const {
 const rpc = require('../../rpc');
 const {
   equals_ignore_case,
-  get_granularity,
   to_json,
+  get_granularity,
 } = require('../../../utils');
 
 const environment = process.env.ENVIRONMENT ||

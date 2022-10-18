@@ -14,8 +14,8 @@ const {
 } = require('../../transfers/utils');
 const {
   equals_ignore_case,
-  get_granularity,
   to_json,
+  get_granularity,
 } = require('../../../utils');
 
 const environment = process.env.ENVIRONMENT ||

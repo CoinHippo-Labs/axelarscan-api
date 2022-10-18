@@ -17,9 +17,9 @@ const {
 const {
   sleep,
   equals_ignore_case,
-  get_granularity,
   to_json,
   to_hex,
+  get_granularity,
   normalize_chain,
   transfer_actions,
   getBlockTime,
