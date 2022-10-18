@@ -263,12 +263,13 @@ module.exports = async (
           decimals ||
           6;
 
-        const transfer_id = (transfer_events || [])
-          .find(e =>
-            equals_ignore_case(e?.recipient, receiver) &&
-            equals_ignore_case(e?.asset?.denom, denom) &&
-            equals_ignore_case(e?.asset?.amount, amount)
-          )?.id;
+        const transfer_id =
+          (transfer_events || [])
+            .find(e =>
+              equals_ignore_case(e?.recipient, receiver) &&
+              equals_ignore_case(e?.asset?.denom, denom) &&
+              equals_ignore_case(e?.asset?.amount, amount)
+            )?.id;
 
         const record = {
           id: txhash,
@@ -309,7 +310,7 @@ module.exports = async (
         ms,
       } = { ...created_at };
 
-      let _response = await read(
+      const _response = await read(
         'transfers',
         {
           bool: {
@@ -345,7 +346,7 @@ module.exports = async (
           )
           .length < 1
       ) {
-        _response = await read(
+        const _response = await read(
           'transfers',
           {
             bool: {
@@ -411,12 +412,13 @@ module.exports = async (
         const {
           source,
         } = { ..._.head(_response?.data) };
-        const {
-          id,
-          recipient_address,
-        } = { ...source };
 
-        if (recipient_address) {
+        if (source?.recipient_address) {
+          const {
+            id,
+            recipient_address,
+          } = { ...source };
+
           const _id = `${id}_${recipient_address}`.toLowerCase();
 
           await write(

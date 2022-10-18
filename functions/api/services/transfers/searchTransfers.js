@@ -89,9 +89,10 @@ module.exports = async (
             must: [
               { exists: { field: 'sign_batch' } },
             ],
-            should: evm_chains_data.map(c => {
-              return { match: { 'source.original_recipient_chain': c?.id } };
-            }),
+            should: evm_chains_data
+              .map(c => {
+                return { match_phrase: { 'source.original_recipient_chain': c?.id } };
+              }),
             minimum_should_match: 1,
           },
         });
@@ -107,15 +108,17 @@ module.exports = async (
                   overrides,
                 } = { ...c };
 
-                _.uniq(
-                  _.concat(
-                    id,
-                    Object.keys({ ...overrides }),
+                return (
+                  _.uniq(
+                    _.concat(
+                      id,
+                      Object.keys({ ...overrides }),
+                    )
                   )
-                )
-                .map(id => {
-                  return { match_phrase: { 'source.original_recipient_chain': id } };
-                })
+                  .map(id => {
+                    return { match_phrase: { 'source.original_recipient_chain': id } };
+                  })
+                );
               }),
             must_not: [
               { exists: { field: 'ibc_send.failed_txhash' } },
@@ -126,7 +129,7 @@ module.exports = async (
         _should.push({
           bool: {
             must: [
-              { match: { 'source.original_recipient_chain': axelarnet.id } },
+              { match_phrase: { 'source.original_recipient_chain': axelarnet.id } },
             ],
             should: [
               { exists: { field: 'axelar_transfer' } },
@@ -138,7 +141,9 @@ module.exports = async (
         must.push({
           bool: {
             should: _should,
-            minimum_should_match: _should.length > 0 ? 1 : 0,
+            minimum_should_match: _should.length > 0 ?
+              1 :
+              0,
           },
         });
         break
@@ -151,9 +156,10 @@ module.exports = async (
                   must: [
                     { exists: { field: 'sign_batch' } },
                   ],
-                  should: evm_chains_data.map(c => {
-                    return { match: { 'source.original_recipient_chain': c?.id } };
-                  }),
+                  should: evm_chains_data
+                    .map(c => {
+                      return { match_phrase: { 'source.original_recipient_chain': c?.id } };
+                    }),
                   minimum_should_match: 1,
                 },
               },
@@ -169,15 +175,17 @@ module.exports = async (
                         overrides,
                       } = { ...c };
 
-                      _.uniq(
-                        _.concat(
-                          id,
-                          Object.keys({ ...overrides }),
+                      return (
+                        _.uniq(
+                          _.concat(
+                            id,
+                            Object.keys({ ...overrides }),
+                          )
                         )
-                      )
-                      .map(id => {
-                        return { match_phrase: { 'source.original_recipient_chain': id } };
-                      })
+                        .map(id => {
+                          return { match_phrase: { 'source.original_recipient_chain': id } };
+                        })
+                      );
                     }),
                   minimum_should_match: 1,
                 },
@@ -185,7 +193,7 @@ module.exports = async (
               {
                 bool: {
                   must: [
-                    { match: { 'source.original_recipient_chain': axelarnet.id } },
+                    { match_phrase: { 'source.original_recipient_chain': axelarnet.id } },
                   ],
                   should: [
                     { exists: { field: 'axelar_transfer' } },
@@ -255,7 +263,9 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ? 1 : 0,
+        minimum_should_match: should.length > 0 ?
+          1 :
+          0,
       },
     };
   }

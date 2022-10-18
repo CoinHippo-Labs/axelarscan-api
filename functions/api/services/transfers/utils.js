@@ -601,7 +601,9 @@ const update_source = async (
             [
               asset_data?.id,
               source.denom,
-            ].findIndex(s => s?.includes('-wei')) > -1 ?
+            ].findIndex(s =>
+              s?.includes('-wei')
+            ) > -1 ?
               18 :
               6
           );

@@ -82,7 +82,9 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ? 1 : 0,
+        minimum_should_match: should.length > 0 ?
+          1 :
+          0,
       },
     };
   }
@@ -217,7 +219,9 @@ module.exports = async (
           must,
           should,
           must_not,
-          minimum_should_match: should.length > 0 ? 1 : 0,
+          minimum_should_match: should.length > 0 ?
+            1 :
+            0,
         },
       };
 
