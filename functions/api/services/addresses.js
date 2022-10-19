@@ -90,35 +90,39 @@ module.exports = async (
         buckets,
       } = { ...aggs?.addresses };
 
-      data = _.uniqBy(
-        _.concat(
-          (buckets || [])
-            .filter(d =>
-              d?.key?.startsWith(`${axelarnet.prefix_address}1`) &&
-              d.key.length < 65 &&
-              d.doc_count
-            )
-            .map(d => {
-              const {
-                key,
-                doc_count,
-              } = { ...d };
+      data = _.orderBy(
+        _.uniqBy(
+          _.concat(
+            (buckets || [])
+              .filter(d =>
+                d?.key?.startsWith(`${axelarnet.prefix_address}1`) &&
+                d.key.length < 65 &&
+                d.doc_count
+              )
+              .map(d => {
+                const {
+                  key,
+                  doc_count,
+                } = { ...d };
 
-              const _num_txs =
-                data?.find(_d =>
-                  equals_ignore_case(_d.address, key)
-                )?.num_txs ||
-                0;
+                const _num_txs =
+                  data?.find(_d =>
+                    equals_ignore_case(_d.address, key)
+                  )?.num_txs ||
+                  0;
 
-              return {
-                address: key.toLowerCase(),
-                num_txs: doc_count + _num_txs,
-              };
-            }),
-          data ||
-          [],
+                return {
+                  address: key.toLowerCase(),
+                  num_txs: doc_count + _num_txs,
+                };
+              }),
+            data ||
+            [],
+          ),
+          'address',
         ),
-        'address',
+        ['num_txs'],
+        ['desc'],
       );
     }
   }
