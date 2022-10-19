@@ -7,6 +7,7 @@ const {
 const {
   capitalize,
   equals_ignore_case,
+  to_json,
   to_hex,
   transfer_actions,
   vote_types,
@@ -440,6 +441,16 @@ module.exports = async (
                 )
             ),
         )
+        .map(a =>
+          to_json(a) ||
+          to_hex(
+            typeof a === 'string' ?
+              a
+                .split('"')
+                .join('') :
+              a
+          )
+        )
         .filter(a =>
           typeof a === 'string' &&
           a.startsWith(axelarnet.prefix_address)
@@ -460,6 +471,16 @@ module.exports = async (
                   .map(f => m.inner_message?.[f]),
               )
             ),
+        )
+        .map(a =>
+          to_json(a) ||
+          to_hex(
+            typeof a === 'string' ?
+              a
+                .split('"')
+                .join('') :
+              a
+          )
         )
         .filter(a =>
           typeof a === 'string' &&

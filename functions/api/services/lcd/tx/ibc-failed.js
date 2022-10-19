@@ -8,6 +8,7 @@ const {
 } = require('../../transfers/utils');
 const {
   equals_ignore_case,
+  to_json,
 } = require('../../../utils');
 
 module.exports = async (
@@ -81,12 +82,23 @@ module.exports = async (
               a?.key &&
               a.value
             )
-            .map(a =>
-              [
-                a.key,
-                a.value,
-              ]
-            )
+            .map(a => {
+              const {
+                key,
+                value,
+              } = { ...a };
+
+              return [
+                key,
+                to_json(value) ||
+                (typeof value === 'string' ?
+                  value
+                    .split('"')
+                    .join('') :
+                  value
+                ),
+              ];
+            })
         );
       })
       .filter(e => e.transfer_id);

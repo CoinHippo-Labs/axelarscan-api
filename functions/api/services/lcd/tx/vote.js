@@ -606,7 +606,13 @@ module.exports = async (
 
                           return [
                             key,
-                            value,
+                            to_json(value) ||
+                            (typeof value === 'string' ?
+                              value
+                                .split('"')
+                                .join('') :
+                              value
+                            ),
                           ];
                         })
                     ),

@@ -266,9 +266,20 @@ module.exports = async (
         const transfer_id =
           (transfer_events || [])
             .find(e =>
-              equals_ignore_case(e?.recipient, receiver) &&
-              equals_ignore_case(e?.asset?.denom, denom) &&
-              equals_ignore_case(e?.asset?.amount, amount)
+              equals_ignore_case(
+                (e?.recipient || '')
+                  .split('"')
+                  .join(''),
+                receiver,
+              ) &&
+              equals_ignore_case(
+                e?.asset?.denom,
+                denom,
+              ) &&
+              equals_ignore_case(
+                e?.asset?.amount,
+                amount,
+              )
             )?.id;
 
         const record = {
