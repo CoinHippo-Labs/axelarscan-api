@@ -267,7 +267,11 @@ module.exports = async (
           (transfer_events || [])
             .find(e =>
               equals_ignore_case(
-                (e?.recipient || '')
+                (
+                  e?.recipient ||
+                  e?.receipient ||
+                  ''
+                )
                   .split('"')
                   .join(''),
                 receiver,
