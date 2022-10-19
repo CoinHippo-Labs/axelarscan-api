@@ -1,7 +1,30 @@
+const axios = require('axios');
+const _ = require('lodash');
 const moment = require('moment');
+const config = require('config-yml');
 const {
   read,
 } = require('../index');
+const {
+  sleep,
+} = require('../../utils');
+
+const environment = process.env.ENVIRONMENT ||
+  config?.environment;
+
+const evm_chains_data = require('../../data')?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data = require('../../data')?.chains?.[environment]?.cosmos ||
+  [];
+const chains_data = _.concat(
+  evm_chains_data,
+  cosmos_chains_data,
+);
+const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+
+const {
+  endpoints,
+} = { ...config?.[environment] };
 
 module.exports = async (
   params = {},
@@ -68,20 +91,94 @@ module.exports = async (
     };
   }
 
+  const read_params = {
+    from: typeof from === 'number' ?
+      from :
+      0,
+    size: typeof size === 'number' ?
+      size :
+      100,
+    sort: sort ||
+      [{ 'event.block_timestamp': 'desc' }],
+  };
+
   response = await read(
     'token_sent_events',
     query,
-    {
-      from: typeof from === 'number' ?
-        from :
-        0,
-      size: typeof size === 'number' ?
-        size :
-        100,
-      sort: sort ||
-        [{ 'event.block_timestamp': 'desc' }],
-    },
+    read_params,
   );
+
+  const {
+    data,
+  } = { ...response };
+
+  if (
+    data?.length > 0 &&
+    endpoints?.api
+  ) {
+    const api = axios.create(
+      {
+        baseURL: endpoints.api,
+      },
+    );
+    const _data = data
+      .filter(d =>
+        d?.event?.transactionHash &&
+        !d.vote
+      );
+
+    for (const d of _data) {
+      const {
+        event,
+      } = { ...d };
+      const {
+        transactionHash,
+      } = { ...event };
+
+      const _response = await read(
+        'evm_polls',
+        {
+          match: { transaction_id: transactionHash },
+        },
+        {
+          size: 1,
+        },
+      );
+
+      const poll = _.head(_response?.data);
+
+      const txhash = _.head(
+        Object.entries({ ...poll })
+          .filter(([k, v]) =>
+            k?.startsWith(axelarnet.prefix_address) &&
+            typeof v === 'object' &&
+            v?.confirmed &&
+            v.id
+          )
+          .map(([k, v]) => v.id)
+      );
+
+      if (txhash) {
+        api.post(
+          '',
+          {
+            module: 'lcd',
+            path: `/cosmos/tx/v1beta1/txs/${txhash}`,
+          },
+        ).catch(error => { return { data: { error } }; });
+      }
+    }
+
+    if (_data.length > 0) {
+      await sleep(3 * 1000);
+    }
+
+    response = await read(
+      'token_sent_events',
+      query,
+      read_params,
+    );
+  }
 
   return response;
 };

@@ -354,7 +354,7 @@ module.exports = async (
         ).catch(error => { return { data: { error } }; });
       }
 
-      await sleep(5 * 1000);
+      await sleep(3 * 1000);
 
       response = await read(
         'transfers',
