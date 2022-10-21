@@ -172,7 +172,8 @@ module.exports = async (
                 const failed =
                   (logs || [])
                     .findIndex(l =>
-                      l?.log?.includes('failed')
+                      l?.log?.includes('failed') &&
+                      !l.log.includes('already confirmed')
                     ) > -1 ||
                   (events || [])
                     .findIndex(e =>
