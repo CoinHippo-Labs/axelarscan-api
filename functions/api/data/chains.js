@@ -604,7 +604,7 @@ module.exports = {
       },
       {
         id: 'injective',
-        name: 'injective',
+        name: 'Injective',
         short_name: 'INJ',
         explorer: {
           name: 'Mintscan',
