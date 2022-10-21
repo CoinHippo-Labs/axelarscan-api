@@ -248,6 +248,10 @@ module.exports = async (
                       ].findIndex(s =>
                         e?.type?.includes(s)
                       ) > -1
+                    ) > -1 ||
+                  (logs || [])
+                    .findIndex(l =>
+                      l?.log?.includes('already confirmed')
                     ) > -1;
 
                 let sender_chain,
@@ -806,8 +810,10 @@ module.exports = async (
               confirmation ||
               undefined,
             failed:
-              failed ||
-              undefined,
+              success ?
+                false :
+                failed ||
+                undefined,
             success:
               success ||
               undefined,
