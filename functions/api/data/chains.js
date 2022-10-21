@@ -960,6 +960,66 @@ module.exports = {
         },
       },
       {
+        id: 'umee',
+        name: 'Umee',
+        short_name: 'UMEE',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/umee',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/umee.svg',
+        color: '#fda9ff',
+        website: 'https://umee.cc',
+        prefix_address: 'umee',
+        prefix_chain_ids: [
+          'umee-',
+        ],
+        endpoints: {
+          lcd: 'https://api.barnacle.mainnet.network.umee.cc',
+          lcds: [
+            'https://api-umee-ia.cosmosia.notional.ventures',
+            'https://umee-api.polkachu.com',
+          ],
+          cosmostation: 'https://api-regen.cosmostation.io/v1',
+        },
+      },
+      {
+        id: 'agoric',
+        name: 'Agoric',
+        short_name: 'BLD',
+        explorer: {
+          name: 'Agoric',
+          url: 'https://agoric.explorers.guru',
+          icon: '/logos/explorers/agoric.png',
+          block_path: '/block/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          transaction_path: '/transaction/{tx}',
+        },
+        image: '/logos/chains/agoric.svg',
+        color: '#bb2d40',
+        website: 'https://agoric.com',
+        prefix_address: 'agoric',
+        prefix_chain_ids: [
+          'agoric-',
+        ],
+        endpoints: {
+          lcd: 'https://main.api.agoric.net',
+          lcds: [
+            'https://api.agoric.nodestake.top',
+            'https://agoric-api.polkachu.com',
+          ],
+        },
+      },
+      {
         id: 'terra-2',
         name: 'Terra',
         short_name: 'TERRA',
@@ -1810,6 +1870,31 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://meteor.rest.comdex.one',
+        },
+      },
+      {
+        id: 'terra-3',
+        name: 'Terra',
+        short_name: 'TERRA',
+        explorer: {
+          name: 'TerraFinder',
+          url: 'https://finder.terra.money/testnet',
+          icon: '/logos/explorers/terra.png',
+          block_path: '/blocks/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/terra-2.svg',
+        color: '#ffd83d',
+        website: 'https://terra.money',
+        prefix_address: 'terra',
+        prefix_chain_ids: [
+          'pisco-',
+        ],
+        endpoints: {
+          lcd: 'https://pisco-lcd.terra.dev',
         },
       },
       {
