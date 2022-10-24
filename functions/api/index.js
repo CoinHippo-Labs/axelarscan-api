@@ -16,6 +16,8 @@ exports.handler = async (
   const {
     searchTransfers,
     searchTransfersStats,
+    searchTransfersStatsChart,
+    getCumulativeVolume,
     getTransfersStatus,
   } = require('./services/transfers');
   const tvl = require('./services/tvl');
@@ -230,6 +232,28 @@ exports.handler = async (
         case 'transfers-stats':
           try {
             response = await searchTransfersStats(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'transfers-chart':
+          try {
+            response = await searchTransfersStatsChart(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'cumulative-volume':
+          try {
+            response = await getCumulativeVolume(params);
           } catch (error) {
             response = {
               error: true,

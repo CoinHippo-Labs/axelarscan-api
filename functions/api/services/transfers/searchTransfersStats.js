@@ -9,7 +9,6 @@ const {
   read,
 } = require('../index');
 const {
-  sleep,
   equals_ignore_case,
 } = require('../../utils');
 

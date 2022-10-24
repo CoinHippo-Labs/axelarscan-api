@@ -22,7 +22,7 @@
     "axios": "^1.1.3",
     "bech32": "^2.0.0",
     "config-yml": "^0.10.3",
-    "ethers": "^5.7.1",
+    "ethers": "^5.7.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "tendermint": "^5.0.2"
