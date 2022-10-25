@@ -350,47 +350,50 @@ const get_others_version_chain_ids = chain => {
     .split('-')
     .filter(s => s);
 
-  return _.concat(
-    chains_data
-      .filter(c =>
-        (
-          !equals_ignore_case(c?.id, _id) &&
-          c?.id?.startsWith(_id)
-        ) ||
-        Object.keys({ ...c?.overrides })
-          .findIndex(k =>
-            !equals_ignore_case(k, _id) &&
-            k?.startsWith(_id)
-          ) > -1
-      )
-      .flatMap(c => {
-        return (
-          _.concat(
-            !equals_ignore_case(c?.id, _id) &&
-            c?.id,
-            Object.keys({ ...c?.overrides })
-              .filter(k =>
-                !equals_ignore_case(k, _id) &&
-                k?.startsWith(_id)
-              ),
-          )
-          .filter(id => id)
-        );
-      }),
-    chain_version ?
+  return (
+    _.concat(
       chains_data
         .filter(c =>
           (
-            !c?.id?.startsWith(chain_id) &&
-            c?.id?.includes(`-${chain_version}`)
-          ) ||
-          (
             !equals_ignore_case(c?.id, _id) &&
-            c?.id?.startsWith(chain_id)
-          )
+            c?.id?.startsWith(_id)
+          ) ||
+          Object.keys({ ...c?.overrides })
+            .findIndex(k =>
+              !equals_ignore_case(k, _id) &&
+              k?.startsWith(_id)
+            ) > -1
         )
-        .map(c => c?.id) :
-      [],
+        .flatMap(c => {
+          return (
+            _.concat(
+              !equals_ignore_case(c?.id, _id) &&
+              c?.id,
+              Object.keys({ ...c?.overrides })
+                .filter(k =>
+                  !equals_ignore_case(k, _id) &&
+                  k?.startsWith(_id)
+                ),
+            )
+            .filter(id => id)
+          );
+        }),
+      chain_version ?
+        chains_data
+          .filter(c =>
+            (
+              !c?.id?.startsWith(chain_id) &&
+              c?.id?.includes(`-${chain_version}`)
+            ) ||
+            (
+              !equals_ignore_case(c?.id, _id) &&
+              c?.id?.startsWith(chain_id)
+            )
+          )
+          .map(c => c?.id) :
+        [],
+    )
+    .filter(c => !chain_version)
   );
 };
 
