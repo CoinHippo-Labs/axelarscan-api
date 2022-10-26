@@ -56,6 +56,10 @@ module.exports = async (
 ) => {
   let response;
 
+  force_update =
+    force_update ||
+    params.force_update;
+
   const {
     asset,
     chain,
@@ -90,6 +94,7 @@ module.exports = async (
             equals_ignore_case(i?.symbol, a)
           ) > -1
         );
+
         const {
           id,
         } = { ...asset_data };
@@ -97,7 +102,11 @@ module.exports = async (
         return id ||
           a;
       })
-      .filter(a => assets_data.findIndex(_a => _a?.id === a) > -1);
+      .filter(a =>
+        assets_data.findIndex(_a =>
+          _a?.id === a
+        ) > -1
+      );
   }
 
   chains = chains ||
@@ -111,6 +120,10 @@ module.exports = async (
   if (chains.length < 1) {
     chains = _.uniq(
       chains_data
+        .filter(c =>
+          !c?.maintainer_id ||
+          c.gateway_address
+        )
         .flatMap(c => {
           const {
             id,
@@ -144,6 +157,7 @@ module.exports = async (
               equals_ignore_case(_c?.short_name, c) ||
               _c?.overrides?.[c]?.tvl
             );
+
             const {
               id,
               overrides,
@@ -212,7 +226,7 @@ module.exports = async (
 
   // set cache id on querying 1 asset on every chains
   const cache_id = assets.length === 1 &&
-    _evm_chains_data.length === evm_chains_data.length &&
+    _evm_chains_data.length >= evm_chains_data.filter(c => c?.gateway_address).length &&
     _cosmos_chains_data.length >= cosmos_chains_data.length &&
     _.head(assets);
 
@@ -353,7 +367,10 @@ module.exports = async (
   const data = [];
 
   for (const asset of assets) {
-    const asset_data = assets_data.find(a => a?.id === asset);
+    const asset_data = assets_data.find(a =>
+      a?.id === asset
+    );
+
     const {
       contracts,
       ibc,
@@ -466,16 +483,14 @@ module.exports = async (
                   [],
                 );
 
-                let lcd_url = lcd_urls[_.random(lcd_urls.length - 1)];
+                let lcd_url = lcd_urls[
+                  _.random(lcd_urls.length - 1)
+                ];
 
                 let _lcds = lcds[id];
 
                 const ibc_data = ibc?.find(i =>
-                  i?.chain_id === id ||
-                  (
-                    id?.includes('-') &&
-                    i?.chain_id === _.head(id.split('-'))
-                  )
+                  i?.chain_id === id
                 );
                 const {
                   ibc_denom,
@@ -505,7 +520,10 @@ module.exports = async (
                     [],
                   );
 
-                  lcd_url = lcd_urls[_.random(lcd_urls.length - 1)] ||
+                  lcd_url =
+                    lcd_urls[
+                      _.random(lcd_urls.length - 1)
+                    ] ||
                     lcd_url;
                 }
 

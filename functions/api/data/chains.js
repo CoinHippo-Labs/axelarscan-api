@@ -625,10 +625,10 @@ module.exports = {
           'injective-',
         ],
         endpoints: {
-          lcd: 'https://public.lcd.injective.network',
+          lcd: 'https://api-injective-ia.cosmosia.notional.ventures',
           lcds: [
-            'https://api-injective-ia.cosmosia.notional.ventures',
             'https://injective-api.polkachu.com',
+            // 'https://public.lcd.injective.network',
           ],
           cosmostation: 'https://api-inj.cosmostation.io/v1',
         },

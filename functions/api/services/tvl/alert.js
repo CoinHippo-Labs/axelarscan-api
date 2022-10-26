@@ -41,7 +41,7 @@ module.exports = async (
   test = typeof test === 'boolean' ?
     test :
     typeof test === 'string' &&
-      equals_ignore_case(test, 'true');
+    equals_ignore_case(test, 'true');
 
   const _response = await read(
     'tvls',
@@ -50,7 +50,7 @@ module.exports = async (
         updated_at: {
           gt: moment()
             .subtract(
-              5,
+              10,
               'minutes',
             )
             .unix(),
