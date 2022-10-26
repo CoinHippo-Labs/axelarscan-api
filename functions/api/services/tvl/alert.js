@@ -193,9 +193,10 @@ module.exports = async (
           tvl,
         } = { ...d };
 
-        const asset_data = assets_data.find(a =>
-          a?.id === asset
-        );
+        const asset_data =
+          assets_data.find(a =>
+            a?.id === asset
+          );
 
         const {
           symbol,
@@ -217,11 +218,16 @@ module.exports = async (
             c?.chain_id === native_chain_id
           )?.id;
 
-        const native_on = evm_chains_data.findIndex(c => c?.id === native_chain) > -1 ?
-          'evm' :
-          cosmos_chains_data.findIndex(c => c?.id === native_chain) > -1 ?
-            'cosmos' :
-            undefined;
+        const native_on =
+          evm_chains_data.findIndex(c =>
+            c?.id === native_chain
+          ) > -1 ?
+            'evm' :
+            cosmos_chains_data.findIndex(c =>
+              c?.id === native_chain
+            ) > -1 ?
+              'cosmos' :
+              undefined;
 
         if (
           is_abnormal_supply &&
@@ -293,7 +299,7 @@ module.exports = async (
 
                 if (
                   is_native &&
-                  id !== axelarnet.id &&
+                  k !== axelarnet.id &&
                   typeof tvl?.axelarnet?.total === 'number'
                 ) {
                   const {
@@ -349,7 +355,9 @@ module.exports = async (
     native_on_evm_escrow_status =
       details.findIndex(d =>
         d.native_on === 'evm' &&
-        d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1
+        d.chains?.findIndex(c =>
+          typeof c.percent_diff_supply === 'number'
+        ) > -1
       ) > -1 ?
         'alert' :
         'ok';
@@ -363,7 +371,9 @@ module.exports = async (
     native_on_cosmos_escrow_status =
       details.findIndex(d =>
         d.native_on === 'cosmos' &&
-        d.chains?.findIndex(c => typeof c.percent_diff_supply === 'number') > -1
+        d.chains?.findIndex(c =>
+          typeof c.percent_diff_supply === 'number'
+        ) > -1
       ) > -1 ?
         'alert' :
         'ok';
