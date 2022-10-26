@@ -26,9 +26,9 @@ mainnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
-  percent_diff_escrow_supply_threshold: 2.0
-  percent_diff_total_supply_threshold: 2.0
-  alert_asset_value_threshold: 500000
+  percent_diff_escrow_supply_threshold: 5.0
+  percent_diff_total_supply_threshold: 5.0
+  alert_asset_value_threshold: 3000000
   gateway:
     chains:
       ethereum:
@@ -171,9 +171,9 @@ testnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
-  percent_diff_escrow_supply_threshold: 2.0
-  percent_diff_total_supply_threshold: 2.0
-  alert_asset_value_threshold: 500000
+  percent_diff_escrow_supply_threshold: 5.0
+  percent_diff_total_supply_threshold: 5.0
+  alert_asset_value_threshold: 3000000
   gateway:
     chains:
       ethereum-2:

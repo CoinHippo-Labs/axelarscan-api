@@ -383,6 +383,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'escrow-addresses':
+          try {
+            response = await require('./services/escrow-addresses')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'total-supply':
           try {
             response = await require('./services/total-supply')(params);

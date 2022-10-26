@@ -69,7 +69,8 @@ module.exports = async (
     chains,
   } = { ...params };
 
-  assets = assets ||
+  assets =
+    assets ||
     asset;
   assets = Array.isArray(assets) ?
     assets :
@@ -109,7 +110,8 @@ module.exports = async (
       );
   }
 
-  chains = chains ||
+  chains =
+    chains ||
     chain;
   chains = Array.isArray(chains) ?
     chains :
@@ -168,7 +170,7 @@ module.exports = async (
                 .filter(([k, v]) => v?.tvl)
                 .map(([k, v]) => k),
               id ||
-                c,
+              c,
             );
           })
           .filter(c =>
@@ -293,7 +295,8 @@ module.exports = async (
         }
 
         if (!(rpcs?.length > 0)) {
-          rpcs = rpcUrls ||
+          rpcs =
+            rpcUrls ||
             [];
         }
 
@@ -501,16 +504,19 @@ module.exports = async (
                   decimals,
                 } = { ...ibc_data };
 
-                decimals = decimals ||
+                decimals =
+                  decimals ||
                   asset_data?.decimals;
 
                 if (overrides?.[original_chain_id]) {
                   const override = overrides[original_chain_id];
 
-                  explorer = override.explorer ||
+                  explorer =
+                    override.explorer ||
                     explorer;
 
-                  prefix_chain_ids = override.prefix_chain_ids ||
+                  prefix_chain_ids =
+                    override.prefix_chain_ids ||
                     prefix_chain_ids;
 
                   lcd_urls = _.concat(
@@ -578,7 +584,7 @@ module.exports = async (
                         },
                       },
                       {
-                        size: 100,
+                        size: 500,
                       },
                     );
 
