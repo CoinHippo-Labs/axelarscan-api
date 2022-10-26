@@ -410,7 +410,7 @@ module.exports = async (
           {
             address: evm_escrow_address,
             name: `${
-              asset_data?.name ||
+              asset_data?.symbol ||
               asset
             } - EVM Escrow Address`,
             image: asset_data?.image,
