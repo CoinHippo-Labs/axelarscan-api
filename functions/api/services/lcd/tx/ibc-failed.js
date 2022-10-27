@@ -129,21 +129,62 @@ module.exports = async (
         },
       );
 
-      if (_.head(_response?.data)) {
+      const transfer_data = _.head(_response?.data);
+      let token_sent_data;
+
+      if (!transfer_data) {
+        const _response = await read(
+          'token_sent_events',
+          {
+            bool: {
+              should: [
+                { match: { 'vote.transfer_id': transfer_id } },
+                { match: { transfer_id } },
+              ],
+              minimum_should_match: 1,
+              must_not: [
+                { exists: { field: 'ibc_send.ack_txhash' } },
+              ],
+            },
+          },
+          {
+            size: 1,
+            sort: [{ 'event.created_at.ms': 'desc' }],
+          },
+        );
+
+        token_sent_data = _.head(_response?.data);
+      }
+
+      const data =
+        transfer_data ||
+        token_sent_data;
+
+      if (data) {
         const {
           source,
+          event,
           ibc_send,
-        } = { ..._.head(_response.data) };
+        } = { ...data };
         const {
-          id,
           recipient_address,
         } = { ...source };
 
-        if (recipient_address) {
-          const _id = `${id}_${recipient_address}`.toLowerCase();
+        const id =
+          (
+            source ||
+            event
+          )?.id;
 
+        const _id = recipient_address ?
+          `${id}_${recipient_address}`.toLowerCase() :
+          id;
+
+        if (_id) {
           await write(
-            'transfers',
+            event ?
+              'token_sent_events' :
+              'transfers',
             _id,
             {
               ibc_send: {
@@ -156,6 +197,10 @@ module.exports = async (
 
           await saveTimeSpent(
             _id,
+            null,
+            event ?
+              'token_sent_events' :
+              undefined,
           );
         }
       }

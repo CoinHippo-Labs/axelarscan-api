@@ -424,30 +424,117 @@ module.exports = async (
           },
         );
 
-        const {
-          source,
-        } = { ..._.head(_response?.data) };
+        const transfer_data = _.head(_response?.data);
+        let token_sent_data;
 
-        if (source?.recipient_address) {
+        if (!transfer_data) {
+          const _response = await read(
+            'token_sent_events',
+            {
+              bool: {
+                must: [
+                  { match: { 'event.returnValues.destinationAddress': recipient_address } },
+                  {
+                    range: {
+                      'event.created_at.ms': {
+                        lte: ms,
+                        gte: moment(ms)
+                          .subtract(
+                            24,
+                            'hours',
+                          )
+                          .valueOf(),
+                      },
+                    },
+                  },
+                  { range: { 'event.amount': { gte: Math.floor(amount) } } },
+                  {
+                    bool: {
+                      should: [
+                        { match: { 'event.amount_received': amount } },
+                        {
+                          bool: {
+                            must: [
+                              {
+                                range: {
+                                  'event.amount': {
+                                    lte: Math.ceil(amount * 1.2),
+                                  },
+                                },
+                              },
+                            ],
+                            must_not: [
+                              { exists: { field: 'event.amount_received' } },
+                            ],
+                          },
+                        },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                  { match: { 'event.denom': denom } },
+                ],
+                should: [
+                  { exists: { field: 'vote' } },
+                ],
+                minimum_should_match: 1,
+                must_not: [
+                  { exists: { field: 'ibc_send' } },
+                ],
+              },
+            },
+            {
+              size: 1,
+              sort: [{ 'event.created_at.ms': 'desc' }],
+            },
+          );
+
+          token_sent_data = _.head(_response?.data);
+        }
+
+        const data =
+          transfer_data ||
+          token_sent_data;
+
+        if (data) {
           const {
-            id,
+            source,
+            event,
+          } = { ...data };
+          const {
             recipient_address,
           } = { ...source };
 
-          const _id = `${id}_${recipient_address}`.toLowerCase();
+          const id =
+            (
+              source ||
+              event
+            )?.id;
 
-          await write(
-            'transfers',
-            _id,
-            {
-              ibc_send: record,
-            },
-            true,
-          );
+          const _id = recipient_address ?
+            `${id}_${recipient_address}`.toLowerCase() :
+            id;
 
-          await saveTimeSpent(
-            _id,
-          );
+          if (_id) {
+            await write(
+              event ?
+                'token_sent_events' :
+                'transfers',
+              _id,
+              {
+                ibc_send: record,
+              },
+              true,
+            );
+
+            await saveTimeSpent(
+              _id,
+              null,
+              event ?
+                'token_sent_events' :
+                undefined,
+            );
+          }
         }
       }
       else {

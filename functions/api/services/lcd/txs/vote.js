@@ -323,7 +323,7 @@ module.exports = async (
                               )
                               .filter(c => c)
                           ) :
-                          undefined,
+                          undefined
                       )
                     );
 
@@ -700,8 +700,9 @@ module.exports = async (
                   if (
                     equals_ignore_case(
                       transaction_id,
-                      _transaction_id
-                    )
+                      _transaction_id,
+                    ) ||
+                    confirmation_events.length > 0
                   ) {
                     if (
                       (

@@ -300,7 +300,7 @@ module.exports = async (
                           )
                           .filter(c => c)
                       ) :
-                      undefined,
+                      undefined
                   )
                 );
 
@@ -679,8 +679,9 @@ module.exports = async (
               if (
                 equals_ignore_case(
                   transaction_id,
-                  _transaction_id
-                )
+                  _transaction_id,
+                ) ||
+                confirmation_events.length > 0
               ) {
                 if (
                   (
@@ -1009,10 +1010,16 @@ module.exports = async (
                                 id,
                                 {
                                   vote: data.vote ?
-                                    data.vote.height < height &&
-                                    !equals_ignore_case(
-                                      data.vote.poll_id,
-                                      poll_id
+                                    (
+                                      data.vote.height < height &&
+                                      !equals_ignore_case(
+                                        data.vote.poll_id,
+                                        poll_id,
+                                      )
+                                    ) ||
+                                    (
+                                      !data.vote.transfer_id &&
+                                      transfer_id
                                     ) ?
                                       record :
                                       data.vote :

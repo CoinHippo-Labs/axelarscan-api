@@ -18,8 +18,6 @@ const {
   normalize_chain,
 } = require('../../utils');
 
-const collection = 'transfers';
-
 const environment = process.env.ENVIRONMENT ||
   config?.environment;
 
@@ -46,6 +44,7 @@ const {
 const saveTimeSpent = async (
   id,
   data,
+  collection = 'transfers',
 ) => {
   let time_spent;
 
@@ -56,7 +55,7 @@ const saveTimeSpent = async (
     await sleep(0.5 * 1000);
 
     data = await get(
-      'transfers',
+      collection,
       id,
     );
   }
@@ -69,16 +68,32 @@ const saveTimeSpent = async (
 
   const {
     source,
+    event,
     confirm_deposit,
     vote,
     sign_batch,
     ibc_send,
     axelar_transfer,
   } = { ...data };
-  const {
+  let {
     sender_chain,
     recipient_chain,
   } = { ...source };
+  const {
+    chain,
+    returnValues,
+  } = { ...event };
+  const {
+    destinationChain,
+  } = { ...returnValues };
+
+  sender_chain =
+    sender_chain ||
+    chain;
+
+  recipient_chain =
+    sender_chain ||
+    destinationChain;
 
   const chain_types =
     [
@@ -108,7 +123,8 @@ const saveTimeSpent = async (
     .filter(t => t);
 
   const type = chain_types.length === 2 ?
-    chain_types.join('_') :
+    chain_types
+      .join('_') :
     undefined;
 
   if (
@@ -118,6 +134,16 @@ const saveTimeSpent = async (
     time_spent = {
       ...time_spent,
       send_confirm: confirm_deposit.created_at.ms / 1000 - source.created_at.ms / 1000,
+    };
+  }
+
+  if (
+    vote?.created_at?.ms &&
+    event?.created_at?.ms
+  ) {
+    time_spent = {
+      ...time_spent,
+      send_vote: vote.created_at.ms / 1000 - event.created_at.ms / 1000,
     };
   }
 
@@ -202,22 +228,38 @@ const saveTimeSpent = async (
       case 'evm':
         if (
           sign_batch?.block_timestamp &&
-          source?.created_at?.ms
+          (
+            source ||
+            event
+          )?.created_at?.ms
         ) {
           time_spent = {
             ...time_spent,
-            total: sign_batch.block_timestamp - source.created_at.ms / 1000,
+            total:
+              sign_batch.block_timestamp -
+              (
+                source ||
+                event
+              ).created_at.ms / 1000,
           };
         }
         break;
       case 'cosmos':
         if (
           ibc_send?.received_at?.ms &&
-          source?.created_at?.ms
+          (
+            source ||
+            event
+          )?.created_at?.ms
         ) {
           time_spent = {
             ...time_spent,
-            total: ibc_send.received_at.ms / 1000 - source.created_at.ms / 1000,
+            total:
+              ibc_send.received_at.ms / 1000 -
+              (
+                source ||
+                event
+              ).created_at.ms / 1000,
           };
         }
         break;
@@ -226,11 +268,19 @@ const saveTimeSpent = async (
           case 'evm':
             if (
               vote?.created_at?.ms &&
-              source?.created_at?.ms
+              (
+                source ||
+                event
+              )?.created_at?.ms
             ) {
               time_spent = {
                 ...time_spent,
-                total: vote.created_at.ms / 1000 - source.created_at.ms / 1000,
+                total:
+                  vote.created_at.ms / 1000 -
+                  (
+                    source ||
+                    event
+                  ).created_at.ms / 1000,
               };
             }
             break;
@@ -241,18 +291,25 @@ const saveTimeSpent = async (
                 total: time_spent.send_confirm,
               };
             }
+            else if (time_spent.send_vote) {
+              time_spent = {
+                ...time_spent,
+                total: time_spent.send_vote,
+              };
+            }
             break;
+        }
 
-          if (
-            time_spent.vote_axelar_transfer ||
-            time_spent.confirm_axelar_transfer
-          ) {
-            time_spent = {
-              ...time_spent,
-              total: time_spent.vote_axelar_transfer ||
-                time_spent.confirm_axelar_transfer,
-            };
-          }
+        if (
+          time_spent.vote_axelar_transfer ||
+          time_spent.confirm_axelar_transfer
+        ) {
+          time_spent = {
+            ...time_spent,
+            total:
+              time_spent.vote_axelar_transfer ||
+              time_spent.confirm_axelar_transfer,
+          };
         }
         break;
       default:
