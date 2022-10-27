@@ -92,7 +92,7 @@ const saveTimeSpent = async (
     chain;
 
   recipient_chain =
-    sender_chain ||
+    recipient_chain ||
     destinationChain;
 
   const chain_types =
