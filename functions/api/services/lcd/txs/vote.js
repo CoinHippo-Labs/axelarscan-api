@@ -144,7 +144,7 @@ module.exports = async (
                 )?.id;
 
               if (poll_id) {
-                const recipient_chain = normalize_chain(
+                let recipient_chain = normalize_chain(
                   (attributes || [])
                     .find(a =>
                       [
@@ -307,6 +307,26 @@ module.exports = async (
                       inner_message.vote?.results ||
                       inner_message.vote?.result?.events;
 
+                    recipient_chain = normalize_chain(
+                      recipient_chain ||
+                      (
+                        Array.isArray(vote_events) ?
+                          _.head(
+                            vote_events
+                              .flatMap(e =>
+                                Object.values(e)
+                                  .filter(v =>
+                                    typeof v === 'object' &&
+                                    v?.destination_chain
+                                  )
+                                  .map(v => v.destination_chain)
+                              )
+                              .filter(c => c)
+                          ) :
+                          undefined,
+                      )
+                    );
+
                     vote =
                       (
                         Array.isArray(vote_events) ?
@@ -367,10 +387,10 @@ module.exports = async (
                         ...(vote_events || [])
                           .find(e =>
                             Object.values({ ...e })
-                              .filter(v =>
+                              .findIndex(v =>
                                 typeof v === 'object' &&
                                 !Array.isArray(v)
-                              )
+                              ) > -1
                           ),
                       })
                       .filter(([k, v]) =>
@@ -647,12 +667,34 @@ module.exports = async (
 
                   const _transaction_id = _.head(
                     confirmation_events
-                      .map(e => e.txID)
+                      .map(e =>
+                        e.txID ||
+                        e.tx_id
+                      )
+                      .filter(id => id)
+                      .map(id =>
+                        to_hex(
+                          id
+                            .split('"')
+                            .join('')
+                        )
+                      )
                   );
 
                   const _transfer_id = _.head(
                     confirmation_events
-                      .map(e => Number(e.transferID))
+                      .map(e =>
+                        e.transferID ||
+                        e.transfer_id
+                      )
+                      .filter(id => id)
+                      .map(id =>
+                        Number(
+                          id
+                            .split('"')
+                            .join('')
+                        )
+                      )
                   );
 
                   if (

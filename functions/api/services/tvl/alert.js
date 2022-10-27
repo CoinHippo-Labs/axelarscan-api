@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+const tvl = require('./');
 const {
   read,
 } = require('../index');
@@ -50,7 +51,7 @@ module.exports = async (
         updated_at: {
           gt: moment()
             .subtract(
-              10,
+              30,
               'minutes',
             )
             .unix(),
@@ -261,7 +262,20 @@ module.exports = async (
                     )
                   ),
                 endpoints?.app &&
-                `${endpoints.app}/tvl`,
+                [
+                  `${endpoints.app}/tvl`,
+                  `${endpoints.app}/transfers/search?asset=${asset}&fromTime=${
+                    moment()
+                      .subtract(
+                        24,
+                        'hours',
+                      )
+                      .valueOf()
+                  }&toTime=${
+                    moment()
+                      .valueOf()
+                  }&sortBy=value`,
+                ],
               )
               .filter(l => l)
             ),
@@ -337,7 +351,20 @@ module.exports = async (
                     )
                   ),
                 endpoints?.app &&
-                `${endpoints.app}/tvl`,
+                [
+                  `${endpoints.app}/tvl`,
+                  `${endpoints.app}/transfers/search?asset=${asset}&fromTime=${
+                    moment()
+                      .subtract(
+                        24,
+                        'hours',
+                      )
+                      .valueOf()
+                  }&toTime=${
+                    moment()
+                      .valueOf()
+                  }&sortBy=value`,
+                ],
               )
               .filter(l => l)
             ),
@@ -425,6 +452,21 @@ module.exports = async (
       details
         .flatMap(d => d.links)
     );
+
+    if (data.length === 1) {
+      const {
+        asset,
+      } = { ..._.head(data) };
+
+      if (asset) {
+        await tvl(
+          {
+            asset,
+          },
+          true,
+        );
+      }
+    }
   }
 
   response = {

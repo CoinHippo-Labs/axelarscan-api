@@ -139,7 +139,7 @@ const to_hex = byte_array => {
     byte_array.startsWith('[') &&
     byte_array.endsWith(']')
   ) {
-    byte_array = to_json(byte_array)
+    byte_array = to_json(byte_array);
   }
 
   if (Array.isArray(byte_array)) {
@@ -154,7 +154,7 @@ const to_hex = byte_array => {
       );
   }
   else {
-    string = byte_array
+    string = byte_array;
   }
 
   return string;
