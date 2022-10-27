@@ -382,7 +382,7 @@ module.exports = async (
                       name: `${
                         chain_data?.name ||
                         k
-                      } - Escrow Address`,
+                      } - IBC escrow`,
                       image: chain_data?.image,
                     };
                   }),
@@ -400,7 +400,7 @@ module.exports = async (
                           0,
                           a.indexOf('1'),
                         )
-                      } - Escrow Address`,
+                      } - IBC escrow`,
                       image: chain_data?.image,
                     };
                   }),
@@ -412,7 +412,7 @@ module.exports = async (
             name: `${
               asset_data?.symbol ||
               asset
-            } - EVM Escrow Address`,
+            } - EVM IBC escrow`,
             image: asset_data?.image,
           },
         );
