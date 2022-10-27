@@ -228,7 +228,10 @@ module.exports = async (
 
   // set cache id on querying 1 asset on every chains
   const cache_id = assets.length === 1 &&
-    _evm_chains_data.length >= evm_chains_data.filter(c => c?.gateway_address).length &&
+    _evm_chains_data.length >= evm_chains_data
+      .filter(c =>
+        c?.gateway_address
+      ).length &&
     _cosmos_chains_data.length >= cosmos_chains_data.length &&
     _.head(assets);
 
@@ -262,6 +265,62 @@ module.exports = async (
         ) < 30
     ) {
       return cache_data;
+    }
+  }
+  else if (
+    assets.length > 1 &&
+    _evm_chains_data.length >= evm_chains_data
+      .filter(
+        c => c?.gateway_address
+      ).length &&
+    _cosmos_chains_data.length >= cosmos_chains_data.length &&
+    !force_update
+  ) {
+    const _response = await read(
+      'tvls',
+      {
+        bool: {
+          should: assets
+            .map(a => {
+              return {
+                match: {
+                  _id: a,
+                },
+              };
+            }),
+          minimum_should_match: 1,
+        },
+      },
+      {
+        size: assets.length,
+      },
+    );
+
+    const {
+      data,
+    } = { ..._response };
+
+    if (data) {
+      return {
+        ..._response,
+        data: data
+          .flatMap(d => {
+            const {
+              data,
+              updated_at,
+            } = { ...d };
+
+            return {
+              ..._.head(data),
+              updated_at,
+            };
+          }),
+        updated_at:
+          _.minBy(
+            data,
+            'updated_at',
+          )?.updated_at,
+      };
     }
   }
 
