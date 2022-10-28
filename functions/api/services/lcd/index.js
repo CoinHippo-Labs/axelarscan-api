@@ -36,7 +36,7 @@ module.exports = async (
     const lcd = axios.create(
       {
         baseURL: endpoints.lcd,
-        timeout: 1500,
+        timeout: 3000,
       },
     );
 
@@ -156,7 +156,7 @@ module.exports = async (
             const cosmostation = axios.create(
               {
                 baseURL: api,
-                timeout: 1500,
+                timeout: 3000,
               },
             );
 
@@ -190,7 +190,7 @@ module.exports = async (
             const mintscan = axios.create(
               {
                 baseURL: api,
-                timeout: 1500,
+                timeout: 3000,
               },
             );
 

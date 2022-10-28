@@ -129,7 +129,7 @@ module.exports = async (
         };
       });
 
-    if (response_cache?.data) {
+    if (Array.isArray(response_cache?.data)) {
       response_cache.data
         .filter(a => a)
         .forEach(a => {

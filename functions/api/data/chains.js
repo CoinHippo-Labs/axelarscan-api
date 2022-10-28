@@ -495,8 +495,11 @@ module.exports = {
         endpoints: {
           lcd: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
           lcds: [
-            'https://cosmos-api.lavenderfive.com',
+            'https://cosmos-api.cyphercore.io',
+            'https://cosmos-api.polkachu.com',
             'https://lcd-cosmoshub.blockapsis.com',
+            'https://api.cosmos.silknodes.io',
+            'https://lcd.cosmos.dragonstake.io',
           ],
           cosmostation: 'https://api.cosmostation.io/v1',
         },
@@ -558,10 +561,16 @@ module.exports = {
           'juno-',
         ],
         endpoints: {
-          lcd: 'https://api-juno-ia.cosmosia.notional.ventures',
+          lcd: 'https://juno-api.polkachu.com',
           lcds: [
-            'https://rest-juno.ecostake.com',
-            // 'https://api.juno.pupmos.network',
+            'https://api-juno-ia.cosmosia.notional.ventures',
+            'https://lcd-juno.itastakers.com',
+            'https://api.juno.chaintools.tech',
+            'https://api.juno.silknodes.io',
+            'https://juno-api.kleomed.es',
+            'https://api.juno.interbloc.org',
+            'https://juno.nodejumper.io:1317',
+            'https://juno.rest.stakin.com',
           ],
           cosmostation: 'https://api-juno.cosmostation.io/v1',
         },
@@ -757,6 +766,7 @@ module.exports = {
         endpoints: {
           lcd: 'https://api.stargaze.pupmos.network',
           lcds: [
+            'https://api-stargaze.ezstaking.dev',
             'https://api-stargaze-ia.cosmosia.notional.ventures',
           ],
           cosmostation: 'https://api-stargaze.cosmostation.io/v1',

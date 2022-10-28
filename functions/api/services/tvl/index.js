@@ -300,21 +300,43 @@ module.exports = async (
       data,
     } = { ..._response };
 
-    if (data) {
+    if (Array.isArray(data)) {
       return {
         ..._response,
-        data: data
-          .flatMap(d => {
-            const {
-              data,
-              updated_at,
-            } = { ...d };
+        data: _.orderBy(
+          data
+            .flatMap(d => {
+              const {
+                data,
+                updated_at,
+              } = { ...d };
 
-            return {
-              ..._.head(data),
-              updated_at,
-            };
-          }),
+              const _data = _.head(data);
+
+              const {
+                total,
+                price,
+              } = { ..._data };
+
+              const value =
+                (
+                  total ||
+                  0
+                ) *
+                (
+                  price ||
+                  0
+                );
+
+              return {
+                ..._data,
+                value,
+                updated_at,
+              };
+            }),
+          ['value'],
+          ['desc'],
+        ),
         updated_at:
           _.minBy(
             data,
@@ -412,7 +434,7 @@ module.exports = async (
               axios.create(
                 {
                   baseURL: url,
-                  timeout: 1500,
+                  timeout: 5000,
                 },
               )
             ),
@@ -599,7 +621,7 @@ module.exports = async (
                       axios.create(
                         {
                           baseURL: url,
-                          timeout: 1500,
+                          timeout: 5000,
                         },
                       )
                     );
@@ -1112,6 +1134,8 @@ module.exports = async (
         .unix(),
   };
 
+  let not_updated_on_chains;
+
   if (
     data.length < 1 &&
     cache_data
@@ -1131,6 +1155,26 @@ module.exports = async (
       response,
     );
   }
+  else if (
+    cache_id &&
+    data
+      .filter(d => !d?.success)
+      .length > 0
+  ) {
+    not_updated_on_chains = data
+      .filter(d => !d?.success)
+      .flatMap(d =>
+        Object.entries({ ...d?.tvl })
+          .filter(([k, v]) =>
+            v &&
+            !v.success
+          )
+          .map(([k, v]) => k)
+      );
+  }
 
-  return response;
+  return {
+    ...response,
+    not_updated_on_chains,
+  };
 };
