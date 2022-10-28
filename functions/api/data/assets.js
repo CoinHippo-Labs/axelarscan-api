@@ -2999,7 +2999,7 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
+      symbol: 'LUNC',
       name: 'Terra Classic',
       image: '/logos/assets/lunc.png',
       decimals: 6,
@@ -4213,7 +4213,7 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
+      symbol: 'LUNC',
       name: 'Terra Classic',
       image: '/logos/assets/lunc.png',
       decimals: 6,
@@ -4366,7 +4366,7 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
+      symbol: 'LUNC',
       name: 'Terra Classic',
       image: '/logos/assets/lunc.png',
       decimals: 6,
@@ -4521,7 +4521,7 @@ module.exports = {
     },
     {
       id: 'uluna',
-      symbol: 'LUNA',
+      symbol: 'LUNC',
       name: 'Terra Classic',
       image: '/logos/assets/lunc.png',
       decimals: 6,
