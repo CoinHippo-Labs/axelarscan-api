@@ -262,7 +262,7 @@ module.exports = async (
           ),
           'minutes',
           true,
-        ) < 30
+        ) < 60
     ) {
       return cache_data;
     }
@@ -423,6 +423,7 @@ module.exports = async (
   const cli = axios.create(
     {
       baseURL: endpoints?.cli,
+      timeout: 5000,
     },
   );
 

@@ -40,6 +40,7 @@ module.exports = async () => {
     const rpc = axios.create(
       {
         baseURL: endpoints.rpc,
+        timeout: 1500,
       },
     );
 

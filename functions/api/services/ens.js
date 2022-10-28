@@ -15,6 +15,7 @@ module.exports = async (
     const ens = axios.create(
       {
         baseURL: endpoints.ens,
+        timeout: 1500,
       },
     );
 

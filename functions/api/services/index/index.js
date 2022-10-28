@@ -101,6 +101,7 @@ const crud = async (
     const indexer = axios.create(
       {
         baseURL: indexer_url,
+        timeout: 15000,
       },
     );
 

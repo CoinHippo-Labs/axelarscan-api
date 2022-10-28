@@ -25,6 +25,7 @@ module.exports = async (
     const rpc = axios.create(
       {
         baseURL: endpoints.rpc,
+        timeout: 3000,
       },
     );
 
@@ -65,6 +66,7 @@ module.exports = async (
           const lcd = axios.create(
             {
               baseURL: endpoints.lcd,
+              timeout: 1500,
             },
           );
 

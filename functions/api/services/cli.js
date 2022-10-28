@@ -57,6 +57,7 @@ module.exports = async (
     const cli = axios.create(
       {
         baseURL: endpoints.cli,
+        timeout: 5000,
       },
     );
 

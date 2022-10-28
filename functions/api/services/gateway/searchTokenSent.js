@@ -119,6 +119,7 @@ module.exports = async (
     const api = axios.create(
       {
         baseURL: endpoints.api,
+        timeout: 5000,
       },
     );
     const _data = data

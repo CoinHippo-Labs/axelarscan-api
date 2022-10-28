@@ -15,6 +15,7 @@ module.exports = async (
     const coingecko = axios.create(
       {
         baseURL: endpoints.coingecko,
+        timeout: 10000,
       },
     );
 
