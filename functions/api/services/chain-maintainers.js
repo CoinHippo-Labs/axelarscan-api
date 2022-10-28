@@ -33,9 +33,9 @@ module.exports = async (
       undefined,
       {
         cmd: `axelard q nexus chain-maintainers ${chain} ${valid_height ? `--height ${height} ` : ''}-oj`,
-        cache: true,
-        cache_timeout: 30,
       },
+      true,
+      30,
     );
 
     const {

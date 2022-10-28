@@ -470,16 +470,44 @@ module.exports = async (
                 },
               );
 
-              if (_response?.data?.length > 0) {
+              const transfer_data = _.head(_response?.data);
+              let token_sent_data;
+
+              if (!transfer_data) {
+                const _response = await read(
+                  'token_sent_events',
+                  {
+                    bool: {
+                      should: [
+                        { match: { 'vote.transfer_id': transfer_id } },
+                        { match: { transfer_id } },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                  {
+                    size: 100,
+                  },
+                );
+
+                token_sent_data = _.head(_response?.data);
+              }
+
+              const data =
+                transfer_data ||
+                token_sent_data;
+
+              if (data) {
                 let {
                   executed,
                   transactionHash,
                   transactionIndex,
                   logIndex,
                   block_timestamp,
-                } = { ..._.head(_response.data).sign_batch };
+                } = { ...data.sign_batch };
 
-                executed = !!executed ||
+                executed =
+                  !!executed ||
                   commands.find(c =>
                     c?.id === command_id
                   )?.executed;
@@ -533,37 +561,78 @@ module.exports = async (
                 for (const transfer_data of transfers_data) {
                   const {
                     source,
+                    event,
                   } = { ...transfer_data };
                   const {
-                    id,
-                    sender_chain,
-                    sender_address,
                     recipient_address,
                   } = { ...source };
+                  let {
+                    sender_chain,
+                    sender_address,
+                  } = { ...source };
+                  const {
+                    chain,
+                  } = { ...event };
 
-                  if (recipient_address) {
-                    const _id = `${id}_${recipient_address}`.toLowerCase();
+                  sender_chain =
+                    sender_chain ||
+                    chain;
+
+                  sender_address =
+                    sender_address ||
+                    event?.receipt?.from ||
+                    event?.transaction?.from;
+
+                  const id =
+                    (
+                      source ||
+                      event
+                    )?.id;
+
+                  const _id = recipient_address ?
+                    `${id}_${recipient_address}`.toLowerCase() :
+                    id;
+
+                  if (_id) {
+                    sender_chain = normalize_chain(
+                      cosmos_non_axelarnet_chains_data.find(c =>
+                        sender_address?.startsWith(c?.prefix_address)
+                      )?.id ||
+                      sender_chain
+                    );
 
                     await write(
-                      'transfers',
+                      event ?
+                        'token_sent_events' :
+                        'transfers',
                       _id,
                       {
                         ...transfer_data,
                         sign_batch,
-                        source: {
-                          ...source,
-                          sender_chain: normalize_chain(
-                            cosmos_non_axelarnet_chains_data.find(c =>
-                              sender_address?.startsWith(c?.prefix_address)
-                            )?.id ||
-                            sender_chain
-                          ),
-                        },
+                        ...(
+                          event ?
+                            {
+                              event: {
+                                ...event,
+                                sender_chain,
+                              },
+                            } :
+                            {
+                              source: {
+                                ...source,
+                                sender_chain,
+                              },
+                            }
+                        ),
                       },
                     );
 
                     await saveTimeSpent(
                       _id,
+                      null,
+                      event ?
+                        'token_sent_events' :
+                        undefined,
                     );
                   }
                 }

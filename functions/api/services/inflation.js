@@ -65,6 +65,8 @@ module.exports = async (
     {
       cmd: 'axelard q params subspace reward KeyMgmtRelativeInflationRate -oj',
     },
+    true,
+    30,
   );
 
   const keyMgmtRelativeInflationRate = Number(
@@ -83,6 +85,8 @@ module.exports = async (
     {
       cmd: 'axelard q params subspace reward ExternalChainVotingInflationRate -oj',
     },
+    true,
+    30,
   );
 
   const externalChainVotingInflationRate = Number(

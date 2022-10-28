@@ -20,9 +20,9 @@ module.exports = async (
       undefined,
       {
         cmd: `axelard q snapshot proxy ${operator_address} -oj`,
-        cache: true,
-        cache_timeout: 300,
       },
+      true,
+      300,
     );
 
     const {
