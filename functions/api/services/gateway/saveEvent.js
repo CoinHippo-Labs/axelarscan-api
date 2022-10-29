@@ -11,6 +11,10 @@ const {
 } = require('../index');
 const assets_price = require('../assets-price');
 const {
+  update_event,
+} = require('../transfers/utils');
+const {
+  sleep,
   equals_ignore_case,
   get_granularity,
   getTransaction,
@@ -178,7 +182,8 @@ module.exports = async (
             );
 
             if (contract_data) {
-              decimals = contract_data.decimals ||
+              decimals =
+                contract_data.decimals ||
                 decimals ||
                 18;
 
@@ -239,6 +244,13 @@ module.exports = async (
               event,
             },
           };
+
+          await sleep(0.5 * 1000);
+
+          await update_event(
+            event,
+            true,
+          );
         } catch (error) {}
         break;
       case 'Executed':

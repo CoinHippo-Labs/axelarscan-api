@@ -756,8 +756,161 @@ const update_source = async (
         `${source.id}_${source.recipient_address}`.toLowerCase(),
         {
           source,
-          link: link ||
+          link:
+            link ||
             undefined,
+        },
+        update_only,
+      );
+    }
+  }
+
+  return source;
+};
+
+const update_event = async (
+  event,
+  update_only = false,
+) => {
+  if (event) {
+    const {
+      id,
+      chain,
+      returnValues,
+      denom,
+    } = { ...event };
+    const {
+      destinationChain,
+    } = { ...returnValues };
+
+    if (denom) {
+      const {
+        id,
+        chain_id,
+      } = {
+        ...chains_data.find(c =>
+          equals_ignore_case(c?.id, chain)
+        ),
+      };
+
+      const asset_data = assets_data.find(a =>
+        equals_ignore_case(a?.id, denom) ||
+        a?.ibc?.findIndex(i =>
+          i?.chain_id === id &&
+          equals_ignore_case(i?.ibc_denom, denom)
+        ) > -1
+      );
+
+      const {
+        contracts,
+        ibc,
+      } = { ...asset_data };
+      let {
+        decimals,
+      } = { ...asset_data };
+
+      decimals =
+        contracts?.find(c =>
+          c?.chain_id === chain_id
+        )?.decimals ||
+        ibc?.find(i =>
+          i?.chain_id === id
+        )?.decimals ||
+        decimals ||
+        (
+          [
+            asset_data?.id,
+            denom,
+          ].findIndex(s =>
+            s?.includes('-wei')
+          ) > -1 ?
+            18 :
+            6
+        );
+
+      if (asset_data) {
+        if (typeof event.amount === 'string') {
+          event.amount = Number(
+            formatUnits(
+              BigNumber.from(event.amount)
+                .toString(),
+              decimals,
+            )
+          );
+        }
+
+        if (
+          typeof !event.fee !== 'number' &&
+          endpoints?.lcd
+        ) {
+          const lcd = axios.create(
+            {
+              baseURL: endpoints.lcd,
+              timeout: 1500,
+            },
+          );
+
+          const _response = await lcd.get(
+            '/axelar/nexus/v1beta1/transfer_fee',
+            {
+              params: {
+                source_chain: chain,
+                destination_chain: normalize_chain(destinationChain),
+                amount: `${
+                  parseUnits(
+                    (event.amount || 0)
+                      .toString(),
+                    decimals,
+                  )
+                  .toString()
+                }${asset_data.id}`,
+              },
+            },
+          ).catch(error => { return { data: { error } }; });
+
+          const {
+            amount,
+          } = { ..._response?.data?.fee };
+
+          if (amount) {
+            event.fee = Number(
+              formatUnits(
+                BigNumber.from(amount)
+                  .toString(),
+                decimals,
+              )
+            );
+          }
+        }
+      }
+    }
+
+    if (
+      typeof event.amount === 'number' &&
+      typeof event.price === 'number'
+    ) {
+      event.value = event.amount * event.price;
+    }
+
+    if (
+      typeof event.amount === 'number' &&
+      typeof event.fee === 'number'
+    ) {
+      if (event.amount < event.fee) {
+        event.insufficient_fee = true;
+      }
+      else {
+        event.insufficient_fee = false;
+        event.amount_received = event.amount - event.fee;
+      }
+    }
+
+    if (id) {
+      await write(
+        'token_sent_events',
+        id,
+        {
+          event,
         },
         update_only,
       );
@@ -773,4 +926,5 @@ module.exports = {
   get_others_version_chain_ids,
   update_link,
   update_source,
+  update_event,
 };
