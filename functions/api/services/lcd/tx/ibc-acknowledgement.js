@@ -401,13 +401,11 @@ module.exports = async (
 
               if (
                 txhash &&
-                recipient_address
+                _id
               ) {
                 const received_at = moment(timestamp)
                   .utc()
                   .valueOf();
-
-                const _id = `${id}_${recipient_address}`.toLowerCase();
 
                 await write(
                   event ?
