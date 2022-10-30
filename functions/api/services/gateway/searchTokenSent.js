@@ -38,6 +38,7 @@ module.exports = async (
     asset,
     senderAddress,
     recipientAddress,
+    transferId,
     fromTime,
     from,
     size,
@@ -70,6 +71,17 @@ module.exports = async (
   }
   if (recipientAddress) {
     must.push({ match: { 'event.returnValues.destinationAddress': recipientAddress } });
+  }
+  if (transferId) {
+    must.push({
+      bool: {
+        should: [
+          { match: { 'vote.transfer_id': transferId } },
+          { match: { transfer_id: transferId } },
+        ],
+        minimum_should_match: 1,
+      },
+    });
   }
   if (fromTime) {
     fromTime = Number(fromTime);

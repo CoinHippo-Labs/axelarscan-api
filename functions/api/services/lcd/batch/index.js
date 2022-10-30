@@ -65,6 +65,7 @@ module.exports = async (
     let {
       batch_id,
     } = { ...lcd_response };
+
     batch_id = id;
 
     let chain =
@@ -76,9 +77,10 @@ module.exports = async (
         )
       );
 
-    const chain_data = evm_chains_data.find(c =>
-      equals_ignore_case(c?.id, chain)
-    );
+    const chain_data = evm_chains_data
+      .find(c =>
+        equals_ignore_case(c?.id, chain)
+      );
 
     const provider = getProvider(chain_data);
 
@@ -91,7 +93,8 @@ module.exports = async (
       chain_data?.id ||
       chain;
 
-    const gateway_contract = gateway_address &&
+    const gateway_contract =
+      gateway_address &&
       new Contract(
         gateway_address,
         IAxelarGateway.abi,
@@ -120,9 +123,10 @@ module.exports = async (
 
       for (const command_id of command_ids) {
         if (command_id) {
-          const index = commands.findIndex(c =>
-            equals_ignore_case(c?.id, command_id)
-          );
+          const index = commands
+            .findIndex(c =>
+              equals_ignore_case(c?.id, command_id)
+            );
 
           let command = commands[index];
 
@@ -171,26 +175,29 @@ module.exports = async (
               )
             ) {
               try {
-                const asset_data = assets_data.find(a =>
-                  a?.contracts?.findIndex(c =>
-                    c?.chain_id === chain_id &&
-                    !c?.is_native
-                  ) > -1
-                );
+                const asset_data = assets_data
+                  .find(a =>
+                    a?.contracts?.findIndex(c =>
+                      c?.chain_id === chain_id &&
+                      !c?.is_native
+                    ) > -1
+                  );
 
                 const {
                   contracts,
                 } = { ...asset_data };
 
-                const contract_data = contracts?.find(c =>
-                  c?.chain_id === chain_id
-                );
+                const contract_data =
+                  contracts?.find(c =>
+                    c?.chain_id === chain_id
+                  );
 
                 const {
                   contract_address,
                 } = { ...contract_data };
 
-                const erc20_contract = contract_address &&
+                const erc20_contract =
+                  contract_address &&
                   new Contract(
                     contract_address,
                     IBurnableMintableCappedERC20.abi,
@@ -225,7 +232,12 @@ module.exports = async (
     commands = commands
       .filter(c => c);
 
-    if (commands.findIndex(c => !c?.transactionHash) > -1) {
+    if (
+      commands
+        .findIndex(c =>
+          !c?.transactionHash
+        ) > -1
+    ) {
       const _response = await read(
         'command_events',
         {
@@ -336,12 +348,13 @@ module.exports = async (
       command_ids &&
       gateway_contract
     ) {
-      const _command_ids = command_ids.filter(c =>
-        parseInt(
-          c,
-          16,
-        ) >= 1
-      );
+      const _command_ids = command_ids
+        .filter(c =>
+          parseInt(
+            c,
+            16,
+          ) >= 1
+        );
 
       let sign_batch = {
         chain,
@@ -350,10 +363,11 @@ module.exports = async (
       };
 
       for (const command_id of _command_ids) {
-        const transfer_id = parseInt(
-          command_id,
-          16,
-        );
+        const transfer_id =
+          parseInt(
+            command_id,
+            16,
+          );
 
         sign_batch = {
           ...sign_batch,
@@ -361,7 +375,7 @@ module.exports = async (
           transfer_id,
         };
 
-        const _response = await read(
+        let _response = await read(
           'transfers',
           {
             bool: {
@@ -382,7 +396,7 @@ module.exports = async (
         let token_sent_data;
 
         if (!transfer_data) {
-          const _response = await read(
+          _response = await read(
             'token_sent_events',
             {
               bool: {
@@ -464,7 +478,12 @@ module.exports = async (
           };
 
           const transfers_data = _response.data
-            .filter(t => t?.source?.id);
+            .filter(t =>
+              (
+                t?.source ||
+                t?.event
+              )?.id
+            );
 
           for (const transfer_data of transfers_data) {
             const {
@@ -503,9 +522,10 @@ module.exports = async (
 
             if (_id) {
               sender_chain = normalize_chain(
-                cosmos_non_axelarnet_chains_data.find(c =>
-                  sender_address?.startsWith(c?.prefix_address)
-                )?.id ||
+                cosmos_non_axelarnet_chains_data
+                  .find(c =>
+                    sender_address?.startsWith(c?.prefix_address)
+                  )?.id ||
                 sender_chain
               );
 
