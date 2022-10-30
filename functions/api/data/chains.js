@@ -1582,7 +1582,11 @@ module.exports = {
           'axelar-',
         ],
         endpoints: {
-          lcd: 'https://testnet.lcd.axelarscan.io',
+          lcd: 'https://axelar-testnet-lcd.qubelabs.io',
+          lcds: [
+            'https://services.staketab.com/axelar-testnet-1-api',
+            'https://testnet.lcd.axelarscan.io',
+          ],
         },
         coingecko_id: 'axelar',
       },
@@ -1672,7 +1676,11 @@ module.exports = {
           'uni-',
         ],
         endpoints: {
-          lcd: 'https://lcd.uni.juno.deuslabs.fi',
+          lcd: 'https://api.uni.junonetwork.io',
+          lcds: [
+            'https://juno-testnet-api.polkachu.com',
+            'https://lcd.uni.juno.deuslabs.fi',
+          ],
         },
       },
       {
@@ -1723,7 +1731,10 @@ module.exports = {
           'harpoon-',
         ],
         endpoints: {
-          lcd: 'https://test-lcd-kujira.mintthemoon.xyz',
+          lcd: 'https://kujira-testnet-api.polkachu.com',
+          lcds: [
+            'https://test-lcd-kujira.mintthemoon.xyz',
+          ],
         },
       },
       {
@@ -1748,10 +1759,10 @@ module.exports = {
           'pulsar-',
         ],
         endpoints: {
-          lcd: 'https://testnet-api.roninventures.io',
+          lcd: 'https://lcd.testnet.secretsaturn.net',
           lcds: [
-            'https://lcd.testnet.secretsaturn.net',
             'https://api.pulsar.scrttestnet.com',
+            'http://testnet.securesecrets.org:1317',
           ],
         },
       },
@@ -1778,7 +1789,10 @@ module.exports = {
           'atlantic-',
         ],
         endpoints: {
-          lcd: 'https://rest-sei-test.ecostake.com',
+          lcd: 'https://sei-testnet-rest.brocha.in',
+          lcds: [
+            'https://rest-sei-test.ecostake.com',
+          ],
         },
       },
       {
@@ -1803,7 +1817,7 @@ module.exports = {
           'dorado-',
         ],
         endpoints: {
-          lcd: 'https://rest-dorado.fetch.ai:443',
+          lcd: 'https://rest-dorado.fetch.ai',
         },
       },
       {
@@ -1829,7 +1843,10 @@ module.exports = {
           'evmos_',
         ],
         endpoints: {
-          lcd: 'https://rest.bd.evmos.dev:1317',
+          lcd: 'https://evmos.test.api.coldyvalidator.net',
+          lcds: [
+            'https://evmos-testnet-api.polkachu.com',
+          ],
         },
       },
       {

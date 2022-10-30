@@ -143,7 +143,7 @@ module.exports = async (
             const lcd = axios.create(
               {
                 baseURL: _lcd,
-                timeout: 1500,
+                timeout: 3000,
               },
             );
 

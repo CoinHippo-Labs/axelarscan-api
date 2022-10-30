@@ -690,7 +690,7 @@ const update_source = async (
             const lcd = axios.create(
               {
                 baseURL: endpoints.lcd,
-                timeout: 1500,
+                timeout: 3000,
               },
             );
 
@@ -846,7 +846,7 @@ const update_event = async (
           const lcd = axios.create(
             {
               baseURL: endpoints.lcd,
-              timeout: 1500,
+              timeout: 3000,
             },
           );
 
