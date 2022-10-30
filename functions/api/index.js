@@ -218,6 +218,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'token-sent':
+          try {
+            response = await searchTokenSent(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'transfers-status':
           try {
             response = await getTransfersStatus(params);

@@ -181,5 +181,37 @@ module.exports = async (
     );
   }
 
+  if (Array.isArray(response?.data)) {
+    response.data = response.data
+      .map(d => {
+        const {
+          vote,
+          sign_batch,
+          ibc_send,
+          axelar_transfer,
+        } = { ...d };
+
+        return {
+          ...d,
+          status: ibc_send ?
+            ibc_send.failed_txhash &&
+            !ibc_send.ack_txhash ?
+              'ibc_failed' :
+              ibc_send.recv_txhash ?
+                'executed' :
+                'ibc_sent' :
+            sign_batch?.executed ?
+              'executed' :
+               sign_batch ?
+                'batch_signed' :
+                axelar_transfer ?
+                  'executed' :
+                  vote ?
+                    'voted' :
+                    'asset_sent',
+        };
+      });
+  }
+
   return response;
 };
