@@ -954,6 +954,10 @@ module.exports = async (
                     if (recipient_address) {
                       const _id = `${id}_${recipient_address}`.toLowerCase();
 
+                      const {
+                        amount,
+                      } = { ...source };
+
                       await write(
                         'transfers',
                         _id,
