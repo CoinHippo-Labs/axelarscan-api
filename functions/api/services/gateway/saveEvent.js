@@ -78,13 +78,15 @@ module.exports = async (
       message: 'chain not valid',
     };
   }
-  else if (!(
-    endpoints?.rpc &&
-    equals_ignore_case(
-      contracts?.[chain]?.address,
-      contractAddress
+  else if (
+    !(
+      endpoints?.rpc &&
+      equals_ignore_case(
+        contracts?.[chain]?.address,
+        contractAddress,
+      )
     )
-  )) {
+  ) {
     response = {
       error: true,
       code: 500,
@@ -93,10 +95,11 @@ module.exports = async (
   }
   else {
     // setup provider
-    const provider = getProvider(
-      null,
-      endpoints.rpc,
-    );
+    const provider =
+      getProvider(
+        null,
+        endpoints.rpc,
+      );
 
     const {
       _id,
@@ -105,6 +108,7 @@ module.exports = async (
       logIndex,
       blockNumber,
     } = { ...event };
+
     const event_name = event.event;
 
     // initial variables
@@ -146,27 +150,39 @@ module.exports = async (
           if (block_timestamp) {
             event = {
               ...event,
-              created_at: get_granularity(
-                moment(block_timestamp * 1000)
-                  .utc()
-              ),
+              created_at:
+                get_granularity(
+                  moment(block_timestamp * 1000)
+                    .utc()
+                ),
             };
           }
 
-          const chain_data = evm_chains_data.find(c =>
-            equals_ignore_case(c?.id, chain)
-          );
+          const chain_data = evm_chains_data
+            .find(c =>
+              equals_ignore_case(
+                c?.id,
+                chain,
+              )
+            );
           const {
             chain_id,
           } = { ...chain_data };
 
-          const asset_data = assets_data.find(a =>
-            equals_ignore_case(a?.symbol, symbol) ||
-            a?.contracts?.findIndex(c =>
-              c?.chain_id === chain_id &&
-              equals_ignore_case(c?.symbol, symbol)
-            ) > -1
-          );
+          const asset_data = assets_data
+            .find(a =>
+              equals_ignore_case(
+                a?.symbol,
+                symbol,
+              ) ||
+              a?.contracts?.findIndex(c =>
+                c?.chain_id === chain_id &&
+                equals_ignore_case(
+                  c?.symbol,
+                  symbol,
+                )
+              ) > -1
+            );
 
           if (asset_data) {
             const {
@@ -177,9 +193,10 @@ module.exports = async (
               decimals,
             } = { ...asset_data };
 
-            const contract_data = contracts?.find(c =>
-              c.chain_id === chain_id
-            );
+            const contract_data = (contracts || [])
+              .find(c =>
+                c.chain_id === chain_id
+              );
 
             if (contract_data) {
               decimals =
@@ -187,27 +204,33 @@ module.exports = async (
                 decimals ||
                 18;
 
-              amount = Number(
-                formatUnits(
-                  BigNumber.from(amount || '0')
-                    .toString(),
-                  decimals,
-                )
-              );
-
-              const _response = await assets_price(
-                {
-                  denom: id,
-                  timestamp:
-                    moment(
-                      (
-                        block_timestamp ||
-                        0
-                      ) * 1000
+              amount =
+                Number(
+                  formatUnits(
+                    BigNumber.from(
+                      amount ||
+                      '0'
                     )
-                    .valueOf(),
-                },
-              );
+                    .toString(),
+                    decimals,
+                  )
+                );
+
+              const _response =
+                await assets_price(
+                  {
+                    denom: id,
+                    timestamp:
+                      moment(
+                        (
+                          block_timestamp ||
+                          0
+                        ) *
+                        1000
+                      )
+                      .valueOf(),
+                  },
+                );
 
               let {
                 price,
@@ -278,7 +301,10 @@ module.exports = async (
 
           if (commandId) {
             if (commandId.startsWith('0x')) {
-              commandId = commandId.substring(2);
+              commandId = commandId
+                .substring(
+                  2,
+                );
             }
 
             const _response = await read(
@@ -319,9 +345,13 @@ module.exports = async (
             );
 
             if (batch_id) {
-              const index = commands?.findIndex(c =>
-                equals_ignore_case(c?.id, commandId)
-              );
+              const index = (commands || [])
+                .findIndex(c =>
+                  equals_ignore_case(
+                    c?.id,
+                    commandId,
+                  )
+                );
 
               if (index > -1) {
                 commands[index] = {
@@ -332,7 +362,11 @@ module.exports = async (
 
                 let command_events
 
-                if (commands.findIndex(c => !c?.transactionHash) > -1) {
+                if (
+                  commands.findIndex(c =>
+                    !c?.transactionHash
+                  ) > -1
+                ) {
                   const _response = await read(
                     'command_events',
                     {
@@ -368,9 +402,13 @@ module.exports = async (
                       c?.id &&
                       !c.transactionHash
                     ) {
-                      const command_event = command_events?.find(_c =>
-                        equals_ignore_case(_c?.command_id, c.id)
-                      );
+                      const command_event = (command_events || [])
+                        .find(_c =>
+                          equals_ignore_case(
+                            _c?.command_id,
+                            c.id,
+                          )
+                        );
 
                       if (command_event) {
                         const {
@@ -390,11 +428,28 @@ module.exports = async (
                     return c;
                   });
 
+                let {
+                  status,
+                } = { ...batch };
+
+                if (
+                  ![
+                    'BATCHED_COMMANDS_STATUS_SIGNED',
+                  ].includes(status) &&
+                  commands.length ===
+                  commands
+                    .filter(c => c?.executed)
+                    .length
+                ) {
+                  status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+                }
+
                 await write(
                   'batches',
                   batch_id,
                   {
                     ...batch,
+                    status,
                     commands,
                     blockNumber,
                   },

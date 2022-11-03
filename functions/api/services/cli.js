@@ -94,10 +94,11 @@ module.exports = async (
       cache &&
       cache_id?.startsWith('axelard')
     ) {
-      response_cache = await get(
-        'axelard',
-        cache_id,
-      );
+      response_cache =
+        await get(
+          'axelard',
+          cache_id,
+        );
 
       const {
         updated_at,
@@ -160,19 +161,28 @@ module.exports = async (
           const {
             id,
             command_ids,
-            status,
           } = { ...data };
           let {
             batch_id,
+            status,
           } = { ...data };
 
           batch_id = id;
 
-          let chain = cmd.split(' ')[4]?.toLowerCase();
+          let chain =
+            (
+              cmd
+                .split(' ')[4] ||
+              ''
+            )
+            .toLowerCase();
 
           const chain_data =
             evm_chains_data.find(c =>
-              equals_ignore_case(c?.id, chain)
+              equals_ignore_case(
+                c?.id,
+                chain,
+              )
             );
 
           const provider = getProvider(chain_data);
@@ -182,10 +192,12 @@ module.exports = async (
             gateway_address,
           } = { ...chain_data };
 
-          chain = chain_data?.id ||
+          chain =
+            chain_data?.id ||
             chain;
 
-          const gateway_contract = gateway_address &&
+          const gateway_contract =
+            gateway_address &&
             new Contract(
               gateway_address,
               IAxelarGateway.abi,
@@ -206,7 +218,8 @@ module.exports = async (
             commands,
           } = { ..._.head(_response?.data) };
 
-          commands = commands ||
+          commands =
+            commands ||
             [];
 
           if (command_ids) {
@@ -214,9 +227,13 @@ module.exports = async (
 
             for (const command_id of command_ids) {
               if (command_id) {
-                const index = commands.findIndex(c =>
-                  equals_ignore_case(c?.id, command_id)
-                );
+                const index = commands
+                  .findIndex(c =>
+                    equals_ignore_case(
+                      c?.id,
+                      command_id,
+                    )
+                  );
 
                 let command = commands[index];
 
@@ -259,28 +276,30 @@ module.exports = async (
                     salt &&
                     (
                       command_ids.length < 15 ||
-                      _commands.filter(c =>
-                        c?.salt &&
-                        !c.deposit_address
-                      ).length < 15 ||
+                      _commands
+                        .filter(c =>
+                          c?.salt &&
+                          !c.deposit_address
+                        ).length < 15 ||
                       Math.random(0, 1) < 0.3
                     )
                   ) {
                     try {
-                      const asset_data =
-                        assets_data.find(a =>
-                          a?.contracts?.findIndex(c =>
-                            c?.chain_id === chain_id &&
-                            !c?.is_native
-                          ) > -1
+                      const asset_data = assets_data
+                        .find(a =>
+                          (a?.contracts || [])
+                            .findIndex(c =>
+                              c?.chain_id === chain_id &&
+                              !c?.is_native
+                            ) > -1
                         );
 
                       const {
                         contracts,
                       } = { ...asset_data };
 
-                      const contract_data =
-                        contracts?.find(c =>
+                      const contract_data = (contracts || [])
+                        .find(c =>
                           c?.chain_id === chain_id
                         );
 
@@ -327,7 +346,7 @@ module.exports = async (
           if (
             commands
               .findIndex(c =>
-                !c?.transactionHash
+                !c.transactionHash
               ) > -1
           ) {
             const _response = await read(
@@ -340,7 +359,7 @@ module.exports = async (
                   should: _.concat(
                     { match_phrase: { batch_id } },
                     commands
-                      .filter(c => !c?.transactionHash)
+                      .filter(c => !c.transactionHash)
                       .map(c => {
                         const {
                           id,
@@ -364,12 +383,15 @@ module.exports = async (
             commands = commands
               .map(c => {
                 if (
-                  c?.id &&
+                  c.id &&
                   !c.transactionHash
                 ) {
-                  const command_event =
-                    command_events?.find(_c =>
-                      equals_ignore_case(_c?.command_id, c.id)
+                  const command_event = (command_events || [])
+                    .find(_c =>
+                      equals_ignore_case(
+                        _c?.command_id,
+                        c.id,
+                      )
                     );
 
                   if (command_event) {
@@ -433,6 +455,19 @@ module.exports = async (
             ...data,
             created_at: get_granularity(created_at),
           };
+
+          if (
+            ![
+              'BATCHED_COMMANDS_STATUS_SIGNED',
+            ].includes(status) &&
+            commands.length ===
+            commands
+              .filter(c => c.executed)
+              .length
+          ) {
+            status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+            data.status = status;
+          }
 
           if (
             [
@@ -523,15 +558,27 @@ module.exports = async (
 
                 executed =
                   !!executed ||
-                  commands.find(c =>
-                    c?.id === command_id
-                  )?.executed;
+                  commands
+                    .find(c =>
+                      c.id === command_id
+                    )?.executed;
 
                 if (!executed) {
                   try {
                     executed = await gateway_contract.isCommandExecuted(
                       `0x${command_id}`,
                     );
+
+                    if (executed) {
+                      const index = commands
+                        .findIndex(c =>
+                          c.id === command_id
+                        );
+
+                      if (index > -1) {
+                        commands[index].executed = executed;
+                      }
+                    }
                   } catch (error) {}
                 }
 
@@ -659,6 +706,19 @@ module.exports = async (
                 }
               }
             }
+          }
+
+          if (
+            ![
+              'BATCHED_COMMANDS_STATUS_SIGNED',
+            ].includes(status) &&
+            commands.length ===
+            commands
+              .filter(c => c.executed)
+              .length
+          ) {
+            status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+            data.status = status;
           }
 
           await write(

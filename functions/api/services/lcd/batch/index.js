@@ -60,10 +60,10 @@ module.exports = async (
     const {
       id,
       command_ids,
-      status,
     } = { ...lcd_response };
     let {
       batch_id,
+      status,
     } = { ...lcd_response };
 
     batch_id = id;
@@ -79,7 +79,10 @@ module.exports = async (
 
     const chain_data = evm_chains_data
       .find(c =>
-        equals_ignore_case(c?.id, chain)
+        equals_ignore_case(
+          c?.id,
+          chain,
+        )
       );
 
     const provider = getProvider(chain_data);
@@ -115,7 +118,8 @@ module.exports = async (
       commands,
     } = { ..._.head(_response?.data) };
 
-    commands = commands ||
+    commands =
+      commands ||
       [];
 
     if (command_ids) {
@@ -125,7 +129,10 @@ module.exports = async (
         if (command_id) {
           const index = commands
             .findIndex(c =>
-              equals_ignore_case(c?.id, command_id)
+              equals_ignore_case(
+                c?.id,
+                command_id,
+              )
             );
 
           let command = commands[index];
@@ -167,28 +174,30 @@ module.exports = async (
               salt &&
               (
                 command_ids.length < 15 ||
-                _commands.filter(c =>
-                  c?.salt &&
-                  !c.deposit_address
-                ).length < 15 ||
+                _commands
+                  .filter(c =>
+                    c?.salt &&
+                    !c.deposit_address
+                  ).length < 15 ||
                 Math.random(0, 1) < 0.3
               )
             ) {
               try {
                 const asset_data = assets_data
                   .find(a =>
-                    a?.contracts?.findIndex(c =>
-                      c?.chain_id === chain_id &&
-                      !c?.is_native
-                    ) > -1
+                    (a?.contracts || [])
+                      .findIndex(c =>
+                        c?.chain_id === chain_id &&
+                        !c?.is_native
+                      ) > -1
                   );
 
                 const {
                   contracts,
                 } = { ...asset_data };
 
-                const contract_data =
-                  contracts?.find(c =>
+                const contract_data = (contracts || [])
+                  .find(c =>
                     c?.chain_id === chain_id
                   );
 
@@ -235,7 +244,7 @@ module.exports = async (
     if (
       commands
         .findIndex(c =>
-          !c?.transactionHash
+          !c.transactionHash
         ) > -1
     ) {
       const _response = await read(
@@ -248,7 +257,7 @@ module.exports = async (
             should: _.concat(
               { match_phrase: { batch_id } },
               commands
-                .filter(c => !c?.transactionHash)
+                .filter(c => !c.transactionHash)
                 .map(c => {
                   const {
                     id,
@@ -272,12 +281,16 @@ module.exports = async (
       commands = commands
         .map(c => {
           if (
-            c?.id &&
+            c.id &&
             !c.transactionHash
           ) {
-            const command_event = command_events?.find(_c =>
-              equals_ignore_case(_c?.command_id, c.id)
-            );
+            const command_event = (command_events || [])
+              .find(_c =>
+                equals_ignore_case(
+                  _c?.command_id,
+                  c.id,
+                )
+              );
 
             if (command_event) {
               const {
@@ -340,6 +353,19 @@ module.exports = async (
       ...lcd_response,
       created_at: get_granularity(created_at),
     };
+
+    if (
+      ![
+        'BATCHED_COMMANDS_STATUS_SIGNED',
+      ].includes(status) &&
+      commands.length ===
+      commands
+        .filter(c => c.executed)
+        .length
+    ) {
+      status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+      lcd_response.status = status;
+    }
 
     if (
       [
@@ -430,15 +456,27 @@ module.exports = async (
 
           executed =
             !!executed ||
-            commands.find(c =>
-              c?.id === command_id
-            )?.executed;
+            commands
+              .find(c =>
+                c.id === command_id
+              )?.executed;
 
           if (!executed) {
             try {
               executed = await gateway_contract.isCommandExecuted(
                 `0x${command_id}`,
               );
+
+              if (executed) {
+                const index = commands
+                  .findIndex(c =>
+                    c.id === command_id
+                  );
+
+                if (index > -1) {
+                  commands[index].executed = executed;
+                }
+              }
             } catch (error) {}
           }
 
@@ -566,6 +604,19 @@ module.exports = async (
           }
         }
       }
+    }
+
+    if (
+      ![
+        'BATCHED_COMMANDS_STATUS_SIGNED',
+      ].includes(status) &&
+      commands.length ===
+      commands
+        .filter(c => c.executed)
+        .length
+    ) {
+      status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+      lcd_response.status = status;
     }
 
     await write(
