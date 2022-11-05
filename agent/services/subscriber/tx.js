@@ -1,13 +1,16 @@
-const axios = require('axios');
 const WebSocket = require('ws');
+const axios = require('axios');
 const config = require('config-yml');
 const {
   log,
   sleep,
 } = require('../../utils');
 
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
+
 const service_name = 'tx-subscriber';
-const environment = process.env.ENVIRONMENT || config?.environment;
 
 const {
   endpoints,
@@ -19,7 +22,12 @@ module.exports = () => {
     endpoints.api
   ) {
     // initial api
-    const api = axios.create({ baseURL: endpoints.api });
+    const api = axios.create(
+      {
+        baseURL: endpoints.api,
+        timeout: 10000,
+      },
+    );
 
     // initial function to subscribe web socket
     const subscribe = () => {
@@ -34,7 +42,9 @@ module.exports = () => {
             'info',
             service_name,
             'connect',
-            { url },
+            {
+              url,
+            },
           );
 
           ws.send(`{"jsonrpc":"2.0","method":"subscribe","id":"0","params":{"query":"tm.event='Tx'"}}`);
@@ -48,7 +58,9 @@ module.exports = () => {
             'info',
             service_name,
             'disconnect',
-            { code },
+            {
+              code,
+            },
           );
 
           await sleep(3 * 1000);
@@ -63,7 +75,9 @@ module.exports = () => {
             'error',
             service_name,
             'error',
-            { message: error?.message },
+            {
+              message: error?.message,
+            },
           );
 
           ws.close();
@@ -74,20 +88,27 @@ module.exports = () => {
         'message',
         async data => {
           try {
-            data = JSON.parse(data.toString());
+            data =
+              JSON.parse(
+                data.toString()
+              );
 
             const {
               events,
             } = { ...data?.result };
 
-            const txHashes = events?.['tx.hash'] || [];
+            const txHashes =
+              events?.['tx.hash'] ||
+              [];
 
             for (const txhash of txHashes) {
               log(
                 'info',
                 service_name,
                 'get tx',
-                { txhash },
+                {
+                  txhash,
+                },
               );
 
               await api.get(

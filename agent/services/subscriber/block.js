@@ -1,13 +1,16 @@
-const axios = require('axios');
 const WebSocket = require('ws');
+const axios = require('axios');
 const config = require('config-yml');
 const {
   log,
   sleep,
 } = require('../../utils');
 
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
+
 const service_name = 'block-subscriber';
-const environment = process.env.ENVIRONMENT || config?.environment;
 
 const {
   endpoints,
@@ -20,7 +23,12 @@ module.exports = () => {
     endpoints.api
   ) {
     // initial api
-    const api = axios.create({ baseURL: endpoints.api });
+    const api = axios.create(
+      {
+        baseURL: endpoints.api,
+        timeout: 10000,
+      },
+    );
 
     // initial function to subscribe web socket
     const subscribe = () => {
@@ -35,7 +43,9 @@ module.exports = () => {
             'info',
             service_name,
             'connect',
-            { url },
+            {
+              url,
+            },
           );
 
           ws.send(`{"jsonrpc":"2.0","method":"subscribe","id":"0","params":{"query":"tm.event='NewBlock'"}}`);
@@ -49,7 +59,9 @@ module.exports = () => {
             'info',
             service_name,
             'disconnect',
-            { code },
+            {
+              code,
+            },
           );
 
           await sleep(3 * 1000);
@@ -64,7 +76,9 @@ module.exports = () => {
             'error',
             service_name,
             'error',
-            { message: error?.message },
+            {
+              message: error?.message,
+            },
           );
 
           ws.close();
@@ -75,7 +89,10 @@ module.exports = () => {
         'message',
           async data => {
           try {
-            data = JSON.parse(data.toString());
+            data =
+              JSON.parse(
+                data.toString()
+              );
 
             const {
               height,
@@ -91,18 +108,21 @@ module.exports = () => {
 
               for (let i = 0; i <= num_prev_blocks_fetch_tx; i++) {
                 const _height = height - i;
+
                 if (_height > 0) {
                   await api.get(
                     '',
                     {
                       params: {
                         module: 'lcd',
-                        path: i === 0 ?
-                          `/cosmos/base/tendermint/v1beta1/blocks/${_height}` :
-                          '/cosmos/tx/v1beta1/txs',
-                        events: i === 0 ?
-                          undefined :
-                          `tx.height=${_height}`,
+                        path:
+                          i === 0 ?
+                            `/cosmos/base/tendermint/v1beta1/blocks/${_height}` :
+                            '/cosmos/tx/v1beta1/txs',
+                        events:
+                          i === 0 ?
+                            undefined :
+                            `tx.height=${_height}`,
                       },
                     },
                   ).catch(error => { return { data: { error } }; });

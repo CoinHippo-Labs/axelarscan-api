@@ -1,10 +1,15 @@
 const axios = require('axios');
 const _ = require('lodash');
 const config = require('config-yml');
-const { log } = require('../../utils');
+const {
+  log,
+} = require('../../utils');
+
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
 
 const service_name = 'reindexer';
-const environment = process.env.ENVIRONMENT || config?.environment;
 
 const {
   endpoints,
@@ -16,7 +21,12 @@ const {
 module.exports = () => {
   if (endpoints?.api) {
     // initial api
-    const api = axios.create({ baseURL: endpoints.api });
+    const api = axios.create(
+      {
+        baseURL: endpoints.api,
+        timeout: 10000,
+      },
+    );
 
     // initial function to index block & tx
     const index = async (
@@ -50,6 +60,7 @@ module.exports = () => {
 
           // get transactions of each block
           let next_page_key = true;
+
           while (next_page_key) {
             const response = await api.get(
               '',
@@ -58,9 +69,11 @@ module.exports = () => {
                   module: 'lcd',
                   path: '/cosmos/tx/v1beta1/txs',
                   events: `tx.height=${height}`,
-                  'pagination.key': typeof next_page_key === 'string' && next_page_key ?
-                    next_page_key :
-                    undefined,
+                  'pagination.key':
+                    typeof next_page_key === 'string' &&
+                    next_page_key ?
+                      next_page_key :
+                      undefined,
                   no_index: true,
                 },
               },
@@ -93,15 +106,16 @@ module.exports = () => {
                 } = { ..._.head(_response?.data) };
 
                 if (txs) {
-                  tx_responses = txs.map(d => {
-                    const {
-                      data,
-                    } = { ...d };
+                  tx_responses = txs
+                    .map(d => {
+                      const {
+                        data,
+                      } = { ...d };
 
-                    return {
-                      ...data,
-                    };
-                  });
+                      return {
+                        ...data,
+                      };
+                    });
                 }
               }
 
@@ -152,10 +166,12 @@ module.exports = () => {
 
     // start index n processes
     [...Array(num_reindex_processes).keys()]
-      .forEach(i => index(
-        start_reindex_block,
-        end_reindex_block,
-        i,
-      ));
+      .forEach(i =>
+        index(
+          start_reindex_block,
+          end_reindex_block,
+          i,
+        )
+      );
   }
 };

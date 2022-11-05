@@ -1,7 +1,11 @@
 const config = require('config-yml');
-const { log } = require('./utils');
+const {
+  log,
+} = require('./utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
 
 const {
   reindex,
