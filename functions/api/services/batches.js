@@ -30,18 +30,23 @@ module.exports = async (
   if (chain) {
     must.push({ match: { chain } });
   }
+
   if (batchId) {
     must.push({ match: { batch_id: batchId } });
   }
+
   if (commandId) {
     must.push({ match: { command_ids: commandId } });
   }
+
   if (keyId) {
     must.push({ match: { key_id: keyId } });
   }
+
   if (type) {
     must.push({ match: { 'commands.type': type } });
   }
+
   if (status) {
     switch (status) {
       case 'executed':
@@ -79,23 +84,28 @@ module.exports = async (
         break;
     }
   }
+
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime = toTime ?
-      Number(toTime) * 1000 :
-      moment()
-        .valueOf();
+    toTime =
+      toTime ?
+        Number(toTime) * 1000 :
+        moment()
+          .valueOf();
+
     must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
   }
+
   if (!query) {
     query = {
       bool: {
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
@@ -104,13 +114,16 @@ module.exports = async (
     'batches',
     query,
     {
-      from: typeof from === 'number' ?
-        from :
-        0,
-      size: typeof size === 'number' ?
-        size :
-        25,
-      sort: sort ||
+      from:
+        typeof from === 'number' ?
+          from :
+          0,
+      size:
+        typeof size === 'number' ?
+          size :
+          25,
+      sort:
+        sort ||
         [{ 'created_at.ms': 'desc' }],
       track_total_hits: true,
     },

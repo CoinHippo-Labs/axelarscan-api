@@ -36,22 +36,24 @@ module.exports = async (
           tx_id,
         } = { ...message };
 
-        const created_at = moment(timestamp)
-          .utc()
-          .valueOf();
+        const created_at =
+          moment(timestamp)
+            .utc()
+            .valueOf();
 
         const {
           events,
         } = { ...logs?.[i] };
 
-        const event = events?.find(e =>
-          [
-            'ConfirmKeyTransferStarted',
-            'ConfirmGatewayTxStarted',
-          ].findIndex(s =>
-            e?.type?.includes(s)
-          ) > -1
-        );
+        const event = (events || [])
+          .find(e =>
+            [
+              'ConfirmKeyTransferStarted',
+              'ConfirmGatewayTxStarted',
+            ].findIndex(s =>
+              e?.type?.includes(s)
+            ) > -1
+          );
 
         const {
           attributes,
@@ -62,17 +64,19 @@ module.exports = async (
           participants,
         } = {
           ...to_json(
-            attributes?.find(a =>
-              a?.key === 'participants'
-            )?.value
+            (attributes || [])
+              .find(a =>
+                a?.key === 'participants'
+              )?.value
           ),
         };
 
         let transaction_id = tx_id;
 
-        transaction_id = Array.isArray(transaction_id) ?
-          to_hex(transaction_id) :
-          transaction_id;
+        transaction_id =
+          Array.isArray(transaction_id) ?
+            to_hex(transaction_id) :
+            transaction_id;
 
         if (
           poll_id &&

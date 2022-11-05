@@ -10,12 +10,18 @@ const {
   get_address,
 } = require('../../../utils/address');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const axelarnet = cosmos_chains_data.find(c => c?.id === 'axelarnet');
+const axelarnet =
+  cosmos_chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 const {
   endpoints,
@@ -67,25 +73,27 @@ module.exports = async (
       next_key = pagination?.next_key;
 
       if (channels) {
-        all_channels = _.uniqBy(
-          _.concat(
-            all_channels,
-            channels,
-          ),
-          'channel_id',
-        );
+        all_channels =
+          _.uniqBy(
+            _.concat(
+              all_channels,
+              channels,
+            ),
+            'channel_id',
+          );
       }
     }
 
-    const _response = await read(
-      'ibc_channels',
-      {
-        match_all: {},
-      },
-      {
-        size: 1000,
-      },
-    );
+    const _response =
+      await read(
+        'ibc_channels',
+        {
+          match_all: {},
+        },
+        {
+          size: 1000,
+        },
+      );
 
     const {
       data,
@@ -98,8 +106,11 @@ module.exports = async (
         } = { ...c };
 
         return {
-          ...data?.find(_c =>
-            _c?.channel_id === channel_id
+          ...(
+            (data || [])
+              .find(_c =>
+                _c?.channel_id === channel_id
+              )
           ),
           ...c,
         };
@@ -131,7 +142,8 @@ module.exports = async (
               (
                 updated_at ||
                 0
-              ) * 1000
+              ) *
+              1000
             ),
             'minutes',
             true,
@@ -158,27 +170,31 @@ module.exports = async (
             escrow_address;
 
           if (counterparty) {
-            const chain_data = cosmos_chains_data.find(c =>
-              c?.prefix_chain_ids?.findIndex(p =>
-                chain_id.startsWith(p)
-              ) > -1 ||
-              Object.values({ ...c?.overrides })
-                .findIndex(o =>
-                  o?.prefix_chain_ids?.findIndex(p =>
+            const chain_data = cosmos_chains_data
+              .find(c =>
+                (c?.prefix_chain_ids || [])
+                  .findIndex(p =>
                     chain_id.startsWith(p)
+                  ) > -1 ||
+                Object.values({ ...c?.overrides })
+                  .findIndex(o =>
+                    (o?.prefix_chain_ids || [])
+                      .findIndex(p =>
+                        chain_id.startsWith(p)
+                      ) > -1
                   ) > -1
-                ) > -1
-            );
+              );
 
             const {
               prefix_address,
             } = { ...chain_data };
 
             if (prefix_address) {
-              counterparty.escrow_address = get_address(
-                `${version}\x00${counterparty.port_id}/${counterparty.channel_id}`,
-                prefix_address,
-              );
+              counterparty.escrow_address =
+                get_address(
+                  `${version}\x00${counterparty.port_id}/${counterparty.channel_id}`,
+                  prefix_address,
+                );
             }
           }
 

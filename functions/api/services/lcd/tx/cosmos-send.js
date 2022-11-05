@@ -15,18 +15,26 @@ const {
   get_granularity,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 module.exports = async (
   lcd_response = {},
@@ -47,9 +55,10 @@ module.exports = async (
     const {
       chain_id,
     } = {
-      ...messages.find(m =>
-        m?.['@type']?.includes('MsgUpdateClient')
-      )?.header?.signer_header?.header,
+      ...messages
+        .find(m =>
+          m?.['@type']?.includes('MsgUpdateClient')
+        )?.header?.signer_header?.header,
     };
 
     const recv_packets = (logs || [])
@@ -59,18 +68,27 @@ module.exports = async (
         } = { ...l };
 
         return {
-          ...events?.find(e =>
-            equals_ignore_case(e?.type, 'recv_packet')
+          ...(
+            (events || [])
+              .find(e =>
+                equals_ignore_case(
+                  e?.type,
+                  'recv_packet',
+                )
+              )
           ),
-          height: Number(
-            messages.find(m =>
-              _.last(
-                (m?.['@type'] || '')
-                  .split('.')
-              ) === 'MsgRecvPacket'
-            )?.proof_height?.revision_height ||
-            '0'
-          ) - 1,
+          height:
+            Number(
+              messages
+                .find(m =>
+                  _.last(
+                    (m?.['@type'] || '')
+                      .split('.')
+                  ) === 'MsgRecvPacket'
+                )?.proof_height?.revision_height ||
+              '0'
+            ) -
+            1,
         };
       })
       .filter(e =>
@@ -88,19 +106,21 @@ module.exports = async (
             a.value
           );
 
-        const packet_data = to_json(
-          attributes.find(a =>
-            a?.key === 'packet_data'
-          )?.value
-        );
+        const packet_data =
+          to_json(
+            attributes
+              .find(a =>
+                a?.key === 'packet_data'
+              )?.value
+          );
 
-        const packet_data_hex =
-          attributes.find(a =>
+        const packet_data_hex = attributes
+          .find(a =>
             a?.key === 'packet_data_hex'
           )?.value;
 
-        const packet_sequence =
-          attributes.find(a =>
+        const packet_sequence = attributes
+          .find(a =>
             a?.key === 'packet_sequence'
           )?.value;
 
@@ -169,25 +189,31 @@ module.exports = async (
 
             const index = (tx_responses || [])
               .findIndex(t => {
-                const send_packet = _.head(
-                  (t?.logs || [])
-                    .flatMap(l =>
-                      (l?.events || [])
-                        .filter(e =>
-                          equals_ignore_case(e?.type, 'send_packet')
-                        )
-                    )
-                );
+                const send_packet =
+                  _.head(
+                    (t?.logs || [])
+                      .flatMap(l =>
+                        (l?.events || [])
+                          .filter(e =>
+                            equals_ignore_case(
+                              e?.type,
+                              'send_packet',
+                            )
+                          )
+                      )
+                  );
 
                 const {
                   attributes,
                 } = { ...send_packet };
 
                 return (
-                  packet_sequence === (
-                    attributes?.find(a =>
-                      a?.key === 'packet_sequence'
-                    )?.value
+                  packet_sequence ===
+                  (
+                    (attributes || [])
+                      .find(a =>
+                        a?.key === 'packet_sequence'
+                      )?.value
                   )
                 );
               });
@@ -211,12 +237,13 @@ module.exports = async (
               } = { ..._data.tx.body };
 
               if (messages) {
-                const created_at = moment(timestamp)
-                  .utc()
-                  .valueOf();
+                const created_at =
+                  moment(timestamp)
+                    .utc()
+                    .valueOf();
 
-                const amount_data =
-                  messages.find(m =>
+                const amount_data = messages
+                  .find(m =>
                     m?.token
                   )?.token;
 
@@ -230,12 +257,16 @@ module.exports = async (
                   height,
                   created_at: get_granularity(created_at),
                   sender_chain: chain_data.id,
-                  sender_address: messages.find(m =>
-                    m?.sender
-                  )?.sender,
-                  recipient_address: messages.find(m =>
-                    m?.receiver
-                  )?.receiver,
+                  sender_address:
+                    messages
+                      .find(m =>
+                        m?.sender
+                      )?.sender,
+                  recipient_address:
+                    messages
+                      .find(m =>
+                        m?.receiver
+                      )?.receiver,
                   amount: amount_data?.amount,
                   denom: amount_data?.denom,
                 };
@@ -252,28 +283,31 @@ module.exports = async (
                   txhash &&
                   amount
                 ) {
-                  const _response = await read(
-                    'deposit_addresses',
-                    {
-                      match: { deposit_address: recipient_address },
-                    },
-                    {
-                      size: 1,
-                    },
-                  );
+                  const _response =
+                    await read(
+                      'deposit_addresses',
+                      {
+                        match: { deposit_address: recipient_address },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
 
                   let link = _.head(_response?.data);
 
-                  link = await update_link(
-                    link,
-                    _record,
-                    _lcd,
-                  );
+                  link =
+                    await update_link(
+                      link,
+                      _record,
+                      _lcd,
+                    );
 
-                  _record = await update_source(
-                    _record,
-                    link,
-                  );
+                  _record =
+                    await update_source(
+                      _record,
+                      link,
+                    );
 
                   found = true;
                   break;

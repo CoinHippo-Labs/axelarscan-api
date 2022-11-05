@@ -1,4 +1,6 @@
-const { Contract } = require('ethers');
+const {
+  Contract,
+} = require('ethers');
 const config = require('config-yml');
 const {
   getLatestEventBlock,
@@ -9,17 +11,19 @@ const {
   sleep,
 } = require('../../../utils');
 
-const service_name = 'gateway-subscriber';
 const environment = process.env.ENVIRONMENT;
+
+const service_name = 'gateway-subscriber';
 
 const {
   past_events_block_per_request,
 } = { ...config?.[environment] };
 
-const events_name = [
-  'TokenSent',
-  'Executed',
-];
+const events_name =
+  [
+    'TokenSent',
+    'Executed',
+  ];
 
 const onEmit = async (
   chain_config,
@@ -63,7 +67,12 @@ const onEmit = async (
       ) {
         const {
           inputs,
-        } = abi.find(a => a?.name === event);
+        } = {
+          ...abi.find(a =>
+            a?.name === event
+          ),
+        };
+
         const returnValues = {};
 
         if (inputs) {
@@ -85,9 +94,10 @@ const onEmit = async (
 
       // normalize
       try {
-        data = JSON.parse(
-          JSON.stringify(data)
-        );
+        data =
+          JSON.parse(
+            JSON.stringify(data)
+          );
       } catch (error) {}
 
       if (events_name.includes(event)) {
@@ -113,7 +123,9 @@ const onEmit = async (
         'error',
         service_name,
         'general',
-        { error: error?.message },
+        {
+          error: error?.message,
+        },
       );
     }
   }
@@ -135,6 +147,7 @@ const getPastEvents = async (
       provider,
       gateway,
     } = { ...chain_config };
+
     const chain = id;
 
     // contract parameters
@@ -144,11 +157,12 @@ const getPastEvents = async (
     } = { ...gateway };
 
     // initial contract
-    const contract = new Contract(
-      address,
-      abi,
-      provider,
-    );
+    const contract =
+      new Contract(
+        address,
+        abi,
+        provider,
+      );
 
     // query options
     const {
@@ -230,10 +244,12 @@ const sync = async (
       id,
       provider,
     } = { ...chain_config };
+
     const chain = id;
 
     // number of block per past events querying
-    const num_query_block = past_events_block_per_request ||
+    const num_query_block =
+      past_events_block_per_request ||
       100;
 
     // get latest block
@@ -255,14 +271,17 @@ const sync = async (
 
     // initial blockchain query filters options data
     const options = {
-      fromBlock: latest_events_block ?
-        latest_events_block :
+      fromBlock:
+        latest_events_block ?
+          latest_events_block :
+          latest_block ?
+            latest_block - num_query_block :
+            undefined,
+      toBlock:
+        latest_events_block ||
         latest_block ?
-          latest_block - num_query_block :
+          latest_block :
           undefined,
-      toBlock: latest_events_block || latest_block ?
-        latest_block :
-        undefined,
     };
 
     // flag to check whether is it query all data from specific block range
@@ -278,7 +297,8 @@ const sync = async (
         synced = true;
       }
       else if (latest_block - options.fromBlock >= num_query_block) {
-        options.fromBlock = options.fromBlock +
+        options.fromBlock =
+          options.fromBlock +
           (options.toBlock === latest_block ?
             0 :
             num_query_block
@@ -291,9 +311,10 @@ const sync = async (
         }
       }
       else {
-        options.fromBlock = options.toBlock === latest_block ?
-          options.fromBlock :
-          options.toBlock;
+        options.fromBlock =
+          options.toBlock === latest_block ?
+            options.fromBlock :
+            options.toBlock;
 
         options.toBlock = latest_block;
 

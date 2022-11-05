@@ -24,21 +24,22 @@ module.exports = async (
     };
   }
   else {
-    let _response = await read(
-      'token_sent_events',
-      {
-        bool: {
-          must: [
-            { match: { 'event.chain': chain } },
-            { exists: { field: 'event.blockNumber' } },
-          ],
+    let _response =
+      await read(
+        'token_sent_events',
+        {
+          bool: {
+            must: [
+              { match: { 'event.chain': chain } },
+              { exists: { field: 'event.blockNumber' } },
+            ],
+          },
         },
-      },
-      {
-        size: 1,
-        sort: [{ 'event.blockNumber': 'desc' }],
-      },
-    );
+        {
+          size: 1,
+          sort: [{ 'event.blockNumber': 'desc' }],
+        },
+      );
 
     let blockNumber = _.head(_response?.data)?.event?.blockNumber;
 
@@ -52,21 +53,22 @@ module.exports = async (
       };
     }
 
-    _response = await read(
-      'command_events',
-      {
-        bool: {
-          must: [
-            { match: { chain } },
-            { exists: { field: 'blockNumber' } },
-          ],
+    _response =
+      await read(
+        'command_events',
+        {
+          bool: {
+            must: [
+              { match: { chain } },
+              { exists: { field: 'blockNumber' } },
+            ],
+          },
         },
-      },
-      {
-        size: 1,
-        sort: [{ 'blockNumber': 'desc' }],
-      },
-    );
+        {
+          size: 1,
+          sort: [{ 'blockNumber': 'desc' }],
+        },
+      );
 
     blockNumber = _.head(_response?.data)?.event?.blockNumber;
 
@@ -86,13 +88,14 @@ module.exports = async (
       ...response,
       latest: {
         ...response?.latest,
-        gateway_block: _.min(
-          _.concat(
-            response?.latest?.token_sent_block,
-            response?.latest?.batches_executed_block,
-          )
-          .filter(b => b),
-        ),
+        gateway_block:
+          _.min(
+            _.concat(
+              response?.latest?.token_sent_block,
+              response?.latest?.batches_executed_block,
+            )
+            .filter(b => b),
+          ),
       },
     };
   }

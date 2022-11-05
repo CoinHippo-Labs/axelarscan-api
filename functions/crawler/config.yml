@@ -11,101 +11,57 @@ mainnet:
         rpc:
           - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://rpc.ankr.com/eth"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     binance:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/bsc"
           - "https://bscrpc.com"
-      native_token:
-        name: "BNB"
-        symbol: "BNB"
-        decimals: 18
     polygon:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/polygon"
           - "https://matic-mainnet.chainstacklabs.com"
           - "https://polygon-rpc.com"
-      native_token:
-        name: "Polygon"
-        symbol: "MATIC"
-        decimals: 18
     avalanche:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/avalanche"
           - "https://api.avax.network/ext/bc/C/rpc"
-      native_token:
-        name: "Avalanche"
-        symbol: "AVAX"
-        decimals: 18
     fantom:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/fantom"
           - "https://rpc.ftm.tools"
-      native_token:
-        name: "Fantom"
-        symbol: "FTM"
-        decimals: 18
     moonbeam:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/moonbeam"
           - "https://rpc.api.moonbeam.network"
-      native_token:
-        name: "Moonbeam"
-        symbol: "GLMR"
-        decimals: 18
     aurora:
       endpoints:
         rpc:
           - "https://mainnet.aurora.dev"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     arbitrum:
       endpoints:
         rpc:
           - "https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://rpc.ankr.com/arbitrum"
           - "https://arb1.arbitrum.io/rpc"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     optimism:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/optimism"
           - "https://mainnet.optimism.io"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     celo:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/celo"
           - "https://forno.celo.org"
-      native_token:
-        name: "Celo"
-        symbol: "CELO"
-        decimals: 18
     kava:
       endpoints:
         rpc:
           - "https://evm.kava.io"
           - "https://evm2.kava.io"
-      native_token:
-        name: "Kava"
-        symbol: "KAVA"
-        decimals: 18
   gateway_contracts:
     ethereum:
       address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
@@ -141,98 +97,53 @@ testnet:
         rpc:
           - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://rpc.ankr.com/eth_goerli"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     binance:
       endpoints:
         rpc:
           - "https://data-seed-prebsc-1-s1.binance.org:8545"
           - "https://data-seed-prebsc-2-s1.binance.org:8545"
           - "https://data-seed-prebsc-1-s2.binance.org:8545"
-      native_token:
-        name: "BNB"
-        symbol: "BNB"
-        decimals: 18
     polygon:
       endpoints:
         rpc:
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://rpc.ankr.com/polygon_mumbai"
           - "https://matic-mumbai.chainstacklabs.com"
-      native_token:
-        name: "Polygon"
-        symbol: "MATIC"
-        decimals: 18
     avalanche:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/avalanche_fuji"
           - "https://api.avax-test.network/ext/bc/C/rpc"
-      native_token:
-        name: "Avalanche"
-        symbol: "AVAX"
-        decimals: 18
     fantom:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/fantom_testnet"
           - "https://rpc.testnet.fantom.network"
-      native_token:
-        name: "Fantom"
-        symbol: "FTM"
-        decimals: 18
     moonbeam:
       endpoints:
         rpc:
           - "https://rpc.api.moonbase.moonbeam.network"
           - "https://rpc.testnet.moonbeam.network"
-          - "https://moonbase-alpha.public.blastapi.io"
-      native_token:
-        name: "Dev"
-        symbol: "DEV"
-        decimals: 18
     aurora:
       endpoints:
         rpc:
           - "https://testnet.aurora.dev"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     arbitrum:
       endpoints:
         rpc:
           - "https://goerli-rollup.arbitrum.io/rpc"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     optimism:
       endpoints:
         rpc:
           - "https://goerli.optimism.io"
-      native_token:
-        name: "Ethereum"
-        symbol: "ETH"
-        decimals: 18
     celo:
       endpoints:
         rpc:
           - "https://alfajores-forno.celo-testnet.org"
-      native_token:
-        name: "Celo"
-        symbol: "CELO"
-        decimals: 18
     kava:
       endpoints:
         rpc:
           - "https://evm.testnet.kava.io"
-      native_token:
-        name: "Kava"
-        symbol: "KAVA"
-        decimals: 18
   gateway_contracts:
     ethereum-2:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
@@ -249,10 +160,10 @@ testnet:
     aurora:
       address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
     arbitrum:
-      address: ""
+      address: "0xe432150cce91c13a887f7d836923d5597add8e31"
     optimism:
       address: ""
     celo:
-      address: ""
+      address: "0xe432150cce91c13a887f7d836923d5597add8e31"
     kava:
       address: ""

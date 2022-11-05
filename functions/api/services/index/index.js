@@ -32,20 +32,36 @@ const crud = async (
   } = { ...params };
 
   // normalize
-  path = path ||
+  path =
+    path ||
     '';
-  use_raw_data = typeof use_raw_data === 'boolean' ?
-    use_raw_data :
-    typeof use_raw_data !== 'string' ||
-    equals_ignore_case(use_raw_data, 'true');
-  update_only = typeof update_only === 'boolean' ?
-    update_only :
-    typeof update_only !== 'string' ||
-    equals_ignore_case(update_only, 'true');
-  track_total_hits = typeof track_total_hits === 'boolean' ?
-    track_total_hits :
-    typeof track_total_hits !== 'string' ||
-    equals_ignore_case(track_total_hits, 'true');
+
+  use_raw_data =
+    typeof use_raw_data === 'boolean' ?
+      use_raw_data :
+      typeof use_raw_data !== 'string' ||
+      equals_ignore_case(
+        use_raw_data,
+        'true',
+      );
+
+  update_only =
+    typeof update_only === 'boolean' ?
+      update_only :
+      typeof update_only !== 'string' ||
+      equals_ignore_case(
+        update_only,
+        'true',
+      );
+
+  track_total_hits =
+    typeof track_total_hits === 'boolean' ?
+      track_total_hits :
+      typeof track_total_hits !== 'string' ||
+      equals_ignore_case(
+        track_total_hits,
+        'true',
+      );
 
   if (!isNaN(height)) {
     height = Number(height);
@@ -78,9 +94,13 @@ const crud = async (
             params[f] =
               params[f].startsWith('[') &&
               params[f].endsWith(']') ?
-                JSON.parse(params[f]) :
+                JSON.parse(
+                  params[f]
+                ) :
                 normalize_obj(
-                  JSON.parse(params[f])
+                  JSON.parse(
+                    params[f]
+                  )
                 );
           } catch (error) {}
         }
@@ -113,7 +133,8 @@ const crud = async (
     // request to indexer
     switch (method) {
       case 'get':
-        path = path ||
+        path =
+          path ||
           `/${collection}/_doc/${id}`;
 
         response = await indexer.get(
@@ -129,18 +150,20 @@ const crud = async (
           _source,
         } = { ...response?.data };
 
-        response = _source ?
-          {
-            data: {
-              ..._source,
-              id: _id,
-            },
-          } :
-          response;
+        response =
+          _source ?
+            {
+              data: {
+                ..._source,
+                id: _id,
+              },
+            } :
+            response;
         break;
       case 'set':
       case 'update':
-        path = path ||
+        path =
+          path ||
           `/${collection}/_doc/${id}`;
 
         if (path.includes('/_update_by_query')) {
@@ -153,17 +176,18 @@ const crud = async (
           } catch (error) {}
         }
         else {
-          response = await (path.includes('_update') ?
-            indexer.post(
-              path,
-              { doc: params },
-              { auth },
-            ) :
-            indexer.put(
-              path,
-              params,
-              { auth },
-            )
+          response = await (
+            path.includes('_update') ?
+              indexer.post(
+                path,
+                { doc: params },
+                { auth },
+              ) :
+              indexer.put(
+                path,
+                params,
+                { auth },
+              )
           ).catch(error => { return { data: { error } }; });
 
           const {
@@ -172,16 +196,20 @@ const crud = async (
 
           // retry with update / insert
           if (error) {
-            path = path.replace(
-              path.includes('_doc') ?
-                '_doc' :
-                '_update',
-              path.includes('_doc') ?
-                '_update' :
-                '_doc',
-            );
+            path = path
+              .replace(
+                path.includes('_doc') ?
+                  '_doc' :
+                  '_update',
+                path.includes('_doc') ?
+                  '_update' :
+                  '_doc',
+              );
 
-            if (update_only && path.includes('_doc')) {
+            if (
+              update_only &&
+              path.includes('_doc')
+            ) {
               const _response = await indexer.get(
                 path,
                 { auth },
@@ -193,31 +221,34 @@ const crud = async (
               } = { ..._response?.data };
 
               if (_source) {
-                path = path.replace(
-                  '_doc',
-                  '_update',
-                );
+                path = path
+                  .replace(
+                    '_doc',
+                    '_update',
+                  );
               }
             }
 
-            response = await (path.includes('_update') ?
-              indexer.post(
-                path,
-                { doc: params },
-                { auth },
-              ) :
-              indexer.put(
-                path,
-                params,
-                { auth },
-              )
+            response = await (
+              path.includes('_update') ?
+                indexer.post(
+                  path,
+                  { doc: params },
+                  { auth },
+                ) :
+                indexer.put(
+                  path,
+                  params,
+                  { auth },
+                )
             ).catch(error => { return { data: { error } }; });
           }
         }
         break;
       case 'query':
       case 'search':
-        path = path ||
+        path =
+          path ||
           `/${collection}/_search`;
 
         const search_data = use_raw_data ?
@@ -264,12 +295,14 @@ const crud = async (
           };
 
         if (path.endsWith('/_search')) {
-          search_data.from = !isNaN(from) ?
-            Number(from) :
-            0;
-          search_data.size = !isNaN(size) ?
-            Number(size) :
-            10;
+          search_data.from =
+            !isNaN(from) ?
+              Number(from) :
+              0;
+          search_data.size =
+            !isNaN(size) ?
+              Number(size) :
+              10;
           search_data.sort = sort;
           search_data.track_total_hits = track_total_hits;
         }
@@ -290,19 +323,20 @@ const crud = async (
           aggregations ?
             {
               data: {
-                data: hits?.hits?.map(d => {
-                  const {
-                    _id,
-                    _source,
-                    fields,
-                  } = { ...d };
+                data: (hits?.hits || [])
+                  .map(d => {
+                    const {
+                      _id,
+                      _source,
+                      fields,
+                    } = { ...d };
 
-                  return {
-                    ..._source,
-                    ...fields,
-                    id: _id,
-                  };
-                }),
+                    return {
+                      ..._source,
+                      ...fields,
+                      id: _id,
+                    };
+                  }),
                 total: hits?.total?.value,
                 aggs: aggregations,
               },
@@ -311,7 +345,8 @@ const crud = async (
         break;
       case 'delete':
       case 'remove':
-        path = path ||
+        path =
+          path ||
           `/${collection}/_doc/${id}`;
 
         response = await indexer.delete(

@@ -4,7 +4,8 @@ const {
   sleep,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
 const {
@@ -28,9 +29,10 @@ module.exports = async (
           'MsgTimeout',
           'ExecutePendingTransfersRequest',
         ].findIndex(s =>
-          t?.tx?.body?.messages?.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          (t?.tx?.body?.messages || [])
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       )
       .map(t => t.txhash);

@@ -27,22 +27,33 @@ const {
 } = require('../../../utils');
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 const cosmos_non_axelarnet_chains_data =
   cosmos_chains_data
-    .filter(c => c?.id !== axelarnet.id);
-const assets_data = require('../../../data')?.assets?.[environment] ||
+    .filter(c =>
+      c?.id !== axelarnet.id
+    );
+const assets_data =
+  require('../../../data')?.assets?.[environment] ||
   [];
 
 module.exports = async (
@@ -65,31 +76,36 @@ module.exports = async (
       messages,
     } = { ...tx?.body };
 
-    const message = _.head(
-      (logs || [])
-        .flatMap(l =>
-          (l?.events || [])
-            .filter(e =>
-              equals_ignore_case(e?.type, 'message')
-            )
-        )
-    );
+    const message =
+      _.head(
+        (logs || [])
+          .flatMap(l =>
+            (l?.events || [])
+              .filter(e =>
+                equals_ignore_case(
+                  e?.type,
+                  'message',
+                )
+              )
+          )
+      );
 
-    const event = _.head(
-      (logs || [])
-        .flatMap(l =>
-          (l?.events || [])
-            .filter(e =>
-              [
-                'depositConfirmation',
-                'eventConfirmation',
-                'ConfirmDeposit',
-              ].findIndex(s =>
-                e?.type?.includes(s)
-              ) > -1
-            )
-        )
-    );
+    const event =
+      _.head(
+        (logs || [])
+          .flatMap(l =>
+            (l?.events || [])
+              .filter(e =>
+                [
+                  'depositConfirmation',
+                  'eventConfirmation',
+                  'ConfirmDeposit',
+                ].findIndex(s =>
+                  e?.type?.includes(s)
+                ) > -1
+              )
+          )
+      );
 
     const {
       attributes,
@@ -104,21 +120,22 @@ module.exports = async (
       (
         _.last(
           (
-            messages.find(m =>
-              transfer_actions.includes(
-                (
-                  _.last(
-                    (m?.['@type'] || '')
-                      .split('.')
-                  ) ||
-                  ''
+            messages
+              .find(m =>
+                transfer_actions.includes(
+                  (
+                    _.last(
+                      (m?.['@type'] || '')
+                        .split('.')
+                    ) ||
+                    ''
+                  )
+                  .replace(
+                    'Request',
+                    '',
+                  )
                 )
-                .replace(
-                  'Request',
-                  '',
-                )
-              )
-            )?.['@type'] ||
+              )?.['@type'] ||
             ''
           )
           .split('.')
@@ -144,46 +161,51 @@ module.exports = async (
           )?.value
       )?.id;
 
-    let created_at = moment(timestamp)
-      .utc()
-      .valueOf();
+    let created_at =
+      moment(timestamp)
+        .utc()
+        .valueOf();
 
-    const token_address = to_hex(
-      (attributes || [])
-        .find(a =>
-          [
-            'token_address',
-            'tokenAddress',
-          ].includes(a?.key)
-        )?.value
-    );
+    const token_address =
+      to_hex(
+        (attributes || [])
+          .find(a =>
+            [
+              'token_address',
+              'tokenAddress',
+            ].includes(a?.key)
+          )?.value
+      );
 
-    const deposit_address = to_hex(
-      messages.find(m =>
-        m?.deposit_address
-      )?.deposit_address ||
-      (attributes || [])
-        .find(a =>
-          [
-            'deposit_address',
-            'depositAddress',
-          ].includes(a?.key)
-        )?.value
-    );
+    const deposit_address =
+      to_hex(
+        messages
+          .find(m =>
+            m?.deposit_address
+          )?.deposit_address ||
+        (attributes || [])
+          .find(a =>
+            [
+              'deposit_address',
+              'depositAddress',
+            ].includes(a?.key)
+          )?.value
+      );
 
-    let transaction_id = to_hex(
-      (attributes || [])
-        .find(a =>
-          [
-            'tx_id',
-            'txID',
-          ].includes(a?.key)
-        )?.value ||
-      _.head(
-        (poll_id || '')
-          .split('_')
-      )
-    );
+    let transaction_id =
+      to_hex(
+        (attributes || [])
+          .find(a =>
+            [
+              'tx_id',
+              'txID',
+            ].includes(a?.key)
+          )?.value ||
+        _.head(
+          (poll_id || '')
+            .split('_')
+        )
+      );
 
     if (transaction_id === poll_id) {
       transaction_id = null;
@@ -220,9 +242,10 @@ module.exports = async (
         'success',
       height,
       created_at: get_granularity(created_at),
-      user: messages.find(m =>
-        m?.sender
-      )?.sender,
+      user: messages
+        .find(m =>
+          m?.sender
+        )?.sender,
       module:
         (attributes || [])
           .find(a =>
@@ -232,26 +255,29 @@ module.exports = async (
           axelarnet.id :
           'evm'
         ),
-      sender_chain: normalize_chain(
-        messages.find(m =>
-          m?.chain
-        )?.chain ||
-        (attributes || [])
-          .find(a =>
-            [
-              'sourceChain',
-              'chain',
-            ].includes(a?.key)
-          )?.value
-      ),
-      recipient_chain: normalize_chain(
-        (attributes || [])
-          .find(a =>
-            [
-              'destinationChain',
-            ].includes(a?.key)
-          )?.value
-      ),
+      sender_chain:
+        normalize_chain(
+          messages
+            .find(m =>
+              m?.chain
+            )?.chain ||
+          (attributes || [])
+            .find(a =>
+              [
+                'sourceChain',
+                'chain',
+              ].includes(a?.key)
+            )?.value
+        ),
+      recipient_chain:
+        normalize_chain(
+          (attributes || [])
+            .find(a =>
+              [
+                'destinationChain',
+              ].includes(a?.key)
+            )?.value
+        ),
       deposit_address,
       token_address,
       amount:
@@ -261,9 +287,10 @@ module.exports = async (
           )?.value,
       denom:
         tx_response.denom ||
-        messages.find(m =>
-          m?.denom
-        )?.denom ||
+        messages
+          .find(m =>
+            m?.denom
+          )?.denom ||
         asset,
       transfer_id:
         Number(
@@ -301,10 +328,11 @@ module.exports = async (
           transfer_id
         )
       ) {
-        const _response = await get(
-          'evm_polls',
-          poll_id,
-        );
+        const _response =
+          await get(
+            'evm_polls',
+            poll_id,
+          );
 
         if (_response) {
           transaction_id =
@@ -324,7 +352,8 @@ module.exports = async (
         case 'ConfirmDeposit':
           try {
             if (!recipient_chain) {
-              const _response = !recipient_chain &&
+              const _response =
+                !recipient_chain &&
                 await read(
                   'deposit_addresses',
                   {
@@ -350,28 +379,30 @@ module.exports = async (
               recipient_chain &&
               transfer_id
             ) {
-              const command_id = transfer_id
-                .toString(16)
-                .padStart(
-                  64,
-                  '0',
-                );
+              const command_id =
+                transfer_id
+                  .toString(16)
+                  .padStart(
+                    64,
+                    '0',
+                  );
 
-              const _response = await read(
-                'batches',
-                {
-                  bool: {
-                    must: [
-                      { match: { chain: recipient_chain } },
-                      { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
-                      { match: { command_ids: command_id } },
-                    ],
+              const _response =
+                await read(
+                  'batches',
+                  {
+                    bool: {
+                      must: [
+                        { match: { chain: recipient_chain } },
+                        { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                        { match: { command_ids: command_id } },
+                      ],
+                    },
                   },
-                },
-                {
-                  size: 1,
-                },
-              );
+                  {
+                    size: 1,
+                  },
+                );
 
               const batch = _.head(_response?.data);
 
@@ -395,10 +426,15 @@ module.exports = async (
                   block_timestamp,
                 } = { ...command };
 
+                executed =
+                  executed ||
+                  !!transactionHash;
+
                 if (!executed) {
-                  const chain_data = evm_chains_data.find(c =>
-                    equals_ignore_case(c?.id, recipient_chain)
-                  );
+                  const chain_data = evm_chains_data
+                    .find(c =>
+                      equals_ignore_case(c?.id, recipient_chain)
+                    );
 
                   const provider = getProvider(chain_data);
 
@@ -417,28 +453,31 @@ module.exports = async (
 
                   try {
                     if (gateway_contract) {
-                      executed = await gateway_contract.isCommandExecuted(
-                        `0x${command_id}`,
-                      );
+                      executed =
+                        await gateway_contract
+                          .isCommandExecuted(
+                            `0x${command_id}`,
+                          );
                     }
                   } catch (error) {}
                 }
 
                 if (!transactionHash) {
-                  const _response = await read(
-                    'command_events',
-                    {
-                      bool: {
-                        must: [
-                          { match: { chain: recipient_chain } },
-                          { match: { command_id } },
-                        ],
+                  const _response =
+                    await read(
+                      'command_events',
+                      {
+                        bool: {
+                          must: [
+                            { match: { chain: recipient_chain } },
+                            { match: { command_id } },
+                          ],
+                        },
                       },
-                    },
-                    {
-                      size: 1,
-                    },
-                  );
+                      {
+                        size: 1,
+                      },
+                    );
 
                   const command_event = _.head(__response?.data);
 
@@ -447,6 +486,10 @@ module.exports = async (
                     transactionIndex = command_event.transactionIndex;
                     logIndex = command_event.logIndex;
                     block_timestamp = command_event.block_timestamp;
+
+                    if (transactionHash) {
+                      executed = true;
+                    }
                   }
                 }
 
@@ -465,30 +508,31 @@ module.exports = async (
               }
             }
 
-            const _response = await read(
-              'transfers',
-              {
-                bool: {
-                  must: [
-                    { match: { 'source.status_code': 0 } },
-                    { match: { 'source.recipient_address': deposit_address } },
-                    { range: { 'source.created_at.ms': { lte: created_at } } },
-                  ],
-                  should: [
-                    { range: { 'confirm_deposit.created_at.ms': { gt: created_at } } },
-                    { bool: {
-                      must_not: [
-                        { exists: { field: 'confirm_deposit' } },
-                      ],
-                    } },
-                  ],
-                  minimum_should_match: 1,
+            const _response =
+              await read(
+                'transfers',
+                {
+                  bool: {
+                    must: [
+                      { match: { 'source.status_code': 0 } },
+                      { match: { 'source.recipient_address': deposit_address } },
+                      { range: { 'source.created_at.ms': { lte: created_at } } },
+                    ],
+                    should: [
+                      { range: { 'confirm_deposit.created_at.ms': { gt: created_at } } },
+                      { bool: {
+                        must_not: [
+                          { exists: { field: 'confirm_deposit' } },
+                        ],
+                      } },
+                    ],
+                    minimum_should_match: 1,
+                  },
                 },
-              },
-              {
-                size: 100,
-              },
-            );
+                {
+                  size: 100,
+                },
+              );
 
             let {
               data
@@ -501,25 +545,26 @@ module.exports = async (
               data.length < 1 &&
               sign_batch
             ) {
-              const _response = await read(
-                'transfers',
-                {
-                  bool: {
-                    must: [
-                      { match: { 'source.recipient_address': deposit_address } },
-                    ],
-                    should: [
-                      { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                      { match: { 'vote.transfer_id': transfer_id } },
-                      { match: { transfer_id } },
-                    ],
-                    minimum_should_match: 1,
+              const _response =
+                await read(
+                  'transfers',
+                  {
+                    bool: {
+                      must: [
+                        { match: { 'source.recipient_address': deposit_address } },
+                      ],
+                      should: [
+                        { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                        { match: { 'vote.transfer_id': transfer_id } },
+                        { match: { transfer_id } },
+                      ],
+                      minimum_should_match: 1,
+                    },
                   },
-                },
-                {
-                  size: 100,
-                },
-              );
+                  {
+                    size: 100,
+                  },
+                );
 
               data = (_response?.data || [])
                 .filter(t => t?.source?.id);
@@ -539,27 +584,31 @@ module.exports = async (
                 sender_chain,
               } = { ...source };
 
-              sender_chain = normalize_chain(
-                cosmos_non_axelarnet_chains_data.find(c =>
-                  sender_address?.startsWith(c?.prefix_address)
-                )?.id ||
-                sender_chain ||
-                record.sender_chain
-              );
+              sender_chain =
+                normalize_chain(
+                  cosmos_non_axelarnet_chains_data
+                    .find(c =>
+                      sender_address?.startsWith(c?.prefix_address)
+                    )?.id ||
+                  sender_chain ||
+                  record.sender_chain
+                );
 
               source.sender_chain = sender_chain;
               source.recipient_chain = recipient_chain;
 
-              link = await update_link(
-                link,
-                source,
-              );
+              link =
+                await update_link(
+                  link,
+                  source,
+                );
 
-              source = await update_source(
-                source,
-                link,
-                true,
-              );
+              source =
+                await update_source(
+                  source,
+                  link,
+                  true,
+                );
 
               if (recipient_address) {
                 const _id = `${id}_${recipient_address}`.toLowerCase();
@@ -601,9 +650,13 @@ module.exports = async (
             } = { ...record };
 
             if (transaction_id) {
-              const chain_data = evm_chains_data.find(c =>
-                equals_ignore_case(c?.id, sender_chain)
-              );
+              const chain_data = evm_chains_data
+                .find(c =>
+                  equals_ignore_case(
+                    c?.id,
+                    sender_chain,
+                  )
+                );
 
               const provider = getProvider(chain_data);
 
@@ -611,9 +664,11 @@ module.exports = async (
                 chain_id,
               } = { ...chain_data };
 
-              const transaction = await provider.getTransaction(
-                transaction_id,
-              );
+              const transaction =
+                await provider
+                  .getTransaction(
+                    transaction_id,
+                  );
 
               const {
                 blockNumber,
@@ -622,58 +677,77 @@ module.exports = async (
                 input,
               } = { ...transaction };
 
-              const asset_data = assets_data.find(a =>
-                a?.contracts?.findIndex(c =>
-                  c?.chain_id === chain_id &&
-                  equals_ignore_case(c?.contract_address, to)
-                ) > -1
-              );
+              const asset_data = assets_data
+                .find(a =>
+                  (a?.contracts || [])
+                    .findIndex(c =>
+                      c?.chain_id === chain_id &&
+                      equals_ignore_case(
+                        c?.contract_address,
+                        to,
+                      )
+                    ) > -1
+                );
 
               let _amount;
 
               if (!asset_data) {
-                const receipt = await provider.getTransactionReceipt(
-                  transaction_id,
-                );
+                const receipt =
+                  await provider
+                    .getTransactionReceipt(
+                      transaction_id,
+                    );
 
                 const {
                   logs,
                 } = { ...receipt };
 
-                _amount = _.head(
-                  (logs || [])
-                    .map(l => l?.data)
-                    .filter(d => d?.length >= 64)
-                    .map(d =>
-                      d.substring(
-                        d.length - 64,
+                _amount =
+                  _.head(
+                    (logs || [])
+                      .map(l => l?.data)
+                      .filter(d => d?.length >= 64)
+                      .map(d =>
+                        d
+                          .substring(
+                            d.length - 64,
+                          )
+                          .replace(
+                            '0x',
+                            '',
+                          )
+                          .replace(
+                            /^0+/,
+                            '',
+                          )
                       )
-                      .replace(
-                        '0x',
-                        '',
-                      )
-                      .replace(
-                        /^0+/,
-                        '',
-                      )
-                    )
-                    .filter(d => {
-                      try {
-                        d = BigNumber.from(`0x${d}`);
-                        return true;
-                      } catch (error) {
-                        return false;
-                      }
-                    })
-                );
+                      .filter(d => {
+                        try {
+                          d =
+                            BigNumber.from(
+                              `0x${d}`
+                            );
+
+                          return true;
+                        } catch (error) {
+                          return false;
+                        }
+                      })
+                  );
               }
 
               if (blockNumber) {
                 amount =
                   BigNumber.from(
                     `0x${
-                      transaction.data?.substring(10 + 64) ||
-                      input?.substring(10 + 64) ||
+                      (transaction.data || '')
+                        .substring(
+                          10 + 64,
+                        ) ||
+                      (input || '')
+                        .substring(
+                          10 + 64
+                        ) ||
                       _amount ||
                       '0'
                     }`
@@ -710,27 +784,30 @@ module.exports = async (
                   denom,
                 };
 
-                const _response = await read(
-                  'deposit_addresses',
-                  {
-                    match: { deposit_address },
-                  },
-                  {
-                    size: 1,
-                  },
-                );
+                const _response =
+                  await read(
+                    'deposit_addresses',
+                    {
+                      match: { deposit_address },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
 
                 let link = _.head(_response?.data);
 
-                link = await update_link(
-                  link,
-                  source,
-                );
+                link =
+                  await update_link(
+                    link,
+                    source,
+                  );
 
-                source = await update_source(
-                  source,
-                  link,
-                );
+                source =
+                  await update_source(
+                    source,
+                    link,
+                  );
 
                 const {
                   id,

@@ -15,7 +15,8 @@ const {
   to_json,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
 const {
@@ -66,7 +67,10 @@ module.exports = async (
         '/cosmos/tx/v1beta1/txs',
         '/cosmos/base/tendermint/v1beta1/blocks',
         '/axelar/evm/v1beta1/batched_commands',
-      ].findIndex(p => path.startsWith(p)) > -1
+      ]
+      .findIndex(p =>
+        path.startsWith(p)
+      ) > -1
     ) {
       cache = false;
     }
@@ -76,7 +80,9 @@ module.exports = async (
       cache_id &&
       !cache &&
       Object.keys({ ...params })
-        .findIndex(k => k?.includes('pagination')) < 0
+        .findIndex(k =>
+          k?.includes('pagination')
+        ) < 0
     ) {
       cache = true;
       cache_timeout = 5;
@@ -92,10 +98,11 @@ module.exports = async (
 
     // get from cache
     if (cache) {
-      response_cache = await get(
-        'cosmos',
-        cache_id,
-      );
+      response_cache =
+        await get(
+          'cosmos',
+          cache_id,
+        );
 
       const {
         updated_at,
@@ -107,7 +114,9 @@ module.exports = async (
         response_cache &&
         moment()
           .diff(
-            moment(updated_at * 1000),
+            moment(
+              updated_at * 1000
+            ),
             'seconds',
             true,
           ) <= cache_timeout
@@ -137,14 +146,22 @@ module.exports = async (
             events,
           } = { ...params };
 
-          const hash = _.last(
-            path.split('/')
-              .filter(s => s)
-          );
+          const hash =
+            _.last(
+              path
+                .split('/')
+                .filter(s => s)
+            );
 
-          const height = typeof events === 'string' &&
+          const height =
+            typeof events === 'string' &&
             events.startsWith('tx.height=') &&
-            Number(_.last(events.split('=')));
+            Number(
+              _.last(
+                events
+                  .split('=')
+              )
+            );
 
           if (
             hash &&

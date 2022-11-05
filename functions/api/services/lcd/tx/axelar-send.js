@@ -12,18 +12,26 @@ const {
   get_granularity,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 module.exports = async (
   lcd_response = {},
@@ -44,15 +52,17 @@ module.exports = async (
       messages,
     } = { ...tx?.body };
 
-    const created_at = moment(timestamp)
-      .utc()
-      .valueOf();
+    const created_at =
+      moment(timestamp)
+        .utc()
+        .valueOf();
 
-    const amount_data = _.head(
-      messages.find(m =>
-        m?.amount
-      )?.amount
-    );
+    const amount_data =
+      _.head(
+        messages.find(m =>
+          m?.amount
+        )?.amount
+      );
 
     let record = {
       id: txhash,
@@ -64,12 +74,16 @@ module.exports = async (
       height,
       created_at: get_granularity(created_at),
       sender_chain: axelarnet.id,
-      sender_address: messages.find(m =>
-        m?.from_address
-      )?.from_address,
-      recipient_address: messages.find(m =>
-        m?.to_address
-      )?.to_address,
+      sender_address:
+        messages
+          .find(m =>
+            m?.from_address
+          )?.from_address,
+      recipient_address:
+        messages
+          .find(m =>
+            m?.to_address
+          )?.to_address,
       amount: amount_data?.amount,
       denom: amount_data?.denom,
     };
@@ -86,27 +100,30 @@ module.exports = async (
       txhash &&
       amount
     ) {
-      const _response = await read(
-        'deposit_addresses',
-        {
-          match: { deposit_address: recipient_address },
-        },
-        {
-          size: 1,
-        },
-      );
+      const _response =
+        await read(
+          'deposit_addresses',
+          {
+            match: { deposit_address: recipient_address },
+          },
+          {
+            size: 1,
+          },
+        );
 
       let link = _.head(_response?.data);
 
-      link = await update_link(
-        link,
-        record,
-      );
+      link =
+        await update_link(
+          link,
+          record,
+        );
 
-      record = await update_source(
-        record,
-        link,
-      );
+      record =
+        await update_source(
+          record,
+          link,
+        );
     }
   } catch (error) {}
 };

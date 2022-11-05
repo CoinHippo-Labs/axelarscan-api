@@ -17,18 +17,19 @@ module.exports = () => {
   } = { ...config?.[environment] };
 
   // setup all chains' configuration including provider and contracts
-  const chains_config = Object.entries({ ...chains })
-    .map(([k, v]) => {
-      return {
-        ...v,
-        id: k,
-        provider: getProvider(k),
-        gateway: {
-          ...gateway_contracts?.[k],
-          abi: IAxelarGateway.abi,
-        },
-      };
-    });
+  const chains_config =
+    Object.entries({ ...chains })
+      .map(([k, v]) => {
+        return {
+          ...v,
+          id: k,
+          provider: getProvider(k),
+          gateway: {
+            ...gateway_contracts?.[k],
+            abi: IAxelarGateway.abi,
+          },
+        };
+      });
 
   // subscribe contracts on all chains
   subscribeGateway(chains_config);

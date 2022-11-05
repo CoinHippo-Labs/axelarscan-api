@@ -22,22 +22,33 @@ const {
   getProvider,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 const cosmos_non_axelarnet_chains_data =
   cosmos_chains_data
-    .filter(c => c?.id !== axelarnet.id);
-const assets_data = require('../../data')?.assets?.[environment] ||
+    .filter(c =>
+      c?.id !== axelarnet.id
+    );
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
   [];
 
 const {
@@ -61,27 +72,32 @@ module.exports = async (
   } = { ...params };
 
   if (txHash) {
-    const _response = await read(
-      'transfers',
-      {
-        match: { 'source.id': txHash },
-      },
-      {
-        size: 1,
-      },
-    );
+    const _response =
+      await read(
+        'transfers',
+        {
+          match: { 'source.id': txHash },
+        },
+        {
+          size: 1,
+        },
+      );
 
     let data = _.head(_response?.data);
 
     if (!data) {
-      let created_at = moment()
-        .valueOf();
+      let created_at =
+        moment()
+          .valueOf();
 
       if (txHash.startsWith('0x')) {
         for (const chain_data of evm_chains_data) {
           if (
             !sourceChain ||
-            equals_ignore_case(chain_data?.id, sourceChain)
+            equals_ignore_case(
+              chain_data?.id,
+              sourceChain,
+            )
           ) {
             const provider = getProvider(chain_data);
 
@@ -90,9 +106,11 @@ module.exports = async (
             } = { ...chain_data };
 
             try {
-              const transaction = await provider.getTransaction(
-                txHash,
-              );
+              const transaction =
+                await provider
+                  .getTransaction(
+                    txHash,
+                  );
 
               const {
                 blockNumber,
@@ -102,10 +120,11 @@ module.exports = async (
               } = { ...transaction };
 
               if (blockNumber) {
-                const block_timestamp = await getBlockTime(
-                  provider,
-                  blockNumber,
-                );
+                const block_timestamp =
+                  await getBlockTime(
+                    provider,
+                    blockNumber,
+                  );
 
                 if (block_timestamp) {
                   created_at = block_timestamp * 1000;
@@ -113,9 +132,11 @@ module.exports = async (
 
                 let _response;
 
-                const receipt = await provider.getTransactionReceipt(
-                  txHash,
-                );
+                const receipt =
+                  await provider
+                    .getTransactionReceipt(
+                      txHash,
+                    );
 
                 const {
                   logs,
@@ -132,7 +153,9 @@ module.exports = async (
                       []
                     )
                   )
-                  .filter(t => t?.startsWith('0x000000000000000000000000'))
+                  .filter(t =>
+                    t?.startsWith('0x000000000000000000000000')
+                  )
                   .map(t =>
                     t.replace(
                       '0x000000000000000000000000',
@@ -143,15 +166,16 @@ module.exports = async (
                 let found = false;
 
                 for (const topic of topics) {
-                  _response = await read(
-                    'deposit_addresses',
-                    {
-                      match: { deposit_address: topic },
-                    },
-                    {
-                      size: 1,
-                    },
-                  );
+                  _response =
+                    await read(
+                      'deposit_addresses',
+                      {
+                        match: { deposit_address: topic },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
 
                   if (_.head(_response?.data)) {
                     depositAddress = topic;
@@ -164,51 +188,63 @@ module.exports = async (
                   !found &&
                   depositAddress
                 ) {
-                  _response = await read(
-                    'deposit_addresses',
-                    {
-                      match: { deposit_address: depositAddress },
-                    },
-                    {
-                      size: 1,
-                    },
-                  );
+                  _response =
+                    await read(
+                      'deposit_addresses',
+                      {
+                        match: { deposit_address: depositAddress },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
                 }
 
                 if (depositAddress) {
-                  const asset_data = assets_data.find(a =>
-                    a?.contracts?.findIndex(c =>
-                      c?.chain_id === chain_id &&
-                      equals_ignore_case(c?.contract_address, to)
-                    ) > -1
-                  );
+                  const asset_data = assets_data
+                    .find(a =>
+                      (a?.contracts || [])
+                        .findIndex(c =>
+                          c?.chain_id === chain_id &&
+                          equals_ignore_case(
+                            c?.contract_address,
+                            to,
+                          )
+                        ) > -1
+                    );
 
-                  const _amount = _.head(
-                    (logs || [])
-                      .map(l => l?.data)
-                      .filter(d => d?.length >= 64)
-                      .map(d =>
-                        d.substring(
-                          d.length - 64,
+                  const _amount =
+                    _.head(
+                      (logs || [])
+                        .map(l => l?.data)
+                        .filter(d => d?.length >= 64)
+                        .map(d =>
+                          d
+                            .substring(
+                              d.length - 64,
+                            )
+                            .replace(
+                              '0x',
+                              '',
+                            )
+                            .replace(
+                              /^0+/,
+                              '',
+                            )
                         )
-                        .replace(
-                          '0x',
-                          '',
-                        )
-                        .replace(
-                          /^0+/,
-                          '',
-                        )
-                      )
-                      .filter(d => {
-                        try {
-                          d = BigNumber.from(`0x${d}`);
-                          return true;
-                        } catch (error) {
-                          return false;
-                        }
-                      })
-                  );
+                        .filter(d => {
+                          try {
+                            d =
+                              BigNumber.from(
+                                `0x${d}`
+                              );
+
+                            return true;
+                          } catch (error) {
+                            return false;
+                          }
+                        })
+                    );
 
                   let source = {
                     id: txHash,
@@ -223,8 +259,14 @@ module.exports = async (
                     amount:
                       BigNumber.from(
                         `0x${
-                          transaction.data?.substring(10 + 64) ||
-                          input?.substring(10 + 64) ||
+                          (transaction.data || '')
+                            .substring(
+                              10 + 64,
+                            ) ||
+                          (input.data || '')
+                            .substring(
+                              10 + 64,
+                            ) ||
                           _amount ||
                           '0'
                         }`
@@ -235,15 +277,17 @@ module.exports = async (
 
                   let link = _.head(_response?.data);
 
-                  link = await update_link(
-                    link,
-                    source,
-                  );
+                  link =
+                    await update_link(
+                      link,
+                      source,
+                    );
 
-                  source = await update_source(
-                    source,
-                    link,
-                  );
+                  source =
+                    await update_source(
+                      source,
+                      link,
+                    );
 
                   data = {
                     source,
@@ -261,7 +305,10 @@ module.exports = async (
         for (const chain_data of cosmos_chains_data) {
           if (
             !sourceChain ||
-            equals_ignore_case(chain_data?.id, sourceChain)
+            equals_ignore_case(
+              chain_data?.id,
+              sourceChain,
+            )
           ) {
             const {
               cosmostation,
@@ -294,9 +341,10 @@ module.exports = async (
                     `/cosmos/tx/v1beta1/txs/${txHash}`,
                 ).catch(error => { return { data: { error } }; });
 
-                const tx_response = is_cosmostation ?
-                  transaction?.data?.data :
-                  transaction?.data?.tx_response;
+                const tx_response =
+                  is_cosmostation ?
+                    transaction?.data?.data :
+                    transaction?.data?.tx_response;
 
                 const {
                   tx,
@@ -310,11 +358,15 @@ module.exports = async (
                 } = { ...tx?.body };
 
                 if (messages) {
-                  created_at = moment(timestamp)
-                    .utc()
-                    .valueOf();
+                  created_at =
+                    moment(timestamp)
+                      .utc()
+                      .valueOf();
 
-                  const amount_data = messages.find(m => m?.token)?.token;
+                  const amount_data = messages
+                    .find(m =>
+                      m?.token
+                    )?.token;
 
                   let source = {
                     id: txhash,
@@ -326,8 +378,16 @@ module.exports = async (
                     height: Number(height),
                     created_at: get_granularity(created_at),
                     sender_chain: chain_data?.id,
-                    sender_address: messages.find(m => m?.sender)?.sender,
-                    recipient_address: messages.find(m => m?.receiver)?.receiver,
+                    sender_address:
+                      messages
+                        .find(m =>
+                          m?.sender
+                        )?.sender,
+                    recipient_address:
+                      messages
+                        .find(m =>
+                          m?.receiver
+                        )?.receiver,
                     amount: amount_data?.amount,
                     denom: amount_data?.denom,
                   };
@@ -341,33 +401,37 @@ module.exports = async (
                     txhash &&
                     source.amount
                   ) {
-                    const _response = await read(
-                      'deposit_addresses',
-                      {
-                        match: { deposit_address: recipient_address },
-                      },
-                      {
-                        size: 1,
-                      },
-                    );
+                    const _response =
+                      await read(
+                        'deposit_addresses',
+                        {
+                          match: { deposit_address: recipient_address },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
 
                     let link = _.head(_response?.data);
 
-                    source = await update_source(
-                      source,
-                      link,
-                    );
+                    source =
+                      await update_source(
+                        source,
+                        link,
+                      );
 
-                    link = await update_link(
-                      link,
-                      source,
-                      _lcd,
-                    );
+                    link =
+                      await update_link(
+                        link,
+                        source,
+                        _lcd,
+                      );
 
-                    source = await update_source(
-                      source,
-                      link,
-                    );
+                    source =
+                      await update_source(
+                        source,
+                        link,
+                      );
 
                     data = {
                       source,
@@ -396,19 +460,20 @@ module.exports = async (
         recipient_address,
       } = { ...source };
 
-      let _response = await read(
-        'deposit_addresses',
-        {
-          match: {
-            deposit_address:
-              recipient_address ||
-              depositAddress,
+      let _response =
+        await read(
+          'deposit_addresses',
+          {
+            match: {
+              deposit_address:
+                recipient_address ||
+                depositAddress,
+            },
           },
-        },
-        {
-          size: 1,
-        },
-      );
+          {
+            size: 1,
+          },
+        );
 
       let link = _.head(_response?.data);
 
@@ -439,35 +504,38 @@ module.exports = async (
 
         await sleep(0.5 * 1000);
 
-        _response = await read(
-          'deposit_addresses',
-          {
-            match: {
-              deposit_address:
-                recipient_address ||
-                depositAddress,
+        _response =
+          await read(
+            'deposit_addresses',
+            {
+              match: {
+                deposit_address:
+                  recipient_address ||
+                  depositAddress,
+              },
             },
-          },
-          {
-            size: 1,
-          },
-        );
+            {
+              size: 1,
+            },
+          );
 
         if (_.head(_response?.data)) {
           link = _.head(_response.data);
         }
       }
 
-      link = await update_link(
-        link,
-        source,
-      );
+      link =
+        await update_link(
+          link,
+          source,
+        );
 
-      source = await update_source(
-        source,
-        link,
-        true,
-      );
+      source =
+        await update_source(
+          source,
+          link,
+          true,
+        );
 
       data = {
         ...data,
@@ -483,28 +551,30 @@ module.exports = async (
     depositAddress ||
     recipientAddress
   ) {
-    const _response = await read(
-      'deposit_addresses',
-      {
-        bool: {
-          must: [
-            { match: { deposit_address: depositAddress } },
-            { match: { recipient_address: recipientAddress } },
-            { match: { asset } },
-          ]
-          .filter(m =>
-            Object.values(m.match)
-              .filter(v => v).length > 0
-          ),
+    const _response =
+      await read(
+        'deposit_addresses',
+        {
+          bool: {
+            must: [
+              { match: { deposit_address: depositAddress } },
+              { match: { recipient_address: recipientAddress } },
+              { match: { asset } },
+            ]
+            .filter(m =>
+              Object.values(m.match)
+                .filter(v => v).length > 0
+            ),
+          },
         },
-      },
-      {
-        size: 1000,
-        sort: [{ height: 'desc' }],
-      },
-    );
+        {
+          size: 1000,
+          sort: [{ height: 'desc' }],
+        },
+      );
 
-    const links = _response?.data ||
+    const links =
+      _response?.data ||
       [];
 
     if (links.length > 0) {
@@ -517,26 +587,31 @@ module.exports = async (
 
         if (
           deposit_address &&
-          should.findIndex(s =>
-            equals_ignore_case(s.match['source.recipient_address'], deposit_address)
-          ) < 0
+          should
+            .findIndex(s =>
+              equals_ignore_case(
+                s.match['source.recipient_address'],
+                deposit_address,
+              )
+            ) < 0
         ) {
           should.push({ match: { 'source.recipient_address': deposit_address } });
         }
       }
 
-      const _response = await read(
-        'transfers',
-        {
-          bool: {
-            should,
-            minimum_should_match: 1,
+      const _response =
+        await read(
+          'transfers',
+          {
+            bool: {
+              should,
+              minimum_should_match: 1,
+            },
           },
-        },
-        {
-          size: 1000,
-        },
-      );
+          {
+            size: 1000,
+          },
+        );
 
       let {
         data,
@@ -552,9 +627,14 @@ module.exports = async (
 
             return {
               ...d,
-              link: links.find(l =>
-                equals_ignore_case(l?.deposit_address, recipient_address)
-              ),
+              link:
+                links
+                .find(l =>
+                  equals_ignore_case(
+                    l?.deposit_address,
+                    recipient_address,
+                  )
+                ),
             };
           });
       }
@@ -610,24 +690,25 @@ module.exports = async (
               ...link,
               price,
             },
-          status: ibc_send ?
-            ibc_send.failed_txhash &&
-            !ibc_send.ack_txhash ?
-              'ibc_failed' :
-              ibc_send.recv_txhash ?
-                'executed' :
-                'ibc_sent' :
-            sign_batch?.executed ?
-              'executed' :
-               sign_batch ?
-                'batch_signed' :
-                axelar_transfer ?
+          status:
+            ibc_send ?
+              ibc_send.failed_txhash &&
+              !ibc_send.ack_txhash ?
+                'ibc_failed' :
+                ibc_send.recv_txhash ?
                   'executed' :
-                  vote ?
-                    'voted' :
-                    confirm_deposit ?
-                      'deposit_confirmed' :
-                      'asset_sent',
+                  'ibc_sent' :
+              sign_batch?.executed ?
+                'executed' :
+                 sign_batch ?
+                  'batch_signed' :
+                  axelar_transfer ?
+                    'executed' :
+                    vote ?
+                      'voted' :
+                      confirm_deposit ?
+                        'deposit_confirmed' :
+                        'asset_sent',
         };
       });
 
@@ -662,14 +743,19 @@ module.exports = async (
           height,
         } = { ...vote };
 
-        height = ibc_send?.height ||
+        height =
+          ibc_send?.height ||
           height ||
           confirm_deposit?.height;
 
         if (
-          cosmos_chains_data.findIndex(c =>
-            equals_ignore_case(c?.id, recipient_chain)
-          ) > -1 &&
+          cosmos_chains_data
+            .findIndex(c =>
+              equals_ignore_case(
+                c?.id,
+                recipient_chain,
+              )
+            ) > -1 &&
           height &&
           [
             'voted',
@@ -706,15 +792,20 @@ module.exports = async (
           await (1 * 1000);
         }
         else if (
-          evm_chains_data.findIndex(c =>
-            equals_ignore_case(c?.id, recipient_chain)
-          ) > -1 &&
+          evm_chains_data
+            .findIndex(c =>
+              equals_ignore_case(
+                c?.id,
+                recipient_chain,
+              )
+            ) > -1 &&
           [
             'batch_signed',
             'voted',
           ].includes(status)
         ) {
-          const transfer_id = vote?.transfer_id ||
+          const transfer_id =
+            vote?.transfer_id ||
             confirm_deposit?.transfer_id ||
             d.transfer_id;
 
@@ -726,21 +817,22 @@ module.exports = async (
                 '0',
               );
 
-            const _response = await read(
-              'batches',
-              {
-                bool: {
-                  must: [
-                    { match: { chain: recipient_chain } },
-                    { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
-                    { match: { command_ids: command_id } },
-                  ],
+            const _response =
+              await read(
+                'batches',
+                {
+                  bool: {
+                    must: [
+                      { match: { chain: recipient_chain } },
+                      { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                      { match: { command_ids: command_id } },
+                    ],
+                  },
                 },
-              },
-              {
-                size: 1,
-              },
-            );
+                {
+                  size: 1,
+                },
+              );
 
             const batch = _.head(_response?.data);
 
@@ -751,9 +843,10 @@ module.exports = async (
                 created_at,
               } = { ...batch };
 
-              const command = commands?.find(c =>
-                c?.id === command_id
-              );
+              const command = (commands || [])
+                .find(c =>
+                  c?.id === command_id
+                );
 
               let {
                 executed,
@@ -763,10 +856,18 @@ module.exports = async (
                 block_timestamp,
               } = { ...command };
 
+              executed =
+                executed ||
+                !!transactionHash;
+
               if (!executed) {
-                const chain_data = evm_chains_data.find(c =>
-                  equals_ignore_case(c?.id, recipient_chain)
-                );
+                const chain_data = evm_chains_data
+                  .find(c =>
+                    equals_ignore_case(
+                      c?.id,
+                      recipient_chain,
+                    )
+                  );
 
                 const provider = getProvider(chain_data);
 
@@ -775,7 +876,8 @@ module.exports = async (
                   gateway_address,
                 } = { ...chain_data };
 
-                const gateway_contract = gateway_address &&
+                const gateway_contract =
+                  gateway_address &&
                   new Contract(
                     gateway_address,
                     IAxelarGateway.abi,
@@ -784,28 +886,31 @@ module.exports = async (
 
                 try {
                   if (gateway_contract) {
-                    executed = await gateway_contract.isCommandExecuted(
-                      `0x${command_id}`,
-                    );
+                    executed =
+                      await gateway_contract
+                        .isCommandExecuted(
+                          `0x${command_id}`,
+                        );
                   }
                 } catch (error) {}
               }
 
               if (!transactionHash) {
-                const _response = await read(
-                  'command_events',
-                  {
-                    bool: {
-                      must: [
-                        { match: { chain: recipient_chain } },
-                        { match: { command_id } },
-                      ],
+                const _response =
+                  await read(
+                    'command_events',
+                    {
+                      bool: {
+                        must: [
+                          { match: { chain: recipient_chain } },
+                          { match: { command_id } },
+                        ],
+                      },
                     },
-                  },
-                  {
-                    size: 1,
-                  },
-                );
+                    {
+                      size: 1,
+                    },
+                  );
 
                 const command_event = _.head(_response?.data);
 
@@ -814,6 +919,10 @@ module.exports = async (
                   transactionIndex = command_event.transactionIndex;
                   logIndex = command_event.logIndex;
                   block_timestamp = command_event.block_timestamp;
+
+                  if (transactionHash) {
+                    executed = true;
+                  }
                 }
               }
 
@@ -840,7 +949,8 @@ module.exports = async (
                 _id,
                 {
                   ...d,
-                  sign_batch: sign_batch ||
+                  sign_batch:
+                    sign_batch ||
                     undefined,
                 },
               );

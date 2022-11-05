@@ -14,19 +14,26 @@ const {
   equals_ignore_case,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = data?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 const {
   endpoints,
@@ -65,6 +72,7 @@ module.exports = async (
   if (txHash) {
     must.push({ match: { 'source.id': txHash } });
   }
+
   if (confirmed) {
     switch (confirmed) {
       case 'confirmed':
@@ -79,6 +87,7 @@ module.exports = async (
         break;
     }
   }
+
   if (state) {
     switch (state) {
       case 'completed':
@@ -209,6 +218,7 @@ module.exports = async (
         break;
     }
   }
+
   if (sourceChain) {
     must.push({ match_phrase: { 'source.original_sender_chain': sourceChain } });
 
@@ -217,6 +227,7 @@ module.exports = async (
       must_not.push({ match_phrase: { 'source.sender_chain': id } });
     }
   }
+
   if (destinationChain) {
     must.push({ match_phrase: { 'source.original_recipient_chain': destinationChain } });
 
@@ -225,18 +236,23 @@ module.exports = async (
       must_not.push({ match_phrase: { 'source.recipient_chain': id } });
     }
   }
+
   if (asset) {
     must.push({ match_phrase: { 'source.denom': asset } });
   }
+
   if (depositAddress) {
     must.push({ match: { 'source.recipient_address': depositAddress } });
   }
+
   if (senderAddress) {
     must.push({ match: { 'source.sender_address': senderAddress } });
   }
+
   if (recipientAddress) {
     must.push({ match: { 'link.recipient_address': recipientAddress } });
   }
+
   if (transferId) {
     must.push({
       bool: {
@@ -249,12 +265,15 @@ module.exports = async (
       },
     });
   }
+
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime = toTime ?
-      Number(toTime) * 1000 :
-      moment()
-        .valueOf();
+    toTime =
+      toTime ?
+        Number(toTime) * 1000 :
+        moment()
+          .valueOf();
+
     must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
   if (!query) {
@@ -263,30 +282,35 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
 
   const read_params = {
-    from: typeof from === 'number' ?
-      from :
-      0,
-    size: typeof size === 'number' ?
-      size :
-      100,
-    sort: sort ||
+    from:
+      typeof from === 'number' ?
+        from :
+        0,
+    size:
+      typeof size === 'number' ?
+        size :
+        100,
+    sort:
+      sort ||
       [{ 'source.created_at.ms': 'desc' }],
     track_total_hits: true,
   };
 
-  response = await read(
-    'transfers',
-    query,
-    read_params,
-  );
+  response =
+    await read(
+      'transfers',
+      query,
+      read_params,
+    );
 
   if (Array.isArray(response?.data)) {
     let {
@@ -315,9 +339,13 @@ module.exports = async (
               typeof value === 'number'
             ) ||
             (
-              cosmos_chains_data.findIndex(c =>
-                equals_ignore_case(c?.id, recipient_chain)
-              ) > -1 &&
+              cosmos_chains_data
+                .findIndex(c =>
+                  equals_ignore_case(
+                    c?.id,
+                    recipient_chain,
+                  )
+                ) > -1 &&
               (
                 vote ||
                 confirm_deposit
@@ -357,11 +385,12 @@ module.exports = async (
 
       await sleep(3 * 1000);
 
-      response = await read(
-        'transfers',
-        query,
-        read_params,
-      );
+      response =
+        await read(
+          'transfers',
+          query,
+          read_params,
+        );
     }
   }
 
@@ -396,11 +425,12 @@ module.exports = async (
 
       await sleep(1 * 1000);
 
-      response = await read(
-        'transfers',
-        query,
-        read_params,
-      );
+      response =
+        await read(
+          'transfers',
+          query,
+          read_params,
+        );
     }
   }
 
@@ -434,29 +464,31 @@ module.exports = async (
 
         return {
           ...d,
-          link: link &&
+          link:
+            link &&
             {
               ...link,
               price,
             },
-          status: ibc_send ?
-            ibc_send.failed_txhash &&
-            !ibc_send.ack_txhash ?
-              'ibc_failed' :
-              ibc_send.recv_txhash ?
-                'executed' :
-                'ibc_sent' :
-            sign_batch?.executed ?
-              'executed' :
-               sign_batch ?
-                'batch_signed' :
-                axelar_transfer ?
+          status:
+            ibc_send ?
+              ibc_send.failed_txhash &&
+              !ibc_send.ack_txhash ?
+                'ibc_failed' :
+                ibc_send.recv_txhash ?
                   'executed' :
-                  vote ?
-                    'voted' :
-                    confirm_deposit ?
-                      'deposit_confirmed' :
-                      'asset_sent',
+                  'ibc_sent' :
+              sign_batch?.executed ?
+                'executed' :
+                 sign_batch ?
+                  'batch_signed' :
+                  axelar_transfer ?
+                    'executed' :
+                    vote ?
+                      'voted' :
+                      confirm_deposit ?
+                        'deposit_confirmed' :
+                        'asset_sent',
         };
       });
   }

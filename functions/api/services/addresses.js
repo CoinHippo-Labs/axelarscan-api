@@ -8,18 +8,26 @@ const {
   equals_ignore_case,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 module.exports = async (
   params = {},
@@ -32,9 +40,10 @@ module.exports = async (
     Number(blocks_per_query) ||
     250000;
 
-  const status = await rpc(
-    '/status',
-  );
+  const status =
+    await rpc(
+      '/status',
+    );
 
   let {
     earliest_block_height,
@@ -58,30 +67,32 @@ module.exports = async (
       const from_height = i > latest_block_height ?
         latest_block_height :
         i;
+
       const to_height = from_height + blocks_per_query;
 
-      const _response = await read(
-        'txs',
-        {
-          range: {
-            height: {
-              gte: from_height,
-              lt: to_height,
-            },
-          },
-        },
-        {
-          aggs: {
-            addresses: {
-              terms: {
-                field: 'addresses.keyword',
-                size: 65535,
+      const _response =
+        await read(
+          'txs',
+          {
+            range: {
+              height: {
+                gte: from_height,
+                lt: to_height,
               },
             },
           },
-          size: 0,
-        },
-      );
+          {
+            aggs: {
+              addresses: {
+                terms: {
+                  field: 'addresses.keyword',
+                  size: 65535,
+                },
+              },
+            },
+            size: 0,
+          },
+        );
 
       const {
         aggs,
@@ -90,40 +101,45 @@ module.exports = async (
         buckets,
       } = { ...aggs?.addresses };
 
-      data = _.orderBy(
-        _.uniqBy(
-          _.concat(
-            (buckets || [])
-              .filter(d =>
-                d?.key?.startsWith(`${axelarnet.prefix_address}1`) &&
-                d.key.length < 65 &&
-                d.doc_count
-              )
-              .map(d => {
-                const {
-                  key,
-                  doc_count,
-                } = { ...d };
+      data =
+        _.orderBy(
+          _.uniqBy(
+            _.concat(
+              (buckets || [])
+                .filter(d =>
+                  d?.key?.startsWith(`${axelarnet.prefix_address}1`) &&
+                  d.key.length < 65 &&
+                  d.doc_count
+                )
+                .map(d => {
+                  const {
+                    key,
+                    doc_count,
+                  } = { ...d };
 
-                const _num_txs =
-                  data?.find(_d =>
-                    equals_ignore_case(_d.address, key)
-                  )?.num_txs ||
-                  0;
+                  const _num_txs =
+                    (data || [])
+                      .find(_d =>
+                        equals_ignore_case(
+                          _d.address,
+                          key,
+                        )
+                      )?.num_txs ||
+                    0;
 
-                return {
-                  address: key.toLowerCase(),
-                  num_txs: doc_count + _num_txs,
-                };
-              }),
-            data ||
-            [],
+                  return {
+                    address: key.toLowerCase(),
+                    num_txs: doc_count + _num_txs,
+                  };
+                }),
+              data ||
+              [],
+            ),
+            'address',
           ),
-          'address',
-        ),
-        ['num_txs'],
-        ['desc'],
-      );
+          ['num_txs'],
+          ['desc'],
+        );
     }
   }
 

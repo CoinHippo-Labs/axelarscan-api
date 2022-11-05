@@ -56,12 +56,13 @@ const log = (
   } catch (error) {}
 };
 
-const sleep = ms => new Promise(resolve =>
-  setTimeout(
-    resolve,
-    ms,
-  )
-);
+const sleep = ms =>
+  new Promise(resolve =>
+    setTimeout(
+      resolve,
+      ms,
+    )
+  );
 
 module.exports = {
   log,

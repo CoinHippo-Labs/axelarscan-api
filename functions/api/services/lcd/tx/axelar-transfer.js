@@ -18,18 +18,26 @@ const {
   get_granularity,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 module.exports = async (
   lcd_response = {},
@@ -47,9 +55,10 @@ module.exports = async (
       logs,
     } = { ...tx_response };
 
-    const created_at = moment(timestamp)
-      .utc()
-      .valueOf();
+    const created_at =
+      moment(timestamp)
+        .utc()
+        .valueOf();
 
     const transfer_events = (logs || [])
       .map(l => {
@@ -148,42 +157,25 @@ module.exports = async (
       if (amount) {
         const decimals = 6;
 
-        amount = Number(
-          formatUnits(
-            BigNumber.from(amount)
+        amount =
+          Number(
+            formatUnits(
+              BigNumber.from(
+                amount
+              )
               .toString(),
-            decimals,
-          )
-        );
+              decimals,
+            )
+          );
       }
 
-      const _response = await read(
-        'transfers',
-        {
-          bool: {
-            should: [
-              { match: { 'confirm_deposit.transfer_id': transfer_id } },
-              { match: { 'vote.transfer_id': transfer_id } },
-              { match: { transfer_id } },
-            ],
-            minimum_should_match: 1,
-          },
-        },
-        {
-          size: 1,
-          sort: [{ 'source.created_at.ms': 'desc' }],
-        },
-      );
-
-      const transfer_data = _.head(_response?.data);
-      let token_sent_data;
-
-      if (!transfer_data) {
-        const _response = await read(
-          'token_sent_events',
+      const _response =
+        await read(
+          'transfers',
           {
             bool: {
               should: [
+                { match: { 'confirm_deposit.transfer_id': transfer_id } },
                 { match: { 'vote.transfer_id': transfer_id } },
                 { match: { transfer_id } },
               ],
@@ -192,9 +184,31 @@ module.exports = async (
           },
           {
             size: 1,
-            sort: [{ 'event.created_at.ms': 'desc' }],
+            sort: [{ 'source.created_at.ms': 'desc' }],
           },
         );
+
+      const transfer_data = _.head(_response?.data);
+      let token_sent_data;
+
+      if (!transfer_data) {
+        const _response =
+          await read(
+            'token_sent_events',
+            {
+              bool: {
+                should: [
+                  { match: { 'vote.transfer_id': transfer_id } },
+                  { match: { transfer_id } },
+                ],
+                minimum_should_match: 1,
+              },
+            },
+            {
+              size: 1,
+              sort: [{ 'event.created_at.ms': 'desc' }],
+            },
+          );
 
         token_sent_data = _.head(_response?.data);
       }
@@ -218,9 +232,10 @@ module.exports = async (
             event
           )?.id;
 
-        const _id = recipient_address ?
-          `${id}_${recipient_address}`.toLowerCase() :
-          id;
+        const _id =
+          recipient_address ?
+            `${id}_${recipient_address}`.toLowerCase() :
+            id;
 
         if (_id) {
           await write(
@@ -233,9 +248,10 @@ module.exports = async (
                 id: txhash,
                 type: 'axelar_transfer',
                 status_code: code,
-                status: code ?
-                  'failed' :
-                  'success',
+                status:
+                  code ?
+                    'failed' :
+                    'success',
                 height,
                 created_at: get_granularity(created_at),
                 recipient_chain: axelarnet.id,

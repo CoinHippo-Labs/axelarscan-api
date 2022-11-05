@@ -18,22 +18,33 @@ const {
   normalize_chain,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 const cosmos_non_axelarnet_chains_data =
   cosmos_chains_data
-    .filter(c => c?.id !== axelarnet.id);
-const assets_data = require('../../data')?.assets?.[environment] ||
+    .filter(c =>
+      c?.id !== axelarnet.id
+    );
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
   [];
 
 const {
@@ -54,10 +65,11 @@ const saveTimeSpent = async (
   ) {
     await sleep(0.5 * 1000);
 
-    data = await get(
-      collection,
-      id,
-    );
+    data =
+      await get(
+        collection,
+        id,
+      );
   }
   else if (
     !id &&
@@ -97,35 +109,58 @@ const saveTimeSpent = async (
 
   const chain_types =
     [
-      evm_chains_data.findIndex(c =>
-        equals_ignore_case(c?.id, sender_chain)
-      ) > -1 ?
-        'evm' :
-        cosmos_non_axelarnet_chains_data.findIndex(c =>
-          equals_ignore_case(c?.id, sender_chain)
+      evm_chains_data
+        .findIndex(c =>
+          equals_ignore_case(
+            c?.id,
+            sender_chain,
+          )
         ) > -1 ?
+        'evm' :
+        cosmos_non_axelarnet_chains_data
+          .findIndex(c =>
+            equals_ignore_case(
+              c?.id,
+              sender_chain,
+            )
+          ) > -1 ?
           'cosmos' :
-          equals_ignore_case(axelarnet.id, sender_chain) ?
+          equals_ignore_case(
+            axelarnet.id,
+            sender_chain,
+          ) ?
             'axelarnet' :
             null,
-      evm_chains_data.findIndex(c =>
-        equals_ignore_case(c?.id, recipient_chain)
-      ) > -1 ?
-        'evm' :
-        cosmos_non_axelarnet_chains_data.findIndex(c =>
-          equals_ignore_case(c?.id, recipient_chain)
+      evm_chains_data
+        .findIndex(c =>
+          equals_ignore_case(
+            c?.id,
+            recipient_chain,
+          )
         ) > -1 ?
+        'evm' :
+        cosmos_non_axelarnet_chains_data
+          .findIndex(c =>
+            equals_ignore_case(
+              c?.id,
+              recipient_chain,
+            )
+          ) > -1 ?
           'cosmos' :
-          equals_ignore_case(axelarnet.id, recipient_chain) ?
+          equals_ignore_case(
+            axelarnet.id,
+            recipient_chain,
+          ) ?
             'axelarnet' :
             null,
     ]
     .filter(t => t);
 
-  const type = chain_types.length === 2 ?
-    chain_types
-      .join('_') :
-    undefined;
+  const type =
+    chain_types.length === 2 ?
+      chain_types
+        .join('_') :
+      undefined;
 
   if (
     confirm_deposit?.created_at?.ms &&
@@ -133,7 +168,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      send_confirm: confirm_deposit.created_at.ms / 1000 - source.created_at.ms / 1000,
+      send_confirm:
+        confirm_deposit.created_at.ms / 1000 -
+        source.created_at.ms / 1000,
     };
   }
 
@@ -143,7 +180,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      send_vote: vote.created_at.ms / 1000 - event.created_at.ms / 1000,
+      send_vote:
+        vote.created_at.ms / 1000 -
+        event.created_at.ms / 1000,
     };
   }
 
@@ -153,7 +192,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      confirm_vote: vote.created_at.ms / 1000 - confirm_deposit.created_at.ms / 1000,
+      confirm_vote:
+        vote.created_at.ms / 1000 -
+        confirm_deposit.created_at.ms / 1000,
     };
   }
 
@@ -163,7 +204,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      confirm_sign: sign_batch.block_timestamp - confirm_deposit.created_at.ms / 1000,
+      confirm_sign:
+        sign_batch.block_timestamp -
+        confirm_deposit.created_at.ms / 1000,
     };
   }
 
@@ -173,7 +216,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      confirm_ibc: ibc_send.received_at.ms / 1000 - confirm_deposit.created_at.ms / 1000,
+      confirm_ibc:
+        ibc_send.received_at.ms / 1000 -
+        confirm_deposit.created_at.ms / 1000,
     };
   }
 
@@ -183,7 +228,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      confirm_axelar_transfer: axelar_transfer.created_at.ms / 1000 - confirm_deposit.created_at.ms / 1000,
+      confirm_axelar_transfer:
+        axelar_transfer.created_at.ms / 1000 -
+        confirm_deposit.created_at.ms / 1000,
     };
   }
 
@@ -193,7 +240,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      vote_sign: sign_batch.block_timestamp - vote.created_at.ms / 1000,
+      vote_sign:
+        sign_batch.block_timestamp -
+        vote.created_at.ms / 1000,
     };
   }
 
@@ -203,7 +252,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      vote_ibc: ibc_send.received_at.ms / 1000 - vote.created_at.ms / 1000,
+      vote_ibc:
+        ibc_send.received_at.ms / 1000 -
+        vote.created_at.ms / 1000,
     };
   }
 
@@ -213,7 +264,9 @@ const saveTimeSpent = async (
   ) {
     time_spent = {
       ...time_spent,
-      vote_axelar_transfer: axelar_transfer.created_at.ms / 1000 - vote.created_at.ms / 1000,
+      vote_axelar_transfer:
+        axelar_transfer.created_at.ms / 1000 -
+        vote.created_at.ms / 1000,
     };
   }
 
@@ -345,11 +398,16 @@ const get_distinguish_chain_id = chain => {
         overrides,
       } = { ...c };
 
-      return equals_ignore_case(id, chain) ||
+      return (
+        equals_ignore_case(id, chain) ||
         Object.keys({ ...overrides })
           .findIndex(k =>
-            equals_ignore_case(k, chain)
-          ) > -1;
+            equals_ignore_case(
+              k,
+              chain,
+            )
+          ) > -1
+      );
     });
 
   const {
@@ -361,7 +419,10 @@ const get_distinguish_chain_id = chain => {
     _.head(
       Object.entries({ ...overrides })
         .filter(([k, v]) =>
-          equals_ignore_case(k, chain) &&
+          equals_ignore_case(
+            k,
+            chain,
+          ) &&
           Object.keys({ ...v }).length > 0
         )
         .map(([k, v]) => k)
@@ -380,10 +441,16 @@ const get_others_version_chain_ids = chain => {
       } = { ...c };
 
       return (
-        equals_ignore_case(id, chain) ||
+        equals_ignore_case(
+          id,
+          chain,
+        ) ||
         Object.keys({ ...overrides })
           .findIndex(k =>
-            equals_ignore_case(k, chain)
+            equals_ignore_case(
+              k,
+              chain,
+            )
           ) > -1
       );
     });
@@ -393,12 +460,19 @@ const get_others_version_chain_ids = chain => {
     overrides,
   } = { ...chain_data };
 
-  const _id = equals_ignore_case(id, chain) ?
-    id :
-    Object.keys({ ...overrides })
-      .find(k =>
-        equals_ignore_case(k, chain)
-      );
+  const _id =
+    equals_ignore_case(
+      id,
+      chain,
+    ) ?
+      id :
+      Object.keys({ ...overrides })
+        .find(k =>
+          equals_ignore_case(
+            k,
+            chain,
+          )
+        );
 
   const [
     chain_id,
@@ -412,23 +486,35 @@ const get_others_version_chain_ids = chain => {
       chains_data
         .filter(c =>
           (
-            !equals_ignore_case(c?.id, _id) &&
+            !equals_ignore_case(
+              c?.id,
+              _id,
+            ) &&
             c?.id?.startsWith(_id)
           ) ||
           Object.keys({ ...c?.overrides })
             .findIndex(k =>
-              !equals_ignore_case(k, _id) &&
+              !equals_ignore_case(
+                k,
+                _id,
+              ) &&
               k?.startsWith(_id)
             ) > -1
         )
         .flatMap(c => {
           return (
             _.concat(
-              !equals_ignore_case(c?.id, _id) &&
+              !equals_ignore_case(
+                c?.id,
+                _id,
+              ) &&
               c?.id,
               Object.keys({ ...c?.overrides })
                 .filter(k =>
-                  !equals_ignore_case(k, _id) &&
+                  !equals_ignore_case(
+                    k,
+                    _id,
+                  ) &&
                   k?.startsWith(_id)
                 ),
             )
@@ -443,7 +529,10 @@ const get_others_version_chain_ids = chain => {
               c?.id?.includes(`-${chain_version}`)
             ) ||
             (
-              !equals_ignore_case(c?.id, _id) &&
+              !equals_ignore_case(
+                c?.id,
+                _id,
+              ) &&
               c?.id?.startsWith(chain_id)
             )
           )
@@ -477,7 +566,10 @@ const update_link = async (
 
     if (
       source &&
-      !equals_ignore_case(sender_address, source.sender_address)
+      !equals_ignore_case(
+        sender_address,
+        source.sender_address,
+      )
     ) {
       sender_address = source.sender_address;
       link.sender_address = sender_address;
@@ -485,14 +577,19 @@ const update_link = async (
     }
 
     if (
-      equals_ignore_case(original_sender_chain, axelarnet.id) ||
-      cosmos_non_axelarnet_chains_data.findIndex(c =>
-        c?.overrides?.[original_sender_chain]
-      ) > -1
+      equals_ignore_case(
+        original_sender_chain,
+        axelarnet.id,
+      ) ||
+      cosmos_non_axelarnet_chains_data
+        .findIndex(c =>
+          c?.overrides?.[original_sender_chain]
+        ) > -1
     ) {
-      const chain_data = cosmos_non_axelarnet_chains_data.find(c =>
-        source?.sender_address?.startsWith(c?.prefix_address)
-      );
+      const chain_data = cosmos_non_axelarnet_chains_data
+        .find(c =>
+          source?.sender_address?.startsWith(c?.prefix_address)
+        );
       const {
         overrides,
       } = { ...chain_data };
@@ -507,7 +604,8 @@ const update_link = async (
             _.last(Object.keys({ ...overrides })) ||
             chain_data.id;
 
-        updated = updated ||
+        updated =
+          updated ||
           link.original_sender_chain !== original_sender_chain;
 
         link.original_sender_chain = original_sender_chain;
@@ -515,15 +613,18 @@ const update_link = async (
     }
 
     if (source) {
-      sender_chain = normalize_chain(
-        cosmos_non_axelarnet_chains_data.find(c =>
-          source?.sender_address?.startsWith(c?.prefix_address)
-        )?.id ||
-        sender_chain ||
-        source.sender_chain
-      );
+      sender_chain =
+        normalize_chain(
+          cosmos_non_axelarnet_chains_data
+            .find(c =>
+              source?.sender_address?.startsWith(c?.prefix_address)
+            )?.id ||
+          sender_chain ||
+          source.sender_chain
+        );
 
-      updated = updated ||
+      updated =
+        updated ||
         link.sender_chain !== sender_chain;
 
       link.sender_chain = sender_chain;
@@ -543,23 +644,31 @@ const update_link = async (
     if (
       typeof price !== 'number' ||
       price <= 0 ||
-      !equals_ignore_case(link.denom, denom)
+      !equals_ignore_case(
+        link.denom,
+        denom,
+      )
     ) {
-      const response = await assets_price(
-        {
-          chain: equals_ignore_case(original_sender_chain, axelarnet.id) ?
-            original_recipient_chain :
-            original_sender_chain,
-          denom,
-          timestamp:
-            moment(
-              source?.created_at?.ms ||
-              undefined
-            )
-            .utc()
-            .valueOf(),
-        },
-      );
+      const response =
+        await assets_price(
+          {
+            chain:
+              equals_ignore_case(
+                original_sender_chain,
+                axelarnet.id,
+              ) ?
+                original_recipient_chain :
+                original_sender_chain,
+            denom,
+            timestamp:
+              moment(
+                source?.created_at?.ms ||
+                undefined
+              )
+              .utc()
+              .valueOf(),
+          },
+        );
 
       const _price = _.head(response)?.price;
 
@@ -628,18 +737,32 @@ const update_source = async (
           id,
           chain_id,
         } = {
-          ...chains_data.find(c =>
-            equals_ignore_case(c?.id, source.sender_chain)
+          ...(
+            chains_data
+              .find(c =>
+                equals_ignore_case(
+                  c?.id,
+                  source.sender_chain,
+                )
+              )
           ),
         };
 
-        const asset_data = assets_data.find(a =>
-          equals_ignore_case(a?.id, source.denom) ||
-          a?.ibc?.findIndex(i =>
-            i?.chain_id === id &&
-            equals_ignore_case(i?.ibc_denom, source.denom)
-          ) > -1
-        );
+        const asset_data = assets_data
+          .find(a =>
+            equals_ignore_case(
+              a?.id,
+              source.denom,
+            ) ||
+            (a?.ibc || [])
+              .findIndex(i =>
+                i?.chain_id === id &&
+                equals_ignore_case(
+                  i?.ibc_denom,
+                  source.denom,
+                )
+              ) > -1
+          );
 
         const {
           contracts,
@@ -650,12 +773,14 @@ const update_source = async (
         } = { ...asset_data };
 
         decimals =
-          contracts?.find(c =>
-            c?.chain_id === chain_id
-          )?.decimals ||
-          ibc?.find(i =>
-            i?.chain_id === id
-          )?.decimals ||
+          (contracts || [])
+            .find(c =>
+              c?.chain_id === chain_id
+            )?.decimals ||
+          (ibc || [])
+            .find(i =>
+              i?.chain_id === id
+            )?.decimals ||
           decimals ||
           (
             [
@@ -674,13 +799,16 @@ const update_source = async (
             source.denom;
 
           if (typeof source.amount === 'string') {
-            source.amount = Number(
-              formatUnits(
-                BigNumber.from(source.amount)
+            source.amount =
+              Number(
+                formatUnits(
+                  BigNumber.from(
+                    source.amount
+                  )
                   .toString(),
-                decimals,
-              )
-            );
+                  decimals,
+                )
+              );
           }
 
           if (
@@ -700,14 +828,18 @@ const update_source = async (
                 params: {
                   source_chain: source.original_sender_chain,
                   destination_chain: source.original_recipient_chain,
-                  amount: `${
-                    parseUnits(
-                      (source.amount || 0)
+                  amount:
+                    `${
+                      parseUnits(
+                        (
+                          source.amount ||
+                          0
+                        )
                         .toString(),
-                      decimals,
-                    )
-                    .toString()
-                  }${asset_data.id}`,
+                        decimals,
+                      )
+                      .toString()
+                    }${asset_data.id}`,
                 },
               },
             ).catch(error => { return { data: { error } }; });
@@ -717,13 +849,16 @@ const update_source = async (
             } = { ..._response?.data?.fee };
 
             if (amount) {
-              source.fee = Number(
-                formatUnits(
-                  BigNumber.from(amount)
+              source.fee =
+                Number(
+                  formatUnits(
+                    BigNumber.from(
+                      amount
+                    )
                     .toString(),
-                  decimals,
-                )
-              );
+                    decimals,
+                  )
+                );
             }
           }
         }
@@ -788,18 +923,32 @@ const update_event = async (
         id,
         chain_id,
       } = {
-        ...chains_data.find(c =>
-          equals_ignore_case(c?.id, chain)
+        ...(
+          chains_data
+            .find(c =>
+              equals_ignore_case(
+                c?.id,
+                chain,
+              )
+            )
         ),
       };
 
-      const asset_data = assets_data.find(a =>
-        equals_ignore_case(a?.id, denom) ||
-        a?.ibc?.findIndex(i =>
-          i?.chain_id === id &&
-          equals_ignore_case(i?.ibc_denom, denom)
-        ) > -1
-      );
+      const asset_data = assets_data
+        .find(a =>
+          equals_ignore_case(
+            a?.id,
+            denom,
+          ) ||
+          (a?.ibc || [])
+            .findIndex(i =>
+              i?.chain_id === id &&
+              equals_ignore_case(
+                i?.ibc_denom,
+                denom,
+              )
+            ) > -1
+        );
 
       const {
         contracts,
@@ -810,12 +959,14 @@ const update_event = async (
       } = { ...asset_data };
 
       decimals =
-        contracts?.find(c =>
-          c?.chain_id === chain_id
-        )?.decimals ||
-        ibc?.find(i =>
-          i?.chain_id === id
-        )?.decimals ||
+        (contracts || [])
+          .find(c =>
+            c?.chain_id === chain_id
+          )?.decimals ||
+        (ibc || [])
+          .find(i =>
+            i?.chain_id === id
+          )?.decimals ||
         decimals ||
         (
           [
@@ -830,13 +981,16 @@ const update_event = async (
 
       if (asset_data) {
         if (typeof event.amount === 'string') {
-          event.amount = Number(
-            formatUnits(
-              BigNumber.from(event.amount)
+          event.amount =
+            Number(
+              formatUnits(
+                BigNumber.from(
+                  event.amount
+                )
                 .toString(),
-              decimals,
-            )
-          );
+                decimals,
+              )
+            );
         }
 
         if (
@@ -856,14 +1010,18 @@ const update_event = async (
               params: {
                 source_chain: chain,
                 destination_chain: normalize_chain(destinationChain),
-                amount: `${
-                  parseUnits(
-                    (event.amount || 0)
+                amount:
+                  `${
+                    parseUnits(
+                      (
+                        event.amount ||
+                        0
+                      )
                       .toString(),
-                    decimals,
-                  )
-                  .toString()
-                }${asset_data.id}`,
+                      decimals,
+                    )
+                    .toString()
+                  }${asset_data.id}`,
               },
             },
           ).catch(error => { return { data: { error } }; });
@@ -873,13 +1031,16 @@ const update_event = async (
           } = { ..._response?.data?.fee };
 
           if (amount) {
-            event.fee = Number(
-              formatUnits(
-                BigNumber.from(amount)
+            event.fee =
+              Number(
+                formatUnits(
+                  BigNumber.from(
+                    amount
+                  )
                   .toString(),
-                decimals,
-              )
-            );
+                  decimals,
+                )
+              );
           }
         }
       }

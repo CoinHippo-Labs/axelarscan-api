@@ -24,6 +24,7 @@ module.exports = async (
   if (sender) {
     must.push({ match: { sender } });
   }
+
   if (
     fromBlock ||
     toBlock
@@ -35,17 +36,20 @@ module.exports = async (
     if (toBlock) {
       range.lte = toBlock;
     }
+
     must.push({ range: { height: range } });
   }
+
   if (!query) {
     query = {
       bool: {
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
@@ -54,13 +58,16 @@ module.exports = async (
     'heartbeats',
     query,
     {
-      from: typeof from === 'number' ?
-        from :
-        0,
-      size: typeof size === 'number' ?
-        size :
-        200,
-      sort: sort ||
+      from:
+        typeof from === 'number' ?
+          from :
+          0,
+      size:
+        typeof size === 'number' ?
+          size :
+          200,
+      sort:
+        sort ||
         [{ period_height: 'desc' }],
       track_total_hits: true,
     },

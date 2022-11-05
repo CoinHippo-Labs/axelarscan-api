@@ -10,13 +10,15 @@ const to_hash = (
   length,
 ) => {
   try {
-    return tmhash(string)
-      .slice(
-        0,
-        length,
-      )
-      .toString('hex')
-      .toUpperCase();
+    return (
+      tmhash(string)
+        .slice(
+          0,
+          length,
+        )
+        .toString('hex')
+        .toUpperCase()
+    );
   } catch (error) {}
 
   return null;
@@ -27,14 +29,16 @@ const hex_to_bech32 = (
   prefix,
 ) => {
   try {
-    return bech32.encode(
-      prefix,
-      bech32.toWords(
-        Buffer.from(
-          address,
-          'hex',
+    return (
+      bech32.encode(
+        prefix,
+        bech32.toWords(
+          Buffer.from(
+            address,
+            'hex',
+          ),
         ),
-      ),
+      )
     );
   } catch (error) {}
 

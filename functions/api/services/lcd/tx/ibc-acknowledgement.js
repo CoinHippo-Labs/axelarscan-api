@@ -15,21 +15,31 @@ const {
   get_granularity,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 const cosmos_non_axelarnet_chains_data =
   cosmos_chains_data
-    .filter(c => c?.id !== axelarnet.id);
+    .filter(c =>
+      c?.id !== axelarnet.id
+    );
 
 module.exports = async (
   lcd_response = {},
@@ -54,34 +64,40 @@ module.exports = async (
           events,
         } = { ...l };
 
-        const e = events?.find(e =>
-          equals_ignore_case(e?.type, 'acknowledge_packet')
-        );
+        const e = (events || [])
+          .find(e =>
+            equals_ignore_case(
+              e?.type,
+              'acknowledge_packet',
+            )
+          );
 
         const {
           attributes,
         } = { ...e };
 
         if (attributes) {
-          const transfer_event = events.find(e =>
-            [
-              'IBCTransferCompleted',
-            ].findIndex(t =>
-              equals_ignore_case(
-                t,
-                _.last(
-                  (e.type || '')
-                    .split('.')
-                ),
-              )
-            ) > -1
-          );
+          const transfer_event = events
+            .find(e =>
+              [
+                'IBCTransferCompleted',
+              ].findIndex(t =>
+                equals_ignore_case(
+                  t,
+                  _.last(
+                    (e.type || '')
+                      .split('.')
+                  ),
+                )
+              ) > -1
+            );
 
           const transfer_id =
             (
-              transfer_event?.attributes?.find(a =>
-                a?.key === 'id'
-              )?.value ||
+              (transfer_event?.attributes || [])
+                .find(a =>
+                  a?.key === 'id'
+                )?.value ||
               ''
             )
             .split('"')
@@ -138,15 +154,18 @@ module.exports = async (
         return {
           ...e,
           id: txhash,
-          height: Number(
-            messages.find(m =>
-              _.last(
-                (m?.['@type'] || '')
-                  .split('.')
-              ) === 'MsgAcknowledgement'
-            )?.proof_height?.revision_height ||
-            '0'
-          ) - 1,
+          height:
+            Number(
+              messages
+                .find(m =>
+                  _.last(
+                    (m?.['@type'] || '')
+                      .split('.')
+                  ) === 'MsgAcknowledgement'
+                )?.proof_height?.revision_height ||
+              '0'
+            ) -
+            1,
         };
       });
 
@@ -162,55 +181,9 @@ module.exports = async (
         transfer_id,
       } = { ...record };
 
-      const _response = await read(
-        'transfers',
-        {
-          bool: {
-            must: [
-              { match: { 'ibc_send.packet.packet_timeout_height': packet_timeout_height } },
-              { match: { 'ibc_send.packet.packet_sequence': packet_sequence } },
-              { match: { 'ibc_send.packet.packet_src_channel': packet_src_channel } },
-              { match: { 'ibc_send.packet.packet_dst_channel': packet_dst_channel } },
-              // { match: { 'ibc_send.packet.packet_connection': packet_connection } },
-            ],
-            should: transfer_id ?
-              [
-                {
-                  bool: {
-                    should: [
-                      { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                      { match: { 'vote.transfer_id': transfer_id } },
-                      { match: { transfer_id } },
-                    ],
-                    minimum_should_match: 1,
-                  },
-                },
-              ] :
-              [
-                { match: { 'ibc_send.ack_txhash': id } },                  
-                {
-                  bool: {
-                    must_not: [
-                      { exists: { field: 'ibc_send.ack_txhash' } },
-                    ],
-                  },
-                },
-              ],
-            minimum_should_match: 1,
-          },
-        },
-        {
-          size: 1,
-          sort: [{ 'source.created_at.ms': 'desc' }],
-        },
-      );
-
-      const transfer_data = _.head(_response?.data);
-      let token_sent_data;
-
-      if (!transfer_data) {
-        const _response = await read(
-          'token_sent_events',
+      const _response =
+        await read(
+          'transfers',
           {
             bool: {
               must: [
@@ -220,36 +193,85 @@ module.exports = async (
                 { match: { 'ibc_send.packet.packet_dst_channel': packet_dst_channel } },
                 // { match: { 'ibc_send.packet.packet_connection': packet_connection } },
               ],
-              should: transfer_id ?
-                [
-                  {
-                    bool: {
-                      should: [
-                        { match: { 'vote.transfer_id': transfer_id } },
-                        { match: { transfer_id } },
-                      ],
-                      minimum_should_match: 1,
+              should:
+                transfer_id ?
+                  [
+                    {
+                      bool: {
+                        should: [
+                          { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                          { match: { 'vote.transfer_id': transfer_id } },
+                          { match: { transfer_id } },
+                        ],
+                        minimum_should_match: 1,
+                      },
                     },
-                  },
-                ] :
-                [
-                  { match: { 'ibc_send.ack_txhash': id } },                  
-                  {
-                    bool: {
-                      must_not: [
-                        { exists: { field: 'ibc_send.ack_txhash' } },
-                      ],
+                  ] :
+                  [
+                    { match: { 'ibc_send.ack_txhash': id } },
+                    {
+                      bool: {
+                        must_not: [
+                          { exists: { field: 'ibc_send.ack_txhash' } },
+                        ],
+                      },
                     },
-                  },
-                ],
+                  ],
               minimum_should_match: 1,
             },
           },
           {
             size: 1,
-            sort: [{ 'event.created_at.ms': 'desc' }],
+            sort: [{ 'source.created_at.ms': 'desc' }],
           },
         );
+
+      const transfer_data = _.head(_response?.data);
+      let token_sent_data;
+
+      if (!transfer_data) {
+        const _response =
+          await read(
+            'token_sent_events',
+            {
+              bool: {
+                must: [
+                  { match: { 'ibc_send.packet.packet_timeout_height': packet_timeout_height } },
+                  { match: { 'ibc_send.packet.packet_sequence': packet_sequence } },
+                  { match: { 'ibc_send.packet.packet_src_channel': packet_src_channel } },
+                  { match: { 'ibc_send.packet.packet_dst_channel': packet_dst_channel } },
+                  // { match: { 'ibc_send.packet.packet_connection': packet_connection } },
+                ],
+                should: transfer_id ?
+                  [
+                    {
+                      bool: {
+                        should: [
+                          { match: { 'vote.transfer_id': transfer_id } },
+                          { match: { transfer_id } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
+                  ] :
+                  [
+                    { match: { 'ibc_send.ack_txhash': id } },
+                    {
+                      bool: {
+                        must_not: [
+                          { exists: { field: 'ibc_send.ack_txhash' } },
+                        ],
+                      },
+                    },
+                  ],
+                minimum_should_match: 1,
+              },
+            },
+            {
+              size: 1,
+              sort: [{ 'event.created_at.ms': 'desc' }],
+            },
+          );
 
         token_sent_data = _.head(_response?.data);
       }
@@ -288,9 +310,10 @@ module.exports = async (
             event
           )?.id;
 
-        const _id = recipient_address ?
-          `${id}_${recipient_address}`.toLowerCase() :
-          id;
+        const _id =
+          recipient_address ?
+            `${id}_${recipient_address}`.toLowerCase() :
+            id;
 
         recipient_chain =
           recipient_chain ||
@@ -307,9 +330,10 @@ module.exports = async (
               ibc_send: {
                 ...ibc_send,
                 ack_txhash: record.id,
-                failed_txhash: transfer_id ?
-                  null :
-                  undefined,
+                failed_txhash:
+                  transfer_id ?
+                    null :
+                    undefined,
               },
             },
             true,
@@ -329,9 +353,13 @@ module.exports = async (
           packet_data_hex &&
           recipient_chain
         ) {
-          const chain_data = cosmos_non_axelarnet_chains_data.find(c =>
-            equals_ignore_case(c?.id, recipient_chain)
-          );
+          const chain_data = cosmos_non_axelarnet_chains_data
+            .find(c =>
+              equals_ignore_case(
+                c?.id,
+                recipient_chain,
+              )
+            );
 
           const _lcds =
             _.concat(
@@ -370,25 +398,31 @@ module.exports = async (
 
             const index = (tx_responses || [])
               .findIndex(t => {
-                const recv_packet = _.head(
-                  (t?.logs || [])
-                    .flatMap(l =>
-                      (l?.events || [])
-                        .filter(e =>
-                          equals_ignore_case(e?.type, 'recv_packet')
-                        )
-                    )
-                );
+                const recv_packet =
+                  _.head(
+                    (t?.logs || [])
+                      .flatMap(l =>
+                        (l?.events || [])
+                          .filter(e =>
+                            equals_ignore_case(
+                              e?.type,
+                              'recv_packet',
+                            )
+                          )
+                      )
+                  );
 
                 const {
                   attributes,
                 } = { ...recv_packet };
 
                 return (
-                  packet_sequence === (
-                    attributes?.find(a =>
-                      a?.key === 'packet_sequence'
-                    )?.value
+                  packet_sequence ===
+                  (
+                    (attributes || [])
+                      .find(a =>
+                        a?.key === 'packet_sequence'
+                      )?.value
                   )
                 );
               });
@@ -403,9 +437,10 @@ module.exports = async (
                 txhash &&
                 _id
               ) {
-                const received_at = moment(timestamp)
-                  .utc()
-                  .valueOf();
+                const received_at =
+                  moment(timestamp)
+                    .utc()
+                    .valueOf();
 
                 await write(
                   event ?

@@ -5,21 +5,25 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
 const {
   log_level,
 } = { ...config };
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
 
 const log = (
   level = 'info',
@@ -72,12 +76,13 @@ const log = (
   } catch (error) {}
 };
 
-const sleep = ms => new Promise(resolve =>
-  setTimeout(
-    resolve,
-    ms,
-  )
-);
+const sleep = ms =>
+  new Promise(resolve =>
+    setTimeout(
+      resolve,
+      ms,
+    )
+  );
 
 const equals_ignore_case = (
   a,
@@ -89,7 +94,8 @@ const equals_ignore_case = (
 const capitalize = s =>
   typeof s !== 'string' ?
     '' :
-    s.trim()
+    s
+      .trim()
       .split('-')
       .join(' ')
       .split('_')
@@ -165,10 +171,11 @@ const decode_base64 = s => {
     return '';
   }
 
-  const buffer = new Buffer(
-    s,
-    'base64',
-  );
+  const buffer =
+    new Buffer(
+      s,
+      'base64',
+    );
 
   return buffer.toString();
 };
@@ -222,9 +229,13 @@ const normalize_chain = chain => {
       .join('');
 
     if (
-      chains_data.findIndex(c =>
-        equals_ignore_case(c?.id, chain)
-      ) < 0
+      chains_data
+        .findIndex(c =>
+          equals_ignore_case(
+            c?.id,
+            chain,
+          )
+        ) < 0
     ) {
       chain = chain
         .split('-')
@@ -268,13 +279,18 @@ const getTransaction = async (
 
     try {
       // get transaction
-      output.transaction = await provider.getTransaction(
-        tx_hash,
-      );
+      output.transaction =
+        await provider
+          .getTransaction(
+            tx_hash,
+          );
+
       // get receipt
-      output.receipt = await provider.getTransactionReceipt(
-        tx_hash,
-      );
+      output.receipt =
+        await provider
+          .getTransactionReceipt(
+            tx_hash,
+          );
     } catch (error) {}
   }
 
@@ -293,9 +309,11 @@ const getBlockTime = async (
   ) {
     try {
       // get block
-      const block = await provider.getBlock(
-        block_number,
-      );
+      const block =
+        await provider
+          .getBlock(
+            block_number,
+          );
 
       const {
         timestamp,
@@ -322,7 +340,8 @@ const getProvider = (
   } = { ..._.head(provider_params) };
 
   /* start normalize rpcs */
-  let rpcs = _rpcs ||
+  let rpcs =
+    _rpcs ||
     rpcUrls;
   if (!Array.isArray(rpcs)) {
     rpcs = [rpcs];

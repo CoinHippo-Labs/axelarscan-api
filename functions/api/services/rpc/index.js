@@ -7,7 +7,8 @@ const {
   decode_base64,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
 const {
@@ -82,12 +83,13 @@ module.exports = async (
             time &&
             num_blocks_avg_block_time
           ) {
-            data.avg_block_time = moment(latest_block_time)
-              .diff(
-                moment(time),
-                'seconds',
-              ) /
-              num_blocks_avg_block_time;
+            data.avg_block_time =
+              moment(latest_block_time)
+                .diff(
+                  moment(time),
+                  'seconds',
+                ) /
+                num_blocks_avg_block_time;
           }
         }
       }
@@ -108,35 +110,75 @@ module.exports = async (
 
         height = Number(height);
 
-        txs_results = txs_results?.map(t => {
-          let {
-            log,
-            events,
-          } = { ...t };
+        txs_results = (txs_results || [])
+          .map(t => {
+            let {
+              log,
+              events,
+            } = { ...t };
 
-          log = to_json(log) ||
-            log;
+            log =
+              to_json(log) ||
+              log;
 
-          events = events?.map(e => {
+            events = (events || [])
+              .map(e => {
+                let {
+                  attributes,
+                } = { ...e };
+
+                attributes = (attributes || [])
+                  .map(a => {
+                    let {
+                      key,
+                      value,
+                    } = { ...a };
+
+                    key = decode_base64(key);
+                    value = decode_base64(value);
+
+                    return {
+                      ...a,
+                      key,
+                      value,
+                    };
+                  });
+
+                return {
+                  ...e,
+                  attributes,
+                };
+              });
+
+            return {
+              ...t,
+              log,
+              events,
+            };
+          });
+
+        begin_block_events = (begin_block_events || [])
+          .map(e => {
             let {
               attributes,
             } = { ...e };
 
-            attributes = attributes?.map(a => {
-              let {
-                key,
-                value,
-              } = { ...a };
+            attributes = (attributes || [])
+              .map(a => {
+                let {
+                  key,
+                  value,
+                } = { ...a };
 
-              key = decode_base64(key);
-              value = decode_base64(value);
+                key = decode_base64(key);
+                value = decode_base64(value);
 
-              return {
-                ...a,
-                key,
-                value,
-              };
-            });
+                return {
+                  ...a,
+                  key,
+                  value,
+                };
+              });
 
             return {
               ...e,
@@ -144,70 +186,39 @@ module.exports = async (
             };
           });
 
-          return {
-            ...t,
-            log,
-            events,
-          };
-        });
-
-        begin_block_events = begin_block_events?.map(e => {
-          let {
-            attributes,
-          } = { ...e };
-
-          attributes = attributes?.map(a => {
+        end_block_events = (end_block_events || [])
+          .map(e => {
             let {
-              key,
-              value,
-            } = { ...a };
+              attributes,
+            } = { ...e };
 
-            key = decode_base64(key);
-            value = decode_base64(value);
+            attributes = (attributes || [])
+              .map(a => {
+                let {
+                  key,
+                  value,
+                } = { ...a };
+
+                key = decode_base64(key);
+                value = decode_base64(value);
+
+                return {
+                  ...a,
+                  key,
+                  value,
+                };
+              });
 
             return {
-              ...a,
-              key,
-              value,
+              ...e,
+              attributes,
             };
           });
 
-          return {
-            ...e,
-            attributes,
-          };
-        });
-
-        end_block_events = end_block_events?.map(e => {
-          let {
-            attributes,
-          } = { ...e };
-
-          attributes = attributes?.map(a => {
-            let {
-              key,
-              value,
-            } = { ...a };
-
-            key = decode_base64(key);
-            value = decode_base64(value);
-
-            return {
-              ...a,
-              key,
-              value,
-            };
-          });
-
-          return {
-            ...e,
-            attributes,
-          };
-        });
-
-        end_block_events = await index_end_block_events(
-          end_block_events,
-        );
+        end_block_events =
+          await index_end_block_events(
+            end_block_events,
+          );
 
         data = {
           ...result,

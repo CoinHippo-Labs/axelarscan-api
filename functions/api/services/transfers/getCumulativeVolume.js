@@ -42,6 +42,7 @@ module.exports = async (
       must_not.push({ match_phrase: { 'source.sender_chain': id } });
     }
   }
+
   if (destinationChain) {
     must.push({ match_phrase: { 'source.original_recipient_chain': destinationChain } });
 
@@ -50,15 +51,19 @@ module.exports = async (
       must_not.push({ match_phrase: { 'source.recipient_chain': id } });
     }
   }
+
   if (asset) {
     must.push({ match_phrase: { 'source.denom': asset } });
   }
+
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime = toTime ?
-      Number(toTime) * 1000 :
-      moment()
-        .valueOf();
+    toTime =
+      toTime ?
+        Number(toTime) * 1000 :
+        moment()
+          .valueOf();
+
     must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
 
@@ -68,50 +73,53 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
 
-  let _response = await read(
-    'transfers',
-    {
-      ...query,
-      bool: {
-        ...query.bool,
-        must: _.concat(
-          query.bool?.must ||
-          [],
-          { exists: { field: 'confirm_deposit' } },
-        ),
+  let _response =
+    await read(
+      'transfers',
+      {
+        ...query,
+        bool: {
+          ...query.bool,
+          must:
+            _.concat(
+              query.bool?.must ||
+              [],
+              { exists: { field: 'confirm_deposit' } },
+            ),
+        },
       },
-    },
-    {
-      aggs: {
-        cumulative_volume: {
-          date_histogram: {
-            field: `source.created_at.${granularity}`,
-            calendar_interval: granularity,
-          },
-          aggs: {
-            volume: {
-              sum: {
-                field: 'source.value',
-              },
+      {
+        aggs: {
+          cumulative_volume: {
+            date_histogram: {
+              field: `source.created_at.${granularity}`,
+              calendar_interval: granularity,
             },
-            cumulative_volume: {
-              cumulative_sum: {
-                buckets_path: 'volume',
+            aggs: {
+              volume: {
+                sum: {
+                  field: 'source.value',
+                },
+              },
+              cumulative_volume: {
+                cumulative_sum: {
+                  buckets_path: 'volume',
+                },
               },
             },
           },
         },
+        size: 0,
       },
-      size: 0,
-    },
-  );
+    );
 
   const {
     aggs,
@@ -166,6 +174,7 @@ module.exports = async (
         must_not.push({ match_phrase: { 'event.chain': id } });
       }
     }
+
     if (destinationChain) {
       must.push({ match_phrase: { 'event.returnValues.destinationChain': destinationChain } });
 
@@ -173,12 +182,15 @@ module.exports = async (
         must_not.push({ match_phrase: { 'event.returnValues.destinationChain': id } });
       }
     }
+
     if (asset) {
       must.push({ match_phrase: { 'event.denom': asset } });
     }
+
     if (fromTime) {
       fromTime /= 1000;
       toTime /= 1000;
+
       must.push({ range: { 'event.block_timestamp': { gte: fromTime, lte: toTime } } });
     }
 
@@ -187,39 +199,41 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
 
-    let _response = await read(
-      'token_sent_events',
-      query,
-      {
-        aggs: {
-          cumulative_volume: {
-            date_histogram: {
-              field: `event.created_at.${granularity}`,
-              calendar_interval: granularity,
-            },
-            aggs: {
-              volume: {
-                sum: {
-                  field: 'event.value',
-                },
+    let _response =
+      await read(
+        'token_sent_events',
+        query,
+        {
+          aggs: {
+            cumulative_volume: {
+              date_histogram: {
+                field: `event.created_at.${granularity}`,
+                calendar_interval: granularity,
               },
-              cumulative_volume: {
-                cumulative_sum: {
-                  buckets_path: 'volume',
+              aggs: {
+                volume: {
+                  sum: {
+                    field: 'event.value',
+                  },
+                },
+                cumulative_volume: {
+                  cumulative_sum: {
+                    buckets_path: 'volume',
+                  },
                 },
               },
             },
           },
+          size: 0,
         },
-        size: 0,
-      },
-    );
+      );
 
     const {
       aggs,
@@ -275,18 +289,21 @@ module.exports = async (
         .map(([k, v]) => {
           return {
             ..._.head(v),
-            volume: _.sumBy(
-              v,
-              'volume',
-            ),
-            cumulative_volume: _.sumBy(
-              v,
-              'cumulative_volume',
-            ),
-            num_txs: _.sumBy(
-              v,
-              'num_txs',
-            ),
+            volume:
+              _.sumBy(
+                v,
+                'volume',
+              ),
+            cumulative_volume:
+              _.sumBy(
+                v,
+                'cumulative_volume',
+              ),
+            num_txs:
+              _.sumBy(
+                v,
+                'num_txs',
+              ),
           };
         }),
       total:

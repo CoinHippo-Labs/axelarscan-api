@@ -13,19 +13,28 @@ const {
   vote_types,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const assets_data = require('../../../data')?.assets?.[environment] ||
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
+const assets_data =
+  require('../../../data')?.assets?.[environment] ||
   [];
 
 module.exports = async (
@@ -60,16 +69,21 @@ module.exports = async (
     tx_response.height = height;
 
     /* start custom evm deposit confirmation */
-    const log_index = logs?.findIndex(l =>
-      l?.events?.findIndex(e =>
-        [
-          'depositConfirmation',
-          'eventConfirmation',
-        ].findIndex(s =>
-          equals_ignore_case(e?.type, s)
-        ) > -1
-      ) > -1
-    );
+    const log_index = (logs || [])
+      .findIndex(l =>
+        (l?.events || [])
+          .findIndex(e =>
+            [
+              'depositConfirmation',
+              'eventConfirmation',
+            ].findIndex(s =>
+              equals_ignore_case(
+                e?.type,
+                s,
+              )
+            ) > -1
+          ) > -1
+      );
 
     if (log_index > -1) {
       const log = logs?.[log_index];
@@ -78,14 +92,18 @@ module.exports = async (
         events,
       } = { ...log };
 
-      const event_index = events.findIndex(e =>
-        [
-          'depositConfirmation',
-          'eventConfirmation',
-        ].findIndex(s =>
-          equals_ignore_case(e?.type, s)
-        ) > -1
-      );
+      const event_index = events
+        .findIndex(e =>
+          [
+            'depositConfirmation',
+            'eventConfirmation',
+          ].findIndex(s =>
+            equals_ignore_case(
+              e?.type,
+              s,
+            )
+          ) > -1
+        );
 
       const event = events[event_index];
 
@@ -93,13 +111,13 @@ module.exports = async (
         attributes,
       } = { ...event };
 
-      const chain =
-        attributes?.find(a =>
+      const chain = (attributes || [])
+        .find(a =>
           a?.key === 'chain'
         )?.value;
 
-      const token_address =
-        attributes?.find(a =>
+      const token_address = (attributes || [])
+        .find(a =>
           a?.key === 'tokenAddress'
         )?.value;
 
@@ -107,20 +125,29 @@ module.exports = async (
         chain &&
         token_address
       ) {
-        const chain_data = evm_chains_data.find(c =>
-          equals_ignore_case(c?.id, chain)
-        );
+        const chain_data = evm_chains_data
+          .find(c =>
+            equals_ignore_case(
+              c?.id,
+              chain,
+            )
+          );
 
         const {
           chain_id,
         } = { ...chain_data };
 
-        const asset_data = assets_data.find(a =>
-          a?.contracts?.findIndex(c =>
-            c?.chain_id === chain_id &&
-            equals_ignore_case(c?.contract_address, token_address)
-          ) > -1
-        );
+        const asset_data = assets_data
+          .find(a =>
+            (a?.contracts || [])
+              .findIndex(c =>
+                c?.chain_id === chain_id &&
+                equals_ignore_case(
+                  c?.contract_address,
+                  token_address,
+                )
+              ) > -1
+          );
 
         const {
           id,
@@ -131,8 +158,8 @@ module.exports = async (
         }
       }
 
-      const amount_index =
-        attributes?.findIndex(a =>
+      const amount_index = (attributes || [])
+        .findIndex(a =>
           a?.key === 'amount'
         );
 
@@ -186,9 +213,10 @@ module.exports = async (
         [
           'LinkRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         for (let i = 0; i < messages.length; i++) {
@@ -208,9 +236,10 @@ module.exports = async (
           'ConfirmTokenRequest',
           'CreateDeployTokenRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         const fields =
@@ -225,27 +254,32 @@ module.exports = async (
           const message = messages[i];
 
           if (typeof message?.amount === 'string') {
-            const event = _.head(
-              logs.flatMap(l =>
-                (l?.events || [])
-                  .filter(e =>
-                    [
-                      'depositConfirmation',
-                      'eventConfirmation',
-                    ].findIndex(s =>
-                      equals_ignore_case(e?.type, s) ||
-                      e?.type?.includes(s)
-                    ) > -1
+            const event =
+              _.head(
+                logs
+                  .flatMap(l =>
+                    (l?.events || [])
+                      .filter(e =>
+                        [
+                          'depositConfirmation',
+                          'eventConfirmation',
+                        ].findIndex(s =>
+                          equals_ignore_case(
+                            e?.type,
+                            s,
+                          ) ||
+                          e?.type?.includes(s)
+                        ) > -1
+                      )
                   )
-              )
-            );
+              );
 
             const {
               attributes,
             } = { ...event };
 
-            const amount =
-              attributes?.find(a =>
+            const amount = (attributes || [])
+              .find(a =>
                 a?.key === 'amount'
               )?.value;
 
@@ -253,12 +287,13 @@ module.exports = async (
               transaction_data.denom ||
               message.denom;
 
-            message.amount = [
-              {
-                amount,
-                denom,
-              },
-            ];
+            message.amount =
+              [
+                {
+                  amount,
+                  denom,
+                },
+              ];
           }
 
           for (const field of fields) {
@@ -274,10 +309,11 @@ module.exports = async (
         [
           'VoteRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s) ||
-            m?.inner_message?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s) ||
+              m?.inner_message?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         const fields =
@@ -426,67 +462,69 @@ module.exports = async (
       ];
 
     if (logs) {
-      addresses = _.uniq(
-        _.concat(
-          addresses,
-          logs
-            .flatMap(l =>
-              (l?.events || [])
-                .flatMap(e =>
-                  (e?.attributes || [])
-                    .filter(a =>
-                      address_fields.includes(a?.key)
-                    )
-                    .map(a => a.value)
-                )
-            ),
-        )
-        .map(a =>
-          to_json(a) ||
-          to_hex(
-            typeof a === 'string' ?
-              a
-                .split('"')
-                .join('') :
-              a
+      addresses =
+        _.uniq(
+          _.concat(
+            addresses,
+            logs
+              .flatMap(l =>
+                (l?.events || [])
+                  .flatMap(e =>
+                    (e?.attributes || [])
+                      .filter(a =>
+                        address_fields.includes(a?.key)
+                      )
+                      .map(a => a.value)
+                  )
+              ),
           )
-        )
-        .filter(a =>
-          typeof a === 'string' &&
-          a.startsWith(axelarnet.prefix_address)
-        )
-      );
+          .map(a =>
+            to_json(a) ||
+            to_hex(
+              typeof a === 'string' ?
+                a
+                  .split('"')
+                  .join('') :
+                a
+            )
+          )
+          .filter(a =>
+            typeof a === 'string' &&
+            a.startsWith(axelarnet.prefix_address)
+          )
+        );
     }
 
     if (messages) {
-      addresses = _.uniq(
-        _.concat(
-          addresses,
-          messages
-            .flatMap(m =>
-              _.concat(
-                address_fields
-                  .map(f => m[f]),
-                address_fields
-                  .map(f => m.inner_message?.[f]),
-              )
-            ),
-        )
-        .map(a =>
-          to_json(a) ||
-          to_hex(
-            typeof a === 'string' ?
-              a
-                .split('"')
-                .join('') :
-              a
+      addresses =
+        _.uniq(
+          _.concat(
+            addresses,
+            messages
+              .flatMap(m =>
+                _.concat(
+                  address_fields
+                    .map(f => m[f]),
+                  address_fields
+                    .map(f => m.inner_message?.[f]),
+                )
+              ),
           )
-        )
-        .filter(a =>
-          typeof a === 'string' &&
-          a.startsWith(axelarnet.prefix_address)
-        )
-      );
+          .map(a =>
+            to_json(a) ||
+            to_hex(
+              typeof a === 'string' ?
+                a
+                  .split('"')
+                  .join('') :
+                a
+            )
+          )
+          .filter(a =>
+            typeof a === 'string' &&
+            a.startsWith(axelarnet.prefix_address)
+          )
+        );
     }
 
     transaction_data.addresses = addresses;
@@ -497,64 +535,71 @@ module.exports = async (
 
     // inner message type
     if (messages) {
-      types = _.uniq(
-        _.concat(
-          types,
-          messages
-            .flatMap(m =>
-              m?.inner_message?.['@type']
-            ),
-        )
-        .filter(t => t)
-      );
+      types =
+        _.uniq(
+          _.concat(
+            types,
+            messages
+              .flatMap(m =>
+                m?.inner_message?.['@type']
+              ),
+          )
+          .filter(t => t)
+        );
     }
 
     // message action
     if (logs) {
-      types = _.uniq(
-        _.concat(
-          types,
-          logs
-            .flatMap(l =>
-              (l?.events || [])
-                .filter(e =>
-                  equals_ignore_case(e?.type, 'message')
-                )
-                .flatMap(e =>
-                  (e.attributes || [])
-                    .filter(a =>
-                      a?.key === 'action'
+      types =
+        _.uniq(
+          _.concat(
+            types,
+            logs
+              .flatMap(l =>
+                (l?.events || [])
+                  .filter(e =>
+                    equals_ignore_case(
+                      e?.type,
+                      'message',
                     )
-                    .map(a => a.value)
-                )
-            ),
-        )
-        .filter(t => t)
-      );
+                  )
+                  .flatMap(e =>
+                    (e.attributes || [])
+                      .filter(a =>
+                        a?.key === 'action'
+                      )
+                      .map(a => a.value)
+                  )
+              ),
+          )
+          .filter(t => t)
+        );
     }
 
     // message type
     if (messages) {
-      types = _.uniq(
-        _.concat(
-          types,
-          messages
-            .flatMap(m => m?.['@type']),
-        )
-        .filter(t => t)
-      );
+      types =
+        _.uniq(
+          _.concat(
+            types,
+            messages
+              .flatMap(m => m?.['@type']),
+          )
+          .filter(t => t)
+        );
     }
 
-    types = _.uniq(
-      types
-        .map(t =>
-          capitalize(
-            _.last(
-              t.split('.')
+    types =
+      _.uniq(
+        types
+          .map(t =>
+            capitalize(
+              _.last(
+                t.split('.')
+              )
             )
           )
-        )
-    );
+      );
 
     types = types
       .filter(t =>
@@ -584,9 +629,10 @@ module.exports = async (
         [
           'HeartBeatRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.inner_message?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.inner_message?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./heartbeat')(
@@ -598,9 +644,10 @@ module.exports = async (
         [
           'LinkRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./link')(
@@ -612,9 +659,10 @@ module.exports = async (
         [
           'MsgSend',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./axelar-send')(
@@ -626,9 +674,10 @@ module.exports = async (
         [
           'MsgRecvPacket',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./cosmos-send')(
@@ -640,9 +689,10 @@ module.exports = async (
         [
           'RouteIBCTransfersRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         logs = await require('./ibc-send')(
@@ -654,9 +704,10 @@ module.exports = async (
         [
           'MsgAcknowledgement',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./ibc-acknowledgement')(
@@ -668,9 +719,10 @@ module.exports = async (
         [
           'MsgTimeout',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./ibc-failed')(
@@ -682,9 +734,10 @@ module.exports = async (
         [
           'ExecutePendingTransfersRequest',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./axelar-transfer')(
@@ -697,9 +750,10 @@ module.exports = async (
           'ConfirmTransferKey',
           'ConfirmGatewayTx',
         ].findIndex(s =>
-          messages.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          messages
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       ) {
         await require('./confirm')(
@@ -708,19 +762,21 @@ module.exports = async (
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (
-        transfer_actions.findIndex(s =>
-          messages.findIndex(m =>
-            _.last(
-              (m?.['@type'] || '')
-                .split('.')
-            )
-            .replace(
-              'Request',
-              '',
-            )
-            .includes(s)
+        transfer_actions
+          .findIndex(s =>
+            messages
+              .findIndex(m =>
+                _.last(
+                  (m?.['@type'] || '')
+                    .split('.')
+                )
+                .replace(
+                  'Request',
+                  '',
+                )
+                .includes(s)
+              ) > -1
           ) > -1
-        ) > -1
       ) {
         await require('./confirm-deposit')(
           lcd_response,
@@ -728,19 +784,21 @@ module.exports = async (
       }
       // VoteConfirmDeposit & Vote
       if (
-        vote_types.findIndex(s =>
-          messages.findIndex(m =>
-            _.last(
-              (m?.inner_message?.['@type'] || '')
-                .split('.')
-            )
-            .replace(
-              'Request',
-              '',
-            )
-            .includes(s)
+        vote_types
+          .findIndex(s =>
+            messages
+              .findIndex(m =>
+                _.last(
+                  (m?.inner_message?.['@type'] || '')
+                    .split('.')
+                )
+                .replace(
+                  'Request',
+                  '',
+                )
+                .includes(s)
+              ) > -1
           ) > -1
-        ) > -1
       ) {
         await require('./vote')(
           lcd_response,

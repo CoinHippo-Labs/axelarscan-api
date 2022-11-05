@@ -9,18 +9,26 @@ const {
   sleep,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 const {
   endpoints,
@@ -56,22 +64,28 @@ module.exports = async (
   if (txHash) {
     must.push({ match: { 'event.transactionHash': txHash } });
   }
+
   if (sourceChain) {
     must.push({ match: { 'event.chain': sourceChain } });
   }
+
   if (destinationChain) {
     must.push({ match: { 'event.returnValues.destinationChain': destinationChain } });
   }
+
   if (asset) {
     must.push({ match: { 'event.returnValues.asset': asset } });
   }
+
   if (senderAddress) {
     should.push({ match: { 'event.transaction.from': senderAddress } });
     should.push({ match: { 'event.receipt.from': senderAddress } });
   }
+
   if (recipientAddress) {
     must.push({ match: { 'event.returnValues.destinationAddress': recipientAddress } });
   }
+
   if (transferId) {
     must.push({
       bool: {
@@ -83,42 +97,52 @@ module.exports = async (
       },
     });
   }
+
   if (fromTime) {
     fromTime = Number(fromTime);
-    toTime = toTime ?
-      Number(toTime) :
-      moment().unix();
+    toTime =
+      toTime ?
+        Number(toTime) :
+        moment()
+          .unix();
+
     must.push({ range: { 'event.block_timestamp': { gte: fromTime, lte: toTime } } });
   }
+
   if (!query) {
     query = {
       bool: {
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
 
   const read_params = {
-    from: typeof from === 'number' ?
-      from :
-      0,
-    size: typeof size === 'number' ?
-      size :
-      100,
-    sort: sort ||
+    from:
+      typeof from === 'number' ?
+        from :
+        0,
+    size:
+      typeof size === 'number' ?
+        size :
+        100,
+    sort:
+      sort ||
       [{ 'event.block_timestamp': 'desc' }],
   };
 
-  response = await read(
-    'token_sent_events',
-    query,
-    read_params,
-  );
+  response =
+    await read(
+      'token_sent_events',
+      query,
+      read_params,
+    );
 
   const {
     data,
@@ -148,28 +172,30 @@ module.exports = async (
         transactionHash,
       } = { ...event };
 
-      const _response = await read(
-        'evm_polls',
-        {
-          match: { transaction_id: transactionHash },
-        },
-        {
-          size: 1,
-        },
-      );
+      const _response =
+        await read(
+          'evm_polls',
+          {
+            match: { transaction_id: transactionHash },
+          },
+          {
+            size: 1,
+          },
+        );
 
       const poll = _.head(_response?.data);
 
-      const txhash = _.head(
-        Object.entries({ ...poll })
-          .filter(([k, v]) =>
-            k?.startsWith(axelarnet.prefix_address) &&
-            typeof v === 'object' &&
-            v?.confirmed &&
-            v.id
-          )
-          .map(([k, v]) => v.id)
-      );
+      const txhash =
+        _.head(
+          Object.entries({ ...poll })
+            .filter(([k, v]) =>
+              k?.startsWith(axelarnet.prefix_address) &&
+              typeof v === 'object' &&
+              v?.confirmed &&
+              v.id
+            )
+            .map(([k, v]) => v.id)
+        );
 
       if (txhash) {
         api.post(
@@ -186,11 +212,12 @@ module.exports = async (
       await sleep(3 * 1000);
     }
 
-    response = await read(
-      'token_sent_events',
-      query,
-      read_params,
-    );
+    response =
+      await read(
+        'token_sent_events',
+        query,
+        read_params,
+      );
   }
 
   if (Array.isArray(response?.data)) {
@@ -205,22 +232,23 @@ module.exports = async (
 
         return {
           ...d,
-          status: ibc_send ?
-            ibc_send.failed_txhash &&
-            !ibc_send.ack_txhash ?
-              'ibc_failed' :
-              ibc_send.recv_txhash ?
-                'executed' :
-                'ibc_sent' :
-            sign_batch?.executed ?
-              'executed' :
-               sign_batch ?
-                'batch_signed' :
-                axelar_transfer ?
+          status:
+            ibc_send ?
+              ibc_send.failed_txhash &&
+              !ibc_send.ack_txhash ?
+                'ibc_failed' :
+                ibc_send.recv_txhash ?
                   'executed' :
-                  vote ?
-                    'voted' :
-                    'asset_sent',
+                  'ibc_sent' :
+              sign_batch?.executed ?
+                'executed' :
+                 sign_batch ?
+                  'batch_signed' :
+                  axelar_transfer ?
+                    'executed' :
+                    vote ?
+                      'voted' :
+                      'asset_sent',
         };
       });
   }

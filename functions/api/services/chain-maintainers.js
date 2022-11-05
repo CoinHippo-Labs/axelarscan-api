@@ -4,10 +4,12 @@ const {
   to_json,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../data')?.chains?.[environment]?.evm ||
   [];
 
 module.exports = async (
@@ -21,9 +23,10 @@ module.exports = async (
   } = { ...params };
 
   if (
-    evm_chains_data.findIndex(c =>
-      c?.maintainer_id === chain
-    ) > -1
+    evm_chains_data
+      .findIndex(c =>
+        c?.maintainer_id === chain
+      ) > -1
   ) {
     const valid_height =
       Number.isInteger(height) &&

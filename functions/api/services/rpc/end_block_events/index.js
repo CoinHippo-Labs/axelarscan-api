@@ -20,11 +20,12 @@ module.exports = async (
       attributes,
     } = { ...event };
 
-    const _type = _.last(
-      (type || '')
-        .split('.')
-        .filter(s => s)
-    );
+    const _type =
+      _.last(
+        (type || '')
+          .split('.')
+          .filter(s => s)
+      );
 
     const data = [];
     let _data = {};
@@ -43,7 +44,8 @@ module.exports = async (
         _data = {};
       }
 
-      _data[key] = to_json(value) ||
+      _data[key] =
+        to_json(value) ||
         value;
 
       if (i === attributes.length - 1) {

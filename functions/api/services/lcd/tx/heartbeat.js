@@ -5,7 +5,8 @@ const {
   write,
 } = require('../../index');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
 const {
@@ -37,26 +38,33 @@ module.exports = async (
     const record = {
       txhash,
       height,
-      period_height: height -
+      period_height:
+        height -
         (
           (height % num_blocks_per_heartbeat) ||
           num_blocks_per_heartbeat
         ) +
         fraction_heartbeat_block,
-      timestamp: moment(timestamp)
-        .utc()
-        .valueOf(),
+      timestamp:
+        moment(timestamp)
+          .utc()
+          .valueOf(),
       signatures,
-      sender: _.head(
-        messages.map(m => m?.sender)
-      ),
-      key_ids: _.uniq(
-        messages
-          .flatMap(m =>
-            m?.inner_message?.key_ids ||
-            []
-          )
-      ),
+      sender:
+        _.head(
+          messages
+            .map(m =>
+              m?.sender
+            )
+        ),
+      key_ids:
+        _.uniq(
+          messages
+            .flatMap(m =>
+              m?.inner_message?.key_ids ||
+              []
+            )
+        ),
     };
 
     const {

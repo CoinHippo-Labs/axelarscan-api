@@ -42,6 +42,7 @@ module.exports = async (
       must_not.push({ match_phrase: { 'source.sender_chain': id } });
     }
   }
+
   if (destinationChain) {
     must.push({ match_phrase: { 'source.original_recipient_chain': destinationChain } });
 
@@ -50,6 +51,7 @@ module.exports = async (
       must_not.push({ match_phrase: { 'source.recipient_chain': id } });
     }
   }
+
   if (asset) {
     must.push({ match_phrase: { 'source.denom': asset } });
   }
@@ -66,6 +68,7 @@ module.exports = async (
     Number(toTime) * 1000 :
     moment()
       .valueOf();
+
   must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
 
   if (!query) {
@@ -74,42 +77,45 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
 
-  let _response = await read(
-    'transfers',
-    {
-      ...query,
-      bool: {
-        ...query.bool,
-        must: _.concat(
-          query.bool?.must ||
-          [],
-          { exists: { field: 'confirm_deposit' } },
-        ),
+  let _response =
+    await read(
+      'transfers',
+      {
+        ...query,
+        bool: {
+          ...query.bool,
+          must:
+            _.concat(
+              query.bool?.must ||
+              [],
+              { exists: { field: 'confirm_deposit' } },
+            ),
+        },
       },
-    },
-    {
-      aggs: {
-        stats: {
-          terms: { field: `source.created_at.${granularity}`, size: 1000 },
-          aggs: {
-            volume: {
-              sum: {
-                field: 'source.value',
+      {
+        aggs: {
+          stats: {
+            terms: { field: `source.created_at.${granularity}`, size: 1000 },
+            aggs: {
+              volume: {
+                sum: {
+                  field: 'source.value',
+                },
               },
             },
           },
         },
+        size: 0,
       },
-      size: 0,
-    },
-  );
+    );
 
   const {
     aggs,
@@ -124,26 +130,27 @@ module.exports = async (
 
   if (buckets) {
     _response = {
-      data: _.orderBy(
-        buckets
-          .map(c => {
-            const {
-              key,
-              volume,
-              doc_count,
-            } = { ...c };
+      data:
+        _.orderBy(
+          buckets
+            .map(c => {
+              const {
+                key,
+                volume,
+                doc_count,
+              } = { ...c };
 
-            return {
-              timestamp: key,
-              volume:
-                volume?.value ||
-                0,
-              num_txs: doc_count,
-            };
-          }),
-        ['timestamp'],
-        ['asc'],
-      ),
+              return {
+                timestamp: key,
+                volume:
+                  volume?.value ||
+                  0,
+                num_txs: doc_count,
+              };
+            }),
+          ['timestamp'],
+          ['asc'],
+        ),
       total,
     };
 
@@ -164,6 +171,7 @@ module.exports = async (
         must_not.push({ match_phrase: { 'event.chain': id } });
       }
     }
+
     if (destinationChain) {
       must.push({ match_phrase: { 'event.returnValues.destinationChain': destinationChain } });
 
@@ -171,12 +179,15 @@ module.exports = async (
         must_not.push({ match_phrase: { 'event.returnValues.destinationChain': id } });
       }
     }
+
     if (asset) {
       must.push({ match_phrase: { 'event.denom': asset } });
     }
+
     if (fromTime) {
       fromTime /= 1000;
       toTime /= 1000;
+
       must.push({ range: { 'event.block_timestamp': { gte: fromTime, lte: toTime } } });
     }
 
@@ -185,31 +196,33 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
 
-    let _response = await read(
-      'token_sent_events',
-      query,
-      {
-        aggs: {
-          stats: {
-            terms: { field: `event.created_at.${granularity}`, size: 1000 },
-            aggs: {
-              volume: {
-                sum: {
-                  field: 'event.value',
+    let _response =
+      await read(
+        'token_sent_events',
+        query,
+        {
+          aggs: {
+            stats: {
+              terms: { field: `event.created_at.${granularity}`, size: 1000 },
+              aggs: {
+                volume: {
+                  sum: {
+                    field: 'event.value',
+                  },
                 },
               },
             },
           },
+          size: 0,
         },
-        size: 0,
-      },
-    );
+      );
 
     const {
       aggs,
@@ -224,26 +237,27 @@ module.exports = async (
 
     if (buckets) {
       _response = {
-        data: _.orderBy(
-          buckets
-            .map(c => {
-              const {
-                key,
-                volume,
-                doc_count,
-              } = { ...c };
+        data:
+          _.orderBy(
+            buckets
+              .map(c => {
+                const {
+                  key,
+                  volume,
+                  doc_count,
+                } = { ...c };
 
-              return {
-                timestamp: key,
-                volume:
-                  volume?.value ||
-                  0,
-                num_txs: doc_count,
-              };
-            }),
-          ['timestamp'],
-          ['asc'],
-        ),
+                return {
+                  timestamp: key,
+                  volume:
+                    volume?.value ||
+                    0,
+                  num_txs: doc_count,
+                };
+              }),
+            ['timestamp'],
+            ['asc'],
+          ),
         total,
       };
     }
@@ -265,14 +279,16 @@ module.exports = async (
         .map(([k, v]) => {
           return {
             ..._.head(v),
-            volume: _.sumBy(
-              v,
-              'volume',
-            ),
-            num_txs: _.sumBy(
-              v,
-              'num_txs',
-            ),
+            volume:
+              _.sumBy(
+                v,
+                'volume',
+              ),
+            num_txs:
+              _.sumBy(
+                v,
+                'num_txs',
+              ),
           };
         }),
       total:

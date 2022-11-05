@@ -4,8 +4,9 @@ const {
   log,
 } = require('../../utils');
 
-const service_name = 'api';
 const environment = process.env.ENVIRONMENT;
+
+const service_name = 'api';
 
 // create request object from environment
 const API = (env = environment) => {
@@ -39,7 +40,9 @@ const getLatestEventBlock = async chain => {
       'info',
       service_name,
       'get latest event block',
-      { ...params },
+      {
+        ...params,
+      },
     );
 
     const response = await api.get(
@@ -90,7 +93,9 @@ const saveEvent = async (
       'info',
       service_name,
       'save event',
-      { ...params },
+      {
+        ...params,
+      },
     );
 
     const response = await api.post(

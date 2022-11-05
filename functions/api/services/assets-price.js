@@ -10,12 +10,14 @@ const {
   equals_ignore_case,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const data = require('../data');
-const assets_data = data?.assets?.[environment] ||
+const assets_data =
+  require('../data')?.assets?.[environment] ||
   [];
+
 const currency = 'usd';
 const stablecoin_threshold = 0.01;
 const collection = 'assets';
@@ -39,70 +41,81 @@ module.exports = async (
     denoms,
   } = { ...params };
 
-  denoms = _.uniq(
-    (Array.isArray(denoms) ?
-      denoms :
-      (
-        denoms ||
-        denom ||
-        ''
+  denoms =
+    _.uniq(
+      (Array.isArray(denoms) ?
+        denoms :
+        (
+          denoms ||
+          denom ||
+          ''
+        )
+        .split(',')
       )
-      .split(',')
-    )
-    .filter(d => d)
-    .map(d => {
-      if (typeof d === 'object') {
-        return d;
-      }
-      else {
-        return d?.trim().toLowerCase();
-      }
-    })
-  );
+      .filter(d => d)
+      .map(d => {
+        if (typeof d === 'object') {
+          return d;
+        }
+        else {
+          return (
+            (d || '')
+              .trim()
+              .toLowerCase()
+          );
+        }
+      })
+    );
 
-  const query_timestamp = Number(timestamp) ||
+  const query_timestamp =
+    Number(timestamp) ||
     current_time.valueOf();
 
   if (denoms.length > 0) {
-    const price_timestamp = moment(query_timestamp)
-      .startOf('day')
-      .valueOf();
+    const price_timestamp =
+      moment(query_timestamp)
+        .startOf('day')
+        .valueOf();
 
-    const response_cache = await read(
-      collection,
-      {
-        bool: {
-          must: [
-            { match: { price_timestamp } },
-          ],
-          should: denoms
-            .map(d => {
-              return {
-                match: {
-                  denom: typeof d === 'object' ?
-                    d?.denom :
-                    d,
-                },
-              };
-            }),
-          minimum_should_match: 1,
+    const response_cache =
+      await read(
+        collection,
+        {
+          bool: {
+            must: [
+              { match: { price_timestamp } },
+            ],
+            should: denoms
+              .map(d => {
+                return {
+                  match: {
+                    denom: typeof d === 'object' ?
+                      d?.denom :
+                      d,
+                  },
+                };
+              }),
+            minimum_should_match: 1,
+          },
         },
-      },
-      {
-        size: denoms.length,
-      },
-    );
+        {
+          size: denoms.length,
+        },
+      );
 
     const data = denoms
       .map(d => {
-        const denom_data = typeof d === 'object' ?
-          d :
-          {
-            denom: d,
-          };
+        const denom_data =
+          typeof d === 'object' ?
+            d :
+            {
+              denom: d,
+            };
 
-        const _denom = denom_data?.denom ||
+        const _denom =
+          denom_data?.denom ||
           d;
+
         const _chain =
           _denom === 'uluna' &&
           !['terra-2'].includes(chain) ?
@@ -110,9 +123,14 @@ module.exports = async (
             denom_data?.chain ||
               chain;
 
-        const asset_data = assets_data.find(a =>
-          equals_ignore_case(a?.id, _denom)
-        );
+        const asset_data = assets_data
+          .find(a =>
+            equals_ignore_case(
+              a?.id,
+              _denom,
+            )
+          );
+
         const {
           coingecko_id,
           coingecko_ids,
@@ -121,11 +139,13 @@ module.exports = async (
 
         return {
           denom: _denom,
-          coingecko_id: coingecko_ids?.[_chain] ||
+          coingecko_id:
+            coingecko_ids?.[_chain] ||
             coingecko_id,
-          price: is_stablecoin ?
-            1 :
-            undefined,
+          price:
+            is_stablecoin ?
+              1 :
+              undefined,
         };
       });
 
@@ -133,9 +153,13 @@ module.exports = async (
       response_cache.data
         .filter(a => a)
         .forEach(a => {
-          const data_index = data.findIndex(d =>
-            equals_ignore_case(d.denom, a?.denom)
-          );
+          const data_index = data
+            .findIndex(d =>
+              equals_ignore_case(
+                d.denom,
+                a?.denom,
+              )
+            );
 
           if (data_index > -1) {
             data[data_index] = {
@@ -158,10 +182,11 @@ module.exports = async (
       .filter(d =>
         !d?.updated_at ||
         (
-          current_time.diff(
-            moment(query_timestamp),
-            'hours',
-          ) < 4 &&
+          current_time
+            .diff(
+              moment(query_timestamp),
+              'hours',
+            ) < 4 &&
           d.updated_at < updated_at_threshold
         )
       );
@@ -190,7 +215,10 @@ module.exports = async (
             {
               params: {
                 id: coingecko_id,
-                date: moment(Number(timestamp))
+                date:
+                  moment(
+                    Number(timestamp)
+                  )
                   .format('DD-MM-YYYY'),
                 localization: 'false',
               },
@@ -201,13 +229,15 @@ module.exports = async (
             error,
           } = { ..._response?.data };
 
-          _data = _.concat(
-            _data ||
-            [],
-            !error && _response?.data ?
-              _response.data :
+          _data =
+            _.concat(
+              _data ||
               [],
-          );
+              !error &&
+              _response?.data ?
+                _response.data :
+                [],
+            );
         }
       }
       else {
@@ -216,16 +246,18 @@ module.exports = async (
           {
             params: {
               vs_currency: currency,
-              ids: coingecko_ids
-                .join(','),
+              ids:
+                coingecko_ids
+                  .join(','),
               per_page: 250,
             },
           },
         ).catch(error => { return { data: { error } }; });
 
-        _data = Array.isArray(_response?.data) ?
-          _response.data :
-          [];
+        _data =
+          Array.isArray(_response?.data) ?
+            _response.data :
+            [];
       }
 
       // update data from coingecko
@@ -238,13 +270,19 @@ module.exports = async (
             current_price,
           } = { ...a };
 
-          const asset_data = assets_data.find(_a => _a?.coingecko_id === id);
+          const asset_data = assets_data
+            .find(_a =>
+              _a?.coingecko_id === id
+            );
+
           const {
             is_stablecoin,
           } = { ...asset_data };
 
-          let price = market_data?.current_price?.[currency] ||
+          let price =
+            market_data?.current_price?.[currency] ||
             current_price;
+
           price =
             is_stablecoin &&
             Math.abs(price - 1) > stablecoin_threshold ?
@@ -252,17 +290,26 @@ module.exports = async (
               price;
 
           return {
-            denom: to_update_data.find(d =>
-              equals_ignore_case(d?.coingecko_id, id)
-            )?.denom,
+            denom:
+            to_update_data
+              .find(d =>
+                equals_ignore_case(
+                  d?.coingecko_id,
+                  id,
+                )
+              )?.denom,
             coingecko_id: id,
             price,
           };
         })
         .forEach(a => {
-          const data_index = data.findIndex(d =>
-            equals_ignore_case(d.denom, a?.denom)
-          );
+          const data_index = data
+            .findIndex(d =>
+              equals_ignore_case(
+                d.denom,
+                a?.denom,
+              )
+            );
 
           if (data_index > -1) {
             data[data_index] = {
@@ -273,28 +320,31 @@ module.exports = async (
         });
     }
 
-    const to_update_cache = data.filter(d =>
-      (
-        !d?.updated_at ||
+    const to_update_cache = data
+      .filter(d =>
         (
-          current_time.diff(
-            moment(query_timestamp),
-            'hours',
-          ) < 4 &&
-          d.updated_at < updated_at_threshold
-        )
-      ) &&
-      ('denom' in d) &&
-      ('price' in d)
-    );
+          !d?.updated_at ||
+          (
+            current_time
+              .diff(
+                moment(query_timestamp),
+                'hours',
+              ) < 4 &&
+            d.updated_at < updated_at_threshold
+          )
+        ) &&
+        ('denom' in d) &&
+        ('price' in d)
+      );
 
     for (const d of to_update_cache) {
       const {
         denom,
       } = { ...d };
 
-      d.updated_at = moment()
-        .valueOf();
+      d.updated_at =
+        moment()
+          .valueOf();
 
       const price_timestamp =
         moment(
@@ -303,6 +353,7 @@ module.exports = async (
         )
         .startOf('day')
         .valueOf();
+
       d.price_timestamp = price_timestamp;
 
       const id = `${denom}_${price_timestamp}`;

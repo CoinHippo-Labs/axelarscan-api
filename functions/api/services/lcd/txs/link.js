@@ -15,21 +15,31 @@ const {
   normalize_chain,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 const cosmos_non_axelarnet_chains_data =
   cosmos_chains_data
-    .filter(c => c?.id !== axelarnet.id);
+    .filter(c =>
+      c?.id !== axelarnet.id
+    );
 
 module.exports = async (
   lcd_response = {},
@@ -45,9 +55,10 @@ module.exports = async (
         [
           'LinkRequest',
         ].findIndex(s =>
-          t?.tx?.body?.messages?.findIndex(m =>
-            m?.['@type']?.includes(s)
-          ) > -1
+          (t?.tx?.body?.messages || [])
+            .findIndex(m =>
+              m?.['@type']?.includes(s)
+            ) > -1
         ) > -1
       );
 
@@ -69,31 +80,36 @@ module.exports = async (
 
       height = Number(height);
 
-      const event = _.head(
-        (logs || [])
-          .flatMap(l =>
-            (l?.events || [])
-              .filter(e =>
-                equals_ignore_case(e?.type, 'link')
-              )
-          )
-      );
+      const event =
+        _.head(
+          (logs || [])
+            .flatMap(l =>
+              (l?.events || [])
+                .filter(e =>
+                  equals_ignore_case(
+                    e?.type,
+                    'link',
+                  )
+                )
+            )
+        );
 
       const {
         attributes,
       } = { ...event };
 
-      const created_at = moment(timestamp)
-        .utc()
-        .valueOf();
+      const created_at =
+        moment(timestamp)
+          .utc()
+          .valueOf();
 
-      let sender_chain =
-        attributes?.find(a =>
+      let sender_chain = (attributes || [])
+        .find(a =>
           a?.key === 'sourceChain'
         )?.value;
 
-      const deposit_address =
-        attributes?.find(a =>
+      const deposit_address = (attributes || [])
+        .find(a =>
           a?.key === 'depositAddress'
         )?.value;
 
@@ -127,10 +143,16 @@ module.exports = async (
       sender_address = sender;
       recipient_address = recipient_addr;
 
-      if (equals_ignore_case(sender_chain, axelarnet.id)) {
-        const chain_data = cosmos_non_axelarnet_chains_data.find(c =>
-          sender_address?.startsWith(c?.prefix_address)
-        );
+      if (
+        equals_ignore_case(
+          sender_chain,
+          axelarnet.id,
+        )
+      ) {
+        const chain_data = cosmos_non_axelarnet_chains_data
+          .find(c =>
+            sender_address?.startsWith(c?.prefix_address)
+          );
 
         const {
           id,
@@ -162,23 +184,27 @@ module.exports = async (
       if (
         sender_address?.startsWith(axelarnet.prefix_address) &&
         chains_data.findIndex(c =>
-          equals_ignore_case(c?.id, sender_chain)
+          equals_ignore_case(
+            c?.id,
+            sender_chain,
+          )
         ) > -1
       ) {
-        const _response = await read(
-          'transfers',
-          {
-            bool: {
-              must: [
-                { match: { 'source.recipient_address': deposit_address } },
-                { match: { 'source.sender_chain': sender_chain } },
-              ],
+        const _response =
+          await read(
+            'transfers',
+            {
+              bool: {
+                must: [
+                  { match: { 'source.recipient_address': deposit_address } },
+                  { match: { 'source.sender_chain': sender_chain } },
+                ],
+              },
             },
-          },
-          {
-            size: 1,
-          },
-        );
+            {
+              size: 1,
+            },
+          );
 
         const {
           source,
@@ -190,13 +216,15 @@ module.exports = async (
         }
       }
 
-      sender_chain = normalize_chain(
-        cosmos_non_axelarnet_chains_data.find(c =>
-          sender_address?.startsWith(c?.prefix_address)
-        )?.id ||
-        sender_chain ||
-        chain
-      );
+      sender_chain =
+        normalize_chain(
+          cosmos_non_axelarnet_chains_data
+            .find(c =>
+              sender_address?.startsWith(c?.prefix_address)
+            )?.id ||
+          sender_chain ||
+          chain
+        );
 
       original_sender_chain = normalize_original_chain(sender_chain);
 
@@ -225,21 +253,24 @@ module.exports = async (
         typeof price !== 'number' &&
         denom
       ) {
-        let _response = await assets_price(
-          {
-            chain: original_sender_chain,
-            denom,
-            timestamp: moment(timestamp)
-              .utc()
-              .valueOf(),
-          },
-        );
+        let _response =
+          await assets_price(
+            {
+              chain: original_sender_chain,
+              denom,
+              timestamp:
+                moment(timestamp)
+                  .utc()
+                  .valueOf(),
+            },
+          );
 
         if (typeof _.head(_response)?.price !== 'number') {
-          _response = await get(
-            'deposit_addresses',
-            id,
-          );
+          _response =
+            await get(
+              'deposit_addresses',
+              id,
+            );
         }
 
         const _price = _.head(_response)?.price;

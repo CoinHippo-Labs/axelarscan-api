@@ -6,10 +6,12 @@ const {
   to_json,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../data')?.chains?.[environment]?.evm ||
   [];
 
 module.exports = async (
@@ -27,13 +29,20 @@ module.exports = async (
     unsubmittedVoteRates,
   } = { ...params };
 
-  uptimeRate = uptimeRate ||
+  uptimeRate =
+    uptimeRate ||
     1;
-  heartbeatRate = heartbeatRate ||
+
+  heartbeatRate =
+    heartbeatRate ||
     1;
-  numEVMChains = numEVMChains ||
+
+  numEVMChains =
+    numEVMChains ||
     _evm_chains_data.length;
-  unsubmittedVoteRates = unsubmittedVoteRates ||
+
+  unsubmittedVoteRates =
+    unsubmittedVoteRates ||
     Object.fromEntries(
       _evm_chains_data
         .map(c =>
@@ -48,17 +57,19 @@ module.exports = async (
     '/cosmos/mint/v1beta1/inflation',
   );
 
-  const tendermintInflationRate = response ?
-    Number(response.inflation) :
-    null;
+  const tendermintInflationRate =
+    response ?
+      Number(response.inflation) :
+      null;
 
   response = await lcd(
     '/cosmos/distribution/v1beta1/params',
   );
 
-  const communityTax = response ?
-    Number(response.params?.community_tax) :
-    null;
+  const communityTax =
+    response ?
+      Number(response.params?.community_tax) :
+      null;
 
   response = await cli(
     undefined,
@@ -69,16 +80,17 @@ module.exports = async (
     30,
   );
 
-  const keyMgmtRelativeInflationRate = Number(
-    (
-      {
-        ...to_json(response?.stdout),
-      }.value ||
-      ''
-    )
-    .split('"')
-    .join('')
-  );
+  const keyMgmtRelativeInflationRate =
+    Number(
+      (
+        {
+          ...to_json(response?.stdout),
+        }.value ||
+        ''
+      )
+      .split('"')
+      .join('')
+    );
 
   response = await cli(
     undefined,
@@ -89,37 +101,41 @@ module.exports = async (
     30,
   );
 
-  const externalChainVotingInflationRate = Number(
-    (
-      {
-        ...to_json(response?.stdout),
-      }.value ||
-      ''
-    )
-    .split('"')
-    .join('')
-  );
-
-  const inflation = parseFloat(
-    (
-      (uptimeRate * (tendermintInflationRate || 0)) +
-      (heartbeatRate * (keyMgmtRelativeInflationRate || 0) * (tendermintInflationRate || 0)) +
+  const externalChainVotingInflationRate =
+    Number(
       (
-        externalChainVotingInflationRate *
-        _.sum(
-          Object.values({ ...unsubmittedVoteRates })
-            .map(v => 1 - v)
+        {
+          ...to_json(response?.stdout),
+        }.value ||
+        ''
+      )
+      .split('"')
+      .join('')
+    );
+
+  const inflation =
+    parseFloat(
+      (
+        (uptimeRate * (tendermintInflationRate || 0)) +
+        (heartbeatRate * (keyMgmtRelativeInflationRate || 0) * (tendermintInflationRate || 0)) +
+        (
+          externalChainVotingInflationRate *
+          _.sum(
+            Object.values({ ...unsubmittedVoteRates })
+              .map(v => 1 - v)
+          )
         )
       )
-    )
-    .toFixed(6)
-  );
+      .toFixed(6)
+    );
 
   return {
-    equation: `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${_evm_chains_data
-      .map(c => `(1 - ${c?.id}UnsubmittedVoteRate)`)
-      .join(' + ')
-    }))`,
+    equation:
+      `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${
+        _evm_chains_data
+          .map(c => `(1 - ${c?.id}UnsubmittedVoteRate)`)
+          .join(' + ')
+      }))`,
     tendermintInflationRate,
     communityTax,
     keyMgmtRelativeInflationRate,

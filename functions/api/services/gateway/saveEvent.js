@@ -22,13 +22,15 @@ const {
   getProvider,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
   [];
-const assets_data = data?.assets?.[environment] ||
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
   [];
 
 const {
@@ -124,15 +126,18 @@ module.exports = async (
       case 'TokenSent':
         try {
           event = {
-            ...await getTransaction(
-              provider,
-              transactionHash,
-              chain,
+            ...(
+              await getTransaction(
+                provider,
+                transactionHash,
+                chain,
+              )
             ),
-            block_timestamp: await getBlockTime(
-              provider,
-              blockNumber,
-            ),
+            block_timestamp:
+              await getBlockTime(
+                provider,
+                blockNumber,
+              ),
             ...event,
           };
 
@@ -152,8 +157,10 @@ module.exports = async (
               ...event,
               created_at:
                 get_granularity(
-                  moment(block_timestamp * 1000)
-                    .utc()
+                  moment(
+                    block_timestamp * 1000
+                  )
+                  .utc()
                 ),
             };
           }
@@ -165,6 +172,7 @@ module.exports = async (
                 chain,
               )
             );
+
           const {
             chain_id,
           } = { ...chain_data };
@@ -175,13 +183,14 @@ module.exports = async (
                 a?.symbol,
                 symbol,
               ) ||
-              a?.contracts?.findIndex(c =>
-                c?.chain_id === chain_id &&
-                equals_ignore_case(
-                  c?.symbol,
-                  symbol,
-                )
-              ) > -1
+              (a?.contracts || [])
+                .findIndex(c =>
+                  c?.chain_id === chain_id &&
+                  equals_ignore_case(
+                    c?.symbol,
+                    symbol,
+                  )
+                ) > -1
             );
 
           if (asset_data) {
@@ -236,18 +245,20 @@ module.exports = async (
                 price,
               } = { ..._.head(_response) };
 
-              price = typeof price === 'number' ?
-                price :
-                undefined;
+              price =
+                typeof price === 'number' ?
+                  price :
+                  undefined;
 
               event = {
                 ...event,
                 amount,
                 denom: id,
                 price,
-                value: typeof price === 'number' ?
-                  amount * price:
-                  undefined,
+                value:
+                  typeof price === 'number' ?
+                    amount * price:
+                    undefined,
               };
             }
           }
@@ -279,15 +290,18 @@ module.exports = async (
       case 'Executed':
         try {
           event = {
-            ...await getTransaction(
-              provider,
-              transactionHash,
-              chain,
+            ...(
+              await getTransaction(
+                provider,
+                transactionHash,
+                chain,
+              )
             ),
-            block_timestamp: await getBlockTime(
-              provider,
-              blockNumber,
-            ),
+            block_timestamp:
+              await getBlockTime(
+                provider,
+                blockNumber,
+              ),
             ...event,
           };
 
@@ -307,15 +321,16 @@ module.exports = async (
                 );
             }
 
-            const _response = await read(
-              'batches',
-              {
-                match: { 'commands.id': commandId },
-              },
-              {
-                size: 1,
-              },
-            );
+            const _response =
+              await read(
+                'batches',
+                {
+                  match: { 'commands.id': commandId },
+                },
+                {
+                  size: 1,
+                },
+              );
 
             const batch = _.head(_response?.data);
             const {
@@ -363,35 +378,38 @@ module.exports = async (
                 let command_events
 
                 if (
-                  commands.findIndex(c =>
-                    !c?.transactionHash
-                  ) > -1
+                  commands
+                    .findIndex(c =>
+                      !c?.transactionHash
+                    ) > -1
                 ) {
-                  const _response = await read(
-                    'command_events',
-                    {
-                      bool: {
-                        must: [
-                          { match: { chain } },
-                        ],
-                        should: commands
-                          .filter(c => !c?.transactionHash)
-                          .map(c => {
-                            const {
-                              id,
-                            } = { ...c };
+                  const _response =
+                    await read(
+                      'command_events',
+                      {
+                        bool: {
+                          must: [
+                            { match: { chain } },
+                          ],
+                          should:
+                            commands
+                              .filter(c => !c?.transactionHash)
+                              .map(c => {
+                                const {
+                                  id,
+                                } = { ...c };
 
-                            return {
-                              match: { command_id: id },
-                            };
-                          }),
-                        minimum_should_match: 1,
+                                return {
+                                  match: { command_id: id },
+                                };
+                              }),
+                          minimum_should_match: 1,
+                        },
                       },
-                    },
-                    {
-                      size: 100,
-                    },
-                  );
+                      {
+                        size: 100,
+                      },
+                    );
 
                   command_events = _response?.data;
                 }
@@ -422,6 +440,10 @@ module.exports = async (
                         c.transactionIndex = transactionIndex;
                         c.logIndex = logIndex;
                         c.block_timestamp = block_timestamp;
+
+                        if (transactionHash) {
+                          c.executed = true;
+                        }
                       }
                     }
 

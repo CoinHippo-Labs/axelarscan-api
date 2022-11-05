@@ -8,9 +8,11 @@ const {
   log,
 } = require('../utils');
 
-const service_name = 'archiver';
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
+
+const service_name = 'archiver';
 
 const {
   endpoints,
@@ -21,9 +23,11 @@ let {
   cache_timeout_seconds,
 } = { ...config?.[environment] };
 
-store_blocks = store_blocks ||
+store_blocks =
+  store_blocks ||
   100000;
-cache_timeout_seconds = cache_timeout_seconds ||
+cache_timeout_seconds =
+  cache_timeout_seconds ||
   300;
 
 module.exports = async () => {
@@ -66,16 +70,17 @@ module.exports = async () => {
           },
         );
 
-        const output = await delete_by_query(
-          collection,
-          {
-            range: {
-              height: {
-                lt: latest_block - store_blocks,
+        const output =
+          await delete_by_query(
+            collection,
+            {
+              range: {
+                height: {
+                  lt: latest_block - store_blocks,
+                },
               },
             },
-          },
-        );
+          );
 
         log(
           'debug',
@@ -104,40 +109,43 @@ module.exports = async () => {
       },
     );
 
-    const output = await delete_by_query(
-      collection,
-      {
-        bool: {
-          must: [
-            {
-              range: {
-                updated_at: {
-                  lt: moment()
-                    .subtract(
-                      cache_timeout_seconds,
-                      'seconds',
-                    )
-                    .unix(),
-                },
-              },
-            },
-          ],
-          must_not: collection === 'axelard' ?
-            [
+    const output =
+      await delete_by_query(
+        collection,
+        {
+          bool: {
+            must: [
               {
-                bool: {
-                  should: [
-                    { exists: { field: 'type' } },
-                    { match: { type: 'proxy' } },
-                  ],
-                  minimum_should_match: 1, 
+                range: {
+                  updated_at: {
+                    lt:
+                      moment()
+                        .subtract(
+                          cache_timeout_seconds,
+                          'seconds',
+                        )
+                        .unix(),
+                  },
                 },
               },
-            ] :
-            [],
+            ],
+            must_not:
+              collection === 'axelard' ?
+                [
+                  {
+                    bool: {
+                      should: [
+                        { exists: { field: 'type' } },
+                        { match: { type: 'proxy' } },
+                      ],
+                      minimum_should_match: 1, 
+                    },
+                  },
+                ] :
+                [],
+          },
         },
-      },
-    );
+      );
 
     log(
       'debug',

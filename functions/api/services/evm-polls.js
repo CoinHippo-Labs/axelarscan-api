@@ -9,7 +9,8 @@ const {
   equals_ignore_case,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
 const {
@@ -45,9 +46,11 @@ module.exports = async (
   if (pollId) {
     must.push({ match: { _id: pollId } });
   }
+
   if (chain) {
     must.push({ match: { sender_chain: chain } });
   }
+
   if (status) {
     switch (status) {
       case 'success':
@@ -67,12 +70,15 @@ module.exports = async (
         break;
     }
   }
+
   if (transactionId) {
     must.push({ match: { transaction_id: transactionId } });
   }
+
   if (transferId) {
     must.push({ match: { transfer_id: transferId } });
   }
+
   if (depositAddress) {
     must.push({ match: { deposit_address: depositAddress } });
   }
@@ -95,10 +101,11 @@ module.exports = async (
       },
     );
 
-    const operator_address = _.last(
-      (_.head(_response?.data)?.id || '')
-        .split(' ')
-    );
+    const operator_address =
+      _.last(
+        (_.head(_response?.data)?.id || '')
+          .split(' ')
+      );
 
     let start_proxy_height;
 
@@ -120,7 +127,8 @@ module.exports = async (
       let transactions_data = [];
 
       while (page_key) {
-        const has_page_key = page_key &&
+        const has_page_key =
+          page_key &&
           typeof page_key !== 'boolean';
 
         const _response = await lcd.get(
@@ -128,13 +136,15 @@ module.exports = async (
           {
             params: {
               events: `message.action='RegisterProxy'`,
-              'pagination.key': has_page_key ?
-                page_key :
-                undefined,
+              'pagination.key':
+                has_page_key ?
+                  page_key :
+                  undefined,
               'pagination.limit': limit,
-              'pagination.offset': has_page_key ?
-                undefined :
-                transactions_data.length,
+              'pagination.offset':
+                has_page_key ?
+                  undefined :
+                  transactions_data.length,
             },
           },
         ).catch(error => { return { data: { error } }; });
@@ -148,16 +158,24 @@ module.exports = async (
           next_key,
         } = { ...pagination };
 
-        const transaction_data = tx_responses?.find((t, i) =>
-          !t?.code &&
-          txs?.[i]?.body?.messages?.findIndex(m =>
-            m?.['@type']?.includes('RegisterProxy') &&
-            (
-              equals_ignore_case(m.sender, operator_address) ||
-              equals_ignore_case(m.proxy_addr, voter)
-            )
-          ) > -1
-        );
+        const transaction_data = (tx_responses || [])
+          .find((t, i) =>
+            !t?.code &&
+            (txs?.[i]?.body?.messages || [])
+              .findIndex(m =>
+                m?.['@type']?.includes('RegisterProxy') &&
+                (
+                  equals_ignore_case(
+                    m.sender,
+                    operator_address,
+                  ) ||
+                  equals_ignore_case(
+                    m.proxy_addr,
+                    voter,
+                  )
+                )
+              ) > -1
+          );
 
         const {
           height,
@@ -169,13 +187,15 @@ module.exports = async (
           page_key = false;
         }
         else {
-          transactions_data = _.concat(
-            transactions_data,
-            tx_responses ||
-            [],
-          );
+          transactions_data =
+            _.concat(
+              transactions_data,
+              tx_responses ||
+              [],
+            );
 
-          page_key = next_key ||
+          page_key =
+            next_key ||
             tx_responses?.length === limit;
         }
       }
@@ -185,13 +205,13 @@ module.exports = async (
       bool: {
         must: [
           start_proxy_height &&
-            { range: { height: { gte: start_proxy_height } } },
+          { range: { height: { gte: start_proxy_height } } },
         ]
         .filter(m => m),
         should: [
           { exists: { field: _voter } },
           operator_address &&
-            { match: { participants: operator_address } },
+          { match: { participants: operator_address } },
           [
             'unsubmitted',
           ].includes(vote) &&
@@ -259,10 +279,12 @@ module.exports = async (
   }
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime = toTime ?
-      Number(toTime) * 1000 :
-      moment()
-        .valueOf();
+    toTime =
+      toTime ?
+        Number(toTime) * 1000 :
+        moment()
+          .valueOf();
+
     must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
   }
   if (!query) {
@@ -271,9 +293,10 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match: should.length > 0 ?
-          1 :
-          0,
+        minimum_should_match:
+          should.length > 0 ?
+            1 :
+            0,
       },
     };
   }
@@ -282,13 +305,16 @@ module.exports = async (
     'evm_polls',
     query,
     {
-      from: typeof from === 'number' ?
-        from :
-        0,
-      size: typeof size === 'number' ?
-        size :
-        25,
-      sort: sort ||
+      from:
+        typeof from === 'number' ?
+          from :
+          0,
+      size:
+        typeof size === 'number' ?
+          size :
+          25,
+      sort:
+        sort ||
         [{ 'created_at.ms': 'desc' }],
       track_total_hits: true,
     },

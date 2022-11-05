@@ -4,10 +4,12 @@ const {
   sleep,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const assets_data = require('../../data')?.assets?.[environment] ||
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
   [];
 
 module.exports = async context => {
@@ -30,34 +32,38 @@ module.exports = async context => {
 
   return;*/
 
-  const assets_tvl = await Promise.all(
-    assets_data
-      .map(a =>
-        new Promise(
-          async (resolve, reject) => {
-            const {
-              id,
-            } = { ...a };
-
-            const result = await tvl(
-              {
-                asset: id,
-              },
-              true,
-            );
-
-            resolve(
-              [
+  const assets_tvl =
+    await Promise.all(
+      assets_data
+        .map(a =>
+          new Promise(
+            async (resolve, reject) => {
+              const {
                 id,
-                result,
-              ]
-            );
-          }
-        )
-      )
-  );
+              } = { ...a };
 
-  return Object.fromEntries(
-    assets_tvl
+              const result =
+                await tvl(
+                  {
+                    asset: id,
+                  },
+                  true,
+                );
+
+              resolve(
+                [
+                  id,
+                  result,
+                ]
+              );
+            }
+          )
+        )
+    );
+
+  return (
+    Object.fromEntries(
+      assets_tvl
+    )
   );
 };

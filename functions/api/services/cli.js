@@ -23,21 +23,33 @@ const {
 const IAxelarGateway = require('../data/contracts/interfaces/IAxelarGateway.json');
 const IBurnableMintableCappedERC20 = require('../data/contracts/interfaces/IBurnableMintableCappedERC20.json');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = require('../data')?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const cosmos_non_axelarnet_chains_data = cosmos_chains_data
-  .filter(c => c?.id !== axelarnet.id);
-const assets_data = require('../data')?.assets?.[environment] ||
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
+const cosmos_non_axelarnet_chains_data =
+  cosmos_chains_data
+    .filter(c =>
+      c?.id !== axelarnet.id
+    );
+const assets_data =
+  require('../data')?.assets?.[environment] ||
   [];
 
 const {
@@ -108,7 +120,9 @@ module.exports = async (
         response_cache &&
         moment()
           .diff(
-            moment(updated_at * 1000),
+            moment(
+              updated_at * 1000
+            ),
             'seconds',
             true,
           ) <= cache_timeout
@@ -177,8 +191,8 @@ module.exports = async (
             )
             .toLowerCase();
 
-          const chain_data =
-            evm_chains_data.find(c =>
+          const chain_data = evm_chains_data
+            .find(c =>
               equals_ignore_case(
                 c?.id,
                 chain,
@@ -204,15 +218,16 @@ module.exports = async (
               provider,
             );
 
-          const _response = await read(
-            'batches',
-            {
-              match_phrase: { batch_id },
-            },
-            {
-              size: 1,
-            },
-          );
+          const _response =
+            await read(
+              'batches',
+              {
+                match_phrase: { batch_id },
+              },
+              {
+                size: 1,
+              },
+            );
 
           let {
             commands,
@@ -264,9 +279,11 @@ module.exports = async (
                   if (!executed) {
                     try {
                       if (gateway_contract) {
-                        executed = await gateway_contract.isCommandExecuted(
-                          `0x${command_id}`,
-                        );
+                        executed =
+                          await gateway_contract
+                            .isCommandExecuted(
+                              `0x${command_id}`,
+                            );
                       }
                     } catch (error) {}
                   }
@@ -316,9 +333,11 @@ module.exports = async (
                         );
 
                       if (erc20_contract) {
-                        deposit_address = await erc20_contract.depositAddress(
-                          salt,
-                        );
+                        deposit_address =
+                          await erc20_contract
+                            .depositAddress(
+                              salt,
+                            );
                       }
                     } catch (error) {}
                   }
@@ -349,34 +368,36 @@ module.exports = async (
                 !c.transactionHash
               ) > -1
           ) {
-            const _response = await read(
-              'command_events',
-              {
-                bool: {
-                  must: [
-                    { match: { chain } },
-                  ],
-                  should: _.concat(
-                    { match_phrase: { batch_id } },
-                    commands
-                      .filter(c => !c.transactionHash)
-                      .map(c => {
-                        const {
-                          id,
-                        } = { ...c };
+            const _response =
+              await read(
+                'command_events',
+                {
+                  bool: {
+                    must: [
+                      { match: { chain } },
+                    ],
+                    should:
+                      _.concat(
+                        { match_phrase: { batch_id } },
+                        commands
+                          .filter(c => !c.transactionHash)
+                          .map(c => {
+                            const {
+                              id,
+                            } = { ...c };
 
-                        return {
-                          match: { command_id: id },
-                        };
-                      }),
-                  ),
-                  minimum_should_match: 1,
+                            return {
+                              match: { command_id: id },
+                            };
+                          }),
+                      ),
+                    minimum_should_match: 1,
+                  },
                 },
-              },
-              {
-                size: 100,
-              },
-            );
+                {
+                  size: 100,
+                },
+              );
 
             const command_events = _response?.data;
 
@@ -406,6 +427,10 @@ module.exports = async (
                     c.transactionIndex = transactionIndex;
                     c.logIndex = logIndex;
                     c.block_timestamp = block_timestamp;
+
+                    if (transactionHash) {
+                      c.executed = true;
+                    }
                   }
                 }
 
@@ -429,15 +454,16 @@ module.exports = async (
               .valueOf();
           }
           else {
-            const _response = await read(
-              'batches',
-              {
-                match_phrase: { batch_id },
-              },
-              {
-                size: 1,
-              },
-            );
+            const _response =
+              await read(
+                'batches',
+                {
+                  match_phrase: { batch_id },
+                },
+                {
+                  size: 1,
+                },
+              );
 
             const {
               ms,
@@ -503,32 +529,13 @@ module.exports = async (
                 transfer_id,
               };
 
-              let _response = await read(
-                'transfers',
-                {
-                  bool: {
-                    should: [
-                      { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                      { match: { 'vote.transfer_id': transfer_id } },
-                      { match: { transfer_id } },
-                    ],
-                    minimum_should_match: 1,
-                  },
-                },
-                {
-                  size: 100,
-                },
-              );
-
-              const transfer_data = _.head(_response?.data);
-              let token_sent_data;
-
-              if (!transfer_data) {
-                _response = await read(
-                  'token_sent_events',
+              let _response =
+                await read(
+                  'transfers',
                   {
                     bool: {
                       should: [
+                        { match: { 'confirm_deposit.transfer_id': transfer_id } },
                         { match: { 'vote.transfer_id': transfer_id } },
                         { match: { transfer_id } },
                       ],
@@ -539,6 +546,27 @@ module.exports = async (
                     size: 100,
                   },
                 );
+
+              const transfer_data = _.head(_response?.data);
+              let token_sent_data;
+
+              if (!transfer_data) {
+                _response =
+                  await read(
+                    'token_sent_events',
+                    {
+                      bool: {
+                        should: [
+                          { match: { 'vote.transfer_id': transfer_id } },
+                          { match: { transfer_id } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
+                    {
+                      size: 100,
+                    },
+                  );
 
                 token_sent_data = _.head(_response?.data);
               }
@@ -558,6 +586,7 @@ module.exports = async (
 
                 executed =
                   !!executed ||
+                  !!transactionHash ||
                   commands
                     .find(c =>
                       c.id === command_id
@@ -565,9 +594,11 @@ module.exports = async (
 
                 if (!executed) {
                   try {
-                    executed = await gateway_contract.isCommandExecuted(
-                      `0x${command_id}`,
-                    );
+                    executed =
+                      await gateway_contract
+                        .isCommandExecuted(
+                          `0x${command_id}`,
+                        );
 
                     if (executed) {
                       const index = commands
@@ -583,20 +614,21 @@ module.exports = async (
                 }
 
                 if (!transactionHash) {
-                  const _response = await read(
-                    'command_events',
-                    {
-                      bool: {
-                        must: [
-                          { match: { chain } },
-                          { match: { command_id } },
-                        ],
+                  const _response =
+                    await read(
+                      'command_events',
+                      {
+                        bool: {
+                          must: [
+                            { match: { chain } },
+                            { match: { command_id } },
+                          ],
+                        },
                       },
-                    },
-                    {
-                      size: 1,
-                    },
-                  );
+                      {
+                        size: 1,
+                      },
+                    );
 
                   const command_event = _.head(_response?.data);
 
@@ -605,6 +637,10 @@ module.exports = async (
                     transactionIndex = command_event.transactionIndex;
                     logIndex = command_event.logIndex;
                     block_timestamp = command_event.block_timestamp;
+
+                    if (transactionHash) {
+                      executed = true;
+                    }
                   }
                 }
 
@@ -661,13 +697,14 @@ module.exports = async (
                     id;
 
                   if (_id) {
-                    sender_chain = normalize_chain(
-                      cosmos_non_axelarnet_chains_data
-                        .find(c =>
-                          sender_address?.startsWith(c?.prefix_address)
-                        )?.id ||
-                      sender_chain
-                    );
+                    sender_chain =
+                      normalize_chain(
+                        cosmos_non_axelarnet_chains_data
+                          .find(c =>
+                            sender_address?.startsWith(c?.prefix_address)
+                          )?.id ||
+                        sender_chain
+                      );
 
                     await write(
                       event ?

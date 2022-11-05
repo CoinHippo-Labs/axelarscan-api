@@ -27,12 +27,15 @@ const {
   getProvider,
 } = require('../../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../../data')?.chains?.[environment]?.evm ||
   [];
-const assets_data = require('../../../data')?.assets?.[environment] ||
+const assets_data =
+  require('../../../data')?.assets?.[environment] ||
   [];
 
 module.exports = async (
@@ -77,30 +80,32 @@ module.exports = async (
           );
 
         if (vote_types.includes(type)) {
-          const created_at = moment(timestamp)
-            .utc()
-            .valueOf();
+          const created_at =
+            moment(timestamp)
+              .utc()
+              .valueOf();
 
           const {
             events,
           } = { ...logs?.[i] };
 
-          const event =
-            (events || [])
-              .find(e =>
-                [
-                  'depositConfirmation',
-                  'eventConfirmation',
-                ].findIndex(s =>
-                  equals_ignore_case(e?.type, s)
-                ) > -1
-              );
+          const event = (events || [])
+            .find(e =>
+              [
+                'depositConfirmation',
+                'eventConfirmation',
+              ].findIndex(s =>
+                equals_ignore_case(
+                  e?.type,
+                  s,
+                )
+              ) > -1
+            );
 
-          const vote_event =
-            (events || [])
-              .find(e =>
-                e?.type?.includes('vote')
-              );
+          const vote_event = (events || [])
+            .find(e =>
+              e?.type?.includes('vote')
+            );
 
           const {
             attributes,
@@ -121,14 +126,15 @@ module.exports = async (
             )?.id;
 
           if (poll_id) {
-            let recipient_chain = normalize_chain(
-              (attributes || [])
-                .find(a =>
-                  [
-                    'destinationChain',
-                  ].includes(a?.key)
-                )?.value
-            );
+            let recipient_chain =
+              normalize_chain(
+                (attributes || [])
+                  .find(a =>
+                    [
+                      'destinationChain',
+                    ].includes(a?.key)
+                  )?.value
+              );
 
             const voter = inner_message.sender;
 
@@ -168,12 +174,13 @@ module.exports = async (
               !failed &&
               attributes
             ) {
-              const _response = await rpc(
-                '/block_results',
-                {
-                  height,
-                },
-              );
+              const _response =
+                await rpc(
+                  '/block_results',
+                  {
+                    height,
+                  },
+                );
 
               end_block_events =
                 _response?.end_block_events ||
@@ -244,16 +251,17 @@ module.exports = async (
 
             switch (type) {
               case 'VoteConfirmDeposit':
-                sender_chain = normalize_chain(
-                  inner_message.chain ||
-                  (attributes || [])
-                    .find(a =>
-                      [
-                        'sourceChain',
-                        'chain',
-                      ].includes(a?.key)
-                    )?.value
-                );
+                sender_chain =
+                  normalize_chain(
+                    inner_message.chain ||
+                    (attributes || [])
+                      .find(a =>
+                        [
+                          'sourceChain',
+                          'chain',
+                        ].includes(a?.key)
+                      )?.value
+                  );
 
                 vote =
                   inner_message.confirmed ||
@@ -268,41 +276,44 @@ module.exports = async (
 
                 break;
               case 'Vote':
-                sender_chain = normalize_chain(
-                  inner_message.vote?.chain ||
-                  _.head(
-                    inner_message.vote?.results
-                  )?.chain ||
-                  inner_message.vote?.result?.chain ||
-                  evm_chains_data.find(c =>
-                    poll_id?.startsWith(`${c?.id}_`)
-                  )?.id
-                );
+                sender_chain =
+                  normalize_chain(
+                    inner_message.vote?.chain ||
+                    _.head(
+                      inner_message.vote?.results
+                    )?.chain ||
+                    inner_message.vote?.result?.chain ||
+                    evm_chains_data
+                      .find(c =>
+                        poll_id?.startsWith(`${c?.id}_`)
+                      )?.id
+                  );
 
                 const vote_events =
                   inner_message.vote?.events ||
                   inner_message.vote?.results ||
                   inner_message.vote?.result?.events;
 
-                recipient_chain = normalize_chain(
-                  recipient_chain ||
-                  (
-                    Array.isArray(vote_events) ?
-                      _.head(
-                        vote_events
-                          .flatMap(e =>
-                            Object.values(e)
-                              .filter(v =>
-                                typeof v === 'object' &&
-                                v?.destination_chain
-                              )
-                              .map(v => v.destination_chain)
-                          )
-                          .filter(c => c)
-                      ) :
-                      undefined
-                  )
-                );
+                recipient_chain =
+                  normalize_chain(
+                    recipient_chain ||
+                    (
+                      Array.isArray(vote_events) ?
+                        _.head(
+                          vote_events
+                            .flatMap(e =>
+                              Object.values(e)
+                                .filter(v =>
+                                  typeof v === 'object' &&
+                                  v?.destination_chain
+                                )
+                                .map(v => v.destination_chain)
+                            )
+                            .filter(c => c)
+                        ) :
+                        undefined
+                    )
+                  );
 
                 vote =
                   (
@@ -359,28 +370,30 @@ module.exports = async (
                     )
                   );
 
-                event_name = _.head(
-                  Object.entries({
-                    ...(vote_events || [])
-                      .find(e =>
-                        Object.values({ ...e })
-                          .findIndex(v =>
-                            typeof v === 'object' &&
-                            !Array.isArray(v)
-                          ) > -1
-                      ),
-                  })
-                  .filter(([k, v]) =>
-                    typeof v === 'object' &&
-                    !Array.isArray(v)
-                  )
-                  .map(([k, v]) => k)
-                );
+                event_name =
+                  _.head(
+                    Object.entries({
+                      ...(vote_events || [])
+                        .find(e =>
+                          Object.values({ ...e })
+                            .findIndex(v =>
+                              typeof v === 'object' &&
+                              !Array.isArray(v)
+                            ) > -1
+                        ),
+                    })
+                    .filter(([k, v]) =>
+                      typeof v === 'object' &&
+                      !Array.isArray(v)
+                    )
+                    .map(([k, v]) => k)
+                  );
 
-                const poll_data = await get(
-                  'evm_polls',
-                  poll_id,
-                );
+                const poll_data =
+                  await get(
+                    'evm_polls',
+                    poll_id,
+                  );
 
                 if (poll_data) {
                   sender_chain = poll_data.sender_chain;
@@ -396,45 +409,47 @@ module.exports = async (
                 break;
             }
 
-            transaction_id = to_hex(
-              transaction_id ||
-              _.head(
-                inner_message.vote?.events
-              )?.tx_id ||
-              (attributes || [])
-                .find(a =>
-                  a?.key === 'txID'
-                )?.value ||
-              _.head(
-                (poll_id || '')
-                  .replace(
-                    `${sender_chain}_`,
-                    ''
-                  )
-                  .split('_')
-              )
-            );
+            transaction_id =
+              to_hex(
+                transaction_id ||
+                _.head(
+                  inner_message.vote?.events
+                )?.tx_id ||
+                (attributes || [])
+                  .find(a =>
+                    a?.key === 'txID'
+                  )?.value ||
+                _.head(
+                  (poll_id || '')
+                    .replace(
+                      `${sender_chain}_`,
+                      ''
+                    )
+                    .split('_')
+                )
+              );
 
             if (transaction_id === poll_id) {
               transaction_id = null;
             }
 
-            deposit_address = to_hex(
-              deposit_address ||
-              _.head(
-                inner_message.vote?.events
-              )?.transfer?.to ||
-              (attributes || [])
-                .find(a =>
-                  a?.key === 'depositAddress'
-                )?.value ||
-              (poll_id || '')
-                .replace(
-                  `${sender_chain}_`,
-                  '',
-                )
-                .split('_')[1]
-            );
+            deposit_address =
+              to_hex(
+                deposit_address ||
+                _.head(
+                  inner_message.vote?.events
+                )?.transfer?.to ||
+                (attributes || [])
+                  .find(a =>
+                    a?.key === 'depositAddress'
+                  )?.value ||
+                (poll_id || '')
+                  .replace(
+                    `${sender_chain}_`,
+                    '',
+                  )
+                  .split('_')[1]
+              );
 
             transfer_id =
               transfer_id ||
@@ -451,22 +466,23 @@ module.exports = async (
               !transfer_id ||
               !participants
             ) {
-              const _response = await read(
-                'transfers',
-                {
-                  bool: {
-                    must: [
-                      { match: { 'confirm_deposit.poll_id': poll_id } },
-                    ],
-                    must_not: [
-                      { match: { 'confirm_deposit.transaction_id': poll_id } },
-                    ],
+              const _response =
+                await read(
+                  'transfers',
+                  {
+                    bool: {
+                      must: [
+                        { match: { 'confirm_deposit.poll_id': poll_id } },
+                      ],
+                      must_not: [
+                        { match: { 'confirm_deposit.transaction_id': poll_id } },
+                      ],
+                    },
                   },
-                },
-                {
-                  size: 1,
-                },
-              );
+                  {
+                    size: 1,
+                  },
+                );
 
               const data = _.head(_response?.data);
 
@@ -475,20 +491,22 @@ module.exports = async (
               } = { ...data };
 
               if (!transaction_id) {
-                transaction_id = to_hex(
-                  data?.vote?.transaction_id ||
-                  confirm_deposit?.transaction_id ||
-                  data?.source?.id
-                );
+                transaction_id =
+                  to_hex(
+                    data?.vote?.transaction_id ||
+                    confirm_deposit?.transaction_id ||
+                    data?.source?.id
+                  );
               }
 
               if (!deposit_address) {
-                deposit_address = to_hex(
-                  data?.vote?.deposit_address ||
-                  confirm_deposit?.deposit_address ||
-                  data?.source?.recipient_address ||
-                  data?.link?.deposit_address
-                );
+                deposit_address =
+                  to_hex(
+                    data?.vote?.deposit_address ||
+                    confirm_deposit?.deposit_address ||
+                    data?.source?.recipient_address ||
+                    data?.link?.deposit_address
+                  );
               }
 
               if (!transfer_id) {
@@ -509,10 +527,11 @@ module.exports = async (
               !participants
             ) {
               if (poll_id) {
-                const _response = await get(
-                  'evm_polls',
-                  poll_id,
-                );
+                const _response =
+                  await get(
+                    'evm_polls',
+                    poll_id,
+                  );
 
                 if (_response) {
                   sender_chain =
@@ -533,15 +552,16 @@ module.exports = async (
                 !sender_chain &&
                 deposit_address
               ) {
-                const _response = await read(
-                  'deposit_addresses',
-                  {
-                    match: { deposit_address },
-                  },
-                  {
-                    size: 1,
-                  },
-                );
+                const _response =
+                  await read(
+                    'deposit_addresses',
+                    {
+                      match: { deposit_address },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
 
                 sender_chain = _.head(_response?.data)?.sender_chain;
               }
@@ -557,12 +577,13 @@ module.exports = async (
                 ) < 0
             ) {
               if (!end_block_events) {
-                const _response = await rpc(
-                  '/block_results',
-                  {
-                    height,
-                  },
-                );
+                const _response =
+                  await rpc(
+                    '/block_results',
+                    {
+                      height,
+                    },
+                  );
 
                 end_block_events =
                   _response?.end_block_events ||
@@ -612,12 +633,13 @@ module.exports = async (
                     type,
                   } = { ...e };
 
-                  type = type ?
-                    _.last(
-                      type
-                        .split('.')
-                    ) :
-                    undefined;
+                  type =
+                    type ?
+                      _.last(
+                        type
+                          .split('.')
+                      ) :
+                      undefined;
 
                   return {
                     type,
@@ -644,37 +666,39 @@ module.exports = async (
                   };
                 });
 
-              const _transaction_id = _.head(
-                confirmation_events
-                  .map(e =>
-                    e.txID ||
-                    e.tx_id
-                  )
-                  .filter(id => id)
-                  .map(id =>
-                    to_hex(
-                      id
-                        .split('"')
-                        .join('')
+              const _transaction_id =
+                _.head(
+                  confirmation_events
+                    .map(e =>
+                      e.txID ||
+                      e.tx_id
                     )
-                  )
-              );
+                    .filter(id => id)
+                    .map(id =>
+                      to_hex(
+                        id
+                          .split('"')
+                          .join('')
+                      )
+                    )
+                );
 
-              const _transfer_id = _.head(
-                confirmation_events
-                  .map(e =>
-                    e.transferID ||
-                    e.transfer_id
-                  )
-                  .filter(id => id)
-                  .map(id =>
-                    Number(
-                      id
-                        .split('"')
-                        .join('')
+              const _transfer_id =
+                _.head(
+                  confirmation_events
+                    .map(e =>
+                      e.transferID ||
+                      e.transfer_id
                     )
-                  )
-              );
+                    .filter(id => id)
+                    .map(id =>
+                      Number(
+                        id
+                          .split('"')
+                          .join('')
+                      )
+                    )
+                );
 
               if (
                 equals_ignore_case(
@@ -706,27 +730,28 @@ module.exports = async (
               !transaction_id ||
               !transfer_id
             ) {
-              const _response = await read(
-                'evm_votes',
-                {
-                  bool: {
-                    must: [
-                      { match: { poll_id } },
-                    ],
-                    should: [
-                      { exists: { field: 'transaction_id' } },
-                      { exists: { field: 'transfer_id' } },
-                    ],
-                    minimum_should_match: 1,
-                    must_not: [
-                      { match: { transaction_id: poll_id } },
-                    ],
+              const _response =
+                await read(
+                  'evm_votes',
+                  {
+                    bool: {
+                      must: [
+                        { match: { poll_id } },
+                      ],
+                      should: [
+                        { exists: { field: 'transaction_id' } },
+                        { exists: { field: 'transfer_id' } },
+                      ],
+                      minimum_should_match: 1,
+                      must_not: [
+                        { match: { transaction_id: poll_id } },
+                      ],
+                    },
                   },
-                },
-                {
-                  size: 1,
-                },
-              );
+                  {
+                    size: 1,
+                  },
+                );
 
               const data = _.head(_response?.data);
 
@@ -747,9 +772,10 @@ module.exports = async (
               id: txhash,
               type,
               status_code: code,
-              status: code ?
-                'failed' :
-                'success',
+              status:
+                code ?
+                  'failed' :
+                  'success',
               height,
               created_at: get_granularity(created_at),
               sender_chain,
@@ -790,9 +816,13 @@ module.exports = async (
 
               let created_at = ms;
 
-              const chain_data = evm_chains_data.find(c =>
-                equals_ignore_case(c?.id, sender_chain)
-              );
+              const chain_data = evm_chains_data
+                .find(c =>
+                  equals_ignore_case(
+                    c?.id,
+                    sender_chain,
+                  )
+                );
 
               const provider = getProvider(chain_data);
 
@@ -801,9 +831,11 @@ module.exports = async (
               } = { ...chain_data };
 
               try {
-                const transaction = await provider.getTransaction(
-                  transaction_id,
-                );
+                const transaction =
+                  await provider
+                    .getTransaction(
+                      transaction_id,
+                    );
 
                 const {
                   blockNumber,
@@ -812,58 +844,76 @@ module.exports = async (
                   input,
                 } = { ...transaction };
 
-                const asset_data = assets_data.find(a =>
-                  a?.contracts?.findIndex(c =>
-                    c?.chain_id === chain_id &&
-                    equals_ignore_case(c?.contract_address, to)
-                  ) > -1
-                );
+                const asset_data = assets_data
+                  .find(a =>
+                    (a?.contracts || [])
+                      .findIndex(c =>
+                        c?.chain_id === chain_id &&
+                        equals_ignore_case(
+                          c?.contract_address,
+                          to,
+                        )
+                      ) > -1
+                  );
 
                 let _amount;
 
                 if (!asset_data) {
-                  const receipt = await provider.getTransactionReceipt(
-                    transaction_id,
-                  );
+                  const receipt =
+                    await provider
+                      .getTransactionReceipt(
+                        transaction_id,
+                      );
 
                   const {
                     logs,
                   } = { ...receipt };
 
-                  _amount = _.head(
-                    (logs || [])
-                      .map(l => l?.data)
-                      .filter(d => d?.length >= 64)
-                      .map(d =>
-                        d.substring(
-                          d.length - 64,
+                  _amount =
+                    _.head(
+                      (logs || [])
+                        .map(l => l?.data)
+                        .filter(d => d?.length >= 64)
+                        .map(d =>
+                          d.substring(
+                            d.length - 64,
+                          )
+                          .replace(
+                            '0x',
+                            '',
+                          )
+                          .replace(
+                            /^0+/,
+                            '',
+                          )
                         )
-                        .replace(
-                          '0x',
-                          '',
-                        )
-                        .replace(
-                          /^0+/,
-                          '',
-                        )
-                      )
-                      .filter(d => {
-                        try {
-                          d = BigNumber.from(`0x${d}`);
-                          return true;
-                        } catch (error) {
-                          return false;
-                        }
-                      })
-                  );
+                        .filter(d => {
+                          try {
+                            d =
+                              BigNumber.from(
+                                `0x${d}`
+                              );
+
+                            return true;
+                          } catch (error) {
+                            return false;
+                          }
+                        })
+                    );
                 }
 
                 if (blockNumber) {
                   amount =
                     BigNumber.from(
                       `0x${
-                        transaction.data?.substring(10 + 64) ||
-                        input?.substring(10 + 64) ||
+                        (transaction.data || '')
+                          .substring(
+                            10 + 64,
+                          ) ||
+                        (input || '')
+                          .substring(
+                            10 + 64,
+                          ) ||
                         _amount ||
                         '0'
                       }`
@@ -900,45 +950,49 @@ module.exports = async (
                     denom,
                   };
 
-                  const _response = await read(
-                    'deposit_addresses',
-                    {
-                      match: { deposit_address },
-                    },
-                    {
-                      size: 1,
-                    },
-                  );
-
-                  let link = _.head(_response?.data);
-
-                  link = await update_link(
-                    link,
-                    source,
-                  );
-
-                  source = await update_source(
-                    source,
-                    link,
-                  );
-
-                  try {
-                    await sleep(0.5 * 1000);
-
-                    const _response = await read(
-                      'transfers',
+                  const _response =
+                    await read(
+                      'deposit_addresses',
                       {
-                        bool: {
-                          must: [
-                            { match: { 'source.id': transaction_id } },
-                            { match: { 'source.recipient_address': deposit_address } },
-                          ],
-                        },
+                        match: { deposit_address },
                       },
                       {
                         size: 1,
                       },
                     );
+
+                  let link = _.head(_response?.data);
+
+                  link =
+                    await update_link(
+                      link,
+                      source,
+                    );
+
+                  source =
+                    await update_source(
+                      source,
+                      link,
+                    );
+
+                  try {
+                    await sleep(0.5 * 1000);
+
+                    const _response =
+                      await read(
+                        'transfers',
+                        {
+                          bool: {
+                            must: [
+                              { match: { 'source.id': transaction_id } },
+                              { match: { 'source.recipient_address': deposit_address } },
+                            ],
+                          },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
 
                     const data = _.head(_response?.data);
 
@@ -972,15 +1026,16 @@ module.exports = async (
                           confirm_deposit:
                             confirm_deposit ||
                             undefined,
-                          vote: data?.vote ?
-                            data.vote.height < height &&
-                            !equals_ignore_case(
-                              data.vote.poll_id,
-                              poll_id
-                            ) ?
-                              record :
-                              data.vote :
-                            record,
+                          vote:
+                            data?.vote ?
+                              data.vote.height < height &&
+                              !equals_ignore_case(
+                                data.vote.poll_id,
+                                poll_id
+                              ) ?
+                                record :
+                                data.vote :
+                              record,
                         },
                       );
 
@@ -992,15 +1047,16 @@ module.exports = async (
                       switch (event_name) {
                         case 'token_sent':
                           try {
-                            const _response = await read(
-                              'token_sent_events',
-                              {
-                                match: { 'event.transactionHash': transaction_id },
-                              },
-                              {
-                                size: 1,
-                              },
-                            );
+                            const _response =
+                              await read(
+                                'token_sent_events',
+                                {
+                                  match: { 'event.transactionHash': transaction_id },
+                                },
+                                {
+                                  size: 1,
+                                },
+                              );
 
                             const data = _.head(_response?.data);
 
@@ -1071,9 +1127,10 @@ module.exports = async (
                   participants:
                     participants ||
                     undefined,
-                  confirmation_events: confirmation_events?.length > 0 ?
-                    confirmation_events :
-                    undefined,
+                  confirmation_events:
+                    confirmation_events?.length > 0 ?
+                      confirmation_events :
+                      undefined,
                   [voter.toLowerCase()]: {
                     id: txhash,
                     type,

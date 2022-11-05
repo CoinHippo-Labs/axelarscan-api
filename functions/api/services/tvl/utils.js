@@ -25,28 +25,32 @@ const getContractSupply = async (
     provider
   ) {
     try {
-      const contract = new Contract(
-        contract_address,
-        [
-          'function totalSupply() view returns (uint256)',
-        ],
-        provider,
-      );
+      const contract =
+        new Contract(
+          contract_address,
+          [
+            'function totalSupply() view returns (uint256)',
+          ],
+          provider,
+        );
 
       supply = await contract.totalSupply();
     } catch (error) {}
   }
 
-  return supply &&
+  return (
+    supply &&
     Number(
       formatUnits(
         BigNumber.from(
-          supply.toString()
+          supply
+            .toString()
         ),
         decimals ||
         18,
       )
-    );
+    )
+  );
 };
 
 const getEVMBalance = async (
@@ -67,36 +71,44 @@ const getEVMBalance = async (
     provider) {
     try {
       if (contract_address === AddressZero) {
-        balance = await provider.getBalance(
-          address,
-        );
+        balance =
+          await provider
+            .getBalance(
+              address,
+            );
       }
       else {
-        const contract = new Contract(
-          contract_address,
-          [
-            'function balanceOf(address owner) view returns (uint256)',
-          ],
-          provider,
-        );
+        const contract =
+          new Contract(
+            contract_address,
+            [
+              'function balanceOf(address owner) view returns (uint256)',
+            ],
+            provider,
+          );
 
-        balance = await contract.balanceOf(
-          address,
-        );
+        balance =
+          await contract
+            .balanceOf(
+              address,
+            );
       }
     } catch (error) {}
   }
 
-  return balance &&
+  return (
+    balance &&
     Number(
       formatUnits(
         BigNumber.from(
-          balance.toString()
+          balance
+            .toString()
         ),
         decimals ||
         18,
       )
-    );
+    )
+  );
 };
 
 const getCosmosBalance = async (
@@ -119,9 +131,10 @@ const getCosmosBalance = async (
     ]
     .filter(d => d);
 
-  lcds = typeof lcds === 'string' ?
-    [lcds] :
-    lcds;
+  lcds =
+    typeof lcds === 'string' ?
+      [lcds] :
+      lcds;
 
   if (
     address &&
@@ -184,16 +197,19 @@ const getCosmosBalance = async (
     } catch (error) {}
   }
 
-  return balance &&
+  return (
+    balance &&
     Number(
       formatUnits(
         BigNumber.from(
-          balance.toString()
+          balance
+            .toString()
         ),
         decimals ||
         6,
       )
-    );
+    )
+  );
 };
 
 const getCosmosSupply = async (
@@ -214,9 +230,10 @@ const getCosmosSupply = async (
     ]
     .filter(d => d);
 
-  lcds = typeof lcds === 'string' ?
-    [lcds] :
-    lcds;
+  lcds =
+    typeof lcds === 'string' ?
+      [lcds] :
+      lcds;
 
   if (
     denoms.length > 0 &&
@@ -256,9 +273,13 @@ const getCosmosSupply = async (
             },
           ).catch(error => { return { data: { error } }; });
 
-          supply = response?.data?.supply?.find(s =>
-            equals_ignore_case(s?.denom, denom)
-          )?.amount;
+          supply = (response?.data?.supply || [])
+            .find(s =>
+              equals_ignore_case(
+                s?.denom,
+                denom,
+              )
+            )?.amount;
 
           if (
             supply &&
@@ -279,16 +300,19 @@ const getCosmosSupply = async (
     } catch (error) {}
   }
 
-  return supply &&
+  return (
+    supply &&
     Number(
       formatUnits(
         BigNumber.from(
-          supply.toString()
+          supply
+            .toString()
         ),
         decimals ||
         6,
       )
-    );
+    )
+  );
 };
 
 const getAxelarnetSupply = async (
@@ -347,16 +371,19 @@ const getAxelarnetSupply = async (
     } catch (error) {}
   }
 
-  return supply &&
+  return (
+    supply &&
     Number(
       formatUnits(
         BigNumber.from(
-          supply.toString()
+          supply
+            .toString()
         ),
         decimals ||
         6,
       )
-    );
+    )
+  );
 };
 
 module.exports = {

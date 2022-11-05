@@ -1337,7 +1337,6 @@ module.exports = {
             rpcUrls: [
               'https://rpc.api.moonbase.moonbeam.network',
               'https://rpc.testnet.moonbeam.network',
-              'https://moonbase-alpha.public.blastapi.io',
             ],
             nativeCurrency: {
               name: 'Dev',
@@ -1438,8 +1437,7 @@ module.exports = {
         image: '/logos/chains/arbitrum.svg',
         color: '#28a0f0',
         website: 'https://arbitrum.io',
-        gateway_address: '',
-        no_inflation: true,
+        gateway_address: '0xe432150cce91c13a887f7d836923d5597add8e31',
       },
       {
         id: 'optimism',
@@ -1516,8 +1514,7 @@ module.exports = {
         image: '/logos/chains/celo.svg',
         color: '#35d07f',
         website: 'https://celo.org',
-        gateway_address: '',
-        no_inflation: true,
+        gateway_address: '0xe432150cce91c13a887f7d836923d5597add8e31',
       },
       {
         id: 'kava',

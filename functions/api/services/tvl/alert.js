@@ -9,20 +9,28 @@ const {
   equals_ignore_case,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT ||
+const environment =
+  process.env.ENVIRONMENT ||
   config?.environment;
 
-const data = require('../../data');
-const evm_chains_data = data?.chains?.[environment]?.evm ||
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
   [];
-const cosmos_chains_data = data?.chains?.[environment]?.cosmos ||
+const cosmos_chains_data =
+  require('../../data')?.chains?.[environment]?.cosmos ||
   [];
-const chains_data = _.concat(
-  evm_chains_data,
-  cosmos_chains_data,
-);
-const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
-const assets_data = data?.assets?.[environment] ||
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
   [];
 
 const {
@@ -39,29 +47,35 @@ module.exports = async (
     test,
   } = { ...params };
 
-  test = typeof test === 'boolean' ?
-    test :
-    typeof test === 'string' &&
-    equals_ignore_case(test, 'true');
+  test =
+    typeof test === 'boolean' ?
+      test :
+      typeof test === 'string' &&
+      equals_ignore_case(
+        test,
+        'true',
+      );
 
-  const _response = await read(
-    'tvls',
-    {
-      range: {
-        updated_at: {
-          gt: moment()
-            .subtract(
-              30,
-              'minutes',
-            )
-            .unix(),
+  const _response =
+    await read(
+      'tvls',
+      {
+        range: {
+          updated_at: {
+            gt:
+              moment()
+                .subtract(
+                  30,
+                  'minutes',
+                )
+                .unix(),
+          },
         },
       },
-    },
-    {
-      size: 100,
-    },
-  );
+      {
+        size: 100,
+      },
+    );
 
   let {
     data,
@@ -73,7 +87,9 @@ module.exports = async (
 
   data = _.orderBy(
     (data || [])
-      .map(d => _.head(d?.data))
+      .map(d =>
+        _.head(d?.data)
+      )
       .filter(d => d)
       .map(d => {
         const {
@@ -84,13 +100,15 @@ module.exports = async (
 
         return {
           ...d,
-          value: (total * price) ||
+          value:
+            (total * price) ||
             0,
-          value_diff: (
-            total *
-            (percent_diff_supply / 100) *
-            price
-          ) ||
+          value_diff:
+            (
+              total *
+              (percent_diff_supply / 100) *
+              price
+            ) ||
             0,
         };
       }),
@@ -138,7 +156,7 @@ module.exports = async (
                   (percent_diff_supply / 100) *
                   price
                 ) ||
-                  0
+                0
               );
             })
         ) > alert_asset_value_threshold
@@ -150,11 +168,12 @@ module.exports = async (
     _data.length < 1 &&
     data.length > 0
   ) {
-    data = _.slice(
-      data,
-      0,
-      1,
-    );
+    data =
+      _.slice(
+        data,
+        0,
+        1,
+      );
   }
   else {
     data = _data;
@@ -163,7 +182,9 @@ module.exports = async (
   const timestamp =
     (
       updated_at ?
-        moment(updated_at * 1000) :
+        moment(
+          updated_at * 1000
+        ) :
         moment()
     )
     .format();
@@ -194,8 +215,8 @@ module.exports = async (
           tvl,
         } = { ...d };
 
-        const asset_data =
-          assets_data.find(a =>
+        const asset_data = assets_data
+          .find(a =>
             a?.id === asset
           );
 
@@ -206,27 +227,31 @@ module.exports = async (
         } = { ...asset_data };
 
         const native_chain_id =
-          contracts?.find(c =>
-            c?.is_native
-          )?.chain_id ||
-          ibc?.find(i =>
-            i?.is_native
-          )?.chain_id;
+          (contracts || [])
+            .find(c =>
+              c?.is_native
+            )?.chain_id ||
+          (ibc || [])
+            .find(i =>
+              i?.is_native
+            )?.chain_id;
 
-        const native_chain =
-          chains_data.find(c =>
+        const native_chain = chains_data
+          .find(c =>
             c?.id === native_chain_id ||
             c?.chain_id === native_chain_id
           )?.id;
 
         const native_on =
-          evm_chains_data.findIndex(c =>
-            c?.id === native_chain
-          ) > -1 ?
-            'evm' :
-            cosmos_chains_data.findIndex(c =>
+          evm_chains_data
+            .findIndex(c =>
               c?.id === native_chain
             ) > -1 ?
+            'evm' :
+            cosmos_chains_data
+              .findIndex(c =>
+                c?.id === native_chain
+              ) > -1 ?
               'cosmos' :
               undefined;
 
@@ -246,39 +271,40 @@ module.exports = async (
             total_on_cosmos,
             evm_escrow_address,
             evm_escrow_balance,
-            links: _.uniq(
-              _.concat(
-                evm_escrow_address_urls,
-                Object.values({ ...tvl })
-                  .filter(_d =>
-                    _d?.contract_data?.is_native ||
-                    _d?.denom_data?.is_native
-                  )
-                  .flatMap(_d =>
-                    _.concat(
-                      _d.url,
-                      _d.escrow_addresses_urls,
-                      _d.supply_urls,
+            links:
+              _.uniq(
+                _.concat(
+                  evm_escrow_address_urls,
+                  Object.values({ ...tvl })
+                    .filter(_d =>
+                      _d?.contract_data?.is_native ||
+                      _d?.denom_data?.is_native
                     )
-                  ),
-                endpoints?.app &&
-                [
-                  `${endpoints.app}/tvl`,
-                  `${endpoints.app}/transfers/search?asset=${asset}&fromTime=${
-                    moment()
-                      .subtract(
-                        24,
-                        'hours',
+                    .flatMap(_d =>
+                      _.concat(
+                        _d.url,
+                        _d.escrow_addresses_urls,
+                        _d.supply_urls,
                       )
-                      .valueOf()
-                  }&toTime=${
-                    moment()
-                      .valueOf()
-                  }&sortBy=value`,
-                ],
-              )
-              .filter(l => l)
-            ),
+                    ),
+                  endpoints?.app &&
+                  [
+                    `${endpoints.app}/tvl`,
+                    `${endpoints.app}/transfers/search?asset=${asset}&fromTime=${
+                      moment()
+                        .subtract(
+                          24,
+                          'hours',
+                        )
+                        .valueOf()
+                    }&toTime=${
+                      moment()
+                        .valueOf()
+                    }&sortBy=value`,
+                  ],
+                )
+                .filter(l => l)
+              ),
           };
         }
         else {
@@ -288,120 +314,135 @@ module.exports = async (
             price,
             native_chain,
             native_on,
-            chains: Object.entries({ ...tvl })
-              .filter(([k, v]) => v?.is_abnormal_supply)
-              .map(([k, v]) => {
-                const {
-                  percent_diff_supply,
-                  contract_data,
-                  denom_data,
-                  gateway_address,
-                  gateway_balance,
-                  ibc_channels,
-                  escrow_addresses,
-                  escrow_balance,
-                  source_escrow_addresses,
-                  source_escrow_balance,
-                  url,
-                } = { ...v };
-                let {
-                  supply,
-                } = { ...v };
-                const {
-                  is_native,
-                } = { ...denom_data };
-
-                if (
-                  is_native &&
-                  k !== axelarnet.id &&
-                  typeof tvl?.axelarnet?.total === 'number'
-                ) {
+            chains:
+              Object.entries({ ...tvl })
+                .filter(([k, v]) =>
+                  v?.is_abnormal_supply
+                )
+                .map(([k, v]) => {
                   const {
-                    total,
-                  } = { ...tvl.axelarnet };
+                    percent_diff_supply,
+                    contract_data,
+                    denom_data,
+                    gateway_address,
+                    gateway_balance,
+                    ibc_channels,
+                    escrow_addresses,
+                    escrow_balance,
+                    source_escrow_addresses,
+                    source_escrow_balance,
+                    url,
+                  } = { ...v };
+                  let {
+                    supply,
+                  } = { ...v };
+                  const {
+                    is_native,
+                  } = { ...denom_data };
 
-                  supply = total;
-                }
+                  if (
+                    is_native &&
+                    k !== axelarnet.id &&
+                    typeof tvl?.axelarnet?.total === 'number'
+                  ) {
+                    const {
+                      total,
+                    } = { ...tvl.axelarnet };
 
-                return {
-                  chain: k,
-                  percent_diff_supply,
-                  contract_data,
-                  denom_data,
-                  gateway_address,
-                  gateway_balance,
-                  ibc_channels,
-                  escrow_addresses,
-                  escrow_balance,
-                  source_escrow_addresses,
-                  source_escrow_balance,
-                  supply,
-                  link: url,
-                };
-              }),
-            links: _.uniq(
-              _.concat(
-                Object.values({ ...tvl })
-                  .filter(_d => _d?.is_abnormal_supply)
-                  .flatMap(_d =>
-                    _.concat(
-                      _d.url,
-                      _d.escrow_addresses_urls,
-                      _d.supply_urls,
+                    supply = total;
+                  }
+
+                  return {
+                    chain: k,
+                    percent_diff_supply,
+                    contract_data,
+                    denom_data,
+                    gateway_address,
+                    gateway_balance,
+                    ibc_channels,
+                    escrow_addresses,
+                    escrow_balance,
+                    source_escrow_addresses,
+                    source_escrow_balance,
+                    supply,
+                    link: url,
+                  };
+                }),
+            links:
+              _.uniq(
+                _.concat(
+                  Object.values({ ...tvl })
+                    .filter(_d =>
+                      _d?.is_abnormal_supply
                     )
-                  ),
-                endpoints?.app &&
-                [
-                  `${endpoints.app}/tvl`,
-                  `${endpoints.app}/transfers/search?asset=${asset}&fromTime=${
-                    moment()
-                      .subtract(
-                        24,
-                        'hours',
+                    .flatMap(_d =>
+                      _.concat(
+                        _d.url,
+                        _d.escrow_addresses_urls,
+                        _d.supply_urls,
                       )
-                      .valueOf()
-                  }&toTime=${
-                    moment()
-                      .valueOf()
-                  }&sortBy=value`,
-                ],
-              )
-              .filter(l => l)
-            ),
+                    ),
+                  endpoints?.app &&
+                  [
+                    `${endpoints.app}/tvl`,
+                    `${endpoints.app}/transfers/search?asset=${asset}&fromTime=${
+                      moment()
+                        .subtract(
+                          24,
+                          'hours',
+                        )
+                        .valueOf()
+                    }&toTime=${
+                      moment()
+                        .valueOf()
+                    }&sortBy=value`,
+                  ],
+                )
+                .filter(l => l)
+              ),
           };
         }
       });
 
     native_on_evm_total_status =
-      details.findIndex(d =>
-        d.native_on === 'evm' &&
-        typeof d.percent_diff_supply === 'number'
-      ) > -1 ?
+      details
+        .findIndex(d =>
+          d.native_on === 'evm' &&
+          typeof d.percent_diff_supply === 'number'
+        ) > -1 ?
         'alert' :
         'ok';
+
     native_on_evm_escrow_status =
-      details.findIndex(d =>
-        d.native_on === 'evm' &&
-        d.chains?.findIndex(c =>
-          typeof c.percent_diff_supply === 'number'
-        ) > -1
-      ) > -1 ?
+      details
+        .findIndex(d =>
+          d.native_on === 'evm' &&
+          (d.chains || [])
+            .findIndex(c =>
+              typeof c.percent_diff_supply === 'number'
+            ) > -1
+        ) > -1 ?
         'alert' :
         'ok';
+
     native_on_cosmos_evm_escrow_status =
-      details.findIndex(d =>
-        d.native_on === 'cosmos' &&
-        typeof d.percent_diff_supply === 'number'
-      ) > -1 ?
+      details
+        .findIndex(d =>
+          d.native_on === 'cosmos' &&
+          typeof d.percent_diff_supply === 'number'
+        ) > -1 ?
         'alert' :
         'ok';
+
     native_on_cosmos_escrow_status =
-      details.findIndex(d =>
-        d.native_on === 'cosmos' &&
-        d.chains?.findIndex(c =>
-          typeof c.percent_diff_supply === 'number'
-        ) > -1
-      ) > -1 ?
+      details
+        .findIndex(d =>
+          d.native_on === 'cosmos' &&
+          (d.chains || [])
+            .findIndex(c =>
+              typeof c.percent_diff_supply === 'number'
+            ) > -1
+        ) > -1 ?
         'alert' :
         'ok';
 
@@ -412,7 +453,9 @@ module.exports = async (
       ]
       .findIndex(s => s !== 'ok') > -1 ?
         details
-          .filter(d => d.native_on === 'evm') :
+          .filter(d =>
+            d.native_on === 'evm'
+          ) :
         undefined;
 
     const cosmos_details =
@@ -422,7 +465,9 @@ module.exports = async (
       ]
       .findIndex(s => s !== 'ok') > -1 ?
         details
-          .filter(d => d.native_on === 'cosmos') :
+          .filter(d =>
+            d.native_on === 'cosmos'
+          ) :
         undefined;
 
     status = 'alert';
@@ -448,10 +493,11 @@ module.exports = async (
           .join(', ') :
           undefined;
 
-    links = _.uniq(
-      details
-        .flatMap(d => d.links)
-    );
+    links =
+      _.uniq(
+        details
+          .flatMap(d => d.links)
+      );
 
     if (data.length === 1) {
       const {

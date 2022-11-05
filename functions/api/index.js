@@ -31,18 +31,35 @@ exports.handler = async (
     get_params,
   } = require('./utils');
 
-  const environment = process.env.ENVIRONMENT ||
+  const environment =
+    process.env.ENVIRONMENT ||
     config?.environment;
 
-  const evm_chains_data = require('./data')?.chains?.[environment]?.evm ||
+  const evm_chains_data =
+    require('./data')?.chains?.[environment]?.evm ||
     [];
-  const cosmos_chains_data = require('./data')?.chains?.[environment]?.cosmos ||
+  const cosmos_chains_data =
+    require('./data')?.chains?.[environment]?.cosmos ||
     [];
-  const assets_data = require('./data')?.assets?.[environment] ||
+  const assets_data =
+    require('./data')?.assets?.[environment] ||
     [];
 
   // parse function event to req
   const req = {
+    url: (event.routeKey || '')
+      .replace(
+        'ANY ',
+        '',
+      ),
+    method: event.requestContext?.http?.method,
+    headers: event.headers,
+    params: {
+      ...event.pathParameters,
+    },
+    query: {
+      ...event.queryStringParameters,
+    },
     body: {
       ...(
         event.body &&
@@ -51,19 +68,9 @@ exports.handler = async (
         )
       ),
     },
-    query: {
-      ...event.queryStringParameters,
-    },
-    params: {
-      ...event.pathParameters,
-    },
-    method: event.requestContext?.http?.method,
-    url: event.routeKey?.replace(
-      'ANY ',
-      '',
-    ),
-    headers: event.headers,
   };
+
+  // setup query parameters
   const params = get_params(req);
 
   let response;
@@ -80,22 +87,37 @@ exports.handler = async (
         no_index,
       } = { ...params };
 
-      const _module = (params.module || '')
-        .trim()
-        .toLowerCase();
-      path = path ||
+      const _module =
+        (params.module || '')
+          .trim()
+          .toLowerCase();
+
+      path =
+        path ||
         '';
-      cache = typeof cache === 'boolean' ?
-        cache :
-        typeof cache === 'string' &&
-        equals_ignore_case(cache, 'true');
-      cache_timeout = !isNaN(cache_timeout) ?
-        Number(cache_timeout) :
-        undefined;
-      no_index = typeof no_index === 'boolean' ?
-        no_index :
-        typeof no_index === 'string' &&
-        equals_ignore_case(no_index, 'true');
+
+      cache =
+        typeof cache === 'boolean' ?
+          cache :
+          typeof cache === 'string' &&
+          equals_ignore_case(
+            cache,
+            'true',
+          );
+
+      cache_timeout =
+        !isNaN(cache_timeout) ?
+          Number(cache_timeout) :
+          undefined;
+
+      no_index =
+        typeof no_index === 'boolean' ?
+          no_index :
+          typeof no_index === 'string' &&
+          equals_ignore_case(
+            no_index,
+            'true',
+          );
 
       delete params.module;
       delete params.path;
