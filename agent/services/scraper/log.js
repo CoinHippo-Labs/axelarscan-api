@@ -72,6 +72,7 @@ const construct = (
                       from,
                       to,
                     ) ||
+                    ''
                 )
                 .trim(),
             };
