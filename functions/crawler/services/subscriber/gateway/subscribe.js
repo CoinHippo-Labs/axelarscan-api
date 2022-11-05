@@ -68,8 +68,11 @@ const onEmit = async (
         const {
           inputs,
         } = {
-          ...abi.find(a =>
-            a?.name === event
+          ...(
+            abi
+              .find(a =>
+                a?.name === event
+              )
           ),
         };
 
@@ -156,78 +159,81 @@ const getPastEvents = async (
       abi,
     } = { ...gateway };
 
-    // initial contract
-    const contract =
-      new Contract(
-        address,
-        abi,
-        provider,
-      );
+    if (address) {
+      // initial contract
+      const contract =
+        new Contract(
+          address,
+          abi,
+          provider,
+        );
 
-    // query options
-    const {
-      fromBlock,
-      toBlock,
-      environment,
-    } = { ...options };
-
-    log(
-      'info',
-      service_name,
-      'get past gateway events',
-      {
-        chain,
-        contract_address: address,
-        options,
-      },
-    );
-
-    // query events from contract
-    const events = await contract
-      .queryFilter(
-        filters,
+      // query options
+      const {
         fromBlock,
         toBlock,
-      )
-      .catch(error => { return { error }; });
-
-    if (!events?.error) {
-      if (events) {
-        for (const event of events) {
-          await onEmit(
-            chain_config,
-            event,
-            environment,
-          );
-        }
-      }
-
-      return;
-    }
-    else {
-      const {
-        message,
-      } = { ...events.error };
+        environment,
+      } = { ...options };
 
       log(
-        'warn',
+        'info',
         service_name,
         'get past gateway events',
         {
           chain,
           contract_address: address,
           options,
-          error: message,
         },
       );
 
-      await sleep(1.5 * 1000);
+      // query events from contract
+      const events =
+        await contract
+          .queryFilter(
+            filters,
+            fromBlock,
+            toBlock,
+          )
+          .catch(error => { return { error }; });
 
-      return await getPastEvents(
-        chain_config,
-        filters,
-        options,
-      );
+      if (!events?.error) {
+        if (events) {
+          for (const event of events) {
+            await onEmit(
+              chain_config,
+              event,
+              environment,
+            );
+          }
+        }
+
+        return;
+      }
+      else {
+        const {
+          message,
+        } = { ...events.error };
+
+        log(
+          'warn',
+          service_name,
+          'get past gateway events',
+          {
+            chain,
+            contract_address: address,
+            options,
+            error: message,
+          },
+        );
+
+        await sleep(1.5 * 1000);
+
+        return await getPastEvents(
+          chain_config,
+          filters,
+          options,
+        );
+      }
     }
   }
 
