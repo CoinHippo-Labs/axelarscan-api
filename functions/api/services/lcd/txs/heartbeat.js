@@ -73,9 +73,10 @@ module.exports = async (
             signatures,
             sender:
               _.head(
-                messages.map(m =>
-                  m?.sender
-                )
+                messages
+                  .map(m =>
+                    m?.sender
+                  )
               ),
             key_ids:
               _.uniq(

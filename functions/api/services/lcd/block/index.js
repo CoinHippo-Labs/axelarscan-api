@@ -61,19 +61,23 @@ module.exports = async (
           timestamp:
             moment(timestamp)
               .valueOf(),
-          validators: signatures
-            .map(s => s?.validator_address),
+          validators:
+            signatures
+              .map(s =>
+                s?.validator_address
+              ),
         },
       );
     }
   }
 
-  const _response = await rpc(
-    '/block_results',
-    {
-      height,
-    },
-  );
+  const _response =
+    await rpc(
+      '/block_results',
+      {
+        height,
+      },
+    );
 
   const {
     begin_block_events,

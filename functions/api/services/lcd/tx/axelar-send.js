@@ -59,9 +59,10 @@ module.exports = async (
 
     const amount_data =
       _.head(
-        messages.find(m =>
-          m?.amount
-        )?.amount
+        messages
+          .find(m =>
+            m?.amount
+          )?.amount
       );
 
     let record = {

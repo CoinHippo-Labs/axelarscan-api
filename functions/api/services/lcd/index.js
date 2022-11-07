@@ -48,11 +48,12 @@ module.exports = async (
       created_at,
     } = { ...params };
 
-    const cache_id = path
-      .split('/')
-      .filter(p => p)
-      .join('_')
-      .toLowerCase();
+    const cache_id =
+      path
+        .split('/')
+        .filter(p => p)
+        .join('_')
+        .toLowerCase();
 
     let response_cache;
 
@@ -310,21 +311,23 @@ module.exports = async (
       path === '/ibc/core/channel/v1/channels' &&
       channels
     ) {
-      response = await index_ibc_channels(
-        path,
-        response,
-      );
+      response =
+        await index_ibc_channels(
+          path,
+          response,
+        );
     }
     else if (
       path.startsWith('/axelar/evm/v1beta1/batched_commands/') &&
       !path.endsWith('/') &&
       command_ids
     ) {
-      response = await index_batch(
-        path,
-        response,
-        created_at,
-      );
+      response =
+        await index_batch(
+          path,
+          response,
+          created_at,
+        );
     }
 
     response = {

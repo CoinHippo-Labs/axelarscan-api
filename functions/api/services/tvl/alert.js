@@ -85,44 +85,45 @@ module.exports = async (
     updated_at,
   } =  { ..._.head(data) };
 
-  data = _.orderBy(
-    (data || [])
-      .map(d =>
-        _.head(d?.data)
-      )
-      .filter(d => d)
-      .map(d => {
-        const {
-          price,
-          total,
-          percent_diff_supply,
-        } = { ...d };
+  data =
+    _.orderBy(
+      (data || [])
+        .map(d =>
+          _.head(d?.data)
+        )
+        .filter(d => d)
+        .map(d => {
+          const {
+            price,
+            total,
+            percent_diff_supply,
+          } = { ...d };
 
-        return {
-          ...d,
-          value:
-            (total * price) ||
-            0,
-          value_diff:
-            (
-              total *
-              (percent_diff_supply / 100) *
-              price
-            ) ||
-            0,
-        };
-      }),
-    [
-      'value_diff',
-      'value',
-      'total',
-    ],
-    [
-      'desc',
-      'desc',
-      'desc',
-    ],
-  );
+          return {
+            ...d,
+            value:
+              (total * price) ||
+              0,
+            value_diff:
+              (
+                total *
+                (percent_diff_supply / 100) *
+                price
+              ) ||
+              0,
+          };
+        }),
+      [
+        'value_diff',
+        'value',
+        'total',
+      ],
+      [
+        'desc',
+        'desc',
+        'desc',
+      ],
+    );
 
   const _data = data
     .filter(d =>

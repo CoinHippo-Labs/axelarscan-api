@@ -58,6 +58,9 @@ module.exports = async (
 
     let records = [];
 
+    const polls_data = {};
+    const end_block_events_data = {};
+
     for (const t of _tx_responses) {
       const {
         txhash,
@@ -78,9 +81,7 @@ module.exports = async (
       const _records = [];
 
       if (messages) {
-        let end_block_events;
-
-        const polls_data = {};
+        let end_block_events = end_block_events_data[height];
 
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i];
@@ -208,6 +209,8 @@ module.exports = async (
                     end_block_events =
                       _response?.end_block_events ||
                       [];
+
+                    end_block_events_data[height] = end_block_events;
                   }
 
                   const completed_events =
@@ -524,6 +527,13 @@ module.exports = async (
                         confirm_deposit?.transaction_id ||
                         data?.source?.id
                       );
+
+                    if (
+                      transaction_id &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].transaction_id = transaction_id;
+                    }
                   }
 
                   if (!deposit_address) {
@@ -534,6 +544,13 @@ module.exports = async (
                         data?.source?.recipient_address ||
                         data?.link?.deposit_address
                       );
+
+                    if (
+                      deposit_address &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].deposit_address = deposit_address;
+                    }
                   }
 
                   if (!transfer_id) {
@@ -541,10 +558,24 @@ module.exports = async (
                       data?.vote?.transfer_id ||
                       confirm_deposit?.transfer_id ||
                       data?.transfer_id;
+
+                    if (
+                      transfer_id &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].transfer_id = transfer_id;
+                    }
                   }
 
                   if (!participants) {
                     participants = confirm_deposit?.participants;
+
+                    if (
+                      participants &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].participants = participants;
+                    }
                   }
                 }
 
@@ -572,6 +603,20 @@ module.exports = async (
                       participants =
                         _response.participants ||
                         participants;
+
+                      if (poll_data[poll_id]) {
+                        if (sender_chain) {
+                          poll_data[poll_id].sender_chain = sender_chain;
+                        }
+
+                        if (transaction_id) {
+                          poll_data[poll_id].transaction_id = transaction_id;
+                        }
+
+                        if (participants) {
+                          poll_data[poll_id].participants = participants;
+                        }
+                      }
                     }
                   }
 
@@ -591,6 +636,13 @@ module.exports = async (
                       );
 
                     sender_chain = _.head(_response?.data)?.sender_chain;
+
+                    if (
+                      sender_chain &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].sender_chain = sender_chain;
+                    }
                   }
                 }
 
@@ -615,6 +667,8 @@ module.exports = async (
                     end_block_events =
                       _response?.end_block_events ||
                       [];
+
+                    end_block_events_data[height] = end_block_events;
                   }
 
                   confirmation_events = end_block_events
@@ -743,6 +797,13 @@ module.exports = async (
                     transfer_id =
                       _transfer_id ||
                       transfer_id;
+
+                    if (
+                      transfer_id &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].transfer_id = transfer_id;
+                    }
                   }
                 }
 
@@ -783,10 +844,24 @@ module.exports = async (
                     transfer_id =
                       data.transfer_id ||
                       transfer_id;
+
+                    if (
+                      transfer_id &&
+                      poll_data[poll_id]
+                    ) {
+                      poll_data[poll_id].transfer_id = transfer_id;
+                    }
                   }
                 }
 
                 transaction_id = to_hex(transaction_id);
+
+                if (
+                  transaction_id &&
+                  poll_data[poll_id]
+                ) {
+                  poll_data[poll_id].transaction_id = transaction_id;
+                }
 
                 const record = {
                   id: txhash,
@@ -821,10 +896,11 @@ module.exports = async (
         }
       }
 
-      records = _.concat(
-        records,
-        _records,
-      );
+      records =
+        _.concat(
+          records,
+          _records,
+        );
     }
 
     records = records
@@ -930,7 +1006,13 @@ module.exports = async (
         );
       }
 
-      await sleep(2 * 1000);
+      await sleep(
+        (records.length > 10 ?
+          2 :
+          1
+        ) *
+        1000
+      );
     }
   } catch (error) {}
 };

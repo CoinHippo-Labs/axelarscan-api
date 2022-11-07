@@ -113,11 +113,12 @@ exports.handler = async (
       no_index =
         typeof no_index === 'boolean' ?
           no_index :
-          typeof no_index === 'string' &&
-          equals_ignore_case(
-            no_index,
-            'true',
-          );
+          typeof no_index === 'string' ?
+            equals_ignore_case(
+              no_index,
+              'true',
+            ) :
+            undefined;
 
       delete params.module;
       delete params.path;
@@ -128,10 +129,11 @@ exports.handler = async (
       switch (_module) {
         case 'rpc':
           try {
-            response = await rpc(
-              path,
-              params,
-            );
+            response =
+              await rpc(
+                path,
+                params,
+              );
           } catch (error) {
             response = {
               error: true,
@@ -142,13 +144,14 @@ exports.handler = async (
           break;
         case 'lcd':
           try {
-            response = await lcd(
-              path,
-              params,
-              cache,
-              cache_timeout,
-              no_index,
-            );
+            response =
+              await lcd(
+                path,
+                params,
+                cache,
+                cache_timeout,
+                no_index,
+              );
           } catch (error) {
             response = {
               error: true,
@@ -181,10 +184,11 @@ exports.handler = async (
           break;
         case 'coingecko':
           try {
-            response = await coingecko(
-              path,
-              params,
-            );
+            response =
+              await coingecko(
+                path,
+                params,
+              );
           } catch (error) {
             response = {
               error: true,
@@ -195,10 +199,11 @@ exports.handler = async (
           break;
         case 'ens':
           try {
-            response = await ens(
-              path,
-              params,
-            );
+            response =
+              await ens(
+                path,
+                params,
+              );
           } catch (error) {
             response = {
               error: true,

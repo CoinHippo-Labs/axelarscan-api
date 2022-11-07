@@ -122,19 +122,20 @@ module.exports = async (
           (
             messages
               .find(m =>
-                transfer_actions.includes(
-                  (
-                    _.last(
-                      (m?.['@type'] || '')
-                        .split('.')
-                    ) ||
-                    ''
+                transfer_actions
+                  .includes(
+                    (
+                      _.last(
+                        (m?.['@type'] || '')
+                          .split('.')
+                      ) ||
+                      ''
+                    )
+                    .replace(
+                      'Request',
+                      '',
+                    )
                   )
-                  .replace(
-                    'Request',
-                    '',
-                  )
-                )
               )?.['@type'] ||
             ''
           )
@@ -433,7 +434,10 @@ module.exports = async (
                 if (!executed) {
                   const chain_data = evm_chains_data
                     .find(c =>
-                      equals_ignore_case(c?.id, recipient_chain)
+                      equals_ignore_case(
+                        c?.id,
+                        recipient_chain,
+                      )
                     );
 
                   const provider = getProvider(chain_data);
@@ -539,7 +543,9 @@ module.exports = async (
             } = { ..._response };
 
             data = (data || [])
-              .filter(t => t?.source?.id);
+              .filter(t =>
+                t?.source?.id
+              );
 
             if (
               data.length < 1 &&
@@ -567,7 +573,9 @@ module.exports = async (
                 );
 
               data = (_response?.data || [])
-                .filter(t => t?.source?.id);
+                .filter(t =>
+                  t?.source?.id
+                );
             }
 
             for (const d of data) {

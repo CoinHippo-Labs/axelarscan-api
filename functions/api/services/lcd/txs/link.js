@@ -183,12 +183,13 @@ module.exports = async (
 
       if (
         sender_address?.startsWith(axelarnet.prefix_address) &&
-        chains_data.findIndex(c =>
-          equals_ignore_case(
-            c?.id,
-            sender_chain,
-          )
-        ) > -1
+        chains_data
+          .findIndex(c =>
+            equals_ignore_case(
+              c?.id,
+              sender_chain,
+            )
+          ) > -1
       ) {
         const _response =
           await read(
