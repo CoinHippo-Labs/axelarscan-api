@@ -6,7 +6,6 @@ exports.handler = async (
   const config = require('config-yml');
   const rpc = require('./services/rpc');
   const lcd = require('./services/lcd');
-  const cli = require('./services/cli');
   const {
     crud,
   } = require('./services/index');

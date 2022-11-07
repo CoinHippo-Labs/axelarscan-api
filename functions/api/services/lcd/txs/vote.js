@@ -530,9 +530,9 @@ module.exports = async (
 
                     if (
                       transaction_id &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].transaction_id = transaction_id;
+                      polls_data[poll_id].transaction_id = transaction_id;
                     }
                   }
 
@@ -547,9 +547,9 @@ module.exports = async (
 
                     if (
                       deposit_address &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].deposit_address = deposit_address;
+                      polls_data[poll_id].deposit_address = deposit_address;
                     }
                   }
 
@@ -561,9 +561,9 @@ module.exports = async (
 
                     if (
                       transfer_id &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].transfer_id = transfer_id;
+                      polls_data[poll_id].transfer_id = transfer_id;
                     }
                   }
 
@@ -572,9 +572,9 @@ module.exports = async (
 
                     if (
                       participants &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].participants = participants;
+                      polls_data[poll_id].participants = participants;
                     }
                   }
                 }
@@ -604,17 +604,17 @@ module.exports = async (
                         _response.participants ||
                         participants;
 
-                      if (poll_data[poll_id]) {
+                      if (polls_data[poll_id]) {
                         if (sender_chain) {
-                          poll_data[poll_id].sender_chain = sender_chain;
+                          polls_data[poll_id].sender_chain = sender_chain;
                         }
 
                         if (transaction_id) {
-                          poll_data[poll_id].transaction_id = transaction_id;
+                          polls_data[poll_id].transaction_id = transaction_id;
                         }
 
                         if (participants) {
-                          poll_data[poll_id].participants = participants;
+                          polls_data[poll_id].participants = participants;
                         }
                       }
                     }
@@ -639,9 +639,9 @@ module.exports = async (
 
                     if (
                       sender_chain &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].sender_chain = sender_chain;
+                      polls_data[poll_id].sender_chain = sender_chain;
                     }
                   }
                 }
@@ -800,9 +800,9 @@ module.exports = async (
 
                     if (
                       transfer_id &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].transfer_id = transfer_id;
+                      polls_data[poll_id].transfer_id = transfer_id;
                     }
                   }
                 }
@@ -847,9 +847,9 @@ module.exports = async (
 
                     if (
                       transfer_id &&
-                      poll_data[poll_id]
+                      polls_data[poll_id]
                     ) {
-                      poll_data[poll_id].transfer_id = transfer_id;
+                      polls_data[poll_id].transfer_id = transfer_id;
                     }
                   }
                 }
@@ -858,9 +858,9 @@ module.exports = async (
 
                 if (
                   transaction_id &&
-                  poll_data[poll_id]
+                  polls_data[poll_id]
                 ) {
-                  poll_data[poll_id].transaction_id = transaction_id;
+                  polls_data[poll_id].transaction_id = transaction_id;
                 }
 
                 const record = {
