@@ -324,6 +324,7 @@ module.exports = async (
             'payload_hash',
             'pre_operators',
             'new_operators',
+            'token_address',
           ];
 
         for (let i = 0; i < messages.length; i++) {
@@ -386,6 +387,10 @@ module.exports = async (
                   if (Array.isArray(event.multisig_operatorship_transferred?.[field])) {
                     event.multisig_operatorship_transferred[field] = to_hex(event.multisig_operatorship_transferred[field]);
                   }
+
+                  if (Array.isArray(event.token_deployed?.[field])) {
+                    event.token_deployed[field] = to_hex(event.token_deployed[field]);
+                  }
                 }
               }
 
@@ -423,6 +428,10 @@ module.exports = async (
 
                   if (Array.isArray(event.multisig_operatorship_transferred?.[field])) {
                     event.multisig_operatorship_transferred[field] = to_hex(event.multisig_operatorship_transferred[field]);
+                  }
+
+                  if (Array.isArray(event.token_deployed?.[field])) {
+                    event.token_deployed[field] = to_hex(event.token_deployed[field]);
                   }
                 }
               }

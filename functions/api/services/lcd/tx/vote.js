@@ -353,6 +353,11 @@ module.exports = async (
 
                 late =
                   !vote_event &&
+                  (logs || [])
+                    .findIndex(l =>
+                      l?.log?.includes('failed') &&
+                      l.log.includes('already confirmed')
+                    ) > -1 &&
                   (
                     (
                       !vote &&
@@ -596,6 +601,7 @@ module.exports = async (
                     'depositConfirmation',
                     'eventConfirmation',
                     'transferKeyConfirmation',
+                    'tokenConfirmation',
                     'TokenSent',
                     'ContractCall',
                   ].findIndex(s =>
@@ -666,6 +672,15 @@ module.exports = async (
                   };
                 });
 
+              const _chain =
+                _.head(
+                  confirmation_events
+                    .map(e =>
+                      e.chain
+                    )
+                    .filter(c => c)
+                );
+
               const _transaction_id =
                 _.head(
                   confirmation_events
@@ -723,6 +738,10 @@ module.exports = async (
                 transfer_id =
                   _transfer_id ||
                   transfer_id;
+
+                sender_chain =
+                  sender_chain ||
+                  _chain;
               }
             }
 

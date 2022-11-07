@@ -380,6 +380,11 @@ module.exports = async (
 
                     late =
                       !vote_event &&
+                      (logs || [])
+                        .findIndex(l =>
+                          l?.log?.includes('failed') &&
+                          l.log.includes('already confirmed')
+                        ) > -1 &&
                       (
                         (
                           !vote &&
@@ -586,6 +591,7 @@ module.exports = async (
                 ) {
                   if (poll_id) {
                     const _response =
+                      polls_data[poll_id] ||
                       await get(
                         'evm_polls',
                         poll_id,
@@ -677,6 +683,7 @@ module.exports = async (
                         'depositConfirmation',
                         'eventConfirmation',
                         'transferKeyConfirmation',
+                        'tokenConfirmation',
                         'TokenSent',
                         'ContractCall',
                       ].findIndex(s =>
@@ -739,6 +746,15 @@ module.exports = async (
                         ),
                       };
                     });
+
+                  const _chain =
+                    _.head(
+                      confirmation_events
+                        .map(e =>
+                          e.chain
+                        )
+                        .filter(c => c)
+                    );
 
                   const _transaction_id =
                     _.head(
@@ -803,6 +819,17 @@ module.exports = async (
                       polls_data[poll_id]
                     ) {
                       polls_data[poll_id].transfer_id = transfer_id;
+                    }
+
+                    sender_chain =
+                      sender_chain ||
+                      _chain;
+
+                    if (
+                      sender_chain &&
+                      polls_data[poll_id]
+                    ) {
+                      polls_data[poll_id].sender_chain = sender_chain;
                     }
                   }
                 }
@@ -1006,13 +1033,7 @@ module.exports = async (
         );
       }
 
-      await sleep(
-        (records.length > 10 ?
-          2 :
-          1
-        ) *
-        1000
-      );
+      await sleep(1 * 1000);
     }
   } catch (error) {}
 };
