@@ -233,7 +233,7 @@ resource "aws_lambda_function" "crawler" {
   role             = aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
-  timeout          = 600
+  timeout          = 630
   memory_size      = 1024
   environment {
     variables = {
