@@ -26,7 +26,7 @@ module.exports = async (
       logs,
     } = { ...tx_response };
 
-    if (txhash) {
+    /*if (txhash) {
       const queue_data =
         await get(
           'txs_index_queue',
@@ -52,7 +52,7 @@ module.exports = async (
         },
         typeof count === 'number',
       );
-    }
+    }*/
 
     const transfer_events = (logs || [])
       .map(l => {

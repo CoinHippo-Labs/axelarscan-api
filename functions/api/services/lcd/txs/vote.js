@@ -143,6 +143,7 @@ module.exports = async (
           'txs_index_queue',
           txhash,
           data,
+          true,
         );
       }
       else {
@@ -150,6 +151,7 @@ module.exports = async (
           'txs_index_queue',
           txhash,
           data,
+          true,
         );
       }
     }

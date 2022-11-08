@@ -517,7 +517,7 @@ exports.handler = async (
         require('./services/archiver')();
 
         // index transactions in queue
-        require('./services/index_queue')(
+        require('./services/index-queue')(
           context,
           remain_ms_to_exit,
         );

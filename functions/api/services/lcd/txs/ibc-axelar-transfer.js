@@ -41,7 +41,7 @@ module.exports = async (
       hashes.length > 0 &&
       endpoints?.api
     ) {
-      for (let i = 0; i < hashes.length; i++) {
+      /*for (let i = 0; i < hashes.length; i++) {
         const txhash = hashes[i];
 
         const data = {
@@ -68,7 +68,7 @@ module.exports = async (
             data,
           );
         }
-      }
+      }*/
 
       const api = axios.create(
         {

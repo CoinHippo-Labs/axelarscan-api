@@ -59,7 +59,7 @@ module.exports = async (
       messages,
     } = { ...tx?.body };
 
-    if (txhash) {
+    /*if (txhash) {
       const queue_data =
         await get(
           'txs_index_queue',
@@ -85,7 +85,7 @@ module.exports = async (
         },
         typeof count === 'number',
       );
-    }
+    }*/
 
     const ack_packets = (logs || [])
       .map(l => {
