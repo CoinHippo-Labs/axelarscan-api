@@ -3118,6 +3118,18 @@ module.exports = {
           decimals: 6,
           symbol: 'wAXL',
         },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 421613,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 44787,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
       ],
       ibc: [
         {
@@ -3180,6 +3192,16 @@ module.exports = {
         {
           contract_address: '0xFfB4749710EC6286b3A0dC2F24165DA622dA2ff5',
           chain_id: 1313161555,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
+          chain_id: 421613,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
+          chain_id: 44787,
           decimals: 6,
         },
       ],
@@ -3349,6 +3371,12 @@ module.exports = {
         {
           contract_address: '0xcfF68Bea15e24aec8ECfdb82862ff776C3e972d1',
           chain_id: 1313161555,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
+          chain_id: 44787,
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -3580,6 +3608,18 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWBNB',
         },
+        {
+          contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
+          chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
+          chain_id: 44787,
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
       ],
       ibc: [
         {
@@ -3685,6 +3725,18 @@ module.exports = {
         {
           contract_address: '0xb47BAb33cAE8FCa71FA28516ADCE3AF0B3e040e3',
           chain_id: 1313161555,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 44787,
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -3808,6 +3860,18 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWMATIC',
         },
+        {
+          contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
+          chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
+          chain_id: 44787,
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
       ],
       ibc: [
         {
@@ -3925,6 +3989,18 @@ module.exports = {
         {
           contract_address: '0x0660F60B6cC54a3E1e526113a1D25d516273AF3E',
           chain_id: 1313161555,
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
+          chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
+          chain_id: 44787,
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -4047,6 +4123,18 @@ module.exports = {
           chain_id: 1313161555,
           decimals: 18,
           symbol: 'axlWDEV',
+        },
+        {
+          contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
+          chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
+          chain_id: 44787,
+          decimals: 18,
+          symbol: 'axlDEV',
         },
       ],
       ibc: [
