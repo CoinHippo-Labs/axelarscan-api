@@ -462,6 +462,49 @@ module.exports = async (
           price = value / amount;
         }
 
+        const status =
+          ibc_send ?
+            ibc_send.failed_txhash &&
+            !ibc_send.ack_txhash ?
+              'ibc_failed' :
+              ibc_send.recv_txhash ?
+                'executed' :
+                'ibc_sent' :
+            sign_batch?.executed ?
+              'executed' :
+               sign_batch ?
+                'batch_signed' :
+                axelar_transfer ?
+                  'executed' :
+                  vote ?
+                    'voted' :
+                    confirm_deposit ?
+                      'deposit_confirmed' :
+                      source?.status === 'failed' ?
+                        'send_failed' :
+                        'asset_sent';
+
+        let simplified_status;
+
+        switch (status) {
+          case 'ibc_failed':
+          case 'send_failed':
+            simplified_status = 'failed';
+            break;
+          case 'executed':
+            simplified_status = 'received';
+            break;
+          case 'ibc_sent':
+          case 'batch_signed':
+          case 'voted':
+          case 'deposit_confirmed':
+            simplified_status = 'confirmed';
+            break;
+          default:
+            simplified_status = 'sent';
+            break;
+        }
+
         return {
           ...d,
           link:
@@ -470,25 +513,8 @@ module.exports = async (
               ...link,
               price,
             },
-          status:
-            ibc_send ?
-              ibc_send.failed_txhash &&
-              !ibc_send.ack_txhash ?
-                'ibc_failed' :
-                ibc_send.recv_txhash ?
-                  'executed' :
-                  'ibc_sent' :
-              sign_batch?.executed ?
-                'executed' :
-                 sign_batch ?
-                  'batch_signed' :
-                  axelar_transfer ?
-                    'executed' :
-                    vote ?
-                      'voted' :
-                      confirm_deposit ?
-                        'deposit_confirmed' :
-                        'asset_sent',
+          status,
+          simplified_status,
         };
       });
   }
