@@ -30,7 +30,7 @@ mainnet:
     min_index_round_count: 2
     max_index_round_count: 5
     concurrent_index_records: 10
-    delay_ms_per_batch: 3000
+    delay_ms_per_batch: 500
     max_records_synchronous: 200
   percent_diff_escrow_supply_threshold: 5.0
   percent_diff_total_supply_threshold: 5.0
@@ -139,7 +139,7 @@ testnet:
     min_index_round_count: 2
     max_index_round_count: 5
     concurrent_index_records: 10
-    delay_ms_per_batch: 3000
+    delay_ms_per_batch: 500
     max_records_synchronous: 200
   percent_diff_escrow_supply_threshold: 5.0
   percent_diff_total_supply_threshold: 5.0
@@ -240,7 +240,7 @@ devnet:
     min_index_round_count: 1
     max_index_round_count: 3
     concurrent_index_records: 10
-    delay_ms_per_batch: 3000
+    delay_ms_per_batch: 2000
     max_records_synchronous: 300
 
 testnet-2:
@@ -259,5 +259,5 @@ testnet-2:
     min_index_round_count: 1
     max_index_round_count: 3
     concurrent_index_records: 10
-    delay_ms_per_batch: 3000
+    delay_ms_per_batch: 2000
     max_records_synchronous: 300

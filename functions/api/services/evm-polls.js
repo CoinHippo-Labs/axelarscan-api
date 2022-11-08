@@ -86,20 +86,21 @@ module.exports = async (
   if (voter) {
     const _voter = voter.toLowerCase();
 
-    const _response = await read(
-      'axelard',
-      {
-        bool: {
-          must: [
-            { match: { type: 'proxy' } },
-            { match: { stdout: _voter } },
-          ],
+    const _response =
+      await read(
+        'axelard',
+        {
+          bool: {
+            must: [
+              { match: { type: 'proxy' } },
+              { match: { stdout: _voter } },
+            ],
+          },
         },
-      },
-      {
-        size: 1,
-      },
-    );
+        {
+          size: 1,
+        },
+      );
 
     const operator_address =
       _.last(

@@ -30,7 +30,7 @@ concurrent_index_records =
   10;
 delay_ms_per_batch =
   delay_ms_per_batch ||
-  3000;
+  1000;
 max_records_synchronous =
   max_records_synchronous ||
   200;
@@ -59,10 +59,8 @@ module.exports = async (
               },
               {
                 range: {
-                  {
-                    count: {
-                      lt: max_index_round_count,
-                    },
+                  count: {
+                    lt: max_index_round_count,
                   },
                 },
               },
@@ -70,8 +68,10 @@ module.exports = async (
             minimum_should_match: 1,
           },
         },
-        size: concurrent_index_records,
-        sort: [{ updated_at: 'desc' }],
+        {
+          size: concurrent_index_records,
+          sort: [{ updated_at: 'asc' }],
+        },
       );
 
     const {

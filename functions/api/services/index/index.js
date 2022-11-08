@@ -251,48 +251,50 @@ const crud = async (
           path ||
           `/${collection}/_search`;
 
-        const search_data = use_raw_data ?
-          params :
-          {
-            query: {
-              bool: {
-                // set query for each field
-                must: Object.entries({ ...params })
-                  .filter(([k, v]) =>
-                    ![
-                      'query',
-                      'aggs',
-                      'from',
-                      'size',
-                      'sort',
-                      'fields',
-                      '_source',
-                    ].includes(k)
-                  )
-                  .map(([k, v]) => {
-                    // override field from params
-                    switch (k) {
-                      case 'id':
-                        if (
-                          !v &&
-                          id
-                        ) {
-                          v = id;
+        const search_data =
+          use_raw_data ?
+            params :
+            {
+              query: {
+                bool: {
+                  // set query for each field
+                  must:
+                    Object.entries({ ...params })
+                      .filter(([k, v]) =>
+                        ![
+                          'query',
+                          'aggs',
+                          'from',
+                          'size',
+                          'sort',
+                          'fields',
+                          '_source',
+                        ].includes(k)
+                      )
+                      .map(([k, v]) => {
+                        // override field from params
+                        switch (k) {
+                          case 'id':
+                            if (
+                              !v &&
+                              id
+                            ) {
+                              v = id;
+                            }
+                            break;
+                          default:
+                            break;
                         }
-                        break;
-                      default:
-                        break;
-                    }
-                    // set match query
-                    return {
-                      match: {
-                        [`${k}`]: v,
-                      },
-                    };
-                  }),
+                        // set match query
+                        return {
+                          match: {
+                            [`${k}`]: v,
+                          },
+                        };
+                      }),
+                },
               },
-            },
-          };
+            };
 
         if (path.endsWith('/_search')) {
           search_data.from =
@@ -323,20 +325,21 @@ const crud = async (
           aggregations ?
             {
               data: {
-                data: (hits?.hits || [])
-                  .map(d => {
-                    const {
-                      _id,
-                      _source,
-                      fields,
-                    } = { ...d };
+                data:
+                  (hits?.hits || [])
+                    .map(d => {
+                      const {
+                        _id,
+                        _source,
+                        fields,
+                      } = { ...d };
 
-                    return {
-                      ..._source,
-                      ...fields,
-                      id: _id,
-                    };
-                  }),
+                      return {
+                        ..._source,
+                        ...fields,
+                        id: _id,
+                      };
+                    }),
                 total: hits?.total?.value,
                 aggs: aggregations,
               },
