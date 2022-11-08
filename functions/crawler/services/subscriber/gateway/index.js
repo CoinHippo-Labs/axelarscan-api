@@ -1,4 +1,6 @@
-const { Contract } = require('ethers');
+const {
+  Contract,
+} = require('ethers');
 const {
   onEmit,
   sync,
