@@ -4,9 +4,6 @@ const config = require('config-yml');
 const {
   write,
 } = require('../../index');
-const {
-  sleep,
-} = require('../../../utils');
 
 const environment =
   process.env.ENVIRONMENT ||
@@ -93,21 +90,33 @@ module.exports = async (
       })
       .filter(t => t?.sender);
 
-    if (records.length > 0) {
-      for (const record of records) {
-        const {
-          sender,
-          period_height,
-        } = { ...record };
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
 
-        write(
+      const {
+        sender,
+        period_height,
+      } = { ...record };
+
+      const id = `${sender}_${period_height}`;
+
+      if (
+        i === 0 ||
+        i === records.length - 1
+      ) {
+        await write(
           'heartbeats',
-          `${sender}_${period_height}`,
+          id,
           record,
         );
       }
-
-      await sleep(1 * 1000);
+      else {
+        write(
+          'heartbeats',
+          id,
+          record,
+        );
+      }
     }
   } catch (error) {}
 };

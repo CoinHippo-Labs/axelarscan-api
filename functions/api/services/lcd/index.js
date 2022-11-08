@@ -63,7 +63,8 @@ module.exports = async (
       }
     }
 
-    if (!cache_id ||
+    if (
+      !cache_id ||
       [
         '/cosmos/tx/v1beta1/txs',
         '/cosmos/base/tendermint/v1beta1/blocks',

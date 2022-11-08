@@ -8,7 +8,6 @@ const {
 } = require('../../index');
 const assets_price = require('../../assets-price');
 const {
-  sleep,
   equals_ignore_case,
   get_granularity,
   normalize_original_chain,
@@ -297,20 +296,30 @@ module.exports = async (
       };
     }
 
-    if (records.length > 0) {
-      for (const record of records) {
-        const {
-          id,
-        } = { ...record };
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
 
+      const {
+        id,
+      } = { ...record };
+
+      if (
+        i === 0 ||
+        i === records.length - 1
+      ) {
+        await write(
+          'deposit_addresses',
+          id,
+          record,
+        );
+      }
+      else {
         write(
           'deposit_addresses',
           id,
           record,
         );
       }
-
-      await sleep(1 * 1000);
     }
   } catch (error) {}
 };

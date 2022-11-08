@@ -53,32 +53,35 @@ module.exports = async (
         )
     );
 
-  response = await lcd(
-    '/cosmos/mint/v1beta1/inflation',
-  );
+  response =
+    await lcd(
+      '/cosmos/mint/v1beta1/inflation',
+    );
 
   const tendermintInflationRate =
     response ?
       Number(response.inflation) :
       null;
 
-  response = await lcd(
-    '/cosmos/distribution/v1beta1/params',
-  );
+  response =
+    await lcd(
+      '/cosmos/distribution/v1beta1/params',
+    );
 
   const communityTax =
     response ?
       Number(response.params?.community_tax) :
       null;
 
-  response = await cli(
-    undefined,
-    {
-      cmd: 'axelard q params subspace reward KeyMgmtRelativeInflationRate -oj',
-    },
-    true,
-    30,
-  );
+  response =
+    await cli(
+      undefined,
+      {
+        cmd: 'axelard q params subspace reward KeyMgmtRelativeInflationRate -oj',
+      },
+      true,
+      30,
+    );
 
   const keyMgmtRelativeInflationRate =
     Number(

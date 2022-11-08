@@ -8,7 +8,6 @@ const {
 } = require('../../index');
 const rpc = require('../../rpc');
 const {
-  sleep,
   equals_ignore_case,
   to_json,
   to_hex,
@@ -54,7 +53,106 @@ module.exports = async (
                 .includes(s)
               ) > -1
           ) > -1
-      );
+      )
+      .filter(t => {
+        const {
+          tx,
+          logs,
+        } = { ...t };
+        const {
+          messages,
+        } = { ...tx?.body };
+
+        let valid = false;
+
+        for (let i = 0; i < messages.length; i++) {
+          const message = messages[i];
+
+          const {
+            inner_message,
+          } = { ...message };
+
+          const {
+            events,
+          } = { ...logs?.[i] };
+
+          const event = (events || [])
+            .find(e =>
+              [
+                'depositConfirmation',
+                'eventConfirmation',
+              ].findIndex(s =>
+                equals_ignore_case(
+                  e?.type,
+                  s,
+                )
+              ) > -1
+            );
+
+          const vote_event = (events || [])
+            .find(e =>
+              e?.type?.includes('vote')
+            );
+
+          const {
+            attributes,
+          } = { ...event };
+
+          const poll_id =
+            inner_message.poll_id ||
+            to_json(
+              inner_message.poll_key ||
+              (attributes || [])
+                .find(a =>
+                  a?.key === 'poll'
+                )?.value ||
+              (vote_event?.attributes || [])
+                .find(a =>
+                  a?.key === 'poll'
+                )?.value
+            )?.id;
+
+          if (poll_id) {
+            valid = true;
+            break;
+          }
+        }
+
+        return valid;
+      });
+
+    for (let i = 0; i < _tx_responses.length; i++) {
+      const t = _tx_responses[i];
+
+      const {
+        txhash,
+      } = { ...t };
+
+      const data = {
+        txhash,
+        updated_at:
+          moment()
+            .valueOf(),
+      };
+
+      if (
+        i === 0 ||
+        i === _tx_responses.length - 1
+      ) {
+        await write(
+          'txs_index_queue',
+          txhash,
+          data,
+        );
+      }
+      else {
+        write(
+          'txs_index_queue',
+          txhash,
+          data,
+        );
+      }
+    }
 
     let records = [];
 
@@ -937,7 +1035,9 @@ module.exports = async (
       );
 
     if (records.length > 0) {
-      for (const record of records) {
+      for (let i = 0; i < records.length; i++) {
+        const record = records[i];
+
         const {
           id,
           type,
@@ -965,55 +1065,6 @@ module.exports = async (
         } = { ...created_at };
 
         write(
-          'evm_polls',
-          poll_id,
-          {
-            id: poll_id,
-            height,
-            created_at,
-            sender_chain,
-            recipient_chain,
-            transaction_id,
-            deposit_address,
-            transfer_id,
-            confirmation:
-              confirmation ||
-              undefined,
-            failed:
-              success ?
-                false :
-                failed ||
-                undefined,
-            success:
-              success ||
-              undefined,
-            event:
-              event ||
-              undefined,
-            participants:
-              participants ||
-              undefined,
-            confirmation_events:
-              confirmation_events?.length > 0 ?
-                confirmation_events :
-                undefined,
-            [voter.toLowerCase()]: {
-              id,
-              type,
-              height,
-              created_at: ms,
-              voter,
-              vote,
-              confirmed:
-                confirmation &&
-                !unconfirmed,
-              late,
-            },
-          },
-          true,
-        );
-
-        write(
           'evm_votes',
           `${poll_id}_${voter}`.toLowerCase(),
           {
@@ -1031,9 +1082,71 @@ module.exports = async (
             unconfirmed,
           },
         );
-      }
 
-      await sleep(1 * 1000);
+        const data = {
+          id: poll_id,
+          height,
+          created_at,
+          sender_chain,
+          recipient_chain,
+          transaction_id,
+          deposit_address,
+          transfer_id,
+          confirmation:
+            confirmation ||
+            undefined,
+          failed:
+            success ?
+              false :
+              failed ||
+              undefined,
+          success:
+            success ||
+            undefined,
+          event:
+            event ||
+            undefined,
+          participants:
+            participants ||
+            undefined,
+          confirmation_events:
+            confirmation_events?.length > 0 ?
+              confirmation_events :
+              undefined,
+          [voter.toLowerCase()]: {
+            id,
+            type,
+            height,
+            created_at: ms,
+            voter,
+            vote,
+            confirmed:
+              confirmation &&
+              !unconfirmed,
+            late,
+          },
+        };
+
+        if (
+          i === 0 ||
+          i === records.length - 1
+        ) {
+          await write(
+            'evm_polls',
+            poll_id,
+            data,
+            true,
+          );
+        }
+        else {
+          write(
+            'evm_polls',
+            poll_id,
+            data,
+            true,
+          );
+        }
+      }
     }
   } catch (error) {}
 };

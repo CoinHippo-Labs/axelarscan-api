@@ -32,14 +32,15 @@ module.exports = async (
       Number.isInteger(height) &&
       height > 0;
 
-    const _response = await cli(
-      undefined,
-      {
-        cmd: `axelard q nexus chain-maintainers ${chain} ${valid_height ? `--height ${height} ` : ''}-oj`,
-      },
-      true,
-      30,
-    );
+    const _response =
+      await cli(
+        undefined,
+        {
+          cmd: `axelard q nexus chain-maintainers ${chain} ${valid_height ? `--height ${height} ` : ''}-oj`,
+        },
+        true,
+        30,
+      );
 
     const {
       maintainers,

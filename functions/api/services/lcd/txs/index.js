@@ -16,15 +16,15 @@ module.exports = async (
       lcd_response,
     );
 
-    await require('./ibc-axelar-transfer')(
-      lcd_response,
-    );
-
     await require('./confirm')(
       lcd_response,
     );
 
     await require('./vote')(
+      lcd_response,
+    );
+
+    await require('./ibc-axelar-transfer')(
       lcd_response,
     );
   }

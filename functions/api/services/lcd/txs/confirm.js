@@ -3,7 +3,6 @@ const {
   write,
 } = require('../../index');
 const {
-  sleep,
   to_json,
   to_hex,
   get_granularity,
@@ -126,34 +125,46 @@ module.exports = async (
         t.transaction_id
       );
 
-    if (records.length > 0) {
-      for (const record of records) {
-        const {
-          height,
-          created_at,
-          sender_chain,
-          poll_id,
-          transaction_id,
-          participants,
-        } = { ...record };
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
 
+      const {
+        height,
+        created_at,
+        sender_chain,
+        poll_id,
+        transaction_id,
+        participants,
+      } = { ...record };
+
+      const data = {
+        id: poll_id,
+        height,
+        created_at,
+        sender_chain,
+        transaction_id,
+        participants:
+          participants ||
+          undefined,
+      };
+
+      if (
+        i === 0 ||
+        i === records.length - 1
+      ) {
+        await write(
+          'evm_polls',
+          poll_id,
+          data,
+        );
+      }
+      else {
         write(
           'evm_polls',
           poll_id,
-          {
-            id: poll_id,
-            height,
-            created_at,
-            sender_chain,
-            transaction_id,
-            participants:
-              participants ||
-              undefined,
-          },
+          data,
         );
       }
-
-      await sleep(1 * 1000);
     }
   } catch (error) {}
 };

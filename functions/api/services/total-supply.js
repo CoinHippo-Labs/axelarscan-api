@@ -61,9 +61,10 @@ module.exports = async (
     asset_data?.decimals ||
     6;
 
-  const response = await lcd(
-    `/cosmos/bank/v1beta1/supply/${id || ''}`,
-  );
+  const response =
+    await lcd(
+      `/cosmos/bank/v1beta1/supply/${id || ''}`,
+    );
 
   const {
     amount,

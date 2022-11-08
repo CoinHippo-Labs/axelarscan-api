@@ -16,14 +16,15 @@ module.exports = async (
   } = { ...params };
 
   if (is_operator_address(operator_address)) {
-    const _response = await cli(
-      undefined,
-      {
-        cmd: `axelard q snapshot proxy ${operator_address} -oj`,
-      },
-      true,
-      300,
-    );
+    const _response =
+      await cli(
+        undefined,
+        {
+          cmd: `axelard q snapshot proxy ${operator_address} -oj`,
+        },
+        true,
+        300,
+      );
 
     const {
       address,

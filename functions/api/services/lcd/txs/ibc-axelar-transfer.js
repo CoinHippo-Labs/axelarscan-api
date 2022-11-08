@@ -1,8 +1,8 @@
 const axios = require('axios');
 const config = require('config-yml');
 const {
-  sleep,
-} = require('../../../utils');
+  write,
+} = require('../../index');
 
 const environment =
   process.env.ENVIRONMENT ||
@@ -41,6 +41,35 @@ module.exports = async (
       hashes.length > 0 &&
       endpoints?.api
     ) {
+      for (let i = 0; i < hashes.length; i++) {
+        const txhash = hashes[i];
+
+        const data = {
+          txhash,
+          updated_at:
+            moment()
+              .valueOf(),
+        };
+
+        if (
+          i === 0 ||
+          i === _tx_responses.length - 1
+        ) {
+          await write(
+            'txs_index_queue',
+            txhash,
+            data,
+          );
+        }
+        else {
+          write(
+            'txs_index_queue',
+            txhash,
+            data,
+          );
+        }
+      }
+
       const api = axios.create(
         {
           baseURL: endpoints.api,
@@ -48,17 +77,30 @@ module.exports = async (
         },
       );
 
-      for (const txhash of hashes) {
-        api.post(
-          '',
-          {
-            module: 'lcd',
-            path: `/cosmos/tx/v1beta1/txs/${txhash}`,
-          },
-        ).catch(error => { return { data: { error } }; });
-      }
+      for (let i = 0; i < hashes.length; i++) {
+        const txhash = hashes[i];
 
-      await sleep(1 * 1000);
+        const data = {
+          module: 'lcd',
+          path: `/cosmos/tx/v1beta1/txs/${txhash}`,
+        };
+
+        if (
+          i === 0 ||
+          i === hashes.length - 1
+        ) {
+          await api.post(
+            '',
+            data,
+          ).catch(error => { return { data: { error } }; });
+        }
+        else {
+          api.post(
+            '',
+            data,
+          ).catch(error => { return { data: { error } }; });
+        }
+      }
     }
   } catch (error) {}
 };

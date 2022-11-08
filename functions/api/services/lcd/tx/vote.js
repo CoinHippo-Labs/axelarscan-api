@@ -58,6 +58,34 @@ module.exports = async (
       messages,
     } = { ...tx?.body };
 
+    if (txhash) {
+      const queue_data =
+        await get(
+          'txs_index_queue',
+          txhash,
+        );
+
+      const {
+        count,
+      } = { ...queue_data };
+
+      await write(
+        'txs_index_queue',
+        txhash,
+        {
+          txhash,
+          updated_at:
+            moment()
+              .valueOf(),
+          count:
+            typeof count === 'number' ?
+              count + 1 :
+              0,
+        },
+        typeof count === 'number',
+      );
+    }
+
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
 
@@ -813,6 +841,75 @@ module.exports = async (
               event: event_name,
             };
 
+            if (voter) {
+              await write(
+                'evm_votes',
+                `${poll_id}_${voter}`.toLowerCase(),
+                {
+                  txhash,
+                  height,
+                  created_at: record.created_at,
+                  sender_chain,
+                  poll_id,
+                  transaction_id,
+                  transfer_id,
+                  voter,
+                  vote,
+                  confirmation,
+                  late,
+                  unconfirmed,
+                },
+              );
+
+              await write(
+                'evm_polls',
+                poll_id,
+                {
+                  id: poll_id,
+                  height,
+                  created_at: record.created_at,
+                  sender_chain,
+                  recipient_chain,
+                  transaction_id,
+                  deposit_address,
+                  transfer_id,
+                  confirmation:
+                    confirmation ||
+                    undefined,
+                  failed:
+                    success ?
+                      false :
+                      failed ||
+                      undefined,
+                  success:
+                    success ||
+                    undefined,
+                  event:
+                    event_name ||
+                    undefined,
+                  participants:
+                    participants ||
+                    undefined,
+                  confirmation_events:
+                    confirmation_events?.length > 0 ?
+                      confirmation_events :
+                      undefined,
+                  [voter.toLowerCase()]: {
+                    id: txhash,
+                    type,
+                    height,
+                    created_at,
+                    voter,
+                    vote,
+                    confirmed:
+                      confirmation &&
+                      !unconfirmed,
+                    late,
+                  },
+                },
+              );
+            }
+
             if (
               txhash &&
               transaction_id &&
@@ -954,235 +1051,172 @@ module.exports = async (
                     created_at = block_timestamp * 1000;
                   }
 
-                  let source = {
-                    id: transaction_id,
-                    type: 'evm_transfer',
-                    status_code: 0,
-                    status: 'success',
-                    height: blockNumber,
-                    created_at: get_granularity(created_at),
-                    sender_chain,
-                    recipient_chain,
-                    sender_address: from,
-                    recipient_address: deposit_address,
-                    amount,
-                    denom,
-                  };
+                  if (transaction_id) {
+                    switch (event_name) {
+                      case 'token_sent':
+                        try {
+                          const _response =
+                            await read(
+                              'token_sent_events',
+                              {
+                                match: { 'event.transactionHash': transaction_id },
+                              },
+                              {
+                                size: 1,
+                              },
+                            );
 
-                  const _response =
-                    await read(
-                      'deposit_addresses',
-                      {
-                        match: { deposit_address },
-                      },
-                      {
-                        size: 1,
-                      },
-                    );
+                          const data = _.head(_response?.data);
 
-                  let link = _.head(_response?.data);
+                          const {
+                            id,
+                          } = { ...data?.event };
 
-                  link =
-                    await update_link(
-                      link,
-                      source,
-                    );
-
-                  source =
-                    await update_source(
-                      source,
-                      link,
-                    );
-
-                  try {
-                    await sleep(0.5 * 1000);
-
-                    const _response =
-                      await read(
-                        'transfers',
-                        {
-                          bool: {
-                            must: [
-                              { match: { 'source.id': transaction_id } },
-                              { match: { 'source.recipient_address': deposit_address } },
-                            ],
-                          },
-                        },
-                        {
-                          size: 1,
-                        },
-                      );
-
-                    const data = _.head(_response?.data);
-
-                    const {
-                      confirm_deposit,
-                    } = { ...data };
-
-                    const {
-                      id,
-                      recipient_address,
-                    } = { ...source };
-
-                    if (recipient_address) {
-                      const _id = `${id}_${recipient_address}`.toLowerCase();
-
-                      const {
-                        amount,
-                      } = { ...source };
-
-                      await write(
-                        'transfers',
-                        _id,
-                        {
-                          source: {
-                            ...source,
-                            amount,
-                          },
-                          link:
-                            link ||
-                            undefined,
-                          confirm_deposit:
-                            confirm_deposit ||
-                            undefined,
-                          vote:
-                            data?.vote ?
-                              data.vote.height < height &&
-                              !equals_ignore_case(
-                                data.vote.poll_id,
-                                poll_id
-                              ) ?
-                                record :
-                                data.vote :
-                              record,
-                        },
-                      );
-
-                      await saveTimeSpent(
-                        _id,
-                      );
-                    }
-                    else if (transaction_id) {
-                      switch (event_name) {
-                        case 'token_sent':
+                          if (id) {
+                            await write(
+                              'token_sent_events',
+                              id,
+                              {
+                                vote: data.vote ?
+                                  (
+                                    data.vote.height < height &&
+                                    !equals_ignore_case(
+                                      data.vote.poll_id,
+                                      poll_id,
+                                    )
+                                  ) ||
+                                  (
+                                    !data.vote.transfer_id &&
+                                    transfer_id
+                                  ) ?
+                                    record :
+                                    data.vote :
+                                  record,
+                              },
+                              true,
+                            );
+                          }
+                        } catch (error) {}
+                        break;
+                      default:
+                        if (deposit_address) {
                           try {
+                            let source = {
+                              id: transaction_id,
+                              type: 'evm_transfer',
+                              status_code: 0,
+                              status: 'success',
+                              height: blockNumber,
+                              created_at: get_granularity(created_at),
+                              sender_chain,
+                              recipient_chain,
+                              sender_address: from,
+                              recipient_address: deposit_address,
+                              amount,
+                              denom,
+                            };
+
                             const _response =
                               await read(
-                                'token_sent_events',
+                                'deposit_addresses',
                                 {
-                                  match: { 'event.transactionHash': transaction_id },
+                                  match: { deposit_address },
                                 },
                                 {
                                   size: 1,
                                 },
                               );
 
-                            const data = _.head(_response?.data);
+                            let link = _.head(_response?.data);
 
-                            const {
-                              id,
-                            } = { ...data?.event };
-
-                            if (id) {
-                              await write(
-                                'token_sent_events',
-                                id,
-                                {
-                                  vote: data.vote ?
-                                    (
-                                      data.vote.height < height &&
-                                      !equals_ignore_case(
-                                        data.vote.poll_id,
-                                        poll_id,
-                                      )
-                                    ) ||
-                                    (
-                                      !data.vote.transfer_id &&
-                                      transfer_id
-                                    ) ?
-                                      record :
-                                      data.vote :
-                                    record,
-                                },
-                                true,
+                            link =
+                              await update_link(
+                                link,
+                                source,
                               );
-                            }
+
+                            source =
+                              await update_source(
+                                source,
+                                link,
+                              );
+
+                            try {
+                              await sleep(0.5 * 1000);
+
+                              const _response =
+                                await read(
+                                  'transfers',
+                                  {
+                                    bool: {
+                                      must: [
+                                        { match: { 'source.id': transaction_id } },
+                                        { match: { 'source.recipient_address': deposit_address } },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    size: 1,
+                                  },
+                                );
+
+                              const data = _.head(_response?.data);
+
+                              const {
+                                confirm_deposit,
+                              } = { ...data };
+
+                              const {
+                                id,
+                                recipient_address,
+                              } = { ...source };
+
+                              if (recipient_address) {
+                                const _id = `${id}_${recipient_address}`.toLowerCase();
+
+                                const {
+                                  amount,
+                                } = { ...source };
+
+                                await write(
+                                  'transfers',
+                                  _id,
+                                  {
+                                    source: {
+                                      ...source,
+                                      amount,
+                                    },
+                                    link:
+                                      link ||
+                                      undefined,
+                                    confirm_deposit:
+                                      confirm_deposit ||
+                                      undefined,
+                                    vote:
+                                      data?.vote ?
+                                        data.vote.height < height &&
+                                        !equals_ignore_case(
+                                          data.vote.poll_id,
+                                          poll_id
+                                        ) ?
+                                          record :
+                                          data.vote :
+                                        record,
+                                  },
+                                );
+
+                                await saveTimeSpent(
+                                  _id,
+                                );
+                              }
+                            } catch (error) {}
                           } catch (error) {}
-                          break;
-                      }
+                        }
+                        break;
                     }
-                  } catch (error) {}
+                  }
                 }
               } catch (error) {}
-            }
-
-            if (voter) {
-              await write(
-                'evm_polls',
-                poll_id,
-                {
-                  id: poll_id,
-                  height,
-                  created_at: record.created_at,
-                  sender_chain,
-                  recipient_chain,
-                  transaction_id,
-                  deposit_address,
-                  transfer_id,
-                  confirmation:
-                    confirmation ||
-                    undefined,
-                  failed:
-                    success ?
-                      false :
-                      failed ||
-                      undefined,
-                  success:
-                    success ||
-                    undefined,
-                  event:
-                    event_name ||
-                    undefined,
-                  participants:
-                    participants ||
-                    undefined,
-                  confirmation_events:
-                    confirmation_events?.length > 0 ?
-                      confirmation_events :
-                      undefined,
-                  [voter.toLowerCase()]: {
-                    id: txhash,
-                    type,
-                    height,
-                    created_at,
-                    voter,
-                    vote,
-                    confirmed:
-                      confirmation &&
-                      !unconfirmed,
-                    late,
-                  },
-                },
-              );
-
-              await write(
-                'evm_votes',
-                `${poll_id}_${voter}`.toLowerCase(),
-                {
-                  txhash,
-                  height,
-                  created_at: record.created_at,
-                  sender_chain,
-                  poll_id,
-                  transaction_id,
-                  transfer_id,
-                  voter,
-                  vote,
-                  confirmation,
-                  late,
-                  unconfirmed,
-                },
-              );
             }
           }
         }

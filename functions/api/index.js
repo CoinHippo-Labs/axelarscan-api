@@ -26,6 +26,7 @@ exports.handler = async (
     searchTokenSent,
   } = require('./services/gateway');
   const {
+    sleep,
     equals_ignore_case,
     get_params,
   } = require('./utils');
@@ -499,8 +500,35 @@ exports.handler = async (
       break;
     default:
       if (!req.url) {
+        const remain_ms_to_exit =
+          (
+            (
+              [
+                'mainnet',
+              ].includes(environment) ?
+                60 :
+                0
+            ) +
+            2
+          ) *
+          1000;
+
+        // archive data from indexer
         require('./services/archiver')();
+
+        // index transactions in queue
+        require('./services/index_queue')(
+          context,
+          remain_ms_to_exit,
+        );
+
+        // update tvl cache
         response = await require('./services/tvl/updater')(context);
+
+        // hold lambda function to not exit before timeout
+        while (context.getRemainingTimeInMillis() > remain_ms_to_exit) {
+          await sleep(1 * 1000);
+        }
       }
       break;
   }

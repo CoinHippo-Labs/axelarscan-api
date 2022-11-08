@@ -3,6 +3,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
+  get,
   read,
   write,
 } = require('../../index');
@@ -57,6 +58,34 @@ module.exports = async (
     const {
       messages,
     } = { ...tx?.body };
+
+    if (txhash) {
+      const queue_data =
+        await get(
+          'txs_index_queue',
+          txhash,
+        );
+
+      const {
+        count,
+      } = { ...queue_data };
+
+      await write(
+        'txs_index_queue',
+        txhash,
+        {
+          txhash,
+          updated_at:
+            moment()
+              .valueOf(),
+          count:
+            typeof count === 'number' ?
+              count + 1 :
+              0,
+        },
+        typeof count === 'number',
+      );
+    }
 
     const ack_packets = (logs || [])
       .map(l => {

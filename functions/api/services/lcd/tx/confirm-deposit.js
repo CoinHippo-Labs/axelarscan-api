@@ -1,5 +1,6 @@
 const {
   BigNumber,
+  Contract,
 } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
