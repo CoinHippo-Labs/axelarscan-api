@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const moment = require('moment');
+const rpc = require('../../rpc');
 const {
   write,
 } = require('../../index');
-const rpc = require('../../rpc');
 
 module.exports = async (
   lcd_response = {},

@@ -1,6 +1,6 @@
-const axios = require('axios');
 const moment = require('moment');
 const config = require('config-yml');
+const rpc = require('./rpc');
 const {
   delete_by_query,
 } = require('./index');
@@ -15,7 +15,6 @@ const environment =
 const service_name = 'archiver';
 
 const {
-  endpoints,
   index_queue,
 } = { ...config?.[environment] };
 
@@ -41,25 +40,15 @@ module.exports = async () => {
       'blocks',
     ];
 
-  if (
-    collections.length > 0 &&
-    endpoints?.rpc
-  ) {
-    // initial rpc
-    const rpc = axios.create(
-      {
-        baseURL: endpoints.rpc,
-        timeout: 1500,
-      },
-    );
-
-    const response = await rpc.get(
-      '/status',
-    ).catch(error => { return { data: { results: null, error } }; });
+  if (collections.length > 0) {
+    const response =
+      await rpc(
+        '/status',
+      );
 
     const {
       latest_block_height,
-    } = { ...response?.data?.result?.sync_info };
+    } = { ...response?.result?.sync_info };
 
     const latest_block = Number(latest_block_height);
 

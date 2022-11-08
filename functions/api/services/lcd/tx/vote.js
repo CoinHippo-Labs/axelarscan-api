@@ -41,6 +41,8 @@ const assets_data =
 module.exports = async (
   lcd_response = {},
 ) => {
+  let updated = false;
+
   const {
     tx_response,
     tx,
@@ -57,34 +59,6 @@ module.exports = async (
     const {
       messages,
     } = { ...tx?.body };
-
-    if (txhash) {
-      const queue_data =
-        await get(
-          'txs_index_queue',
-          txhash,
-        );
-
-      const {
-        count,
-      } = { ...queue_data };
-
-      await write(
-        'txs_index_queue',
-        txhash,
-        {
-          txhash,
-          updated_at:
-            moment()
-              .valueOf(),
-          count:
-            typeof count === 'number' ?
-              count + 1 :
-              0,
-        },
-        typeof count === 'number',
-      );
-    }
 
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
@@ -908,6 +882,8 @@ module.exports = async (
                   },
                 },
               );
+
+              updated = true;
             }
 
             if (
@@ -1223,4 +1199,6 @@ module.exports = async (
       }
     }
   } catch (error) {}
+
+  return updated;
 };

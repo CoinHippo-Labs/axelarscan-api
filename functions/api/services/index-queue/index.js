@@ -84,28 +84,50 @@ module.exports = async (
     if (Array.isArray(data)) {
       data = data
         .filter(d => d?.txhash)
-        .map(d => d.txhash);
     }
 
     if (
       Array.isArray(data) &&
       data.length > 0
     ) {
-      if (total > max_records_synchronous) {
-        for (const txhash of data) {
+      const asynchronous = total > max_records_synchronous;
+
+      for (const d of data) {
+        const {
+          txhash,
+        } = { ...d };
+        let {
+          count,
+        } = { ...d };
+
+        count =
+          count ||
+          0;
+
+        if (asynchronous) {
           lcd(
             `/cosmos/tx/v1beta1/txs/${txhash}`,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            count,
           );
         }
-
-        await sleep(delay_ms_per_batch);
-      }
-      else {
-        for (const txhash of data) {
+        else {
           await lcd(
             `/cosmos/tx/v1beta1/txs/${txhash}`,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            count,
           );
         }
+      }
+
+      if (asynchronous) {
+        await sleep(delay_ms_per_batch);
       }
     }
     else {

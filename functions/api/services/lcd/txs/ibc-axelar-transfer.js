@@ -1,16 +1,4 @@
-const axios = require('axios');
-const config = require('config-yml');
-const {
-  write,
-} = require('../../index');
-
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
-
-const {
-  endpoints,
-} = { ...config?.[environment] };
+const lcd = require('../');
 
 module.exports = async (
   lcd_response = {},
@@ -37,68 +25,24 @@ module.exports = async (
       )
       .map(t => t.txhash);
 
-    if (
-      hashes.length > 0 &&
-      endpoints?.api
-    ) {
-      /*for (let i = 0; i < hashes.length; i++) {
-        const txhash = hashes[i];
-
-        const data = {
-          txhash,
-          updated_at:
-            moment()
-              .valueOf(),
-        };
-
-        if (
-          i === 0 ||
-          i === _tx_responses.length - 1
-        ) {
-          await write(
-            'txs_index_queue',
-            txhash,
-            data,
-          );
-        }
-        else {
-          write(
-            'txs_index_queue',
-            txhash,
-            data,
-          );
-        }
-      }*/
-
-      const api = axios.create(
-        {
-          baseURL: endpoints.api,
-          timeout: 5000,
-        },
-      );
-
+    if (hashes.length > 0) {
       for (let i = 0; i < hashes.length; i++) {
         const txhash = hashes[i];
 
-        const data = {
-          module: 'lcd',
-          path: `/cosmos/tx/v1beta1/txs/${txhash}`,
-        };
+        const path = `/cosmos/tx/v1beta1/txs/${txhash}`;
 
         if (
           i === 0 ||
           i === hashes.length - 1
         ) {
-          await api.post(
-            '',
-            data,
-          ).catch(error => { return { data: { error } }; });
+          await lcd(
+            path,
+          );
         }
         else {
-          api.post(
-            '',
-            data,
-          ).catch(error => { return { data: { error } }; });
+          lcd(
+            path,
+          );
         }
       }
     }

@@ -4,6 +4,7 @@ const {
   constants: { AddressZero },
   utils: { formatUnits },
 } = require('ethers');
+const cli = require('../cli');
 const {
   equals_ignore_case,
   to_json,
@@ -317,7 +318,6 @@ const getCosmosSupply = async (
 
 const getAxelarnetSupply = async (
   denom_data,
-  cli,
 ) => {
   let supply;
 
@@ -340,18 +340,17 @@ const getAxelarnetSupply = async (
   ) {
     try {
       for (const denom of denoms) {
-        const response = await cli.get(
-          '',
-          {
-            params: {
+        const response =
+          await cli(
+            '',
+            {
               cmd: `axelard q bank total --denom ${denom} -oj`,
             },
-          },
-        ).catch(error => { return { data: { error } }; });
+          );
 
         const {
           stdout,
-        } = { ...response?.data };
+        } = { ...response };
 
         const output = to_json(stdout);
 

@@ -1,7 +1,7 @@
-const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+const lcd = require('../lcd');
 const {
   read,
 } = require('../index');
@@ -29,10 +29,6 @@ const axelarnet =
     .find(c =>
       c?.id === 'axelarnet'
     );
-
-const {
-  endpoints,
-} = { ...config?.[environment] };
 
 module.exports = async (
   params = {},
@@ -148,16 +144,7 @@ module.exports = async (
     data,
   } = { ...response };
 
-  if (
-    data?.length > 0 &&
-    endpoints?.api
-  ) {
-    const api = axios.create(
-      {
-        baseURL: endpoints.api,
-        timeout: 5000,
-      },
-    );
+  if (data?.length > 0) {
     const _data = data
       .filter(d =>
         d?.event?.transactionHash &&
@@ -198,13 +185,9 @@ module.exports = async (
         );
 
       if (txhash) {
-        api.post(
-          '',
-          {
-            module: 'lcd',
-            path: `/cosmos/tx/v1beta1/txs/${txhash}`,
-          },
-        ).catch(error => { return { data: { error } }; });
+        lcd(
+          `/cosmos/tx/v1beta1/txs/${txhash}`,
+        );
       }
     }
 

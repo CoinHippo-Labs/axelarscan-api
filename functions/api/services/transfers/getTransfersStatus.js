@@ -11,6 +11,7 @@ const {
   update_link,
   update_source,
 } = require('./utils');
+const lcd = require('../lcd');
 const {
   read,
   write,
@@ -52,10 +53,6 @@ const cosmos_non_axelarnet_chains_data =
 const assets_data =
   require('../../data')?.assets?.[environment] ||
   [];
-
-const {
-  endpoints,
-} = { ...config?.[environment] };
 
 module.exports = async (
   params = {},
@@ -486,23 +483,11 @@ module.exports = async (
 
       if (
         txhash &&
-        typeof price !== 'number' &&
-        endpoints?.api
+        typeof price !== 'number'
       ) {
-        const api = axios.create(
-          {
-            baseURL: endpoints.api,
-            timeout: 5000,
-          },
+        await lcd(
+          `/cosmos/tx/v1beta1/txs/${txhash}`,
         );
-
-        await api.post(
-          '',
-          {
-            module: 'lcd',
-            path: `/cosmos/tx/v1beta1/txs/${txhash}`,
-          },
-        ).catch(error => { return { data: { error } }; });
 
         await sleep(0.5 * 1000);
 
@@ -741,17 +726,7 @@ module.exports = async (
         };
       });
 
-    if (
-      response.length > 0 &&
-      endpoints?.api
-    ) {
-      const api = axios.create(
-        {
-          baseURL: endpoints.api,
-          timeout: 5000,
-        },
-      );
-
+    if (response.length > 0) {
       for (const d of response) {
         const {
           source,
@@ -796,26 +771,20 @@ module.exports = async (
             confirm_deposit?.id &&
             !confirm_deposit.transfer_id
           ) {
-            await api.post(
-              '',
-              {
-                module: 'lcd',
-                path: `/cosmos/tx/v1beta1/txs/${confirm_deposit.id}`,
-              },
-            ).catch(error => { return { data: { error } }; });
+            await lcd(
+              `/cosmos/tx/v1beta1/txs/${confirm_deposit.id}`,
+            );
 
             await (0.5 * 1000);
           }
 
           for (let i = 1; i <= 7; i++) {
-            api.post(
-              '',
+            lcd(
+              '/cosmos/tx/v1beta1/txs',
               {
-                module: 'lcd',
-                path: '/cosmos/tx/v1beta1/txs',
                 events: `tx.height=${height + i}`,
               },
-            ).catch(error => { return { data: { error } }; });
+            );
           }
 
           await (1 * 1000);

@@ -12,6 +12,8 @@ const {
 module.exports = async (
   lcd_response = {},
 ) => {
+  let updated = false;
+
   const {
     tx_response,
     tx,
@@ -19,6 +21,7 @@ module.exports = async (
 
   try {
     const {
+      txhash,
       height,
       timestamp,
       logs,
@@ -96,8 +99,12 @@ module.exports = async (
                 undefined,
             },
           );
+
+          updated = true;
         }
       }
     }
   } catch (error) {}
+
+  return updated;
 };

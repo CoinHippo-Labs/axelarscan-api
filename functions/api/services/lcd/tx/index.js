@@ -2,6 +2,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
+  get,
   write,
 } = require('../../index');
 const {
@@ -39,6 +40,7 @@ const assets_data =
 
 module.exports = async (
   lcd_response = {},
+  queue_index_count = -1,
 ) => {
   let response;
 
@@ -618,11 +620,13 @@ module.exports = async (
     transaction_data.types = types;
     /* end add message types field */
 
-    await write(
-      'txs',
-      txhash,
-      transaction_data,
-    );
+    if (queue_index_count < 0) {
+      await write(
+        'txs',
+        txhash,
+        transaction_data,
+      );
+    }
     /*************************
      * end index transaction *
      *************************/
@@ -633,6 +637,8 @@ module.exports = async (
       tx_response &&
       messages
     ) {
+      let updated;
+
       // Heartbeat
       if (
         [
@@ -704,9 +710,15 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        logs = await require('./ibc-send')(
+        const _response = await require('./ibc-send')(
           lcd_response,
         );
+
+        logs =
+          _response?.logs ||
+          logs;
+
+        updated = _response?.updated;
       }
       // MsgAcknowledgement
       if (
@@ -719,7 +731,7 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        await require('./ibc-acknowledgement')(
+        updated = await require('./ibc-acknowledgement')(
           lcd_response,
         );
       }
@@ -734,7 +746,7 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        await require('./ibc-failed')(
+        updated = await require('./ibc-failed')(
           lcd_response,
         );
       }
@@ -749,7 +761,7 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        await require('./axelar-transfer')(
+        updated = await require('./axelar-transfer')(
           lcd_response,
         );
       }   
@@ -765,7 +777,7 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        await require('./confirm')(
+        updated = await require('./confirm')(
           lcd_response,
         );
       }
@@ -809,12 +821,50 @@ module.exports = async (
               ) > -1
           ) > -1
       ) {
-        await require('./vote')(
+        updated = await require('./vote')(
           lcd_response,
         );
       }
 
       lcd_response.tx_response.raw_log = JSON.stringify(logs);
+
+      // update index queue
+      if (
+        updated &&
+        txhash
+      ) {
+        let count;
+
+        if (queue_index_count > -1) {
+          count = queue_index_count;
+        }
+        else {
+          const queue_data =
+            await get(
+              'txs_index_queue',
+              txhash,
+            );
+
+          count = queue_data?.count;
+        }
+
+        await write(
+          'txs_index_queue',
+          txhash,
+          {
+            txhash,
+            updated_at:
+              moment()
+                .valueOf(),
+            count:
+              (
+                count ||
+                0
+              ) + 1,
+          },
+          typeof count === 'number',
+        );
+      }
     }
     /* end index validator metrics & transfers */
   }

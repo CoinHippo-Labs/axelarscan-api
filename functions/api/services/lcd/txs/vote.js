@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+const lcd = require('../');
 const {
   get,
   read,
@@ -120,41 +121,6 @@ module.exports = async (
 
         return valid;
       });
-
-    for (let i = 0; i < _tx_responses.length; i++) {
-      const t = _tx_responses[i];
-
-      const {
-        txhash,
-      } = { ...t };
-
-      const data = {
-        txhash,
-        updated_at:
-          moment()
-            .valueOf(),
-      };
-
-      if (
-        i === 0 ||
-        i === _tx_responses.length - 1
-      ) {
-        await write(
-          'txs_index_queue',
-          txhash,
-          data,
-          true,
-        );
-      }
-      else {
-        write(
-          'txs_index_queue',
-          txhash,
-          data,
-          true,
-        );
-      }
-    }
 
     let records = [];
 
@@ -1129,6 +1095,8 @@ module.exports = async (
           },
         };
 
+        const path = `/cosmos/tx/v1beta1/txs/${id}`;
+
         if (
           i === 0 ||
           i === records.length - 1
@@ -1139,6 +1107,10 @@ module.exports = async (
             data,
             true,
           );
+
+          await lcd(
+            path,
+          );
         }
         else {
           write(
@@ -1146,6 +1118,10 @@ module.exports = async (
             poll_id,
             data,
             true,
+          );
+
+          lcd(
+            path,
           );
         }
       }

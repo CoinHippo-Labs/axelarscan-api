@@ -29,6 +29,7 @@ module.exports = async (
   cache = false,
   cache_timeout = 60,
   no_index = false,
+  queue_index_count = -1,
 ) => {
   let response,
     cache_hit = false;
@@ -87,7 +88,10 @@ module.exports = async (
         ) < 0
     ) {
       cache = true;
-      cache_timeout = 5;
+      cache_timeout =
+        queue_index_count > -1 ?
+          60 :
+          5;
     }
 
     // set min / max cache timeout
@@ -290,7 +294,11 @@ module.exports = async (
       !path.endsWith('/') &&
       tx_response?.txhash
     ) {
-      response = await index_tx(response);
+      response =
+        await index_tx(
+          response,
+          queue_index_count,
+        );
     }
     else if (
       path.startsWith('/cosmos/tx/v1beta1/txs') &&

@@ -1,21 +1,12 @@
-const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
-const config = require('config-yml');
+const lcd = require('./lcd');
 const {
   read,
 } = require('./index');
 const {
   equals_ignore_case,
 } = require('../utils');
-
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
-
-const {
-  endpoints,
-} = { ...config?.[environment] };
 
 module.exports = async (
   params = {},
@@ -113,16 +104,8 @@ module.exports = async (
     if (
       [
         'unsubmitted',
-      ].includes(vote) &&
-      endpoints?.lcd
+      ].includes(vote)
     ) {
-      const lcd = axios.create(
-        {
-          baseURL: endpoints.lcd,
-          timeout: 3000,
-        },
-      );
-
       const limit = 50;
       let page_key = true;
       let transactions_data = [];
@@ -132,10 +115,10 @@ module.exports = async (
           page_key &&
           typeof page_key !== 'boolean';
 
-        const _response = await lcd.get(
-          '/cosmos/tx/v1beta1/txs',
-          {
-            params: {
+        const _response =
+          await lcd(
+            '/cosmos/tx/v1beta1/txs',
+            {
               events: `message.action='RegisterProxy'`,
               'pagination.key':
                 has_page_key ?
@@ -147,14 +130,13 @@ module.exports = async (
                   undefined :
                   transactions_data.length,
             },
-          },
-        ).catch(error => { return { data: { error } }; });
+          );
 
         const {
           tx_responses,
           txs,
           pagination,
-        } = { ..._response?.data };
+        } = { ..._response };
         const {
           next_key,
         } = { ...pagination };

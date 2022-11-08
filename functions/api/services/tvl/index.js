@@ -54,7 +54,6 @@ const assets_data =
   [];
 
 const {
-  endpoints,
   percent_diff_escrow_supply_threshold,
   percent_diff_total_supply_threshold,
 } = { ...config?.[environment] };
@@ -512,13 +511,6 @@ module.exports = async (
         })
     );
 
-  const cli = axios.create(
-    {
-      baseURL: endpoints?.cli,
-      timeout: 15000,
-    },
-  );
-
   const data = [];
 
   for (const asset of assets) {
@@ -878,7 +870,6 @@ module.exports = async (
                               i?.chain_id === axelarnet.id
                             )?.ibc_denom,
                         },
-                        cli,
                       ) :
                       0;
 
@@ -903,7 +894,6 @@ module.exports = async (
                     !is_native ?
                       await getAxelarnetSupply(
                         denom_data,
-                        cli,
                       ) :
                       0;
 

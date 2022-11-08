@@ -6,7 +6,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
-  get,
   read,
   write,
 } = require('../../index');
@@ -43,6 +42,8 @@ const axelarnet =
 module.exports = async (
   lcd_response = {},
 ) => {
+  let updated = false;
+
   const {
     tx_response,
   } = { ...lcd_response };
@@ -55,34 +56,6 @@ module.exports = async (
       timestamp,
       logs,
     } = { ...tx_response };
-
-    /*if (txhash) {
-      const queue_data =
-        await get(
-          'txs_index_queue',
-          txhash,
-        );
-
-      const {
-        count,
-      } = { ...queue_data };
-
-      await write(
-        'txs_index_queue',
-        txhash,
-        {
-          txhash,
-          updated_at:
-            moment()
-              .valueOf(),
-          count:
-            typeof count === 'number' ?
-              count + 1 :
-              0,
-        },
-        typeof count === 'number',
-      );
-    }*/
 
     const created_at =
       moment(timestamp)
@@ -300,8 +273,12 @@ module.exports = async (
               'token_sent_events' :
               undefined,
           );
+
+          updated = true;
         }
       }
     }
   } catch (error) {}
+
+  return updated;
 };

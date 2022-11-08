@@ -1,7 +1,7 @@
-const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+const getTransfersStatus = require('./getTransfersStatus');
 const {
   saveTimeSpent,
   get_others_version_chain_ids,
@@ -34,10 +34,6 @@ const axelarnet =
     .find(c =>
       c?.id === 'axelarnet'
     );
-
-const {
-  endpoints,
-} = { ...config?.[environment] };
 
 module.exports = async (
   params = {},
@@ -354,17 +350,7 @@ module.exports = async (
           );
       });
 
-    if (
-      data.length > 0 &&
-      endpoints?.api
-    ) {
-      const api = axios.create(
-        {
-          baseURL: endpoints.api,
-          timeout: 15000,
-        },
-      );
-
+    if (ata.length > 0) {
       for (const d of data) {
         const {
           source,
@@ -374,13 +360,12 @@ module.exports = async (
           sender_chain,
         } = { ...source };
 
-        api.post(
-          '/cross-chain/transfers-status',
+        getTransfersStatus(
           {
             txHash: id,
             sourceChain: sender_chain,
           },
-        ).catch(error => { return { data: { error } }; });
+        );
       }
 
       await sleep(3 * 1000);
