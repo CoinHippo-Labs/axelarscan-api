@@ -26,6 +26,12 @@ mainnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
+  index_queue:
+    min_index_round_count: 2
+    max_index_round_count: 5
+    concurrent_index_records: 10
+    delay_ms_per_batch: 3000
+    max_records_synchronous: 200
   percent_diff_escrow_supply_threshold: 5.0
   percent_diff_total_supply_threshold: 5.0
   alert_asset_value_threshold: 3000000
@@ -129,6 +135,12 @@ testnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
+  index_queue:
+    min_index_round_count: 2
+    max_index_round_count: 5
+    concurrent_index_records: 10
+    delay_ms_per_batch: 3000
+    max_records_synchronous: 200
   percent_diff_escrow_supply_threshold: 5.0
   percent_diff_total_supply_threshold: 5.0
   alert_asset_value_threshold: 3000000
@@ -224,6 +236,12 @@ devnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
+  index_queue:
+    min_index_round_count: 1
+    max_index_round_count: 3
+    concurrent_index_records: 10
+    delay_ms_per_batch: 3000
+    max_records_synchronous: 300
 
 testnet-2:
   endpoints:
@@ -237,3 +255,9 @@ testnet-2:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
+  index_queue:
+    min_index_round_count: 1
+    max_index_round_count: 3
+    concurrent_index_records: 10
+    delay_ms_per_batch: 3000
+    max_records_synchronous: 300
