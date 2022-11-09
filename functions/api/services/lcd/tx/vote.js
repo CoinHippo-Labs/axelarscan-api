@@ -240,6 +240,8 @@ module.exports = async (
                   l?.log?.includes('already confirmed')
                 ) > -1;
 
+            let poll_data;
+
             let sender_chain,
               vote = true,
               confirmation,
@@ -396,7 +398,7 @@ module.exports = async (
                     .map(([k, v]) => k)
                   );
 
-                const poll_data =
+                poll_data =
                   await get(
                     'evm_polls',
                     poll_id,
@@ -468,10 +470,19 @@ module.exports = async (
               );
 
             if (
-              !transaction_id ||
-              !deposit_address ||
-              !transfer_id ||
-              !participants
+              (
+                equals_ignore_case(
+                  event_name,
+                  'transfer',
+                ) ||
+                deposit_address
+              ) &&
+              (
+                !transaction_id ||
+                !deposit_address ||
+                !transfer_id ||
+                !participants
+              )
             ) {
               const _response =
                 await read(
@@ -535,6 +546,7 @@ module.exports = async (
             ) {
               if (poll_id) {
                 const _response =
+                  poll_data ||
                   await get(
                     'evm_polls',
                     poll_id,
@@ -898,299 +910,297 @@ module.exports = async (
               !late &&
               !failed
             ) {
-              let {
-                amount,
-                denom,
-              } = { ...record };
-              const {
-                ms,
-              } = { ...record.created_at };
-
-              let created_at = ms;
-
-              const chain_data = evm_chains_data
-                .find(c =>
-                  equals_ignore_case(
-                    c?.id,
-                    sender_chain,
-                  )
-                );
-
-              const provider = getProvider(chain_data);
-
-              const {
-                chain_id,
-              } = { ...chain_data };
-
               try {
-                const transaction =
-                  await provider
-                    .getTransaction(
-                      transaction_id,
-                    );
+                switch (event_name) {
+                  case 'token_sent':
+                    try {
+                      const _response =
+                        await read(
+                          'token_sent_events',
+                          {
+                            match: { 'event.transactionHash': transaction_id },
+                          },
+                          {
+                            size: 1,
+                          },
+                        );
 
-                const {
-                  blockNumber,
-                  from,
-                  to,
-                  input,
-                } = { ...transaction };
+                      const data = _.head(_response?.data);
 
-                const asset_data = assets_data
-                  .find(a =>
-                    (a?.contracts || [])
-                      .findIndex(c =>
-                        c?.chain_id === chain_id &&
-                        equals_ignore_case(
-                          c?.contract_address,
+                      const {
+                        id,
+                      } = { ...data?.event };
+
+                      if (id) {
+                        await write(
+                          'token_sent_events',
+                          id,
+                          {
+                            vote: data.vote ?
+                              (
+                                data.vote.height < height &&
+                                !equals_ignore_case(
+                                  data.vote.poll_id,
+                                  poll_id,
+                                )
+                              ) ||
+                              (
+                                !data.vote.transfer_id &&
+                                transfer_id
+                              ) ?
+                                record :
+                                data.vote :
+                              record,
+                          },
+                          true,
+                        );
+                      }
+                    } catch (error) {}
+                    break;
+                  default:
+                    if (deposit_address) {
+                      try {
+                        let {
+                          amount,
+                          denom,
+                        } = { ...record };
+                        const {
+                          ms,
+                        } = { ...record.created_at };
+
+                        let created_at = ms;
+
+                        const chain_data = evm_chains_data
+                          .find(c =>
+                            equals_ignore_case(
+                              c?.id,
+                              sender_chain,
+                            )
+                          );
+
+                        const provider = getProvider(chain_data);
+
+                        const {
+                          chain_id,
+                        } = { ...chain_data };
+
+                        const transaction =
+                          await provider
+                            .getTransaction(
+                              transaction_id,
+                            );
+
+                        const {
+                          blockNumber,
+                          from,
                           to,
-                        )
-                      ) > -1
-                  );
+                          input,
+                        } = { ...transaction };
 
-                let _amount;
+                        if (blockNumber) {
+                          const asset_data = assets_data
+                            .find(a =>
+                              (a?.contracts || [])
+                                .findIndex(c =>
+                                  c?.chain_id === chain_id &&
+                                  equals_ignore_case(
+                                    c?.contract_address,
+                                    to,
+                                  )
+                                ) > -1
+                            );
 
-                if (!asset_data) {
-                  const receipt =
-                    await provider
-                      .getTransactionReceipt(
-                        transaction_id,
-                      );
+                          let _amount;
 
-                  const {
-                    logs,
-                  } = { ...receipt };
+                          if (!asset_data) {
+                            const receipt =
+                              await provider
+                                .getTransactionReceipt(
+                                  transaction_id,
+                                );
 
-                  _amount =
-                    _.head(
-                      (logs || [])
-                        .map(l => l?.data)
-                        .filter(d => d?.length >= 64)
-                        .map(d =>
-                          d.substring(
-                            d.length - 64,
-                          )
-                          .replace(
-                            '0x',
-                            '',
-                          )
-                          .replace(
-                            /^0+/,
-                            '',
-                          )
-                        )
-                        .filter(d => {
-                          try {
-                            d =
-                              BigNumber.from(
-                                `0x${d}`
+                            const {
+                              logs,
+                            } = { ...receipt };
+
+                            _amount =
+                              _.head(
+                                (logs || [])
+                                  .map(l => l?.data)
+                                  .filter(d => d?.length >= 64)
+                                  .map(d =>
+                                    d.substring(
+                                      d.length - 64,
+                                    )
+                                    .replace(
+                                      '0x',
+                                      '',
+                                    )
+                                    .replace(
+                                      /^0+/,
+                                      '',
+                                    )
+                                  )
+                                  .filter(d => {
+                                    try {
+                                      d =
+                                        BigNumber.from(
+                                          `0x${d}`
+                                        );
+
+                                      return true;
+                                    } catch (error) {
+                                      return false;
+                                    }
+                                  })
                               );
-
-                            return true;
-                          } catch (error) {
-                            return false;
                           }
-                        })
-                    );
-                }
 
-                if (blockNumber) {
-                  amount =
-                    BigNumber.from(
-                      `0x${
-                        (transaction.data || '')
-                          .substring(
-                            10 + 64,
-                          ) ||
-                        (input || '')
-                          .substring(
-                            10 + 64,
-                          ) ||
-                        _amount ||
-                        '0'
-                      }`
-                    )
-                    .toString() ||
-                    amount;
+                          amount =
+                            BigNumber.from(
+                              `0x${
+                                (transaction.data || '')
+                                  .substring(
+                                    10 + 64,
+                                  ) ||
+                                (input || '')
+                                  .substring(
+                                    10 + 64,
+                                  ) ||
+                                _amount ||
+                                '0'
+                              }`
+                            )
+                            .toString() ||
+                            amount;
 
-                  denom =
-                    asset_data?.id ||
-                    denom;
+                          denom =
+                            asset_data?.id ||
+                            denom;
 
-                  const block_timestamp =
-                    await getBlockTime(
-                      provider,
-                      blockNumber,
-                    );
+                          const block_timestamp =
+                            await getBlockTime(
+                              provider,
+                              blockNumber,
+                            );
 
-                  if (block_timestamp) {
-                    created_at = block_timestamp * 1000;
-                  }
+                          if (block_timestamp) {
+                            created_at = block_timestamp * 1000;
+                          }
 
-                  if (transaction_id) {
-                    switch (event_name) {
-                      case 'token_sent':
-                        try {
+                          let source = {
+                            id: transaction_id,
+                            type: 'evm_transfer',
+                            status_code: 0,
+                            status: 'success',
+                            height: blockNumber,
+                            created_at: get_granularity(created_at),
+                            sender_chain,
+                            recipient_chain,
+                            sender_address: from,
+                            recipient_address: deposit_address,
+                            amount,
+                            denom,
+                          };
+
                           const _response =
                             await read(
-                              'token_sent_events',
+                              'deposit_addresses',
                               {
-                                match: { 'event.transactionHash': transaction_id },
+                                match: { deposit_address },
                               },
                               {
                                 size: 1,
                               },
                             );
 
-                          const data = _.head(_response?.data);
+                          let link = _.head(_response?.data);
 
-                          const {
-                            id,
-                          } = { ...data?.event };
-
-                          if (id) {
-                            await write(
-                              'token_sent_events',
-                              id,
-                              {
-                                vote: data.vote ?
-                                  (
-                                    data.vote.height < height &&
-                                    !equals_ignore_case(
-                                      data.vote.poll_id,
-                                      poll_id,
-                                    )
-                                  ) ||
-                                  (
-                                    !data.vote.transfer_id &&
-                                    transfer_id
-                                  ) ?
-                                    record :
-                                    data.vote :
-                                  record,
-                              },
-                              true,
+                          link =
+                            await update_link(
+                              link,
+                              source,
                             );
-                          }
-                        } catch (error) {}
-                        break;
-                      default:
-                        if (deposit_address) {
+
+                          source =
+                            await update_source(
+                              source,
+                              link,
+                            );
+
                           try {
-                            let source = {
-                              id: transaction_id,
-                              type: 'evm_transfer',
-                              status_code: 0,
-                              status: 'success',
-                              height: blockNumber,
-                              created_at: get_granularity(created_at),
-                              sender_chain,
-                              recipient_chain,
-                              sender_address: from,
-                              recipient_address: deposit_address,
-                              amount,
-                              denom,
-                            };
+                            await sleep(0.5 * 1000);
 
                             const _response =
                               await read(
-                                'deposit_addresses',
+                                'transfers',
                                 {
-                                  match: { deposit_address },
+                                  bool: {
+                                    must: [
+                                      { match: { 'source.id': transaction_id } },
+                                      { match: { 'source.recipient_address': deposit_address } },
+                                    ],
+                                  },
                                 },
                                 {
                                   size: 1,
                                 },
                               );
 
-                            let link = _.head(_response?.data);
+                            const data = _.head(_response?.data);
 
-                            link =
-                              await update_link(
-                                link,
-                                source,
-                              );
+                            const {
+                              confirm_deposit,
+                            } = { ...data };
 
-                            source =
-                              await update_source(
-                                source,
-                                link,
-                              );
+                            const {
+                              id,
+                              recipient_address,
+                            } = { ...source };
 
-                            try {
-                              await sleep(0.5 * 1000);
-
-                              const _response =
-                                await read(
-                                  'transfers',
-                                  {
-                                    bool: {
-                                      must: [
-                                        { match: { 'source.id': transaction_id } },
-                                        { match: { 'source.recipient_address': deposit_address } },
-                                      ],
-                                    },
-                                  },
-                                  {
-                                    size: 1,
-                                  },
-                                );
-
-                              const data = _.head(_response?.data);
+                            if (recipient_address) {
+                              const _id = `${id}_${recipient_address}`.toLowerCase();
 
                               const {
-                                confirm_deposit,
-                              } = { ...data };
-
-                              const {
-                                id,
-                                recipient_address,
+                                amount,
                               } = { ...source };
 
-                              if (recipient_address) {
-                                const _id = `${id}_${recipient_address}`.toLowerCase();
-
-                                const {
-                                  amount,
-                                } = { ...source };
-
-                                await write(
-                                  'transfers',
-                                  _id,
-                                  {
-                                    source: {
-                                      ...source,
-                                      amount,
-                                    },
-                                    link:
-                                      link ||
-                                      undefined,
-                                    confirm_deposit:
-                                      confirm_deposit ||
-                                      undefined,
-                                    vote:
-                                      data?.vote ?
-                                        data.vote.height < height &&
-                                        !equals_ignore_case(
-                                          data.vote.poll_id,
-                                          poll_id
-                                        ) ?
-                                          record :
-                                          data.vote :
-                                        record,
+                              await write(
+                                'transfers',
+                                _id,
+                                {
+                                  source: {
+                                    ...source,
+                                    amount,
                                   },
-                                );
+                                  link:
+                                    link ||
+                                    undefined,
+                                  confirm_deposit:
+                                    confirm_deposit ||
+                                    undefined,
+                                  vote:
+                                    data?.vote ?
+                                      data.vote.height < height &&
+                                      !equals_ignore_case(
+                                        data.vote.poll_id,
+                                        poll_id
+                                      ) ?
+                                        record :
+                                        data.vote :
+                                      record,
+                                },
+                              );
 
-                                await saveTimeSpent(
-                                  _id,
-                                );
-                              }
-                            } catch (error) {}
+                              await saveTimeSpent(
+                                _id,
+                              );
+                            }
                           } catch (error) {}
                         }
-                        break;
+                      } catch (error) {}
                     }
-                  }
+                    break;
                 }
               } catch (error) {}
             }

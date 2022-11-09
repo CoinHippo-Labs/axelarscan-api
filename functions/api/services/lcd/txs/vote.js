@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
-const lcd = require('../');
 const {
   get,
   read,
@@ -562,10 +561,19 @@ module.exports = async (
                   );
 
                 if (
-                  !transaction_id ||
-                  !deposit_address ||
-                  !transfer_id ||
-                  !participants
+                  (
+                    equals_ignore_case(
+                      event_name,
+                      'transfer',
+                    ) ||
+                    deposit_address
+                  ) &&
+                  (
+                    !transaction_id ||
+                    !deposit_address ||
+                    !transfer_id ||
+                    !participants
+                  )
                 ) {
                   const _response =
                     await read(
@@ -1002,128 +1010,116 @@ module.exports = async (
         t.voter
       );
 
-    if (records.length > 0) {
-      for (let i = 0; i < records.length; i++) {
-        const record = records[i];
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
 
-        const {
-          id,
-          type,
+      const {
+        id,
+        type,
+        height,
+        created_at,
+        sender_chain,
+        recipient_chain,
+        poll_id,
+        transaction_id,
+        deposit_address,
+        transfer_id,
+        voter,
+        vote,
+        confirmation,
+        late,
+        unconfirmed,
+        failed,
+        success,
+        event,
+        participants,
+        confirmation_events,
+      } = { ...record };
+      const {
+        ms,
+      } = { ...created_at };
+
+      write(
+        'evm_votes',
+        `${poll_id}_${voter}`.toLowerCase(),
+        {
+          txhash: id,
           height,
           created_at,
           sender_chain,
-          recipient_chain,
           poll_id,
           transaction_id,
-          deposit_address,
           transfer_id,
           voter,
           vote,
           confirmation,
           late,
           unconfirmed,
-          failed,
-          success,
-          event,
-          participants,
-          confirmation_events,
-        } = { ...record };
-        const {
-          ms,
-        } = { ...created_at };
+        },
+      );
 
-        write(
-          'evm_votes',
-          `${poll_id}_${voter}`.toLowerCase(),
-          {
-            txhash: id,
-            height,
-            created_at,
-            sender_chain,
-            poll_id,
-            transaction_id,
-            transfer_id,
-            voter,
-            vote,
-            confirmation,
-            late,
-            unconfirmed,
-          },
-        );
-
-        const data = {
-          id: poll_id,
+      const data = {
+        id: poll_id,
+        height,
+        created_at,
+        sender_chain,
+        recipient_chain,
+        transaction_id,
+        deposit_address,
+        transfer_id,
+        confirmation:
+          confirmation ||
+          undefined,
+        failed:
+          success ?
+            false :
+            failed ||
+            undefined,
+        success:
+          success ||
+          undefined,
+        event:
+          event ||
+          undefined,
+        participants:
+          participants ||
+          undefined,
+        confirmation_events:
+          confirmation_events?.length > 0 ?
+            confirmation_events :
+            undefined,
+        [voter.toLowerCase()]: {
+          id,
+          type,
           height,
-          created_at,
-          sender_chain,
-          recipient_chain,
-          transaction_id,
-          deposit_address,
-          transfer_id,
-          confirmation:
-            confirmation ||
-            undefined,
-          failed:
-            success ?
-              false :
-              failed ||
-              undefined,
-          success:
-            success ||
-            undefined,
-          event:
-            event ||
-            undefined,
-          participants:
-            participants ||
-            undefined,
-          confirmation_events:
-            confirmation_events?.length > 0 ?
-              confirmation_events :
-              undefined,
-          [voter.toLowerCase()]: {
-            id,
-            type,
-            height,
-            created_at: ms,
-            voter,
-            vote,
-            confirmed:
-              confirmation &&
-              !unconfirmed,
-            late,
-          },
-        };
+          created_at: ms,
+          voter,
+          vote,
+          confirmed:
+            confirmation &&
+            !unconfirmed,
+          late,
+        },
+      };
 
-        const path = `/cosmos/tx/v1beta1/txs/${id}`;
-
-        if (
-          i === 0 ||
-          i === records.length - 1
-        ) {
-          await write(
-            'evm_polls',
-            poll_id,
-            data,
-            true,
-          );
-
-          // await lcd(
-          //   path,
-          // );
-        }
-        else {
-          write(
-            'evm_polls',
-            poll_id,
-            data,
-            true,
-          );
-
-          // lcd(
-          //   path,
-          // );
-        }
+      if (
+        i === 0 ||
+        i === records.length - 1
+      ) {
+        await write(
+          'evm_polls',
+          poll_id,
+          data,
+          true,
+        );
+      }
+      else {
+        write(
+          'evm_polls',
+          poll_id,
+          data,
+          true,
+        );
       }
     }
   } catch (error) {}
