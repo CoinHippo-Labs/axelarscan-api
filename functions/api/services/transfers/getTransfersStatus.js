@@ -706,7 +706,7 @@ module.exports = async (
           case 'batch_signed':
           case 'voted':
           case 'deposit_confirmed':
-            simplified_status = 'confirmed';
+            simplified_status = 'approved';
             break;
           default:
             simplified_status = 'sent';

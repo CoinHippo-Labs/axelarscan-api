@@ -243,7 +243,7 @@ module.exports = async (
           case 'ibc_sent':
           case 'batch_signed':
           case 'voted':
-            simplified_status = 'confirmed';
+            simplified_status = 'approved';
             break;
           default:
             simplified_status = 'sent';

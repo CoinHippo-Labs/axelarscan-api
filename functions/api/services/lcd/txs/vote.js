@@ -1108,9 +1108,9 @@ module.exports = async (
             true,
           );
 
-          await lcd(
-            path,
-          );
+          // await lcd(
+          //   path,
+          // );
         }
         else {
           write(
@@ -1120,9 +1120,9 @@ module.exports = async (
             true,
           );
 
-          lcd(
-            path,
-          );
+          // lcd(
+          //   path,
+          // );
         }
       }
     }
