@@ -166,17 +166,26 @@ const save = async (
     )
   ) {
     if (typeof snapshot === 'number') {
-      let response = await api.get(
-        '',
-        {
-          params: {
-            module: 'cli',
-            cmd: `axelard q snapshot info ${snapshot} -oj`,
-            cache: true,
-            cache_timeout: 5,
-          },
-        },
-      ).catch(error => { return { data: { error } }; });
+      let response =
+        await api
+          .get(
+            '',
+            {
+              params: {
+                module: 'cli',
+                cmd: `axelard q snapshot info ${snapshot} -oj`,
+                cache: true,
+                cache_timeout: 5,
+              },
+            },
+          )
+          .catch(error => {
+            return {
+              data: {
+                error,
+              },
+            };
+          });
 
       const {
         stderr,
@@ -197,17 +206,26 @@ const save = async (
             'day',
           ) <= 1
       ) {
-        response = await api.get(
-          '',
-          {
-            params: {
-              module: 'cli',
-              cmd: 'axelard q snapshot info latest -oj',
-              cache: true,
-              cache_timeout: 5,
-            },
-          },
-        ).catch(error => { return { data: { error } }; });
+        response =
+          await api
+            .get(
+              '',
+              {
+                params: {
+                  module: 'cli',
+                  cmd: 'axelard q snapshot info latest -oj',
+                  cache: true,
+                  cache_timeout: 5,
+                },
+              },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
 
         stdout = response?.data?.stdout;
       }
@@ -239,17 +257,26 @@ const save = async (
     }
 
     if (key_id) {
-      const response = await api.get(
-        '',
-        {
-          params: {
-            module: 'cli',
-            cmd: `axelard q multisig key ${key_id} -oj`,
-            cache: true,
-            cache_timeout: 15,
-          },
-        },
-      ).catch(error => { return { data: { error } }; });
+      const response =
+        await api
+          .get(
+            '',
+            {
+              params: {
+                module: 'cli',
+                cmd: `axelard q multisig key ${key_id} -oj`,
+                cache: true,
+                cache_timeout: 15,
+              },
+            },
+          )
+          .catch(error => {
+            return {
+              data: {
+                error,
+              },
+            };
+          });
 
       const {
         stdout,
@@ -357,20 +384,28 @@ const save = async (
         },
       );
 
-      await api.post(
-        '',
-        {
-          module: 'index',
-          collection,
-          method: 'update',
-          path:
-            is_update ?
-              `/${collection}/_update/${id}` :
-              undefined,
-          id,
-          ...data,
-        },
-      ).catch(error => { return { data: { error } }; });
+      await api
+        .post(
+          '',
+          {
+            module: 'index',
+            collection,
+            method: 'update',
+            path:
+              is_update ?
+                `/${collection}/_update/${id}` :
+                undefined,
+            id,
+            ...data,
+          },
+        )
+        .catch(error => {
+          return {
+            data: {
+              error,
+            },
+          };
+        });
     }
   }
 };
@@ -378,12 +413,13 @@ const save = async (
 module.exports = async () => {
   if (endpoints?.api) {
     // initial api
-    const api = axios.create(
-      {
-        baseURL: endpoints.api,
-        timeout: 10000,
-      },
-    );
+    const api =
+      axios.create(
+        {
+          baseURL: endpoints.api,
+          timeout: 10000,
+        },
+      );
 
     // setup log stream
     const tail = new TailFile(
@@ -584,16 +620,25 @@ module.exports = async () => {
                   );
 
                 if (sig_id) {
-                  const response = await api.get(
-                    '',
-                    {
-                      params: {
-                        module: 'lcd',
-                        path: '/cosmos/tx/v1beta1/txs',
-                        events: `sign.sigID='${sig_id}'`,
-                      },
-                    },
-                  ).catch(error => { return { data: { error } }; });
+                  const response =
+                    await api
+                      .get(
+                        '',
+                        {
+                          params: {
+                            module: 'lcd',
+                            path: '/cosmos/tx/v1beta1/txs',
+                            events: `sign.sigID='${sig_id}'`,
+                          },
+                        },
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
                   
                   const {
                     tx_responses,
@@ -721,16 +766,25 @@ module.exports = async () => {
                   );
 
                 if (sig_id) {
-                  const response = await api.get(
-                    '',
-                    {
-                      params: {
-                        module: 'lcd',
-                        path: '/cosmos/tx/v1beta1/txs',
-                        events: `sign.sigID='${sig_id}'`,
-                      },
-                    },
-                  ).catch(error => { return { data: { error } }; });
+                  const response =
+                    await api
+                      .get(
+                        '',
+                        {
+                          params: {
+                            module: 'lcd',
+                            path: '/cosmos/tx/v1beta1/txs',
+                            events: `sign.sigID='${sig_id}'`,
+                          },
+                        },
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
                   
                   const {
                     tx_responses,
@@ -837,19 +891,28 @@ module.exports = async () => {
                 obj.height = height + 1;
 
                 if (!snapshot) {
-                  const response = await api.post(
-                    '',
-                    {
-                      module: 'index',
-                      collection: 'keygens',
-                      method: 'search',
-                      query: {
-                        range: { height: { lt: obj.height } },
-                      },
-                      size: 1,
-                      sort: [{ height: 'desc' }],
-                    },
-                  ).catch(error => { return { data: { error } }; });
+                  const response =
+                    await api
+                      .post(
+                        '',
+                        {
+                          module: 'index',
+                          collection: 'keygens',
+                          method: 'search',
+                          query: {
+                            range: { height: { lt: obj.height } },
+                          },
+                          size: 1,
+                          sort: [{ height: 'desc' }],
+                        },
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
 
                   const {
                     data,
@@ -918,18 +981,27 @@ module.exports = async () => {
                   key_id,
                 } = { ...obj };
 
-                const response = await api.post(
-                  '',
-                  {
-                    module: 'index',
-                    collection: 'keygens',
-                    method: 'search',
-                    query: {
-                      match_phrase: { key_id },
-                    },
-                    size: 1,
-                  },
-                  ).catch(error => { return { data: { error } }; });
+                const response =
+                  await api
+                    .post(
+                      '',
+                      {
+                        module: 'index',
+                        collection: 'keygens',
+                        method: 'search',
+                        query: {
+                          match_phrase: { key_id },
+                        },
+                        size: 1,
+                      },
+                    )
+                    .catch(error => {
+                      return {
+                        data: {
+                          error,
+                        },
+                      };
+                    });
 
                 const {
                   _id,
@@ -1029,15 +1101,24 @@ module.exports = async () => {
                 } = { ...obj };
 
                 if (participant_addresses) {
-                  const response = await api.get(
-                    '',
-                    {
-                      params: {
-                        module: 'lcd',
-                        path: `/cosmos/base/tendermint/v1beta1/validatorsets/${obj.height}`,
-                      },
-                    },
-                  ).catch(error => { return { data: { error } }; });
+                  const response =
+                    await api
+                      .get(
+                        '',
+                        {
+                          params: {
+                            module: 'lcd',
+                            path: `/cosmos/base/tendermint/v1beta1/validatorsets/${obj.height}`,
+                          },
+                        },
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
 
                   const {
                     validators,
@@ -1139,23 +1220,32 @@ module.exports = async () => {
                   deposit_address &&
                   transfer_id
                 ) {
-                  let response = await api.post(
-                    '',
-                    {
-                      module: 'index',
-                      collection: 'transfers',
-                      method: 'search',
-                      query: {
-                        bool: {
-                          must: [
-                            { match: { 'source.id': tx_id } },
-                            { match: { 'source.recipient_address': confirm.deposit_address } },
-                          ],
+                  let response =
+                    await api
+                      .post(
+                        '',
+                        {
+                          module: 'index',
+                          collection: 'transfers',
+                          method: 'search',
+                          query: {
+                            bool: {
+                              must: [
+                                { match: { 'source.id': tx_id } },
+                                { match: { 'source.recipient_address': confirm.deposit_address } },
+                              ],
+                            },
+                          },
+                          size: 1,
                         },
-                      },
-                      size: 1,
-                    },
-                  ).catch(error => { return { data: { error } }; });
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
 
                   const transfer_data = _.head(response?.data?.data);
 
@@ -1176,24 +1266,33 @@ module.exports = async () => {
                       vote.transfer_id = transfer_id;
                     }
 
-                    response = await api.post(
-                      '',
-                      {
-                        module: 'index',
-                        collection: 'batches',
-                        method: 'search',
-                        query: {
-                          bool: {
-                            must: [
-                              { match: { chain } },
-                              { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
-                              { match: { command_ids: command_id } },
-                            ],
+                    response =
+                      await api
+                        .post(
+                          '',
+                          {
+                            module: 'index',
+                            collection: 'batches',
+                            method: 'search',
+                            query: {
+                              bool: {
+                                must: [
+                                  { match: { chain } },
+                                  { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                                  { match: { command_ids: command_id } },
+                                ],
+                              },
+                            },
+                            size: 1,
                           },
-                        },
-                        size: 1,
-                      },
-                    ).catch(error => { return { data: { error } }; });
+                        )
+                        .catch(error => {
+                          return {
+                            data: {
+                              error,
+                            },
+                          };
+                        });
 
                     const batch_data = _.head(response?.data?.data);
 
@@ -1222,18 +1321,26 @@ module.exports = async () => {
                       },
                     );
 
-                    await api.post(
-                      '',
-                      {
-                        module: 'index',
-                        collection: 'transfers',
-                        method: 'update',
-                        path: `/transfers/_update/${tx_id}`,
-                        id: tx_id,
-                        ...transfer_data,
-                        sign_batch,
-                      },
-                    ).catch(error => { return { data: { error } }; });
+                    await api
+                      .post(
+                        '',
+                        {
+                          module: 'index',
+                          collection: 'transfers',
+                          method: 'update',
+                          path: `/transfers/_update/${tx_id}`,
+                          id: tx_id,
+                          ...transfer_data,
+                          sign_batch,
+                        },
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
                   }
                 }
               }
@@ -1302,16 +1409,24 @@ module.exports = async () => {
                       },
                     );
 
-                    api.get(
-                      '',
-                      {
-                        params: {
-                          module: 'lcd',
-                          path: `/axelar/evm/v1beta1/batched_commands/${last_batch.chain}/${last_batch.batch_id}`,
-                          created_at: last_batch.timestamp,
+                    api
+                      .get(
+                        '',
+                        {
+                          params: {
+                            module: 'lcd',
+                            path: `/axelar/evm/v1beta1/batched_commands/${last_batch.chain}/${last_batch.batch_id}`,
+                            created_at: last_batch.timestamp,
+                          },
                         },
-                      },
-                    ).catch(error => { return { data: { error } }; });
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
                   }
 
                   obj = {

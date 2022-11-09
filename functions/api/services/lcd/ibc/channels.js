@@ -45,24 +45,34 @@ module.exports = async (
     channels &&
     endpoints?.lcd
   ) {
-    const lcd = axios.create(
-      {
-        baseURL: endpoints.lcd,
-        timeout: 3000,
-      },
-    );
+    const lcd =
+      axios.create(
+        {
+          baseURL: endpoints.lcd,
+          timeout: 3000,
+        },
+      );
 
     let all_channels = channels;
 
     while (next_key) {
-      const _response = await lcd.get(
-        path,
-        {
-          params: {
-            'pagination.key': next_key,
-          },
-        },
-      ).catch(error => { return { data: { error } }; });
+      const _response =
+        await lcd
+          .get(
+            path,
+            {
+              params: {
+                'pagination.key': next_key,
+              },
+            },
+          )
+          .catch(error => {
+            return {
+              data: {
+                error,
+              },
+            };
+          });
 
       const {
         data,
@@ -149,9 +159,18 @@ module.exports = async (
             true,
           ) > 240
       ) {
-        const _response = await lcd.get(
-          `/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`,
-        ).catch(error => { return { data: { error } }; });
+        const _response =
+          await lcd
+            .get(
+              `/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`,
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
 
         const {
           client_state,

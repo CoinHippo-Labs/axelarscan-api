@@ -199,12 +199,13 @@ module.exports = async (
       coingecko_ids.length > 0 &&
       endpoints?.coingecko
     ) {
-      const coingecko = axios.create(
-        {
-          baseURL: endpoints.coingecko,
-          timeout: 10000,
-        },
-      );
+      const coingecko =
+        axios.create(
+          {
+            baseURL: endpoints.coingecko,
+            timeout: 10000,
+          },
+        );
 
       let _data;
 

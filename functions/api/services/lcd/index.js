@@ -35,13 +35,6 @@ module.exports = async (
     cache_hit = false;
 
   if (endpoints?.lcd) {
-    const lcd = axios.create(
-      {
-        baseURL: endpoints.lcd,
-        timeout: 3000,
-      },
-    );
-
     const {
       cmd,
     } = { ...params };
@@ -134,10 +127,27 @@ module.exports = async (
 
     // cache miss
     if (!response) {
-      const _response = await lcd.get(
-        path,
-        { params },
-      ).catch(error => { return { data: { error } }; });
+      const lcd =
+        axios.create(
+          {
+            baseURL: endpoints.lcd,
+            timeout: 3000,
+          },
+        );
+
+      const _response =
+        await lcd
+          .get(
+            path,
+            { params },
+          )
+          .catch(error => {
+            return {
+              data: {
+                error,
+              },
+            };
+          });
 
       let {
         data,
@@ -176,18 +186,28 @@ module.exports = async (
           ) {
             const api = endpoints.cosmostation;
 
-            const cosmostation = axios.create(
-              {
-                baseURL: api,
-                timeout: 3000,
-              },
-            );
+            const cosmostation =
+              axios.create(
+                {
+                  baseURL: api,
+                  timeout: 3000,
+                },
+              );
 
             const _path = `/tx/hash/${hash}`;
 
-            const _response = await cosmostation.get(
-              _path,
-            ).catch(error => { return { data: { error } }; });
+            const _response =
+              await cosmostation
+                .get(
+                  _path,
+                )
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
 
             const {
               tx,
@@ -210,18 +230,28 @@ module.exports = async (
               chain_id,
             } = { ...endpoints.mintscan };
 
-            const mintscan = axios.create(
-              {
-                baseURL: api,
-                timeout: 3000,
-              },
-            );
+            const mintscan =
+              axios.create(
+                {
+                  baseURL: api,
+                  timeout: 3000,
+                },
+              );
 
             const _path = `/block/${chain_id}/${height}`;
 
-            const _response = await mintscan.get(
-              _path,
-            ).catch(error => { return { data: { error } }; });
+            const _response =
+              await mintscan
+                .get(
+                  _path,
+                )
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
 
             const {
               txs,
@@ -230,26 +260,28 @@ module.exports = async (
             if (txs) {
               data = {
                 url: `${api}${_path}`,
-                tx_responses: txs
-                  .map(d => {
-                    const {
-                      data,
-                    } = { ...d };
+                tx_responses:
+                  txs
+                    .map(d => {
+                      const {
+                        data,
+                      } = { ...d };
 
-                    return {
-                      ...data,
-                    };
-                  }),
-                txs: txs
-                  .map(d => {
-                    const {
-                      tx,
-                    } = { ...d?.data };
+                      return {
+                        ...data,
+                      };
+                    }),
+                txs:
+                  txs
+                    .map(d => {
+                      const {
+                        tx,
+                      } = { ...d?.data };
 
-                    return {
-                      ...tx,
-                    };
-                  }),
+                      return {
+                        ...tx,
+                      };
+                    }),
               };
             }
           }

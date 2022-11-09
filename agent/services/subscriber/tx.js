@@ -22,12 +22,13 @@ module.exports = () => {
     endpoints.api
   ) {
     // initial api
-    const api = axios.create(
-      {
-        baseURL: endpoints.api,
-        timeout: 10000,
-      },
-    );
+    const api =
+      axios.create(
+        {
+          baseURL: endpoints.api,
+          timeout: 10000,
+        },
+      );
 
     // initial function to subscribe web socket
     const subscribe = () => {
@@ -111,15 +112,23 @@ module.exports = () => {
                 },
               );
 
-              await api.get(
-                '',
-                {
-                  params: {
-                    module: 'lcd',
-                    path: `/cosmos/tx/v1beta1/txs/${txhash}`,
+              await api
+                .get(
+                  '',
+                  {
+                    params: {
+                      module: 'lcd',
+                      path: `/cosmos/tx/v1beta1/txs/${txhash}`,
+                    },
                   },
-                },
-              ).catch(error => { return { data: { error } }; });
+                )
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
             }
           } catch (error) {}
         },

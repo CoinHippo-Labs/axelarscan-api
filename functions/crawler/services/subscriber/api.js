@@ -45,10 +45,19 @@ const getLatestEventBlock = async chain => {
       },
     );
 
-    const response = await api.get(
-      '/gateway/latest-event-block',
-      { params },
-    ).catch(error => { return { data: { error } }; });
+    const response =
+      await api
+        .get(
+          '/gateway/latest-event-block',
+          { params },
+        )
+        .catch(error => {
+          return {
+            data: {
+              error,
+            },
+          };
+        });
 
     output = response?.data;
 
@@ -98,10 +107,19 @@ const saveEvent = async (
       },
     );
 
-    const response = await api.post(
-      '/gateway/save-event',
-      params,
-    ).catch(error => { return { data: { error } }; });
+    const response =
+      await api
+        .post(
+          '/gateway/save-event',
+          params,
+        )
+        .catch(error => {
+          return {
+            data: {
+              error,
+            },
+          };
+        });
 
     output = response?.data;
 

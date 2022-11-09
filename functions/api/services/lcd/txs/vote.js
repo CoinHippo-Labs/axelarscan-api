@@ -1103,7 +1103,7 @@ module.exports = async (
       };
 
       if (
-        i === 0 ||
+        // i === 0 ||
         i === records.length - 1
       ) {
         await write(

@@ -324,21 +324,31 @@ module.exports = async (
             let found = false;
 
             for (const _lcd of _lcds) {
-              const lcd = axios.create(
-                {
-                  baseURL: _lcd,
-                  timeout: 3000,
-                },
-              );
+              const lcd =
+                axios.create(
+                  {
+                    baseURL: _lcd,
+                    timeout: 3000,
+                  },
+                );
 
               const is_cosmostation = _lcd === cosmostation;
 
               try {
-                const transaction = await lcd.get(
-                  is_cosmostation ?
-                    `/tx/hash/${txHash}` :
-                    `/cosmos/tx/v1beta1/txs/${txHash}`,
-                ).catch(error => { return { data: { error } }; });
+                const transaction =
+                  await lcd
+                    .get(
+                      is_cosmostation ?
+                        `/tx/hash/${txHash}` :
+                        `/cosmos/tx/v1beta1/txs/${txHash}`,
+                    )
+                    .catch(error => {
+                      return {
+                        data: {
+                          error,
+                        },
+                      };
+                    });
 
                 const tx_response =
                   is_cosmostation ?

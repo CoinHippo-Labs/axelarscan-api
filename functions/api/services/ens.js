@@ -12,17 +12,27 @@ module.exports = async (
   let response;
 
   if (endpoints?.ens) {
-    const ens = axios.create(
-      {
-        baseURL: endpoints.ens,
-        timeout: 1500,
-      },
-    );
+    const ens =
+      axios.create(
+        {
+          baseURL: endpoints.ens,
+          timeout: 1500,
+        },
+      );
 
-    const _response = await ens.get(
-      path,
-      { params },
-    ).catch(error => { return { data: { error } }; });
+    const _response =
+      await ens
+        .get(
+          path,
+          { params },
+        )
+        .catch(error => {
+          return {
+            data: {
+              error,
+            },
+          };
+        });
 
     const {
       data,

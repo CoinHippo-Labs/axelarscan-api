@@ -160,16 +160,26 @@ module.exports = async (
             .filter(l => l);
 
           for (const _lcd of _lcds) {
-            const lcd = axios.create(
-              {
-                baseURL: _lcd,
-                timeout: 3000,
-              },
-            );
+            const lcd =
+              axios.create(
+                {
+                  baseURL: _lcd,
+                  timeout: 3000,
+                },
+              );
 
-            let _response = await lcd.get(
-              `/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`,
-            ).catch(error => { return { data: { error } }; });
+            let _response =
+              await lcd
+                .get(
+                  `/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`,
+                )
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
 
             let {
               tx_responses,
@@ -177,9 +187,18 @@ module.exports = async (
             } = { ..._response?.data };
 
             if (tx_responses?.length < 1) {
-              _response = await lcd.get(
-                `/cosmos/tx/v1beta1/txs?limit=5&events=send_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`,
-              ).catch(error => { return { data: { error } }; });
+              _response =
+                await lcd
+                  .get(
+                    `/cosmos/tx/v1beta1/txs?limit=5&events=send_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`,
+                  )
+                  .catch(error => {
+                    return {
+                      data: {
+                        error,
+                      },
+                    };
+                  });
 
               if (_response?.data) {
                 tx_responses = _response.data.tx_responses;

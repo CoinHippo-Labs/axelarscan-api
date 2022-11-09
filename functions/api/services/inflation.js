@@ -95,14 +95,15 @@ module.exports = async (
       .join('')
     );
 
-  response = await cli(
-    undefined,
-    {
-      cmd: 'axelard q params subspace reward ExternalChainVotingInflationRate -oj',
-    },
-    true,
-    30,
-  );
+  response =
+    await cli(
+      undefined,
+      {
+        cmd: 'axelard q params subspace reward ExternalChainVotingInflationRate -oj',
+      },
+      true,
+      30,
+    );
 
   const externalChainVotingInflationRate =
     Number(

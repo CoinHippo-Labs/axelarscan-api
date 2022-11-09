@@ -12,17 +12,27 @@ module.exports = async (
   let response;
 
   if (endpoints?.coingecko) {
-    const coingecko = axios.create(
-      {
-        baseURL: endpoints.coingecko,
-        timeout: 10000,
-      },
-    );
+    const coingecko =
+      axios.create(
+        {
+          baseURL: endpoints.coingecko,
+          timeout: 10000,
+        },
+      );
 
-    const _response = await coingecko.get(
-      path,
-      { params },
-    ).catch(error => { return { data: { error } }; });
+    const _response =
+      await coingecko
+        .get(
+          path,
+          { params },
+        )
+        .catch(error => {
+          return {
+            data: {
+              error,
+            },
+          };
+        });
 
     const {
       data,

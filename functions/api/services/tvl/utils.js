@@ -154,22 +154,31 @@ const getCosmosBalance = async (
       for (const lcd of lcds) {
         for (const denom of denoms) {
           for (const path of paths) {
-            const response = await lcd.get(
-              path
-                .replace(
-                  '{address}',
-                  address,
+            const response =
+              await lcd
+                .get(
+                  path
+                    .replace(
+                      '{address}',
+                      address,
+                    )
+                    .replace(
+                      '{denom}',
+                      encodeURIComponent(denom),
+                    ),
+                  {
+                    params: {
+                      denom,
+                    },
+                  },
                 )
-                .replace(
-                  '{denom}',
-                  encodeURIComponent(denom),
-                ),
-              {
-                params: {
-                  denom,
-                },
-              },
-            ).catch(error => { return { data: { error } }; });
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
 
             const {
               amount,
@@ -245,9 +254,18 @@ const getCosmosSupply = async (
 
       for (const lcd of lcds) {
         for (const denom of denoms) {
-          const response = await lcd.get(
-            `/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`,
-          ).catch(error => { return { data: { error } }; });
+          const response =
+            await lcd
+              .get(
+                `/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`,
+              )
+              .catch(error => {
+                return {
+                  data: {
+                    error,
+                  },
+                };
+              });
 
           const {
             amount,
@@ -265,14 +283,23 @@ const getCosmosSupply = async (
         }
 
         if (!valid) {
-          const response = await lcd.get(
-            '/cosmos/bank/v1beta1/supply',
-            {
-              params: {
-                'pagination.limit': 2000,
-              },
-            },
-          ).catch(error => { return { data: { error } }; });
+          const response =
+            await lcd
+              .get(
+                '/cosmos/bank/v1beta1/supply',
+                {
+                  params: {
+                    'pagination.limit': 2000,
+                  },
+                },
+              )
+              .catch(error => {
+                return {
+                  data: {
+                    error,
+                  },
+                };
+              });
 
           supply = (response?.data?.supply || [])
             .find(s =>

@@ -567,7 +567,7 @@ module.exports = {
             'https://lcd-juno.itastakers.com',
             'https://api.juno.chaintools.tech',
             'https://api.juno.silknodes.io',
-            'https://juno-api.kleomed.es',
+            // 'https://juno-api.kleomed.es',
             'https://api.juno.interbloc.org',
             'https://juno.nodejumper.io:1317',
             'https://juno.rest.stakin.com',
@@ -637,7 +637,7 @@ module.exports = {
           lcd: 'https://api-injective-ia.cosmosia.notional.ventures',
           lcds: [
             'https://injective-api.polkachu.com',
-            // 'https://public.lcd.injective.network',
+            'https://public.lcd.injective.network',
           ],
           cosmostation: 'https://api-inj.cosmostation.io/v1',
         },
@@ -893,7 +893,7 @@ module.exports = {
         endpoints: {
           lcd: 'https://rest-evmos.ecostake.com',
           lcds: [
-            'https://rest.bd.evmos.org:1317',
+            // 'https://rest.bd.evmos.org:1317',
             'https://evmos-api.lavenderfive.com',
             'https://api-evmos-ia.cosmosia.notional.ventures',
             'https://lcd.evmos.posthuman.digital',

@@ -815,34 +815,44 @@ const update_source = async (
             typeof !source.fee !== 'number' &&
             endpoints?.lcd
           ) {
-            const lcd = axios.create(
-              {
-                baseURL: endpoints.lcd,
-                timeout: 3000,
-              },
-            );
-
-            const _response = await lcd.get(
-              '/axelar/nexus/v1beta1/transfer_fee',
-              {
-                params: {
-                  source_chain: source.original_sender_chain,
-                  destination_chain: source.original_recipient_chain,
-                  amount:
-                    `${
-                      parseUnits(
-                        (
-                          source.amount ||
-                          0
-                        )
-                        .toString(),
-                        decimals,
-                      )
-                      .toString()
-                    }${asset_data.id}`,
+            const lcd =
+              axios.create(
+                {
+                  baseURL: endpoints.lcd,
+                  timeout: 3000,
                 },
-              },
-            ).catch(error => { return { data: { error } }; });
+              );
+
+            const _response =
+              await lcd
+                .get(
+                  '/axelar/nexus/v1beta1/transfer_fee',
+                  {
+                    params: {
+                      source_chain: source.original_sender_chain,
+                      destination_chain: source.original_recipient_chain,
+                      amount:
+                        `${
+                          parseUnits(
+                            (
+                              source.amount ||
+                              0
+                            )
+                            .toString(),
+                            decimals,
+                          )
+                          .toString()
+                        }${asset_data.id}`,
+                    },
+                  },
+                )
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
 
             const {
               amount,
@@ -997,34 +1007,44 @@ const update_event = async (
           typeof !event.fee !== 'number' &&
           endpoints?.lcd
         ) {
-          const lcd = axios.create(
-            {
-              baseURL: endpoints.lcd,
-              timeout: 3000,
-            },
-          );
-
-          const _response = await lcd.get(
-            '/axelar/nexus/v1beta1/transfer_fee',
-            {
-              params: {
-                source_chain: chain,
-                destination_chain: normalize_chain(destinationChain),
-                amount:
-                  `${
-                    parseUnits(
-                      (
-                        event.amount ||
-                        0
-                      )
-                      .toString(),
-                      decimals,
-                    )
-                    .toString()
-                  }${asset_data.id}`,
+          const lcd =
+            axios.create(
+              {
+                baseURL: endpoints.lcd,
+                timeout: 3000,
               },
-            },
-          ).catch(error => { return { data: { error } }; });
+            );
+
+          const _response =
+            await lcd
+              .get(
+                '/axelar/nexus/v1beta1/transfer_fee',
+                {
+                  params: {
+                    source_chain: chain,
+                    destination_chain: normalize_chain(destinationChain),
+                    amount:
+                      `${
+                        parseUnits(
+                          (
+                            event.amount ||
+                            0
+                          )
+                          .toString(),
+                          decimals,
+                        )
+                        .toString()
+                      }${asset_data.id}`,
+                  },
+                },
+              )
+              .catch(error => {
+                return {
+                  data: {
+                    error,
+                  },
+                };
+              });
 
           const {
             amount,

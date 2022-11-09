@@ -118,12 +118,13 @@ const crud = async (
       }
     }
 
-    const indexer = axios.create(
-      {
-        baseURL: indexer_url,
-        timeout: 15000,
-      },
-    );
+    const indexer =
+      axios.create(
+        {
+          baseURL: indexer_url,
+          timeout: 15000,
+        },
+      );
 
     const auth = {
       username: indexer_username,
@@ -137,13 +138,22 @@ const crud = async (
           path ||
           `/${collection}/_doc/${id}`;
 
-        response = await indexer.get(
-          path,
-          {
-            params,
-            auth,
-          },
-        ).catch(error => { return { data: { error } }; });
+        response =
+          await indexer
+            .get(
+              path,
+              {
+                params,
+                auth,
+              },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
 
         const {
           _id,
@@ -168,27 +178,45 @@ const crud = async (
 
         if (path.includes('/_update_by_query')) {
           try {
-            response = await indexer.post(
-              path,
-              params,
-              { auth },
-            ).catch(error => { return { data: { error } }; });
+            response =
+              await indexer
+                .post(
+                  path,
+                  params,
+                  { auth },
+                )
+                .catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
           } catch (error) {}
         }
         else {
           response = await (
             path.includes('_update') ?
-              indexer.post(
-                path,
-                { doc: params },
-                { auth },
-              ) :
-              indexer.put(
-                path,
-                params,
-                { auth },
-              )
-          ).catch(error => { return { data: { error } }; });
+              indexer
+                .post(
+                  path,
+                  { doc: params },
+                  { auth },
+                ) :
+              indexer
+                .put(
+                  path,
+                  params,
+                  { auth },
+                )
+          )
+          .catch(error => {
+            return {
+              data: {
+                error,
+              },
+            };
+          });
 
           const {
             error,
@@ -210,10 +238,19 @@ const crud = async (
               update_only &&
               path.includes('_doc')
             ) {
-              const _response = await indexer.get(
-                path,
-                { auth },
-              ).catch(error => { return { data: { error } }; });
+              const _response =
+                await indexer
+                  .get(
+                    path,
+                    { auth },
+                  )
+                  .catch(error => {
+                    return {
+                      data: {
+                        error,
+                      },
+                    };
+                  });
 
               const {
                 _id,
@@ -231,17 +268,26 @@ const crud = async (
 
             response = await (
               path.includes('_update') ?
-                indexer.post(
-                  path,
-                  { doc: params },
-                  { auth },
-                ) :
-                indexer.put(
-                  path,
-                  params,
-                  { auth },
-                )
-            ).catch(error => { return { data: { error } }; });
+                indexer
+                  .post(
+                    path,
+                    { doc: params },
+                    { auth },
+                  ) :
+                indexer
+                  .put(
+                    path,
+                    params,
+                    { auth },
+                  )
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
           }
         }
         break;
@@ -309,11 +355,20 @@ const crud = async (
           search_data.track_total_hits = track_total_hits;
         }
 
-        response = await indexer.post(
-          path,
-          search_data,
-          { auth },
-        ).catch(error => { return { data: { error } }; });
+        response =
+          await indexer
+            .post(
+              path,
+              search_data,
+              { auth },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
 
         const {
           hits,
@@ -352,13 +407,22 @@ const crud = async (
           path ||
           `/${collection}/_doc/${id}`;
 
-        response = await indexer.delete(
-          path,
-          {
-            params,
-            auth,
-          },
-        ).catch(error => { return { data: { error } }; });
+        response =
+          await indexer
+            .delete(
+              path,
+              {
+                params,
+                auth,
+              },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
         break;
       default:
         break;

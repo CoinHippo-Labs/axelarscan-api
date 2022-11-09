@@ -90,6 +90,7 @@ module.exports = async () => {
     [
       'axelard',
       'cosmos',
+      'rpc',
     ];
 
   for (const collection of cache_collections) {

@@ -66,13 +66,6 @@ module.exports = async (
     cache_hit = false;
 
   if (endpoints?.cli) {
-    const cli = axios.create(
-      {
-        baseURL: endpoints.cli,
-        timeout: 15000,
-      },
-    );
-
     const {
       cmd,
     } = { ...params };
@@ -138,10 +131,27 @@ module.exports = async (
       cmd?.startsWith('axelard q ') &&
       cmd.endsWith(' -oj')
     ) {
-      const _response = await cli.get(
-        path,
-        { params },
-      ).catch(error => { return { data: { error } }; });
+      const cli =
+        axios.create(
+          {
+            baseURL: endpoints.cli,
+            timeout: 15000,
+          },
+        );
+
+      const _response =
+        await cli
+          .get(
+            path,
+            { params },
+          )
+          .catch(error => {
+            return {
+              data: {
+                error,
+              },
+            };
+          });
 
       const {
         data,
@@ -253,16 +263,25 @@ module.exports = async (
                 let command = commands[index];
 
                 if (!command) {
-                  const _response = await cli.get(
-                    path,
-                    {
-                      params: {
-                        cmd: `axelard q evm command ${chain} ${command_id} -oj`,
-                        cache: true,
-                        cache_timeout: 30,
-                      },
-                    },
-                  ).catch(error => { return { data: { error } }; });
+                  const _response =
+                    await cli
+                      .get(
+                        path,
+                        {
+                          params: {
+                            cmd: `axelard q evm command ${chain} ${command_id} -oj`,
+                            cache: true,
+                            cache_timeout: 30,
+                          },
+                        },
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
 
                   command = to_json(_response?.data?.stdout);
                 }
