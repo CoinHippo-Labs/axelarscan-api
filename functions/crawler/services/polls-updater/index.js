@@ -42,42 +42,44 @@ module.exports = async () => {
           height,
         } = { ...d };
 
-        // get transactions of each block
-        let next_page_key = true;
+        for (let i = 0; i < 5; i++) {
+          // get transactions of each block
+          let next_page_key = true;
 
-        while (next_page_key) {
-          const response =
-            await api
-              .get(
-                '',
-                {
-                  params: {
-                    module: 'lcd',
-                    path: '/cosmos/tx/v1beta1/txs',
-                    events: `tx.height=${height}`,
-                    'pagination.key':
-                      typeof next_page_key === 'string' &&
-                      next_page_key ?
-                        next_page_key :
-                        undefined,
+          while (next_page_key) {
+            const response =
+              await api
+                .get(
+                  '',
+                  {
+                    params: {
+                      module: 'lcd',
+                      path: '/cosmos/tx/v1beta1/txs',
+                      events: `tx.height=${height + i}`,
+                      'pagination.key':
+                        typeof next_page_key === 'string' &&
+                        next_page_key ?
+                          next_page_key :
+                          undefined,
+                    },
                   },
-                },
-              ).catch(error => {
-                return {
-                  data: {
-                    error,
-                  },
-                };
-              });
+                ).catch(error => {
+                  return {
+                    data: {
+                      error,
+                    },
+                  };
+                });
 
-          const {
-            pagination,
-          } = { ...response?.data };
-          const {
-            next_key,
-          } = { ...pagination };
+            const {
+              pagination,
+            } = { ...response?.data };
+            const {
+              next_key,
+            } = { ...pagination };
 
-          next_page_key = next_key;
+            next_page_key = next_key;
+          }
         }
       }
     }
