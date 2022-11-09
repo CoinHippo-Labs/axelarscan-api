@@ -52,11 +52,15 @@ module.exports = async (
         must.push({ match: { failed: true } });
         must_not.push({ match: { success: true } });
         break;
-      case 'comfirmed':
+      case 'confirmed':
         must.push({ match: { confirmation: true } });
         must_not.push({ match: { success: true } });
         must_not.push({ match: { failed: true } });
         break;
+      case 'pending':
+        must_not.push({ match: { confirmation: true } });
+        must_not.push({ match: { success: true } });
+        must_not.push({ match: { failed: true } });
       default:
         break;
     }
@@ -141,24 +145,25 @@ module.exports = async (
           next_key,
         } = { ...pagination };
 
-        const transaction_data = (tx_responses || [])
-          .find((t, i) =>
-            !t?.code &&
-            (txs?.[i]?.body?.messages || [])
-              .findIndex(m =>
-                m?.['@type']?.includes('RegisterProxy') &&
-                (
-                  equals_ignore_case(
-                    m.sender,
-                    operator_address,
-                  ) ||
-                  equals_ignore_case(
-                    m.proxy_addr,
-                    voter,
+        const transaction_data =
+          (tx_responses || [])
+            .find((t, i) =>
+              !t?.code &&
+              (txs?.[i]?.body?.messages || [])
+                .findIndex(m =>
+                  m?.['@type']?.includes('RegisterProxy') &&
+                  (
+                    equals_ignore_case(
+                      m.sender,
+                      operator_address,
+                    ) ||
+                    equals_ignore_case(
+                      m.proxy_addr,
+                      voter,
+                    )
                   )
-                )
-              ) > -1
-          );
+                ) > -1
+            );
 
         const {
           height,
@@ -260,6 +265,7 @@ module.exports = async (
       }
     }
   }
+
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
     toTime =
@@ -270,6 +276,7 @@ module.exports = async (
 
     must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
   }
+
   if (!query) {
     query = {
       bool: {

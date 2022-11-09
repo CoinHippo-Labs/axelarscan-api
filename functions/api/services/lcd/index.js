@@ -337,7 +337,10 @@ module.exports = async (
       !path.endsWith('/') &&
       tx_responses?.length > 0
     ) {
-      if (!no_index) {
+      if (
+        true || // ok to index every time
+        !no_index
+      ) {
         response = await index_txs(response);
       }
     }

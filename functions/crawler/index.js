@@ -6,6 +6,9 @@ exports.handler = async (
   // run subscriber
   require('./services/subscriber')();
 
+  // run poll updater
+  require('./services/polls-updater')();
+
   // hold lambda function to not exit before timeout
   const {
     sleep,

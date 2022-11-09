@@ -83,7 +83,7 @@ module.exports = async (
 
     if (Array.isArray(data)) {
       data = data
-        .filter(d => d?.txhash)
+        .filter(d => d?.txhash);
     }
 
     if (

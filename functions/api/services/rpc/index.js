@@ -1,4 +1,5 @@
 const axios = require('axios');
+const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 const {
@@ -197,110 +198,113 @@ module.exports = async (
 
           height = Number(height);
 
-          txs_results = (txs_results || [])
-            .map(t => {
-              let {
-                log,
-                events,
-              } = { ...t };
+          txs_results =
+            (txs_results || [])
+              .map(t => {
+                let {
+                  log,
+                  events,
+                } = { ...t };
 
-              log =
-                to_json(log) ||
-                log;
+                log =
+                  to_json(log) ||
+                  log;
 
-              events = (events || [])
-                .map(e => {
-                  let {
-                    attributes,
-                  } = { ...e };
+                events = (events || [])
+                  .map(e => {
+                    let {
+                      attributes,
+                    } = { ...e };
 
-                  attributes = (attributes || [])
-                    .map(a => {
-                      let {
-                        key,
-                        value,
-                      } = { ...a };
+                    attributes = (attributes || [])
+                      .map(a => {
+                        let {
+                          key,
+                          value,
+                        } = { ...a };
 
-                      key = decode_base64(key);
-                      value = decode_base64(value);
+                        key = decode_base64(key);
+                        value = decode_base64(value);
 
-                      return {
-                        ...a,
-                        key,
-                        value,
-                      };
-                    });
+                        return {
+                          ...a,
+                          key,
+                          value,
+                        };
+                      });
 
-                  return {
-                    ...e,
-                    attributes,
-                  };
-                });
+                    return {
+                      ...e,
+                      attributes,
+                    };
+                  });
 
-              return {
-                ...t,
-                log,
-                events,
-              };
-            });
+                return {
+                  ...t,
+                  log,
+                  events,
+                };
+              });
 
-          begin_block_events = (begin_block_events || [])
-            .map(e => {
-              let {
-                attributes,
-              } = { ...e };
+          begin_block_events =
+            (begin_block_events || [])
+              .map(e => {
+                let {
+                  attributes,
+                } = { ...e };
 
-              attributes = (attributes || [])
-                .map(a => {
-                  let {
-                    key,
-                    value,
-                  } = { ...a };
+                attributes = (attributes || [])
+                  .map(a => {
+                    let {
+                      key,
+                      value,
+                    } = { ...a };
 
-                  key = decode_base64(key);
-                  value = decode_base64(value);
+                    key = decode_base64(key);
+                    value = decode_base64(value);
 
-                  return {
-                    ...a,
-                    key,
-                    value,
-                  };
-                });
+                    return {
+                      ...a,
+                      key,
+                      value,
+                    };
+                  });
 
-              return {
-                ...e,
-                attributes,
-              };
-            });
+                return {
+                  ...e,
+                  attributes,
+                };
+              });
 
-          end_block_events = (end_block_events || [])
-            .map(e => {
-              let {
-                attributes,
-              } = { ...e };
+          end_block_events =
+            (end_block_events || [])
+              .map(e => {
+                let {
+                  attributes,
+                } = { ...e };
 
-              attributes = (attributes || [])
-                .map(a => {
-                  let {
-                    key,
-                    value,
-                  } = { ...a };
+                attributes = (attributes || [])
+                  .map(a => {
+                    let {
+                      key,
+                      value,
+                    } = { ...a };
 
-                  key = decode_base64(key);
-                  value = decode_base64(value);
+                    key = decode_base64(key);
+                    value = decode_base64(value);
 
-                  return {
-                    ...a,
-                    key,
-                    value,
-                  };
-                });
+                    return {
+                      ...a,
+                      key,
+                      value,
+                    };
+                  });
 
-              return {
-                ...e,
-                attributes,
-              };
-            });
+                return {
+                  ...e,
+                  attributes,
+                };
+              });
 
           data = {
             ...result,
@@ -322,11 +326,15 @@ module.exports = async (
         cache &&
         !cache_hit
       ) {
+        const _response = _.cloneDeep(response);
+
+        delete _response.txs_results;
+
         await write(
           'rpc',
           cache_id,
           {
-            response: JSON.stringify(response),
+            response: JSON.stringify(_response),
             updated_at:
               moment()
                 .unix(),
