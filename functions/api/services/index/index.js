@@ -476,9 +476,10 @@ const write = async (
       method: 'set',
       collection,
       id,
-      path: is_update ?
-        `/${collection}/_update/${id}` :
-        undefined,
+      path:
+        is_update ?
+          `/${collection}/_update/${id}` :
+          undefined,
       update_only,
       ...data,
     },

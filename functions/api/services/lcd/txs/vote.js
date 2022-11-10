@@ -1102,10 +1102,7 @@ module.exports = async (
         },
       };
 
-      if (
-        // i === 0 ||
-        i === records.length - 1
-      ) {
+      if (i <= records.length - 3) {
         await write(
           'evm_polls',
           poll_id,

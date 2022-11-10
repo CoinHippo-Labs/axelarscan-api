@@ -156,6 +156,7 @@ module.exports = async (
           'evm_polls',
           poll_id,
           data,
+          true,
         );
       }
       else {
@@ -163,6 +164,7 @@ module.exports = async (
           'evm_polls',
           poll_id,
           data,
+          true,
         );
       }
     }

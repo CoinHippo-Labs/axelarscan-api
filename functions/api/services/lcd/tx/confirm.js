@@ -98,6 +98,7 @@ module.exports = async (
                 participants ||
                 undefined,
             },
+            true,
           );
 
           updated = true;

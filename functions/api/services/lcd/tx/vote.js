@@ -893,6 +893,7 @@ module.exports = async (
                     late,
                   },
                 },
+                true,
               );
 
               updated = true;

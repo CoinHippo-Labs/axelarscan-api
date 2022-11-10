@@ -42,7 +42,7 @@ module.exports = async () => {
           height,
         } = { ...d };
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = -2; i < 5; i++) {
           // get transactions of each block
           let next_page_key = true;
 
