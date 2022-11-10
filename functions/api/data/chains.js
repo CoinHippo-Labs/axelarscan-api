@@ -1177,9 +1177,10 @@ module.exports = {
             chainId: '0x61',
             chainName: 'BNB Chain Testnet',
             rpcUrls: [
-              'https://data-seed-prebsc-1-s1.binance.org:8545',
-              'https://data-seed-prebsc-2-s1.binance.org:8545',
-              'https://data-seed-prebsc-1-s2.binance.org:8545',
+              'https://rpc.ankr.com/bsc_testnet_chapel',
+              // 'https://data-seed-prebsc-1-s1.binance.org:8545',
+              // 'https://data-seed-prebsc-2-s1.binance.org:8545',
+              // 'https://data-seed-prebsc-1-s2.binance.org:8545',
             ],
             nativeCurrency: {
               name: 'BNB',
