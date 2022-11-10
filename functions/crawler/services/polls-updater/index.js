@@ -28,8 +28,23 @@ module.exports = async () => {
       data =
         _.uniqBy(
           data
-            .filter(d => d?.height),
-          'height',
+            .filter(d => d)
+            .map(d => {
+              return {
+                ...d,
+                _height:
+                  _.min(
+                    Object.entries(d)
+                      .filter(([k, v]) =>
+                        k?.startsWith('axelar1') &&
+                        v?.height
+                      )
+                      .map(([k, v]) => v.height)
+                  ),
+              };
+            })
+            .filter(d => d._height),
+          '_height',
         );
     }
 
@@ -39,7 +54,7 @@ module.exports = async () => {
     ) {
       for (const d of data) {
         const {
-          height,
+          _height,
         } = { ...d };
 
         for (let i = -2; i < 5; i++) {
@@ -55,7 +70,7 @@ module.exports = async () => {
                     params: {
                       module: 'lcd',
                       path: '/cosmos/tx/v1beta1/txs',
-                      events: `tx.height=${height + i}`,
+                      events: `tx.height=${_height + i}`,
                       'pagination.key':
                         typeof next_page_key === 'string' &&
                         next_page_key ?

@@ -77,7 +77,12 @@ module.exports = async (
       !cache &&
       Object.keys({ ...params })
         .findIndex(k =>
-          k?.includes('pagination')
+          [
+            'pagination',
+            'events',
+          ].findIndex(s =>
+            k?.includes(s)
+          ) > -1
         ) < 0
     ) {
       cache = true;
