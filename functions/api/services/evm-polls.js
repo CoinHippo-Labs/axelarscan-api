@@ -1,12 +1,35 @@
 const _ = require('lodash');
 const moment = require('moment');
+const config = require('config-yml');
 const lcd = require('./lcd');
 const {
   read,
+  write,
 } = require('./index');
 const {
   equals_ignore_case,
 } = require('../utils');
+
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
+
+const evm_chains_data =
+  require('../data')?.chains?.[environment]?.evm ||
+  [];
+const cosmos_chains_data =
+  require('../data')?.chains?.[environment]?.cosmos ||
+  [];
+const chains_data =
+  _.concat(
+    evm_chains_data,
+    cosmos_chains_data,
+  );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 module.exports = async (
   params = {},
@@ -291,22 +314,77 @@ module.exports = async (
     };
   }
 
-  return await read(
-    'evm_polls',
-    query,
-    {
-      from:
-        typeof from === 'number' ?
-          from :
-          0,
-      size:
-        typeof size === 'number' ?
-          size :
-          25,
-      sort:
-        sort ||
-        [{ 'created_at.ms': 'desc' }],
-      track_total_hits: true,
-    },
-  );
+  const response =
+    await read(
+      'evm_polls',
+      query,
+      {
+        from:
+          typeof from === 'number' ?
+            from :
+            0,
+        size:
+          typeof size === 'number' ?
+            size :
+            25,
+        sort:
+          sort ||
+          [{ 'created_at.ms': 'desc' }],
+        track_total_hits: true,
+      },
+    );
+
+  const {
+    data,
+  } = { ...response };
+
+  if (Array.isArray(data)) {
+    const _data =
+      data
+        .filter(d =>
+          !(
+            d?.success ||
+            d?.confirmation
+          ) &&
+          Object.entries({ ...d })
+            .filter(([k, v]) =>
+              k?.startsWith(axelarnet.prefix_address) &&
+              !v?.vote
+            ).length > 20
+        );
+
+    for (const d of _data) {
+      const {
+        id,
+      } = { ...d };
+
+      const _d = {
+        ...d,
+        failed: true,
+      }
+
+      await write(
+        'evm_polls',
+        id,
+        _d,
+        true,
+      );
+
+      const index = data
+        .findIndex(_d =>
+          equals_ignore_case(
+            _d?.id,
+            id,
+          )
+        );
+
+      if (index > -1) {
+        data[index] = _d;
+      }
+    }
+
+    response.data = data;
+  }
+
+  return response;
 };
