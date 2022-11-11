@@ -432,6 +432,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'circulating-supply':
+          try {
+            response = await require('./services/circulating-supply')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'total-supply':
           try {
             response = await require('./services/total-supply')(params);
