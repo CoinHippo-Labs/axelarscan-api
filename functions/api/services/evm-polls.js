@@ -100,7 +100,7 @@ module.exports = async (
               {
                 range: {
                   num_recover_time: {
-                    lt: 3,
+                    lt: 5,
                   },
                 },
               },
@@ -411,45 +411,47 @@ module.exports = async (
       }
     }
 
-    for (const d of data) {
-      const {
-        id,
-        failed,
-      } = { ...d };
-      let {
-        num_recover_time,
-      } = { ...d };
-
-      num_recover_time =
-        (typeof num_recover_time === 'number' ?
-          num_recover_time :
-          -1
-        ) +
-        1;
-
-      const _d = {
-        ...d,
-        num_recover_time,
-      }
-
-      if (!failed) {
-        await write(
-          'evm_polls',
+    if (status === 'to_recover') {
+      for (const d of data) {
+        const {
           id,
-          _d,
-          true,
-        );
+          failed,
+        } = { ...d };
+        let {
+          num_recover_time,
+        } = { ...d };
 
-        const index = data
-          .findIndex(_d =>
-            equals_ignore_case(
-              _d?.id,
-              id,
-            )
+        num_recover_time =
+          (typeof num_recover_time === 'number' ?
+            num_recover_time :
+            -1
+          ) +
+          1;
+
+        const _d = {
+          ...d,
+          num_recover_time,
+        }
+
+        if (!failed) {
+          await write(
+            'evm_polls',
+            id,
+            _d,
+            true,
           );
 
-        if (index > -1) {
-          data[index] = _d;
+          const index = data
+            .findIndex(_d =>
+              equals_ignore_case(
+                _d?.id,
+                id,
+              )
+            );
+
+          if (index > -1) {
+            data[index] = _d;
+          }
         }
       }
     }
