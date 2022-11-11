@@ -3,6 +3,7 @@ const config = require('config-yml');
 const total_supply = require('./total-supply');
 const {
   equals_ignore_case,
+  fix_decimals,
 } = require('../utils');
 
 const environment =
@@ -18,6 +19,7 @@ const {
 } = { ...supply };
 
 const asset = 'uaxl';
+const decimals = 6;
 
 const calculate_vesting = config => {
   const {
@@ -28,9 +30,12 @@ const calculate_vesting = config => {
   } = { ...config };
 
   const total =
-    max_supply *
-    total_unlock_percent /
-    100;
+    fix_decimals(
+      max_supply *
+      total_unlock_percent /
+      100,
+      decimals,
+    );
 
   const current_time = moment();
 
@@ -55,17 +60,20 @@ const calculate_vesting = config => {
       current_time.valueOf() <=
       vesting_start_time.valueOf() ?
         0 :
-        total *
-        current_time
-          .diff(
-            vesting_start_time,
-            `${vesting_period}s`,
-          ) /
-        vesting_until_time
-          .diff(
-            vesting_start_time,
-            `${vesting_period}s`,
-          );
+        fix_decimals(
+          total *
+          current_time
+            .diff(
+              vesting_start_time,
+              `${vesting_period}s`,
+            ) /
+          vesting_until_time
+            .diff(
+              vesting_start_time,
+              `${vesting_period}s`,
+            ),
+          decimals,
+        );
 
   return {
     total,
@@ -99,14 +107,18 @@ module.exports = async (
   const inflation_rewards =
     typeof current_total_supply === 'number' &&
     current_total_supply > max_supply ?
-      current_total_supply - max_supply :
+      fix_decimals(
+        current_total_supply - max_supply,
+        decimals,
+      ) :
       0;
 
   const initial_unlocked =
-    max_supply *
-    (
+    fix_decimals(
+      max_supply *
       initial_unlocked_percent /
-      100
+      100,
+      decimals,
     );
 
   const community_sale = calculate_vesting(supply?.community_sale);
