@@ -84,6 +84,34 @@ module.exports = async (
         must_not.push({ match: { confirmation: true } });
         must_not.push({ match: { success: true } });
         must_not.push({ match: { failed: true } });
+        break;
+      case 'to_recover':
+        must.push({ exists: { field: 'height' } });
+        must.push({
+          bool: {
+            should: [
+              {
+                bool: {
+                  must_not: [
+                    { exists: { field: 'num_recover_time' } },
+                  ],
+                },
+                {
+                  range: {
+                    num_recover_time: {
+                      lt: 3,
+                    },
+                  },
+                },
+              },
+            ],
+            minimum_should_match: 1,
+          },
+        });
+        must_not.push({ match: { confirmation: true } });
+        must_not.push({ match: { success: true } });
+        must_not.push({ match: { failed: true } });
+        break;
       default:
         break;
     }
@@ -380,6 +408,49 @@ module.exports = async (
 
       if (index > -1) {
         data[index] = _d;
+      }
+    }
+
+    for (const d of data) {
+      const {
+        id,
+        failed,
+      } = { ...d };
+      let {
+        num_recover_time,
+      } = { ...d };
+
+      num_recover_time =
+        (typeof num_recover_time === 'number' ?
+          num_recover_time :
+          -1
+        ) +
+        1;
+
+      const _d = {
+        ...d,
+        num_recover_time,
+      }
+
+      if (!failed) {
+        await write(
+          'evm_polls',
+          id,
+          _d,
+          true,
+        );
+
+        const index = data
+          .findIndex(_d =>
+            equals_ignore_case(
+              _d?.id,
+              id,
+            )
+          );
+
+        if (index > -1) {
+          data[index] = _d;
+        }
       }
     }
 

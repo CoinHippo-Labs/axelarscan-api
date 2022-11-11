@@ -494,7 +494,11 @@ module.exports = async (
                       );
 
                     if (poll_data) {
-                      sender_chain = poll_data.sender_chain;
+                      sender_chain =
+                        poll_data.sender_chain ||
+                        sender_chain;
+                      poll_data.sender_chain = sender_chain;
+
                       transaction_id = poll_data.transaction_id;
                       deposit_address = poll_data.deposit_address;
                       transfer_id = poll_data.transfer_id;

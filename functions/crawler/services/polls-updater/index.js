@@ -16,7 +16,7 @@ module.exports = async () => {
     const response =
       await getPolls(
         {
-          status: 'pending',
+          status: 'to_recover',
         },
       );
 
@@ -30,16 +30,24 @@ module.exports = async () => {
           data
             .filter(d => d)
             .map(d => {
+              const {
+                height,
+              } = { ...d };
+
               return {
                 ...d,
                 _height:
                   _.min(
-                    Object.entries(d)
-                      .filter(([k, v]) =>
-                        k?.startsWith('axelar1') &&
-                        v?.height
-                      )
-                      .map(([k, v]) => v.height)
+                    _.concat(
+                      height,
+                      Object.entries(d)
+                        .filter(([k, v]) =>
+                          k?.startsWith('axelar1') &&
+                          v?.height
+                        )
+                        .map(([k, v]) => v.height),
+                    )
+                    .filter(h => h)
                   ),
               };
             })
@@ -57,7 +65,7 @@ module.exports = async () => {
           _height,
         } = { ...d };
 
-        for (let i = -2; i < 5; i++) {
+        for (let i = -3; i < 6; i++) {
           // get transactions of each block
           let next_page_key = true;
 
