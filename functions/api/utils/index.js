@@ -249,6 +249,18 @@ const normalize_chain = chain => {
   return chain;
 };
 
+const fix_decimals = (
+  number = 0,
+  decimals = 2,
+) =>
+  parseFloat(
+    (
+      number ||
+      0
+    )
+    .toFixed(decimals)
+  );
+
 const transfer_actions =
   [
     'ConfirmDeposit',
@@ -381,6 +393,7 @@ module.exports = {
   get_granularity,
   normalize_original_chain,
   normalize_chain,
+  fix_decimals,
   transfer_actions,
   vote_types,
   getTransaction,
