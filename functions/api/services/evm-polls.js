@@ -96,11 +96,11 @@ module.exports = async (
                     { exists: { field: 'num_recover_time' } },
                   ],
                 },
-                {
-                  range: {
-                    num_recover_time: {
-                      lt: 3,
-                    },
+              },
+              {
+                range: {
+                  num_recover_time: {
+                    lt: 3,
                   },
                 },
               },
