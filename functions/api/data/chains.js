@@ -1900,6 +1900,35 @@ module.exports = {
         },
       },
       {
+        id: 'persistence',
+        name: 'Persistence',
+        short_name: 'XPRT',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://testnet.mintscan.io/persistence-testnet',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/persistence.svg',
+        color: '#e50813',
+        website: 'https://persistence.one',
+        prefix_address: 'persistence',
+        prefix_chain_ids: [
+          'test-core-',
+        ],
+        endpoints: {
+          lcd: 'https://rest.testnet.persistence.one',
+          lcds: [
+            'https://persistence-testnet-rpc.allthatnode.com:1317',
+          ],
+        },
+      },
+      {
         id: 'terra-3',
         name: 'Terra',
         short_name: 'TERRA',
