@@ -614,6 +614,7 @@ module.exports = async (
                     }
                 ),
               },
+              true,
             );
 
             await saveTimeSpent(

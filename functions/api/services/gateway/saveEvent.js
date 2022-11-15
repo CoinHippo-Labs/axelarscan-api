@@ -265,14 +265,16 @@ module.exports = async (
 
           response = {
             response: {
-              ...await write(
-                'token_sent_events',
-                id,
-                {
-                  event,
-                },
-                true,
-              )
+              ...(
+                await write(
+                  'token_sent_events',
+                  id,
+                  {
+                    event,
+                  },
+                  true,
+                )
+              ),
             },
             data: {
               event,
@@ -475,6 +477,7 @@ module.exports = async (
                     commands,
                     blockNumber,
                   },
+                  true,
                 );
               }
             }

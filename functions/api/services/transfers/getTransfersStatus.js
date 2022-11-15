@@ -541,8 +541,9 @@ module.exports = async (
       };
     }
 
-    response = [data]
-      .filter(t => t);
+    response =
+      [data]
+        .filter(t => t);
   }
   else if (
     depositAddress ||
@@ -615,34 +616,36 @@ module.exports = async (
       } = { ..._response };
 
       if (data) {
-        data = data
-          .filter(d => d)
-          .map(d => {
-            const {
-              recipient_address,
-            } = { ...d?.source };
+        data =
+          data
+            .filter(d => d)
+            .map(d => {
+              const {
+                recipient_address,
+              } = { ...d?.source };
 
-            return {
-              ...d,
-              link:
-                links
-                .find(l =>
-                  equals_ignore_case(
-                    l?.deposit_address,
-                    recipient_address,
-                  )
-                ),
-            };
-          });
+              return {
+                ...d,
+                link:
+                  links
+                  .find(l =>
+                    equals_ignore_case(
+                      l?.deposit_address,
+                      recipient_address,
+                    )
+                  ),
+              };
+            });
       }
 
       if (!(data?.length > 0)) {
-        data = links
-          .map(l => {
-            return {
-              link: l,
-            };
-          });
+        data =
+          links
+            .map(l => {
+              return {
+                link: l,
+              };
+            });
       }
 
       response = data;
@@ -653,88 +656,89 @@ module.exports = async (
   }
 
   if (Array.isArray(response)) {
-    response = response
-      .map(d => {
-        const {
-          source,
-          link,
-          confirm_deposit,
-          vote,
-          sign_batch,
-          ibc_send,
-          axelar_transfer,
-        } = { ...d };
-        const {
-          amount,
-          value,
-        } = { ...source };
-        let {
-          price,
-        } = { ...link };
+    response =
+      response
+        .map(d => {
+          const {
+            source,
+            link,
+            confirm_deposit,
+            vote,
+            sign_batch,
+            ibc_send,
+            axelar_transfer,
+          } = { ...d };
+          const {
+            amount,
+            value,
+          } = { ...source };
+          let {
+            price,
+          } = { ...link };
 
-        if (
-          typeof price !== 'number' &&
-          typeof amount === 'number' &&
-          typeof value === 'number'
-        ) {
-          price = value / amount;
-        }
+          if (
+            typeof price !== 'number' &&
+            typeof amount === 'number' &&
+            typeof value === 'number'
+          ) {
+            price = value / amount;
+          }
 
-        const status =
-          ibc_send ?
-            ibc_send.failed_txhash &&
-            !ibc_send.ack_txhash ?
-              'ibc_failed' :
-              ibc_send.recv_txhash ?
-                'executed' :
-                'ibc_sent' :
-            sign_batch?.executed ?
-              'executed' :
-               sign_batch ?
-                'batch_signed' :
-                axelar_transfer ?
+          const status =
+            ibc_send ?
+              ibc_send.failed_txhash &&
+              !ibc_send.ack_txhash ?
+                'ibc_failed' :
+                ibc_send.recv_txhash ?
                   'executed' :
-                  vote ?
-                    'voted' :
-                    confirm_deposit ?
-                      'deposit_confirmed' :
-                      source?.status === 'failed' ?
-                        'send_failed' :
-                        'asset_sent';
+                  'ibc_sent' :
+              sign_batch?.executed ?
+                'executed' :
+                 sign_batch ?
+                  'batch_signed' :
+                  axelar_transfer ?
+                    'executed' :
+                    vote ?
+                      'voted' :
+                      confirm_deposit ?
+                        'deposit_confirmed' :
+                        source?.status === 'failed' ?
+                          'send_failed' :
+                          'asset_sent';
 
-        let simplified_status;
+          let simplified_status;
 
-        switch (status) {
-          case 'ibc_failed':
-          case 'send_failed':
-            simplified_status = 'failed';
-            break;
-          case 'executed':
-            simplified_status = 'received';
-            break;
-          case 'ibc_sent':
-          case 'batch_signed':
-          case 'voted':
-          case 'deposit_confirmed':
-            simplified_status = 'approved';
-            break;
-          default:
-            simplified_status = 'sent';
-            break;
-        }
+          switch (status) {
+            case 'ibc_failed':
+            case 'send_failed':
+              simplified_status = 'failed';
+              break;
+            case 'executed':
+              simplified_status = 'received';
+              break;
+            case 'ibc_sent':
+            case 'batch_signed':
+            case 'voted':
+            case 'deposit_confirmed':
+              simplified_status = 'approved';
+              break;
+            default:
+              simplified_status = 'sent';
+              break;
+          }
 
-        return {
-          ...d,
-          link:
-            link &&
-            {
-              ...link,
-              price,
-            },
-          status,
-          simplified_status,
-        };
-      });
+          return {
+            ...d,
+            link:
+              link &&
+              {
+                ...link,
+                price,
+              },
+            status,
+            simplified_status,
+          };
+        });
 
     if (response.length > 0) {
       for (const d of response) {
@@ -752,6 +756,7 @@ module.exports = async (
           id,
           recipient_chain,
           recipient_address,
+          insufficient_fee,
         } = { ...source };
         let {
           height,
@@ -761,6 +766,26 @@ module.exports = async (
           ibc_send?.height ||
           height ||
           confirm_deposit?.height;
+
+        if (
+          [
+            'voted',
+            'batch_signed',
+            'ibc_sent',
+          ].includes(status) &&
+          !insufficient_fee &&
+          vote?.id &&
+          !(
+            vote.transfer_id ||
+            confirm_deposit?.transfer_id
+          )
+        ) {
+          await lcd(
+            `/cosmos/tx/v1beta1/txs/${vote.id}`,
+          );
+
+          await sleep(0.5 * 1000);
+        }
 
         if (
           cosmos_chains_data
@@ -785,19 +810,21 @@ module.exports = async (
               `/cosmos/tx/v1beta1/txs/${confirm_deposit.id}`,
             );
 
-            await (0.5 * 1000);
+            await sleep(0.5 * 1000);
           }
 
-          for (let i = 1; i <= 7; i++) {
-            lcd(
-              '/cosmos/tx/v1beta1/txs',
-              {
-                events: `tx.height=${height + i}`,
-              },
-            );
-          }
+          if (!insufficient_fee) {
+            for (let i = 1; i <= 7; i++) {
+              lcd(
+                '/cosmos/tx/v1beta1/txs',
+                {
+                  events: `tx.height=${height + i}`,
+                },
+              );
+            }
 
-          await (1 * 1000);
+            await sleep(1 * 1000);
+          }
         }
         else if (
           evm_chains_data
@@ -808,9 +835,10 @@ module.exports = async (
               )
             ) > -1 &&
           [
-            'batch_signed',
             'voted',
-          ].includes(status)
+            'batch_signed',
+          ].includes(status) &&
+          !insufficient_fee
         ) {
           const transfer_id =
             vote?.transfer_id ||
@@ -818,12 +846,13 @@ module.exports = async (
             d.transfer_id;
 
           if (transfer_id) {
-            const command_id = transfer_id
-              .toString(16)
-              .padStart(
-                64,
-                '0',
-              );
+            const command_id =
+              transfer_id
+                .toString(16)
+                .padStart(
+                  64,
+                  '0',
+                );
 
             const _response =
               await read(
@@ -832,7 +861,15 @@ module.exports = async (
                   bool: {
                     must: [
                       { match: { chain: recipient_chain } },
-                      { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                      {
+                        bool: {
+                          should: [
+                            { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                            { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNING' } },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      },
                       { match: { command_ids: command_id } },
                     ],
                   },
@@ -934,22 +971,32 @@ module.exports = async (
                 }
               }
 
-              sign_batch = {
-                ...sign_batch,
-                chain: recipient_chain,
-                batch_id,
-                created_at,
-                command_id,
-                transfer_id,
-                executed,
-                transactionHash,
-                transactionIndex,
-                logIndex,
-                block_timestamp,
-              };
+              if (
+                [
+                  'BATCHED_COMMANDS_STATUS_SIGNED',
+                ].includes(status) ||
+                executed
+              ) {
+                sign_batch = {
+                  ...sign_batch,
+                  chain: recipient_chain,
+                  batch_id,
+                  created_at,
+                  command_id,
+                  transfer_id,
+                  executed,
+                  transactionHash,
+                  transactionIndex,
+                  logIndex,
+                  block_timestamp,
+                };
+              }
             }
 
-            if (recipient_address) {
+            if (
+              recipient_address &&
+              sign_batch
+            ) {
               const _id = `${id}_${recipient_address}`.toLowerCase();
 
               await write(
@@ -957,9 +1004,7 @@ module.exports = async (
                 _id,
                 {
                   ...d,
-                  sign_batch:
-                    sign_batch ||
-                    undefined,
+                  sign_batch,
                 },
               );
 

@@ -711,9 +711,10 @@ module.exports = async (
                       event
                     )?.id;
 
-                  const _id = recipient_address ?
-                    `${id}_${recipient_address}`.toLowerCase() :
-                    id;
+                  const _id =
+                    recipient_address ?
+                      `${id}_${recipient_address}`.toLowerCase() :
+                      id;
 
                   if (_id) {
                     sender_chain =
@@ -749,6 +750,7 @@ module.exports = async (
                             }
                         ),
                       },
+                      true,
                     );
 
                     await saveTimeSpent(

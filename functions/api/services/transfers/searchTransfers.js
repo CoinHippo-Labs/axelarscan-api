@@ -313,21 +313,26 @@ module.exports = async (
       data,
     } = { ...response };
 
-    data = data
-      .filter(d => {
+    data =
+      data
+        .filter(d => {
         const {
           source,
           confirm_deposit,
           vote,
+          sign_batch,
+          ibc_send,
         } = { ...d };
         const {
           id,
           recipient_chain,
           amount,
           value,
+          insufficient_fee,
         } = { ...source };
 
-        return id &&
+        return (
+          id &&
           (
             !(
               recipient_chain &&
@@ -342,12 +347,38 @@ module.exports = async (
                     recipient_chain,
                   )
                 ) > -1 &&
+              !insufficient_fee &&
               (
                 vote ||
                 confirm_deposit
+              ) &&
+              !(
+                ibc_send?.failed_txhash ||
+                ibc_send?.ack_txhash ||
+                ibc_send?.recv_txhash
               )
+            ) ||
+            (
+              evm_chains_data
+                .findIndex(c =>
+                  equals_ignore_case(
+                    c?.id,
+                    recipient_chain,
+                  )
+                ) > -1 &&
+              !insufficient_fee &&
+              (
+                vote ||
+                confirm_deposit
+              ) &&
+              !sign_batch?.executed
+            ) ||
+            !(
+              vote?.transfer_id ||
+              confirm_deposit?.transfer_id
             )
-          );
+          )
+        );
       });
 
     if (data.length > 0) {
@@ -384,17 +415,26 @@ module.exports = async (
       data,
     } = { ...response };
 
-    data = data
-      .filter(d => {
-        const {
-          time_spent,
-        } = { ...d };
-        const {
-          total,
-        } = { ...time_spent };
+    data =
+      data
+        .filter(d => {
+          const {
+            sign_batch,
+            ibc_send,
+            time_spent,
+          } = { ...d };
+          const {
+            total,
+          } = { ...time_spent };
 
-        return !total;
-      });
+          return (
+            !total &&
+            (
+              sign_batch?.executed ||
+              ibc_send?.ack_txhash
+            )
+          );
+        });
 
     if (data.length > 0) {
       for (const d of data) {
@@ -408,7 +448,7 @@ module.exports = async (
         );
       }
 
-      await sleep(1 * 1000);
+      await sleep(0.5 * 1000);
 
       response =
         await read(
@@ -420,88 +460,89 @@ module.exports = async (
   }
 
   if (Array.isArray(response?.data)) {
-    response.data = response.data
-      .map(d => {
-        const {
-          source,
-          link,
-          confirm_deposit,
-          vote,
-          sign_batch,
-          ibc_send,
-          axelar_transfer,
-        } = { ...d };
-        const {
-          amount,
-          value,
-        } = { ...source };
-        let {
-          price,
-        } = { ...link };
+    response.data =
+      response.data
+        .map(d => {
+          const {
+            source,
+            link,
+            confirm_deposit,
+            vote,
+            sign_batch,
+            ibc_send,
+            axelar_transfer,
+          } = { ...d };
+          const {
+            amount,
+            value,
+          } = { ...source };
+          let {
+            price,
+          } = { ...link };
 
-        if (
-          typeof price !== 'number' &&
-          typeof amount === 'number' &&
-          typeof value === 'number'
-        ) {
-          price = value / amount;
-        }
+          if (
+            typeof price !== 'number' &&
+            typeof amount === 'number' &&
+            typeof value === 'number'
+          ) {
+            price = value / amount;
+          }
 
-        const status =
-          ibc_send ?
-            ibc_send.failed_txhash &&
-            !ibc_send.ack_txhash ?
-              'ibc_failed' :
-              ibc_send.recv_txhash ?
-                'executed' :
-                'ibc_sent' :
-            sign_batch?.executed ?
-              'executed' :
-               sign_batch ?
-                'batch_signed' :
-                axelar_transfer ?
+          const status =
+            ibc_send ?
+              ibc_send.failed_txhash &&
+              !ibc_send.ack_txhash ?
+                'ibc_failed' :
+                ibc_send.recv_txhash ?
                   'executed' :
-                  vote ?
-                    'voted' :
-                    confirm_deposit ?
-                      'deposit_confirmed' :
-                      source?.status === 'failed' ?
-                        'send_failed' :
-                        'asset_sent';
+                  'ibc_sent' :
+              sign_batch?.executed ?
+                'executed' :
+                 sign_batch ?
+                  'batch_signed' :
+                  axelar_transfer ?
+                    'executed' :
+                    vote ?
+                      'voted' :
+                      confirm_deposit ?
+                        'deposit_confirmed' :
+                        source?.status === 'failed' ?
+                          'send_failed' :
+                          'asset_sent';
 
-        let simplified_status;
+          let simplified_status;
 
-        switch (status) {
-          case 'ibc_failed':
-          case 'send_failed':
-            simplified_status = 'failed';
-            break;
-          case 'executed':
-            simplified_status = 'received';
-            break;
-          case 'ibc_sent':
-          case 'batch_signed':
-          case 'voted':
-          case 'deposit_confirmed':
-            simplified_status = 'approved';
-            break;
-          default:
-            simplified_status = 'sent';
-            break;
-        }
+          switch (status) {
+            case 'ibc_failed':
+            case 'send_failed':
+              simplified_status = 'failed';
+              break;
+            case 'executed':
+              simplified_status = 'received';
+              break;
+            case 'ibc_sent':
+            case 'batch_signed':
+            case 'voted':
+            case 'deposit_confirmed':
+              simplified_status = 'approved';
+              break;
+            default:
+              simplified_status = 'sent';
+              break;
+          }
 
-        return {
-          ...d,
-          link:
-            link &&
-            {
-              ...link,
-              price,
-            },
-          status,
-          simplified_status,
-        };
-      });
+          return {
+            ...d,
+            link:
+              link &&
+              {
+                ...link,
+                price,
+              },
+            status,
+            simplified_status,
+          };
+        });
   }
 
   return response;
