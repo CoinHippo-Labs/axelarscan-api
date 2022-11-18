@@ -216,7 +216,7 @@ module.exports = async (
           }
         }
 
-        await sleep(3 * 1000);
+        await sleep(2 * 1000);
     
         response =
           await read(
