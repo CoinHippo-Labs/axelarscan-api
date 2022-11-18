@@ -63,84 +63,110 @@ module.exports = async (
     typeof latest_block_height === 'number' &&
     earliest_block_height < latest_block_height
   ) {
+    const block_ranges = [];
+
     for (let i = earliest_block_height; i <= latest_block_height; i += blocks_per_query) {
-      const from_height = i > latest_block_height ?
-        latest_block_height :
-        i;
+      const from_height =
+        i > latest_block_height ?
+          latest_block_height :
+          i;
 
       const to_height = from_height + blocks_per_query;
 
-      const _response =
-        await read(
-          'txs',
+      block_ranges
+        .push(
           {
-            range: {
-              height: {
-                gte: from_height,
-                lt: to_height,
-              },
-            },
-          },
-          {
-            aggs: {
-              addresses: {
-                terms: {
-                  field: 'addresses.keyword',
-                  size: 65535,
-                },
-              },
-            },
-            size: 0,
-          },
-        );
-
-      const {
-        aggs,
-      } = { ..._response };
-      const {
-        buckets,
-      } = { ...aggs?.addresses };
-
-      data =
-        _.orderBy(
-          _.uniqBy(
-            _.concat(
-              (buckets || [])
-                .filter(d =>
-                  d?.key?.startsWith(`${axelarnet.prefix_address}1`) &&
-                  d.key.length < 65 &&
-                  d.doc_count
-                )
-                .map(d => {
-                  const {
-                    key,
-                    doc_count,
-                  } = { ...d };
-
-                  const _num_txs =
-                    (data || [])
-                      .find(_d =>
-                        equals_ignore_case(
-                          _d.address,
-                          key,
-                        )
-                      )?.num_txs ||
-                    0;
-
-                  return {
-                    address: key.toLowerCase(),
-                    num_txs: doc_count + _num_txs,
-                  };
-                }),
-              data ||
-              [],
-            ),
-            'address',
-          ),
-          ['num_txs'],
-          ['desc'],
+            from_height,
+            to_height,
+          }
         );
     }
+
+    const _data =
+      await Promise.all(
+        block_ranges
+          .map(b =>
+            new Promise(
+              async (resolve, reject) => {
+                const {
+                  from_height,
+                  to_height,
+                } = { ...b };
+
+                const _response =
+                  await read(
+                    'txs',
+                    {
+                      range: {
+                        height: {
+                          gte: from_height,
+                          lt: to_height,
+                        },
+                      },
+                    },
+                    {
+                      aggs: {
+                        addresses: {
+                          terms: {
+                            field: 'addresses.keyword',
+                            size: 65535,
+                          },
+                        },
+                      },
+                      size: 0,
+                    },
+                  );
+
+                const {
+                  aggs,
+                } = { ..._response };
+                const {
+                  buckets,
+                } = { ...aggs?.addresses };
+
+                resolve(buckets);
+              }
+            )
+          )
+      );
+
+    data =
+      _.orderBy(
+        _.uniqBy(
+          _data
+            .filter(d => d)
+            .flatMap(d => d)
+            .filter(d =>
+              d?.key?.startsWith(`${axelarnet.prefix_address}1`) &&
+              d.key.length < 65 &&
+              d.doc_count
+            )
+            .map(d => {
+                const {
+                  key,
+                  doc_count,
+                } = { ...d };
+
+                const _num_txs =
+                  (data || [])
+                    .find(_d =>
+                      equals_ignore_case(
+                        _d.address,
+                        key,
+                      )
+                    )?.num_txs ||
+                  0;
+
+                return {
+                  address: key.toLowerCase(),
+                  num_txs: doc_count + _num_txs,
+                };
+              }),
+          'address',
+        ),
+        ['num_txs'],
+        ['desc'],
+      );
   }
 
   return {
