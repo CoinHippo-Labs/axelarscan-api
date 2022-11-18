@@ -929,11 +929,11 @@ module.exports = {
           'comdex-',
         ],
         endpoints: {
-          lcd: 'https://rest.comdex.one',
+          lcd: 'https://api-comdex.zenchainlabs.io',
           lcds: [
-            'https://api-comdex.zenchainlabs.io',
             'https://api-comdex-ia.cosmosia.notional.ventures',
             'https://comdex-api.polkachu.com',
+            // 'https://rest.comdex.one',
           ],
           cosmostation: 'https://api-comdex.cosmostation.io/v1',
         },
