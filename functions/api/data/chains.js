@@ -1556,7 +1556,6 @@ module.exports = {
         color: '#ff433e',
         website: 'https://kava.io',
         gateway_address: '',
-        no_inflation: true,
       },
     ],
     cosmos: [
