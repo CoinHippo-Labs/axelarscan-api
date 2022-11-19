@@ -213,7 +213,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -363,7 +363,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 6,
           symbol: 'axlUSDT',
         },
@@ -514,7 +514,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/E46EF5449878F6B81219163F211E7329CC0729AA99DA8A589A865F82F754ADE8',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -628,7 +628,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 8,
           symbol: 'axlWBTC',
         },
@@ -742,7 +742,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -856,7 +856,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/1319C6B38CA613C89D78C2D1461B305038B1085F6855E8CD276FE3F7C9600B4C',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -970,7 +970,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -1084,7 +1084,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/14E4FD1AB72DE9BF1D6725CBA18373C406CB9A7DA17955299F3F4DC5C6131A4E',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -1198,7 +1198,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -1318,7 +1318,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/D54CE4CD2927F744CDCA844DD0E1A5DF88762274C55CD9AAB13E504A29BE8933',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -1439,7 +1439,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/5B01781626783C316A22ACBB55ECA8C6C57AA92C1565C69128C192FA36680AFB',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -1589,7 +1589,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/2E435CEEEBA18CCB2719E0182BC5D142A364D6CCE9957DE6E1AC4D62127D2913',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1959,7 +1959,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/88C5B3E62FD8ECC8825107D86C4AC8CDECDC7B44135DD757D1D83E27203B6C9D',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlRAI',
         },
@@ -2073,7 +2073,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/1FD62537E1FBE67DF7574E0234112B4FE417B20AADC2F574026CB664EA9492C7',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -2187,7 +2187,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/2E9CD07D7A6572A4CDAABBF0FBB89F69A9A362818132221182654819E277220A',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlAAVE',
         },
@@ -2247,7 +2247,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/DBA10CEE0874A76DA817F4BA19D611F08910EF213D1698AF06F10D7096A0F3E9',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlstETH',
         },
@@ -2373,7 +2373,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/5D36185CDE12E13DA9832315D2A35F07D52D952E3A242496C9A634808D86DC07',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlAPE',
         },
@@ -2487,7 +2487,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/6EFF21F9E65C9101370C38AA53049E4D1FF2B206A7C350B45F0ED3660E57AC75',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlUNI',
         },
@@ -2601,7 +2601,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/62CC85ED0F0C43C453B1A059BF5A147498550C2A7ADDEE6324A0B4E9E371C9C7',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlSHIB',
         },
@@ -2715,7 +2715,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/2C6CDA86FA7F45A39C053584422C5B76C287DB9E3746CAF623C3EC7717D4EC5B',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlAXS',
         },
@@ -2829,7 +2829,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/C22747737204871040AE896E7CA7791CF541AC269BF1D521870891E67AC83DA4',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlXCN',
         },
@@ -2943,7 +2943,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/EF21BC562B7EB4D22BBF467D011E3118B7E3AD6D095000A672A9FCECA5ABCF15',
-          chain_id: 'terra-3',
+          chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlMKR',
         },
