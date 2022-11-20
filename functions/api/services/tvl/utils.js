@@ -35,7 +35,9 @@ const getContractSupply = async (
           provider,
         );
 
-      supply = await contract.totalSupply();
+      supply =
+        await contract
+          .totalSupply();
     } catch (error) {}
   }
 

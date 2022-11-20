@@ -12,11 +12,15 @@ const {
 const assets_price = require('../assets-price');
 const {
   update_event,
+  _update_link,
+  _update_send,
 } = require('../transfers/utils');
 const {
   sleep,
   equals_ignore_case,
   get_granularity,
+  normalize_original_chain,
+  normalize_chain,
   getTransaction,
   getBlockTime,
   getProvider,
@@ -60,13 +64,15 @@ module.exports = async (
 
   const {
     endpoints,
-  } = { ...chains?.[chain] }
+  } = { ...chains?.[chain] };
 
-  if (!(
-    event &&
-    chain &&
-    contractAddress
-  )) {
+  if (
+    !(
+      event &&
+      chain &&
+      contractAddress
+    )
+  ) {
     response = {
       error: true,
       code: 400,
@@ -114,7 +120,8 @@ module.exports = async (
     const event_name = event.event;
 
     // initial variables
-    let id = _id ||
+    let id =
+      _id ||
       `${transactionHash}_${transactionIndex}_${logIndex}`;
 
     event.id = id;
@@ -146,6 +153,9 @@ module.exports = async (
             returnValues,
           } = { ...event };
           const {
+            sender,
+            destinationChain,
+            destinationAddress,
             symbol,
           } = { ...returnValues };
           let {
@@ -211,7 +221,15 @@ module.exports = async (
               decimals =
                 contract_data.decimals ||
                 decimals ||
-                18;
+                (
+                  [
+                    id,
+                  ].findIndex(s =>
+                    s?.includes('-wei')
+                  ) > -1 ?
+                    18 :
+                    6
+                );
 
               amount =
                 Number(
@@ -230,12 +248,11 @@ module.exports = async (
                   {
                     denom: id,
                     timestamp:
-                      moment(
-                        (
-                          block_timestamp ||
-                          0
-                        ) *
-                        1000
+                      (block_timestamp ?
+                        moment(
+                          block_timestamp * 1000
+                        ) :
+                        moment()
                       )
                       .valueOf(),
                   },
@@ -243,7 +260,13 @@ module.exports = async (
 
               let {
                 price,
-              } = { ..._.head(_response) };
+              } = {
+                ...(
+                  _.head(
+                    _response
+                  )
+                ),
+              };
 
               price =
                 typeof price === 'number' ?
@@ -252,8 +275,8 @@ module.exports = async (
 
               event = {
                 ...event,
-                amount,
                 denom: id,
+                amount,
                 price,
                 value:
                   typeof price === 'number' ?
@@ -263,18 +286,20 @@ module.exports = async (
             }
           }
 
+          // transfer
+          const _response =
+            await write(
+              'token_sent_events',
+              id,
+              {
+                event,
+              },
+              true,
+            );
+
           response = {
             response: {
-              ...(
-                await write(
-                  'token_sent_events',
-                  id,
-                  {
-                    event,
-                  },
-                  true,
-                )
-              ),
+              ..._response,
             },
             data: {
               event,
@@ -287,6 +312,60 @@ module.exports = async (
             event,
             true,
           );
+
+          try {
+            // cross-chain transfer
+            const _id = `${transactionHash}_${chain}`.toLowerCase();
+
+            let send = {
+              txhash: transactionHash,
+              height: blockNumber,
+              status: 'success',
+              type: 'evm_transfer',
+              created_at: event.created_at,
+              source_chain: chain,
+              destination_chain: normalize_chain(destinationChain),
+              sender_address: sender,
+              recipient_address: contractAddress,
+              denom: event.denom,
+              amount: event.amount,
+            };
+
+            let link = {
+              txhash: transactionHash,
+              height: blockNumber,
+              type: 'link',
+              created_at: event.created_at,
+              original_source_chain: chain,
+              original_destination_chain: normalize_original_chain(destinationChain),
+              source_chain: chain,
+              destination_chain: normalize_chain(destinationChain),
+              sender_address: sender,
+              recipient_address: destinationAddress,
+              denom: event.denom,
+              asset: event.denom,
+              price: event.price,
+            };
+
+            link =
+              await _update_link(
+                link,
+                send,
+              );
+
+            send =
+              await _update_send(
+                send,
+                link,
+                'send_token',
+              );
+
+            response = {
+              type: 'send_token',
+              send,
+              link,
+            };
+          } catch (error) {}
         } catch (error) {}
         break;
       case 'Executed':
@@ -317,10 +396,11 @@ module.exports = async (
 
           if (commandId) {
             if (commandId.startsWith('0x')) {
-              commandId = commandId
-                .substring(
-                  2,
-                );
+              commandId =
+                commandId
+                  .substring(
+                    2,
+                  );
             }
 
             const _response =
@@ -334,11 +414,16 @@ module.exports = async (
                 },
               );
 
-            const batch = _.head(_response?.data);
+            const batch =
+              _.head(
+                _response?.data
+              );
+
             const {
               batch_id,
             } = { ...batch };
             let {
+              status,
               commands,
             } = { ...batch };
 
@@ -355,8 +440,8 @@ module.exports = async (
               {
                 ...transaction,
                 chain,
-                batch_id,
                 command_id: commandId,
+                batch_id,
                 blockNumber,
               },
             );
@@ -416,45 +501,44 @@ module.exports = async (
                   command_events = _response?.data;
                 }
 
-                commands = commands
-                  .map(c => {
-                    if (
-                      c?.id &&
-                      !c.transactionHash
-                    ) {
-                      const command_event = (command_events || [])
-                        .find(_c =>
-                          equals_ignore_case(
-                            _c?.command_id,
-                            c.id,
-                          )
-                        );
+                if (Array.isArray(command_events)) {
+                  commands =
+                    commands
+                      .map(c => {
+                        if (
+                          c?.id &&
+                          !c.transactionHash
+                        ) {
+                          const command_event = command_events
+                            .find(_c =>
+                              equals_ignore_case(
+                                _c?.command_id,
+                                c.id,
+                              )
+                            );
 
-                      if (command_event) {
-                        const {
-                          transactionHash,
-                          transactionIndex,
-                          logIndex,
-                          block_timestamp,
-                        } = { ...command_event };
+                          if (command_event) {
+                            const {
+                              transactionHash,
+                              transactionIndex,
+                              logIndex,
+                              block_timestamp,
+                            } = { ...command_event };
 
-                        c.transactionHash = transactionHash;
-                        c.transactionIndex = transactionIndex;
-                        c.logIndex = logIndex;
-                        c.block_timestamp = block_timestamp;
+                            c.transactionHash = transactionHash;
+                            c.transactionIndex = transactionIndex;
+                            c.logIndex = logIndex;
+                            c.block_timestamp = block_timestamp;
 
-                        if (transactionHash) {
-                          c.executed = true;
+                            if (transactionHash) {
+                              c.executed = true;
+                            }
+                          }
                         }
-                      }
-                    }
 
-                    return c;
-                  });
-
-                let {
-                  status,
-                } = { ...batch };
+                        return c;
+                      });
+                }
 
                 if (
                   ![

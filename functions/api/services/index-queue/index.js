@@ -82,8 +82,9 @@ module.exports = async (
     } = { ...response };
 
     if (Array.isArray(data)) {
-      data = data
-        .filter(d => d?.txhash);
+      data =
+        data
+          .filter(d => d?.txhash);
     }
 
     if (

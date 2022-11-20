@@ -32,94 +32,95 @@ module.exports = async (
   } = { ...lcd_response };
 
   try {
-    const _tx_responses = tx_responses
-      .filter(t =>
-        !t?.code &&
-        vote_types
-          .findIndex(s =>
-            (t?.tx?.body?.messages || [])
-              .findIndex(m =>
-                (
-                  _.last(
-                    (m?.inner_message?.['@type'] || '')
-                      .split('.')
-                  ) ||
-                  ''
-                )
-                .replace(
-                  'Request',
-                  '',
-                )
-                .includes(s)
-              ) > -1
-          ) > -1
-      )
-      .filter(t => {
-        const {
-          tx,
-          logs,
-        } = { ...t };
-        const {
-          messages,
-        } = { ...tx?.body };
-
-        let valid = false;
-
-        for (let i = 0; i < messages.length; i++) {
-          const message = messages[i];
-
+    const _tx_responses =
+      tx_responses
+        .filter(t =>
+          !t?.code &&
+          vote_types
+            .findIndex(s =>
+              (t?.tx?.body?.messages || [])
+                .findIndex(m =>
+                  (
+                    _.last(
+                      (m?.inner_message?.['@type'] || '')
+                        .split('.')
+                    ) ||
+                    ''
+                  )
+                  .replace(
+                    'Request',
+                    '',
+                  )
+                  .includes(s)
+                ) > -1
+            ) > -1
+        )
+        .filter(t => {
           const {
-            inner_message,
-          } = { ...message };
-
+            tx,
+            logs,
+          } = { ...t };
           const {
-            events,
-          } = { ...logs?.[i] };
+            messages,
+          } = { ...tx?.body };
 
-          const event = (events || [])
-            .find(e =>
-              [
-                'depositConfirmation',
-                'eventConfirmation',
-              ].findIndex(s =>
-                equals_ignore_case(
-                  e?.type,
-                  s,
-                )
-              ) > -1
-            );
+          let valid = false;
 
-          const vote_event = (events || [])
-            .find(e =>
-              e?.type?.includes('vote')
-            );
+          for (let i = 0; i < messages.length; i++) {
+            const message = messages[i];
 
-          const {
-            attributes,
-          } = { ...event };
+            const {
+              inner_message,
+            } = { ...message };
 
-          const poll_id =
-            inner_message.poll_id ||
-            to_json(
-              inner_message.poll_key ||
-              (attributes || [])
-                .find(a =>
-                  a?.key === 'poll'
-                )?.value ||
-              (vote_event?.attributes || [])
-                .find(a =>
-                  a?.key === 'poll'
-                )?.value
-            )?.id;
+            const {
+              events,
+            } = { ...logs?.[i] };
 
-          if (poll_id) {
-            valid = true;
-            break;
+            const event = (events || [])
+              .find(e =>
+                [
+                  'depositConfirmation',
+                  'eventConfirmation',
+                ].findIndex(s =>
+                  equals_ignore_case(
+                    e?.type,
+                    s,
+                  )
+                ) > -1
+              );
+
+            const vote_event = (events || [])
+              .find(e =>
+                e?.type?.includes('vote')
+              );
+
+            const {
+              attributes,
+            } = { ...event };
+
+            const poll_id =
+              inner_message.poll_id ||
+              to_json(
+                inner_message.poll_key ||
+                (attributes || [])
+                  .find(a =>
+                    a?.key === 'poll'
+                  )?.value ||
+                (vote_event?.attributes || [])
+                  .find(a =>
+                    a?.key === 'poll'
+                  )?.value
+              )?.id;
+
+            if (poll_id) {
+              valid = true;
+              break;
+            }
           }
-        }
 
-        return valid;
-      });
+          return valid;
+        });
 
     let records = [];
 
@@ -513,6 +514,24 @@ module.exports = async (
                     break;
                 }
 
+                deposit_address =
+                  to_hex(
+                    deposit_address ||
+                    _.head(
+                      inner_message.vote?.events
+                    )?.transfer?.to ||
+                    (attributes || [])
+                      .find(a =>
+                        a?.key === 'depositAddress'
+                      )?.value ||
+                    (poll_id || '')
+                      .replace(
+                        `${sender_chain}_`,
+                        '',
+                      )
+                      .split('_')[1]
+                  );
+
                 transaction_id =
                   to_hex(
                     transaction_id ||
@@ -537,24 +556,6 @@ module.exports = async (
                   transaction_id = null;
                 }
 
-                deposit_address =
-                  to_hex(
-                    deposit_address ||
-                    _.head(
-                      inner_message.vote?.events
-                    )?.transfer?.to ||
-                    (attributes || [])
-                      .find(a =>
-                        a?.key === 'depositAddress'
-                      )?.value ||
-                    (poll_id || '')
-                      .replace(
-                        `${sender_chain}_`,
-                        '',
-                      )
-                      .split('_')[1]
-                  );
-
                 transfer_id =
                   transfer_id ||
                   Number(
@@ -573,12 +574,13 @@ module.exports = async (
                     deposit_address
                   ) &&
                   (
-                    !transaction_id ||
                     !deposit_address ||
+                    !transaction_id ||
                     !transfer_id ||
                     !participants
                   )
                 ) {
+                  // transfer
                   const _response =
                     await read(
                       'transfers',
@@ -603,22 +605,6 @@ module.exports = async (
                     confirm_deposit,
                   } = { ...data };
 
-                  if (!transaction_id) {
-                    transaction_id =
-                      to_hex(
-                        data?.vote?.transaction_id ||
-                        confirm_deposit?.transaction_id ||
-                        data?.source?.id
-                      );
-
-                    if (
-                      transaction_id &&
-                      polls_data[poll_id]
-                    ) {
-                      polls_data[poll_id].transaction_id = transaction_id;
-                    }
-                  }
-
                   if (!deposit_address) {
                     deposit_address =
                       to_hex(
@@ -633,6 +619,22 @@ module.exports = async (
                       polls_data[poll_id]
                     ) {
                       polls_data[poll_id].deposit_address = deposit_address;
+                    }
+                  }
+
+                  if (!transaction_id) {
+                    transaction_id =
+                      to_hex(
+                        data?.vote?.transaction_id ||
+                        confirm_deposit?.transaction_id ||
+                        data?.source?.id
+                      );
+
+                    if (
+                      transaction_id &&
+                      polls_data[poll_id]
+                    ) {
+                      polls_data[poll_id].transaction_id = transaction_id;
                     }
                   }
 
@@ -660,6 +662,97 @@ module.exports = async (
                       polls_data[poll_id].participants = participants;
                     }
                   }
+
+                  // cross-chain transfer
+                  try {
+                    const _response =
+                      await read(
+                        'cross_chain_transfers',
+                        {
+                          bool: {
+                            must: [
+                              { match: { 'confirm.poll_id': poll_id } },
+                            ],
+                            must_not: [
+                              { match: { 'confirm.transaction_id': poll_id } },
+                            ],
+                          },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
+
+                    const data =
+                      _.head(
+                        _response?.data
+                      );
+
+                    const {
+                      send,
+                      link,
+                      confirm,
+                      vote,
+                    } = { ...data };
+
+                    if (!deposit_address) {
+                      deposit_address =
+                        to_hex(
+                          vote?.deposit_address ||
+                          confirm?.deposit_address ||
+                          send?.recipient_address ||
+                          link?.deposit_address
+                        );
+
+                      if (
+                        deposit_address &&
+                        polls_data[poll_id]
+                      ) {
+                        polls_data[poll_id].deposit_address = deposit_address;
+                      }
+                    }
+
+                    if (!transaction_id) {
+                      transaction_id =
+                        to_hex(
+                          vote?.transaction_id ||
+                          confirm?.transaction_id ||
+                          send?.txhash
+                        );
+
+                      if (
+                        transaction_id &&
+                        polls_data[poll_id]
+                      ) {
+                        polls_data[poll_id].transaction_id = transaction_id;
+                      }
+                    }
+
+                    if (!transfer_id) {
+                      transfer_id =
+                        vote?.transfer_id ||
+                        confirm?.transfer_id ||
+                        data?.transfer_id;
+
+                      if (
+                        transfer_id &&
+                        polls_data[poll_id]
+                      ) {
+                        polls_data[poll_id].transfer_id = transfer_id;
+                      }
+                    }
+
+                    if (!participants) {
+                      participants = confirm?.participants;
+
+                      if (
+                        participants &&
+                        polls_data[poll_id]
+                      ) {
+                        polls_data[poll_id].participants = participants;
+                      }
+                    }
+                  } catch (error) {}
                 }
 
                 if (
@@ -719,7 +812,10 @@ module.exports = async (
                         },
                       );
 
-                    sender_chain = _.head(_response?.data)?.sender_chain;
+                    sender_chain =
+                      _.head(
+                        _response?.data
+                      )?.sender_chain;
 
                     if (
                       sender_chain &&
@@ -755,75 +851,76 @@ module.exports = async (
                     end_block_events_data[height] = end_block_events;
                   }
 
-                  confirmation_events = end_block_events
-                    .filter(e =>
-                      [
-                        'depositConfirmation',
-                        'eventConfirmation',
-                        'transferKeyConfirmation',
-                        'tokenConfirmation',
-                        'TokenSent',
-                        'ContractCall',
-                      ].findIndex(s =>
-                        e?.type?.includes(s)
-                      ) > -1 &&
-                      (e.attributes || [])
-                        .findIndex(a =>
-                          [
-                            'eventID',
-                            'event_id',
-                          ].findIndex(k =>
-                            k === a?.key
-                          ) > -1 &&
-                          equals_ignore_case(
-                            (a.value || '')
-                              .split('"')
-                              .join(''),
-                            (attributes || [])
-                              .find(_a =>
-                                [
-                                  'eventID',
-                                  'event_id',
-                                ].findIndex(k =>
-                                  k === _a?.key
-                                ) > -1
-                              )?.value,
-                          )
-                        ) > -1
-                    )
-                    .map(e => {
-                      const {
-                        attributes,
-                      } = { ...e };
-                      let {
-                        type,
-                      } = { ...e };
+                  confirmation_events =
+                    end_block_events
+                      .filter(e =>
+                        [
+                          'depositConfirmation',
+                          'eventConfirmation',
+                          'transferKeyConfirmation',
+                          'tokenConfirmation',
+                          'TokenSent',
+                          'ContractCall',
+                        ].findIndex(s =>
+                          e?.type?.includes(s)
+                        ) > -1 &&
+                        (e.attributes || [])
+                          .findIndex(a =>
+                            [
+                              'eventID',
+                              'event_id',
+                            ].findIndex(k =>
+                              k === a?.key
+                            ) > -1 &&
+                            equals_ignore_case(
+                              (a.value || '')
+                                .split('"')
+                                .join(''),
+                              (attributes || [])
+                                .find(_a =>
+                                  [
+                                    'eventID',
+                                    'event_id',
+                                  ].findIndex(k =>
+                                    k === _a?.key
+                                  ) > -1
+                                )?.value,
+                            )
+                          ) > -1
+                      )
+                      .map(e => {
+                        const {
+                          attributes,
+                        } = { ...e };
+                        let {
+                          type,
+                        } = { ...e };
 
-                      type = type ?
-                        _.last(
-                          type
-                            .split('.')
-                        ) :
-                        undefined;
+                        type = type ?
+                          _.last(
+                            type
+                              .split('.')
+                          ) :
+                          undefined;
 
-                      return {
-                        type,
-                        ...Object.fromEntries(
-                          attributes
-                            .map(a => {
-                              const {
-                                key,
-                                value,
-                              } = { ...a };
+                        return {
+                          type,
+                          ...Object.fromEntries(
+                            attributes
+                              .map(a => {
+                                const {
+                                  key,
+                                  value,
+                                } = { ...a };
 
-                              return [
-                                key,
-                                value,
-                              ];
-                            })
-                        ),
-                      };
-                    });
+                                return [
+                                  key,
+                                  value,
+                                ];
+                              })
+                          ),
+                        };
+                      });
 
                   const _chain =
                     _.head(
@@ -888,17 +985,6 @@ module.exports = async (
                       confirmation = true;
                     }
 
-                    transfer_id =
-                      _transfer_id ||
-                      transfer_id;
-
-                    if (
-                      transfer_id &&
-                      polls_data[poll_id]
-                    ) {
-                      polls_data[poll_id].transfer_id = transfer_id;
-                    }
-
                     sender_chain =
                       sender_chain ||
                       _chain;
@@ -908,6 +994,17 @@ module.exports = async (
                       polls_data[poll_id]
                     ) {
                       polls_data[poll_id].sender_chain = sender_chain;
+                    }
+
+                    transfer_id =
+                      _transfer_id ||
+                      transfer_id;
+
+                    if (
+                      transfer_id &&
+                      polls_data[poll_id]
+                    ) {
+                      polls_data[poll_id].transfer_id = transfer_id;
                     }
                   }
                 }
@@ -939,7 +1036,10 @@ module.exports = async (
                       },
                     );
 
-                  const data = _.head(_response?.data);
+                  const data =
+                    _.head(
+                      _response?.data
+                    );
 
                   if (data) {
                     transaction_id =
@@ -969,13 +1069,13 @@ module.exports = async (
                 }
 
                 const record = {
-                  id: txhash,
-                  type,
-                  status_code: code,
-                  status: code ?
-                    'failed' :
-                    'success',
+                  txhash,
                   height,
+                  status:
+                    code ?
+                      'failed' :
+                      'success',
+                  type,
                   created_at: get_granularity(created_at),
                   sender_chain,
                   recipient_chain,
@@ -983,14 +1083,14 @@ module.exports = async (
                   transaction_id,
                   deposit_address,
                   transfer_id,
+                  event: event_name,
                   voter,
                   vote,
                   confirmation,
-                  late,
-                  unconfirmed,
-                  failed,
                   success,
-                  event: event_name,
+                  failed,
+                  unconfirmed,
+                  late,
                   confirmation_events,
                 };
 
@@ -1008,19 +1108,20 @@ module.exports = async (
         );
     }
 
-    records = records
-      .filter(t =>
-        t?.poll_id &&
-        t.voter
-      );
+    records =
+      records
+        .filter(t =>
+          t?.poll_id &&
+          t.voter
+        );
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
 
       const {
-        id,
-        type,
+        txhash,
         height,
+        type,
         created_at,
         sender_chain,
         recipient_chain,
@@ -1028,14 +1129,14 @@ module.exports = async (
         transaction_id,
         deposit_address,
         transfer_id,
+        event,
         voter,
         vote,
         confirmation,
-        late,
-        unconfirmed,
-        failed,
         success,
-        event,
+        failed,
+        unconfirmed,
+        late,
         participants,
         confirmation_events,
       } = { ...record };
@@ -1047,7 +1148,7 @@ module.exports = async (
         'evm_votes',
         `${poll_id}_${voter}`.toLowerCase(),
         {
-          txhash: id,
+          txhash,
           height,
           created_at,
           sender_chain,
@@ -1057,8 +1158,8 @@ module.exports = async (
           voter,
           vote,
           confirmation,
-          late,
           unconfirmed,
+          late,
         },
       );
 
@@ -1071,20 +1172,20 @@ module.exports = async (
         transaction_id,
         deposit_address,
         transfer_id,
+        event:
+          event ||
+          undefined,
         confirmation:
           confirmation ||
+          undefined,
+        success:
+          success ||
           undefined,
         failed:
           success ?
             false :
             failed ||
             undefined,
-        success:
-          success ||
-          undefined,
-        event:
-          event ||
-          undefined,
         participants:
           participants ||
           undefined,
@@ -1094,8 +1195,8 @@ module.exports = async (
             undefined,
         [voter.toLowerCase()]: {
           id,
-          type,
           height,
+          type,
           created_at: ms,
           voter,
           vote,

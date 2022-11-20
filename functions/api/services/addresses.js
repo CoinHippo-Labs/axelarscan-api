@@ -87,7 +87,7 @@ module.exports = async (
         block_ranges
           .map(b =>
             new Promise(
-              async (resolve, reject) => {
+              async resolve => {
                 const {
                   from_height,
                   to_height,
@@ -147,14 +147,13 @@ module.exports = async (
                   doc_count,
                 } = { ...d };
 
-                const _num_txs =
-                  (data || [])
-                    .find(_d =>
-                      equals_ignore_case(
-                        _d.address,
-                        key,
-                      )
-                    )?.num_txs ||
+                const _num_txs = (data || [])
+                  .find(_d =>
+                    equals_ignore_case(
+                      _d.address,
+                      key,
+                    )
+                  )?.num_txs ||
                   0;
 
                 return {

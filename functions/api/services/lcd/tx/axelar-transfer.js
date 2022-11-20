@@ -11,6 +11,7 @@ const {
 } = require('../../index');
 const {
   saveTimeSpent,
+  save_time_spent,
 } = require('../../transfers/utils');
 const {
   equals_ignore_case,
@@ -62,86 +63,90 @@ module.exports = async (
         .utc()
         .valueOf();
 
-    const transfer_events = (logs || [])
-      .map(l => {
-        const {
-          events,
-        } = { ...l };
+    const transfer_events =
+      (logs || [])
+        .map(l => {
+          const {
+            events,
+          } = { ...l };
 
-        const e = (events || [])
-          .find(e =>
-            equals_ignore_case(
-              _.last(
-                (e?.type || '')
-                  .split('.')
-              ),
-              'AxelarTransferCompleted',
+          const e = (events || [])
+            .find(e =>
+              equals_ignore_case(
+                _.last(
+                  (e?.type || '')
+                    .split('.')
+                ),
+                'AxelarTransferCompleted',
+              )
+            );
+
+          const {
+            attributes,
+          } = { ...e };
+
+          if (attributes) {
+            const transfer_id =
+              (
+                attributes
+                  .find(a =>
+                    a?.key === 'id'
+                  )?.value ||
+                ''
+              )
+              .split('"')
+              .join('');
+
+            if (transfer_id) {
+              attributes
+                .push(
+                  {
+                    key: 'transfer_id',
+                    value: transfer_id,
+                  }
+                );
+            }
+          }
+
+          return {
+            ...e,
+            attributes,
+          };
+        })
+        .filter(e => e.attributes?.length > 0)
+        .map(e => {
+          const {
+            attributes,
+          } = { ...e };
+
+          return (
+            Object.fromEntries(
+              attributes
+                .filter(a =>
+                  a?.key &&
+                  a.value
+                )
+                .map(a => {
+                  const {
+                    key,
+                    value,
+                  } = { ...a };
+
+                  return [
+                    key,
+                    to_json(value) ||
+                    (typeof value === 'string' ?
+                      value
+                        .split('"')
+                        .join('') :
+                      value
+                    ),
+                  ];
+                })
             )
           );
-
-        const {
-          attributes,
-        } = { ...e };
-
-        if (attributes) {
-          const transfer_id =
-            (
-              attributes
-                .find(a =>
-                  a?.key === 'id'
-                )?.value ||
-              ''
-            )
-            .split('"')
-            .join('');
-
-          if (transfer_id) {
-            attributes.push(
-              {
-                key: 'transfer_id',
-                value: transfer_id,
-              }
-            );
-          }
-        }
-
-        return {
-          ...e,
-          attributes,
-        };
-      })
-      .filter(e => e.attributes?.length > 0)
-      .map(e => {
-        const {
-          attributes,
-        } = { ...e };
-
-        return Object.fromEntries(
-          attributes
-            .filter(a =>
-              a?.key &&
-              a.value
-            )
-            .map(a => {
-              const {
-                key,
-                value,
-              } = { ...a };
-
-              return [
-                key,
-                to_json(value) ||
-                (typeof value === 'string' ?
-                  value
-                    .split('"')
-                    .join('') :
-                  value
-                ),
-              ];
-            })
-        );
-      })
-      .filter(e => e.transfer_id);
+        })
+        .filter(e => e.transfer_id);
 
     for (const record of transfer_events) {
       const {
@@ -171,6 +176,7 @@ module.exports = async (
           );
       }
 
+      // transfer
       const _response =
         await read(
           'transfers',
@@ -277,6 +283,83 @@ module.exports = async (
           updated = true;
         }
       }
+
+      // cross-chain transfer
+      try {
+        const _response =
+          await read(
+            'cross_chain_transfers',
+            {
+              bool: {
+                must: [
+                  { exists: { field: 'send.txhash' } },
+                  { match: { 'send.status': 'success' } },
+                ],
+                should: [
+                  { match: { 'confirm.transfer_id': transfer_id } },
+                  { match: { 'vote.transfer_id': transfer_id } },
+                  { match: { transfer_id } },
+                ],
+                minimum_should_match: 1,
+              },
+            },
+            {
+              size: 1,
+              sort: [{ 'send.created_at.ms': 'desc' }],
+            },
+          );
+
+        const {
+          send,
+        } = {
+          ...(
+            _.head(
+              _response?.data
+            )
+          ),
+        };
+
+        if (
+          send?.txhash &&
+          send.source_chain
+        ) {
+          const {
+            txhash,
+            source_chain,
+          } = { ...send };
+
+          const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+          await write(
+            'cross_chain_transfers',
+            _id,
+            {
+              axelar_transfer: {
+                txhash,
+                height,
+                status:
+                  code ?
+                    'failed' :
+                    'success',
+                type: 'axelar_transfer',
+                created_at: get_granularity(created_at),
+                destination_chain: axelarnet.id,
+                recipient_address: recipient,
+                denom,
+                amount,
+                transfer_id,
+              },
+            },
+            true,
+          );
+
+          await save_time_spent(
+            _id,
+          );
+
+          updated = true;
+        }
+      } catch (error) {}
     }
   } catch (error) {}
 

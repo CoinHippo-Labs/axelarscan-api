@@ -19,6 +19,7 @@ const normalize_obj = object =>
 
 const transfer_collections =
   [
+    'cross_chain_transfers',
     'deposit_addresses',
     'transfers',
     'batches',

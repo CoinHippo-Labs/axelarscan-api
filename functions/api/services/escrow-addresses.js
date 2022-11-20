@@ -62,8 +62,9 @@ module.exports = async (
         .filter(a => a);
 
   if (assets.length < 1) {
-    assets = assets_data
-      .map(a => a?.id);
+    assets =
+      assets_data
+        .map(a => a?.id);
   }
   else {
     assets = assets
@@ -270,7 +271,7 @@ module.exports = async (
           _cosmos_chains_data
             .map(c =>
               new Promise(
-                async (resolve, reject) => {
+                async resolve => {
                   const {
                     id,
                     overrides,
@@ -354,13 +355,15 @@ module.exports = async (
                     ) {
                       ibc_channels = data;
 
-                      escrow_addresses = ibc_channels
-                        .map(d => d?.escrow_address)
-                        .filter(a => a);
+                      escrow_addresses =
+                        ibc_channels
+                          .map(d => d?.escrow_address)
+                          .filter(a => a);
 
-                      source_escrow_addresses = ibc_channels
-                        .map(d => d?.counterparty?.escrow_address)
-                        .filter(a => a);
+                      source_escrow_addresses =
+                        ibc_channels
+                          .map(d => d?.counterparty?.escrow_address)
+                          .filter(a => a);
                     }
                   }
 
@@ -385,7 +388,9 @@ module.exports = async (
     // evm escrow address
     const evm_escrow_address =
       (ibc || [])
-        .findIndex(i => i?.is_native) > -1 ?
+        .findIndex(i =>
+          i?.is_native
+        ) > -1 ?
         get_address(
           ibc
             .find(i =>
@@ -411,11 +416,14 @@ module.exports = async (
         ) :
         undefined;
 
-    data.push({
-      asset,
-      cosmos_escrow_data,
-      evm_escrow_address,
-    });
+    data
+      .push(
+        {
+          asset,
+          cosmos_escrow_data,
+          evm_escrow_address,
+        }
+      );
   }
 
   data =

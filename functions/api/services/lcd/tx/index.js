@@ -166,14 +166,15 @@ module.exports = async (
         );
 
       if (amount_index > -1) {
-        const attr = attributes[amount_index];
+        const attribute = attributes[amount_index];
 
         const {
           value,
-        } = { ...attr };
+        } = { ...attribute };
 
-        const _value = value
-          .split('');
+        const _value =
+          value
+            .split('');
 
         let amount = '';
 
@@ -710,9 +711,10 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        const _response = await require('./ibc-send')(
-          lcd_response,
-        );
+        const _response =
+          await require('./ibc-send')(
+            lcd_response,
+          );
 
         logs =
           _response?.logs ||
@@ -731,9 +733,10 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        updated = await require('./ibc-acknowledgement')(
-          lcd_response,
-        );
+        updated =
+          await require('./ibc-acknowledgement')(
+            lcd_response,
+          );
       }
       // MsgTimeout
       if (
@@ -746,9 +749,10 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        updated = await require('./ibc-failed')(
-          lcd_response,
-        );
+        updated =
+          await require('./ibc-failed')(
+            lcd_response,
+          );
       }
       // ExecutePendingTransfers
       if (
@@ -761,9 +765,10 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        updated = await require('./axelar-transfer')(
-          lcd_response,
-        );
+        updated =
+          await require('./axelar-transfer')(
+            lcd_response,
+          );
       }   
       // ConfirmTransferKey & ConfirmGatewayTx
       if (
@@ -777,9 +782,10 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        updated = await require('./confirm')(
-          lcd_response,
-        );
+        updated =
+          await require('./confirm')(
+            lcd_response,
+          );
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (
@@ -821,9 +827,10 @@ module.exports = async (
               ) > -1
           ) > -1
       ) {
-        updated = await require('./vote')(
-          lcd_response,
-        );
+        updated =
+          await require('./vote')(
+            lcd_response,
+          );
       }
 
       lcd_response.tx_response.raw_log = JSON.stringify(logs);
