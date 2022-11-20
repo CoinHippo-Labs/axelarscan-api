@@ -12,6 +12,7 @@ const {
 } = require('./index');
 const {
   saveTimeSpent,
+  save_time_spent,
 } = require('./transfers/utils');
 const {
   equals_ignore_case,
@@ -177,56 +178,57 @@ module.exports = async (
           cmd?.startsWith('axelard q evm batched-commands ') ||
           cmd?.startsWith('axelard q evm latest-batched-commands ')
         ) &&
-        cmd?.endsWith(' -oj')
+        cmd?.endsWith(' -oj') &&
+        to_json(stdout)
       ) {
         let data = to_json(stdout);
 
-        if (data) {
-          const {
-            id,
-            command_ids,
-          } = { ...data };
-          let {
-            batch_id,
-            status,
-          } = { ...data };
+        const {
+          id,
+          command_ids,
+        } = { ...data };
+        let {
+          batch_id,
+          status,
+        } = { ...data };
 
-          batch_id = id;
+        batch_id = id;
 
-          let chain =
-            (
-              cmd
-                .split(' ')[4] ||
-              ''
+        let chain =
+          (
+            cmd
+              .split(' ')[4] ||
+            ''
+          )
+          .toLowerCase();
+
+        const chain_data = evm_chains_data
+          .find(c =>
+            equals_ignore_case(
+              c?.id,
+              chain,
             )
-            .toLowerCase();
+          );
 
-          const chain_data = evm_chains_data
-            .find(c =>
-              equals_ignore_case(
-                c?.id,
-                chain,
-              )
-            );
+        const {
+          chain_id,
+          gateway_address,
+        } = { ...chain_data };
 
-          const provider = getProvider(chain_data);
+        const provider = getProvider(chain_data);
 
-          const {
-            chain_id,
+        const gateway_contract =
+          gateway_address &&
+          new Contract(
             gateway_address,
-          } = { ...chain_data };
+            IAxelarGateway.abi,
+            provider,
+          );
 
+        if (chain_id) {
           chain =
-            chain_data?.id ||
+            chain_data.id ||
             chain;
-
-          const gateway_contract =
-            gateway_address &&
-            new Contract(
-              gateway_address,
-              IAxelarGateway.abi,
-              provider,
-            );
 
           const _response =
             await read(
@@ -241,7 +243,13 @@ module.exports = async (
 
           let {
             commands,
-          } = { ..._.head(_response?.data) };
+          } = {
+            ...(
+              _.head(
+                _response?.data
+              )
+            ),
+          };
 
           commands =
             commands ||
@@ -283,7 +291,10 @@ module.exports = async (
                         };
                       });
 
-                  command = to_json(_response?.data?.stdout);
+                  command =
+                    to_json(
+                      _response?.data?.stdout
+                    );
                 }
 
                 if (command) {
@@ -317,7 +328,10 @@ module.exports = async (
                           c?.salt &&
                           !c.deposit_address
                         ).length < 15 ||
-                      Math.random(0, 1) < 0.3
+                      Math.random(
+                        0,
+                        1,
+                      ) < 0.3
                     )
                   ) {
                     try {
@@ -326,7 +340,7 @@ module.exports = async (
                           (a?.contracts || [])
                             .findIndex(c =>
                               c?.chain_id === chain_id &&
-                              !c?.is_native
+                              !c.is_native
                             ) > -1
                         );
 
@@ -378,8 +392,9 @@ module.exports = async (
             }
           }
 
-          commands = commands
-            .filter(c => c);
+          commands =
+            commands
+              .filter(c => c);
 
           if (
             commands
@@ -420,108 +435,119 @@ module.exports = async (
 
             const command_events = _response?.data;
 
-            commands = commands
-              .map(c => {
-                if (
-                  c.id &&
-                  !c.transactionHash
-                ) {
-                  const command_event = (command_events || [])
-                    .find(_c =>
-                      equals_ignore_case(
-                        _c?.command_id,
-                        c.id,
-                      )
-                    );
+            if (Array.isArray(command_events)) {
+              commands =
+                commands
+                  .map(c => {
+                    if (
+                      c.id &&
+                      !c.transactionHash
+                    ) {
+                      const command_event = command_events
+                        .find(_c =>
+                          equals_ignore_case(
+                            _c?.command_id,
+                            c.id,
+                          )
+                        );
 
-                  if (command_event) {
-                    const {
-                      transactionHash,
-                      transactionIndex,
-                      logIndex,
-                      block_timestamp,
-                    } = { ...command_event };
+                      if (command_event) {
+                        const {
+                          transactionHash,
+                          transactionIndex,
+                          logIndex,
+                          block_timestamp,
+                        } = { ...command_event };
 
-                    c.transactionHash = transactionHash;
-                    c.transactionIndex = transactionIndex;
-                    c.logIndex = logIndex;
-                    c.block_timestamp = block_timestamp;
+                        c.transactionHash = transactionHash;
+                        c.transactionIndex = transactionIndex;
+                        c.logIndex = logIndex;
+                        c.block_timestamp = block_timestamp;
 
-                    if (transactionHash) {
-                      c.executed = true;
+                        if (transactionHash) {
+                          c.executed = true;
+                        }
+                      }
                     }
-                  }
-                }
 
-                return c;
-              });
+                    return c;
+                  });
+            }
           }
+        }
 
-          data = {
-            ...data,
-            batch_id,
-            chain,
-            commands,
+        data = {
+          ...data,
+          chain,
+          batch_id,
+          commands,
+        };
+
+        if (created_at) {
+          created_at =
+            moment(
+              Number(created_at) * 1000
+            )
+            .utc()
+            .valueOf();
+        }
+        else {
+          const _response =
+            await read(
+              'batches',
+              {
+                match_phrase: { batch_id },
+              },
+              {
+                size: 1,
+              },
+            );
+
+          const {
+            ms,
+          } = {
+            ...(
+              _.head(
+                _response?.data
+              )?.created_at
+            ),
           };
 
-          if (created_at) {
-            created_at =
-              moment(
-                Number(created_at) * 1000
-              )
-              .utc()
-              .valueOf();
-          }
-          else {
-            const _response =
-              await read(
-                'batches',
-                {
-                  match_phrase: { batch_id },
-                },
-                {
-                  size: 1,
-                },
-              );
+          created_at =
+            (ms ?
+              moment(ms) :
+              moment()
+            )
+            .valueOf();
+        }
 
-            const {
-              ms,
-            } = { ..._.head(_response?.data)?.created_at };
+        data = {
+          ...data,
+          created_at: get_granularity(created_at),
+        };
 
-            created_at =
-              (ms ?
-                moment(ms) :
-                moment()
-              )
-              .valueOf();
-          }
+        if (
+          ![
+            'BATCHED_COMMANDS_STATUS_SIGNED',
+          ].includes(status) &&
+          commands.length ===
+          commands
+            .filter(c => c.executed)
+            .length
+        ) {
+          status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+          data.status = status;
+        }
 
-          data = {
-            ...data,
-            created_at: get_granularity(created_at),
-          };
-
-          if (
-            ![
-              'BATCHED_COMMANDS_STATUS_SIGNED',
-            ].includes(status) &&
-            commands.length ===
-            commands
-              .filter(c => c.executed)
-              .length
-          ) {
-            status = 'BATCHED_COMMANDS_STATUS_SIGNED';
-            data.status = status;
-          }
-
-          if (
-            [
-              'BATCHED_COMMANDS_STATUS_SIGNED',
-            ].includes(status) &&
-            command_ids &&
-            gateway_contract
-          ) {
-            const _command_ids = command_ids
+        if (
+          [
+            'BATCHED_COMMANDS_STATUS_SIGNED',
+          ].includes(status) &&
+          command_ids &&
+          gateway_contract
+        ) {
+          const _command_ids =
+            command_ids
               .filter(c =>
                 parseInt(
                   c,
@@ -529,7 +555,247 @@ module.exports = async (
                 ) >= 1
               );
 
-            let sign_batch = {
+          // transfer
+          let sign_batch = {
+            chain,
+            batch_id,
+            created_at: data.created_at,
+          };
+
+          for (const command_id of _command_ids) {
+            const transfer_id =
+              parseInt(
+                command_id,
+                16,
+              );
+
+            sign_batch = {
+              ...sign_batch,
+              command_id,
+              transfer_id,
+            };
+
+            let _response =
+              await read(
+                'transfers',
+                {
+                  bool: {
+                    should: [
+                      { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                      { match: { 'vote.transfer_id': transfer_id } },
+                      { match: { transfer_id } },
+                    ],
+                    minimum_should_match: 1,
+                  },
+                },
+                {
+                  size: 100,
+                },
+              );
+
+            const transfer_data = _.head(_response?.data);
+            let token_sent_data;
+
+            if (!transfer_data) {
+              _response =
+                await read(
+                  'token_sent_events',
+                  {
+                    bool: {
+                      should: [
+                        { match: { 'vote.transfer_id': transfer_id } },
+                        { match: { transfer_id } },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                  {
+                    size: 100,
+                  },
+                );
+
+              token_sent_data = _.head(_response?.data);
+            }
+
+            const data =
+              transfer_data ||
+              token_sent_data;
+
+            if (data) {
+              let {
+                executed,
+                transactionHash,
+                transactionIndex,
+                logIndex,
+                block_timestamp,
+              } = { ...data.sign_batch };
+
+              executed =
+                !!executed ||
+                !!transactionHash ||
+                commands
+                  .find(c =>
+                    c.id === command_id
+                  )?.executed;
+
+              if (!executed) {
+                try {
+                  executed =
+                    await gateway_contract
+                      .isCommandExecuted(
+                        `0x${command_id}`,
+                      );
+
+                  if (executed) {
+                    const index = commands
+                      .findIndex(c =>
+                        c.id === command_id
+                      );
+
+                    if (index > -1) {
+                      commands[index].executed = executed;
+                    }
+                  }
+                } catch (error) {}
+              }
+
+              if (!transactionHash) {
+                const _response =
+                  await read(
+                    'command_events',
+                    {
+                      bool: {
+                        must: [
+                          { match: { chain } },
+                          { match: { command_id } },
+                        ],
+                      },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                const command_event = _.head(_response?.data);
+
+                if (command_event) {
+                  transactionHash = command_event.transactionHash;
+                  transactionIndex = command_event.transactionIndex;
+                  logIndex = command_event.logIndex;
+                  block_timestamp = command_event.block_timestamp;
+
+                  if (transactionHash) {
+                    executed = true;
+                  }
+                }
+              }
+
+              sign_batch = {
+                ...sign_batch,
+                executed,
+                transactionHash,
+                transactionIndex,
+                logIndex,
+                block_timestamp,
+              };
+
+              const transfers_data =
+                _response.data
+                  .filter(t =>
+                    (
+                      t?.source ||
+                      t?.event
+                    )?.id
+                  );
+
+              for (const transfer_data of transfers_data) {
+                const {
+                  source,
+                  event,
+                } = { ...transfer_data };
+                const {
+                  recipient_address,
+                } = { ...source };
+                let {
+                  sender_chain,
+                  sender_address,
+                } = { ...source };
+                const {
+                  chain,
+                } = { ...event };
+
+                sender_chain =
+                  sender_chain ||
+                  chain;
+
+                sender_address =
+                  sender_address ||
+                  event?.receipt?.from ||
+                  event?.transaction?.from;
+
+                const id =
+                  (
+                    source ||
+                    event
+                  )?.id;
+
+                const _id =
+                  recipient_address ?
+                    `${id}_${recipient_address}`.toLowerCase() :
+                    id;
+
+                if (_id) {
+                  sender_chain =
+                    normalize_chain(
+                      cosmos_non_axelarnet_chains_data
+                        .find(c =>
+                          sender_address?.startsWith(c?.prefix_address)
+                        )?.id ||
+                      sender_chain
+                    );
+
+                  await write(
+                    event ?
+                      'token_sent_events' :
+                      'transfers',
+                    _id,
+                    {
+                      ...transfer_data,
+                      sign_batch,
+                      ...(
+                        event ?
+                          {
+                            event: {
+                              ...event,
+                              sender_chain,
+                            },
+                          } :
+                          {
+                            source: {
+                              ...source,
+                              sender_chain,
+                            },
+                          }
+                      ),
+                    },
+                    true,
+                  );
+
+                  await saveTimeSpent(
+                    _id,
+                    null,
+                    event ?
+                      'token_sent_events' :
+                      undefined,
+                  );
+                }
+              }
+            }
+          }
+
+          // cross-chain transfer
+          try {
+            let command = {
               chain,
               batch_id,
               created_at: data.created_at,
@@ -542,19 +808,22 @@ module.exports = async (
                   16,
                 );
 
-              sign_batch = {
-                ...sign_batch,
+              command = {
+                ...command,
                 command_id,
                 transfer_id,
               };
 
-              let _response =
+              const _response =
                 await read(
-                  'transfers',
+                  'cross_chain_transfers',
                   {
                     bool: {
+                      must: [
+                        { exists: { field: 'send.txhash' } },
+                      ],
                       should: [
-                        { match: { 'confirm_deposit.transfer_id': transfer_id } },
+                        { match: { 'confirm.transfer_id': transfer_id } },
                         { match: { 'vote.transfer_id': transfer_id } },
                         { match: { transfer_id } },
                       ],
@@ -566,42 +835,23 @@ module.exports = async (
                   },
                 );
 
-              const transfer_data = _.head(_response?.data);
-              let token_sent_data;
+              const {
+                data,
+              } = { ..._response };
 
-              if (!transfer_data) {
-                _response =
-                  await read(
-                    'token_sent_events',
-                    {
-                      bool: {
-                        should: [
-                          { match: { 'vote.transfer_id': transfer_id } },
-                          { match: { transfer_id } },
-                        ],
-                        minimum_should_match: 1,
-                      },
-                    },
-                    {
-                      size: 100,
-                    },
-                  );
+              const _data =
+                _.head(
+                  data
+                );
 
-                token_sent_data = _.head(_response?.data);
-              }
-
-              const data =
-                transfer_data ||
-                token_sent_data;
-
-              if (data) {
+              if (_data) {
                 let {
                   executed,
                   transactionHash,
                   transactionIndex,
                   logIndex,
                   block_timestamp,
-                } = { ...data.sign_batch };
+                } = { ..._data.command };
 
                 executed =
                   !!executed ||
@@ -649,7 +899,10 @@ module.exports = async (
                       },
                     );
 
-                  const command_event = _.head(_response?.data);
+                  const command_event =
+                    _.head(
+                      _response?.data
+                    );
 
                   if (command_event) {
                     transactionHash = command_event.transactionHash;
@@ -663,8 +916,8 @@ module.exports = async (
                   }
                 }
 
-                sign_batch = {
-                  ...sign_batch,
+                command = {
+                  ...command,
                   executed,
                   transactionHash,
                   transactionIndex,
@@ -672,121 +925,77 @@ module.exports = async (
                   block_timestamp,
                 };
 
-                const transfers_data = _response.data
-                  .filter(t =>
-                    (
-                      t?.source ||
-                      t?.event
-                    )?.id
-                  );
-
-                for (const transfer_data of transfers_data) {
+                for (const d of data) {
                   const {
-                    source,
-                    event,
-                  } = { ...transfer_data };
+                    send,
+                  } = { ...d };
                   const {
-                    recipient_address,
-                  } = { ...source };
-                  let {
-                    sender_chain,
+                    txhash,
                     sender_address,
-                  } = { ...source };
-                  const {
-                    chain,
-                  } = { ...event };
+                  } = { ...send };
+                  let {
+                    source_chain,
+                  } = { ...send };
 
-                  sender_chain =
-                    sender_chain ||
-                    chain;
+                  source_chain =
+                    normalize_chain(
+                      cosmos_non_axelarnet_chains_data
+                        .find(c =>
+                          sender_address?.startsWith(c?.prefix_address)
+                        )?.id ||
+                      source_chain
+                    );
 
-                  sender_address =
-                    sender_address ||
-                    event?.receipt?.from ||
-                    event?.transaction?.from;
-
-                  const id =
-                    (
-                      source ||
-                      event
-                    )?.id;
-
-                  const _id =
-                    recipient_address ?
-                      `${id}_${recipient_address}`.toLowerCase() :
-                      id;
-
-                  if (_id) {
-                    sender_chain =
-                      normalize_chain(
-                        cosmos_non_axelarnet_chains_data
-                          .find(c =>
-                            sender_address?.startsWith(c?.prefix_address)
-                          )?.id ||
-                        sender_chain
-                      );
+                  if (
+                    txhash &&
+                    source_chain
+                  ) {
+                    const _id = `${txhash}_${source_chain}`.toLowerCase();
 
                     await write(
-                      event ?
-                        'token_sent_events' :
-                        'transfers',
+                      'cross_chain_transfers',
                       _id,
                       {
-                        ...transfer_data,
-                        sign_batch,
-                        ...(
-                          event ?
-                            {
-                              event: {
-                                ...event,
-                                sender_chain,
-                              },
-                            } :
-                            {
-                              source: {
-                                ...source,
-                                sender_chain,
-                              },
-                            }
-                        ),
+                        ...d,
+                        send: {
+                          ...send,
+                          source_chain,
+                        },
+                        command,
                       },
                       true,
                     );
 
-                    await saveTimeSpent(
+                    await save_time_spent(
                       _id,
-                      null,
-                      event ?
-                        'token_sent_events' :
-                        undefined,
                     );
                   }
                 }
               }
             }
-          }
-
-          if (
-            ![
-              'BATCHED_COMMANDS_STATUS_SIGNED',
-            ].includes(status) &&
-            commands.length ===
-            commands
-              .filter(c => c.executed)
-              .length
-          ) {
-            status = 'BATCHED_COMMANDS_STATUS_SIGNED';
-            data.status = status;
-          }
-
-          await write(
-            'batches',
-            id,
-            data,
-          );
-
-          response.stdout = JSON.stringify(data);
+          } catch (error) {}
         }
+
+        if (
+          ![
+            'BATCHED_COMMANDS_STATUS_SIGNED',
+          ].includes(status) &&
+          commands.length ===
+          commands
+            .filter(c => c.executed)
+            .length
+        ) {
+          status = 'BATCHED_COMMANDS_STATUS_SIGNED';
+          data.status = status;
+        }
+
+        await write(
+          'batches',
+          id,
+          data,
+        );
+
+        response.stdout = JSON.stringify(data);
       }
 
       // save cache

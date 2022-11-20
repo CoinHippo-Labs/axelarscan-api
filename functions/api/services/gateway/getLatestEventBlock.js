@@ -24,6 +24,7 @@ module.exports = async (
     };
   }
   else {
+    // transfer
     let _response =
       await read(
         'token_sent_events',
@@ -41,14 +42,40 @@ module.exports = async (
         },
       );
 
-    let blockNumber = _.head(_response?.data)?.event?.blockNumber;
+    let height =
+      _.head(
+        _response?.data
+      )?.event?.blockNumber;
 
-    if (blockNumber) {
+    // cross-chain transfer
+    /*let _response =
+      await read(
+        'cross_chain_transfers',
+        {
+          bool: {
+            must: [
+              { exists: { field: 'send.height' } },
+              { match: { 'send.source_chain': chain } },
+            ],
+          },
+        },
+        {
+          size: 1,
+          sort: [{ 'send.height': 'desc' }],
+        },
+      );
+
+    let height =
+      _.head(
+        _response?.data
+      )?.send?.height;*/
+
+    if (height) {
       response = {
         ...response,
         latest: {
           ...response?.latest,
-          token_sent_block: blockNumber,
+          token_sent_block: height,
         },
       };
     }
@@ -70,14 +97,17 @@ module.exports = async (
         },
       );
 
-    blockNumber = _.head(_response?.data)?.event?.blockNumber;
+    height =
+      _.head(
+        _response?.data
+      )?.event?.blockNumber;
 
-    if (blockNumber) {
+    if (height) {
       response = {
         ...response,
         latest: {
           ...response?.latest,
-          batches_executed_block: blockNumber,
+          batches_executed_block: height,
         },
       };
     }

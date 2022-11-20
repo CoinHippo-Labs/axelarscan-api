@@ -196,25 +196,24 @@ module.exports = async (
           next_key,
         } = { ...pagination };
 
-        const transaction_data =
-          (tx_responses || [])
-            .find((t, i) =>
-              !t?.code &&
-              (txs?.[i]?.body?.messages || [])
-                .findIndex(m =>
-                  m?.['@type']?.includes('RegisterProxy') &&
-                  (
-                    equals_ignore_case(
-                      m.sender,
-                      operator_address,
-                    ) ||
-                    equals_ignore_case(
-                      m.proxy_addr,
-                      voter,
-                    )
+        const transaction_data = (tx_responses || [])
+          .find((t, i) =>
+            !t?.code &&
+            (txs?.[i]?.body?.messages || [])
+              .findIndex(m =>
+                m?.['@type']?.includes('RegisterProxy') &&
+                (
+                  equals_ignore_case(
+                    m.sender,
+                    operator_address,
+                  ) ||
+                  equals_ignore_case(
+                    m.proxy_addr,
+                    voter,
                   )
-                ) > -1
-            );
+                )
+              ) > -1
+          );
 
         const {
           height,
@@ -254,18 +253,18 @@ module.exports = async (
           [
             'unsubmitted',
           ].includes(vote) &&
-            {
-              bool: {
-                should: [
-                  { match: { success: true } },
-                  { match: { failed: true } },
-                ],
-                minimum_should_match: 1,
-                must_not: [
-                  { exists: { field: 'participants' } },
-                ],
-              },
+          {
+            bool: {
+              should: [
+                { match: { success: true } },
+                { match: { failed: true } },
+              ],
+              minimum_should_match: 1,
+              must_not: [
+                { exists: { field: 'participants' } },
+              ],
             },
+          },
         ]
         .filter(s => s),
         minimum_should_match: 1,

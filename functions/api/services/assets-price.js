@@ -69,7 +69,8 @@ module.exports = async (
 
   const query_timestamp =
     Number(timestamp) ||
-    current_time.valueOf();
+    current_time
+      .valueOf();
 
   if (denoms.length > 0) {
     const price_timestamp =
@@ -89,9 +90,10 @@ module.exports = async (
               .map(d => {
                 return {
                   match: {
-                    denom: typeof d === 'object' ?
-                      d?.denom :
-                      d,
+                    denom:
+                      typeof d === 'object' ?
+                        d?.denom :
+                        d,
                   },
                 };
               }),
@@ -103,51 +105,52 @@ module.exports = async (
         },
       );
 
-    const data = denoms
-      .map(d => {
-        const denom_data =
-          typeof d === 'object' ?
-            d :
-            {
-              denom: d,
-            };
+    const data =
+      denoms
+        .map(d => {
+          const denom_data =
+            typeof d === 'object' ?
+              d :
+              {
+                denom: d,
+              };
 
-        const _denom =
-          denom_data?.denom ||
-          d;
+          const _denom =
+            denom_data?.denom ||
+            d;
 
-        const _chain =
-          _denom === 'uluna' &&
-          !['terra-2'].includes(chain) ?
-            'terra' :
-            denom_data?.chain ||
+          const _chain =
+            _denom === 'uluna' &&
+            !['terra-2'].includes(chain) ?
+              'terra' :
+              denom_data?.chain ||
               chain;
 
-        const asset_data = assets_data
-          .find(a =>
-            equals_ignore_case(
-              a?.id,
-              _denom,
-            )
-          );
+          const asset_data = assets_data
+            .find(a =>
+              equals_ignore_case(
+                a?.id,
+                _denom,
+              )
+            );
 
-        const {
-          coingecko_id,
-          coingecko_ids,
-          is_stablecoin,
-        } = { ...asset_data };
-
-        return {
-          denom: _denom,
-          coingecko_id:
-            coingecko_ids?.[_chain] ||
+          const {
             coingecko_id,
-          price:
-            is_stablecoin ?
-              1 :
-              undefined,
-        };
-      });
+            coingecko_ids,
+            is_stablecoin,
+          } = { ...asset_data };
+
+          return {
+            denom: _denom,
+            coingecko_id:
+              coingecko_ids?.[_chain] ||
+              coingecko_id,
+            price:
+              is_stablecoin ?
+                1 :
+                undefined,
+          };
+        });
 
     if (Array.isArray(response_cache?.data)) {
       response_cache.data
@@ -178,22 +181,24 @@ module.exports = async (
         )
         .valueOf();
 
-    const to_update_data = data
-      .filter(d =>
-        !d?.updated_at ||
-        (
-          current_time
-            .diff(
-              moment(query_timestamp),
-              'hours',
-            ) < 4 &&
-          d.updated_at < updated_at_threshold
-        )
-      );
+    const to_update_data =
+      data
+        .filter(d =>
+          !d?.updated_at ||
+          (
+            current_time
+              .diff(
+                moment(query_timestamp),
+                'hours',
+              ) < 4 &&
+            d.updated_at < updated_at_threshold
+          )
+        );
 
-    const coingecko_ids = to_update_data
-      .map(d => d?.coingecko_id)
-      .filter(id => id);
+    const coingecko_ids =
+      to_update_data
+        .map(d => d?.coingecko_id)
+        .filter(id => id);
 
     if (
       coingecko_ids.length > 0 &&
@@ -211,20 +216,29 @@ module.exports = async (
 
       if (timestamp) {
         for (const coingecko_id of coingecko_ids) {
-          const _response = await coingecko.get(
-            `/coins/${coingecko_id}/history`,
-            {
-              params: {
-                id: coingecko_id,
-                date:
-                  moment(
-                    Number(timestamp)
-                  )
-                  .format('DD-MM-YYYY'),
-                localization: 'false',
-              },
-            },
-          ).catch(error => { return { data: { error } }; });
+          const _response =
+            await coingecko
+              .get(
+                `/coins/${coingecko_id}/history`,
+                {
+                  params: {
+                    id: coingecko_id,
+                    date:
+                      moment(
+                        Number(timestamp)
+                      )
+                      .format('DD-MM-YYYY'),
+                    localization: 'false',
+                  },
+                },
+              )
+              .catch(error => {
+                return {
+                  data: {
+                    error,
+                  },
+                };
+              });
 
           const {
             error,
@@ -242,18 +256,27 @@ module.exports = async (
         }
       }
       else {
-        const _response = await coingecko.get(
-          '/coins/markets',
-          {
-            params: {
-              vs_currency: currency,
-              ids:
-                coingecko_ids
-                  .join(','),
-              per_page: 250,
-            },
-          },
-        ).catch(error => { return { data: { error } }; });
+        const _response =
+          await coingecko
+            .get(
+              '/coins/markets',
+              {
+                params: {
+                  vs_currency: currency,
+                  ids:
+                    coingecko_ids
+                      .join(','),
+                  per_page: 250,
+                },
+              },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
 
         _data =
           Array.isArray(_response?.data) ?
@@ -292,13 +315,13 @@ module.exports = async (
 
           return {
             denom:
-            to_update_data
-              .find(d =>
-                equals_ignore_case(
-                  d?.coingecko_id,
-                  id,
-                )
-              )?.denom,
+              to_update_data
+                .find(d =>
+                  equals_ignore_case(
+                    d?.coingecko_id,
+                    id,
+                  )
+                )?.denom,
             coingecko_id: id,
             price,
           };
@@ -321,22 +344,23 @@ module.exports = async (
         });
     }
 
-    const to_update_cache = data
-      .filter(d =>
-        (
-          !d?.updated_at ||
+    const to_update_cache =
+      data
+        .filter(d =>
           (
-            current_time
-              .diff(
-                moment(query_timestamp),
-                'hours',
-              ) < 4 &&
-            d.updated_at < updated_at_threshold
-          )
-        ) &&
-        ('denom' in d) &&
-        ('price' in d)
-      );
+            !d?.updated_at ||
+            (
+              current_time
+                .diff(
+                  moment(query_timestamp),
+                  'hours',
+                ) < 4 &&
+              d.updated_at < updated_at_threshold
+            )
+          ) &&
+          ('denom' in d) &&
+          ('price' in d)
+        );
 
     for (const d of to_update_cache) {
       const {
@@ -368,20 +392,21 @@ module.exports = async (
       );
     }
 
-    response = data
-      .map(d => {
-        const {
-          id,
-          denom,
-        } = { ...d };
-
-        return {
-          ...d,
-          id:
-            denom ||
+    response =
+      data
+        .map(d => {
+          const {
             id,
-        };
-      });
+            denom,
+          } = { ...d };
+
+          return {
+            ...d,
+            id:
+              denom ||
+              id,
+          };
+        });
   }
 
   return response;

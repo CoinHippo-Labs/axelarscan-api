@@ -8,6 +8,9 @@ const {
 const {
   update_link,
   update_source,
+  normalize_link,
+  _update_link,
+  _update_send,
 } = require('../../transfers/utils');
 const {
   equals_ignore_case,
@@ -55,86 +58,90 @@ module.exports = async (
     const {
       chain_id,
     } = {
-      ...messages
-        .find(m =>
-          m?.['@type']?.includes('MsgUpdateClient')
-        )?.header?.signer_header?.header,
+      ...(
+        messages
+          .find(m =>
+            m?.['@type']?.includes('MsgUpdateClient')
+          )?.header?.signer_header?.header
+      ),
     };
 
-    const recv_packets = (logs || [])
-      .map(l => {
-        const {
-          events,
-        } = { ...l };
+    const recv_packets =
+      (logs || [])
+        .map(l => {
+          const {
+            events,
+          } = { ...l };
 
-        return {
-          ...(
-            (events || [])
-              .find(e =>
-                equals_ignore_case(
-                  e?.type,
-                  'recv_packet',
+          return {
+            ...(
+              (events || [])
+                .find(e =>
+                  equals_ignore_case(
+                    e?.type,
+                    'recv_packet',
+                  )
                 )
-              )
-          ),
-          height:
-            Number(
-              messages
-                .find(m =>
-                  _.last(
-                    (m?.['@type'] || '')
-                      .split('.')
-                  ) === 'MsgRecvPacket'
-                )?.proof_height?.revision_height ||
-              '0'
-            ) -
-            1,
-        };
-      })
-      .filter(e =>
-        e.height > 0 &&
-        e.attributes?.length > 0
-      )
-      .map(e => {
-        let {
-          attributes,
-        } = { ...e };
+            ),
+            height:
+              Number(
+                messages
+                  .find(m =>
+                    _.last(
+                      (m?.['@type'] || '')
+                        .split('.')
+                    ) === 'MsgRecvPacket'
+                  )?.proof_height?.revision_height ||
+                '0'
+              ) -
+              1,
+          };
+        })
+        .filter(e =>
+          e.height > 0 &&
+          e.attributes?.length > 0
+        )
+        .map(e => {
+          let {
+            attributes,
+          } = { ...e };
 
-        attributes = attributes
-          .filter(a =>
-            a?.key &&
-            a.value
-          );
-
-        const packet_data =
-          to_json(
+          attributes =
             attributes
-              .find(a =>
-                a?.key === 'packet_data'
-              )?.value
-          );
+              .filter(a =>
+                a?.key &&
+                a.value
+              );
 
-        const packet_data_hex = attributes
-          .find(a =>
-            a?.key === 'packet_data_hex'
-          )?.value;
+          const packet_data =
+            to_json(
+              attributes
+                .find(a =>
+                  a?.key === 'packet_data'
+                )?.value
+            );
 
-        const packet_sequence = attributes
-          .find(a =>
-            a?.key === 'packet_sequence'
-          )?.value;
+          const packet_data_hex = attributes
+            .find(a =>
+              a?.key === 'packet_data_hex'
+            )?.value;
 
-        return {
-          ...e,
-          packet_data,
-          packet_data_hex,
-          packet_sequence,
-        };
-      })
-      .filter(e =>
-        typeof e.packet_data === 'object' &&
-        e.packet_data
-      );
+          const packet_sequence = attributes
+            .find(a =>
+              a?.key === 'packet_sequence'
+            )?.value;
+
+          return {
+            ...e,
+            packet_data,
+            packet_data_hex,
+            packet_sequence,
+          };
+        })
+        .filter(e =>
+          typeof e.packet_data === 'object' &&
+          e.packet_data
+        );
 
     for (const record of recv_packets) {
       const {
@@ -186,7 +193,7 @@ module.exports = async (
               txs,
             } = { ..._response?.data };
 
-            if (tx_responses?.length < 1) {
+            if (!(tx_responses?.length > 0)) {
               _response =
                 await lcd
                   .get(
@@ -261,46 +268,45 @@ module.exports = async (
                     .utc()
                     .valueOf();
 
+                const sender_address =
+                  messages
+                    .find(m =>
+                      m?.sender
+                    )?.sender;
+
+                const recipient_address =
+                  messages
+                    .find(m =>
+                      m?.receiver
+                    )?.receiver;
+
                 const amount_data = messages
                   .find(m =>
                     m?.token
                   )?.token;
 
+                // transfer
                 let _record = {
                   id: txhash,
                   type: 'ibc_transfer',
                   status_code: code,
-                  status: code ?
-                    'failed' :
-                    'success',
+                  status:
+                    code ?
+                      'failed' :
+                      'success',
                   height,
                   created_at: get_granularity(created_at),
                   sender_chain: chain_data.id,
-                  sender_address:
-                    messages
-                      .find(m =>
-                        m?.sender
-                      )?.sender,
-                  recipient_address:
-                    messages
-                      .find(m =>
-                        m?.receiver
-                      )?.receiver,
+                  sender_address,
+                  recipient_address,
                   amount: amount_data?.amount,
                   denom: amount_data?.denom,
                 };
 
-                const {
-                  recipient_address,
-                } = { ..._record };
-                let {
-                  amount,
-                } = { ..._record };
-
                 if (
                   recipient_address?.length >= 65 &&
                   txhash &&
-                  amount
+                  amount_data?.amount
                 ) {
                   const _response =
                     await read(
@@ -329,6 +335,67 @@ module.exports = async (
                     );
 
                   found = true;
+                }
+
+                // cross-chain transfer
+                if (
+                  txhash &&
+                  !code &&
+                  recipient_address?.length >= 65 &&
+                  amount_data?.amount
+                ) {
+                  let _record = {
+                    txhash,
+                    height,
+                    status:
+                      code ?
+                        'failed' :
+                        'success',
+                    type: 'ibc_transfer',
+                    created_at: get_granularity(created_at),
+                    source_chain: chain_data.id,
+                    sender_address,
+                    recipient_address,
+                    denom: amount_data.denom,
+                    amount: amount_data.amount,
+                  };
+
+                  const _response =
+                    await read(
+                      'deposit_addresses',
+                      {
+                        match: { deposit_address: recipient_address },
+                      },
+                      {
+                        size: 1,
+                      },
+                    );
+
+                  let link =
+                    normalize_link(
+                      _.head(
+                        _response?.data
+                      ),
+                    );
+
+                  link =
+                    await _update_link(
+                      link,
+                      _record,
+                      _lcd,
+                    );
+
+                  _record =
+                    await _update_send(
+                      _record,
+                      link,
+                      'deposit_address',
+                    );
+
+                  found = true;
+                }
+
+                if (found) {
                   break;
                 }
               }

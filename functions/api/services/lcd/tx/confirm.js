@@ -66,20 +66,17 @@ module.exports = async (
           poll_id,
           participants,
         } = {
-          ...to_json(
-            (attributes || [])
-              .find(a =>
-                a?.key === 'participants'
-              )?.value
+          ...(
+            to_json(
+              (attributes || [])
+                .find(a =>
+                  a?.key === 'participants'
+                )?.value
+            )
           ),
         };
 
-        let transaction_id = tx_id;
-
-        transaction_id =
-          Array.isArray(transaction_id) ?
-            to_hex(transaction_id) :
-            transaction_id;
+        const transaction_id = to_hex(tx_id);
 
         if (
           poll_id &&

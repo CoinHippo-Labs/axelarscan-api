@@ -56,7 +56,7 @@ const assets_data =
 const {
   percent_diff_escrow_supply_threshold,
   percent_diff_total_supply_threshold,
-} = { ...config?.[environment] };
+} = { ...config?.[environment]?.tvl };
 
 module.exports = async (
   params = {},
@@ -89,53 +89,55 @@ module.exports = async (
         .filter(a => a);
 
   if (assets.length < 1) {
-    assets = assets_data
-      .map(a => a?.id);
+    assets =
+      assets_data
+        .map(a => a?.id);
   }
   else {
-    assets = assets
-      .map(a => {
-        const asset_data = assets_data
-          .find(_a =>
-            equals_ignore_case(
-              _a?.id,
-              a,
-            ) ||
-            equals_ignore_case(
-              _a?.symbol,
-              a,
-            ) ||
-            (_a?.contracts || [])
-              .findIndex(c =>
-                equals_ignore_case(
-                  c?.symbol,
-                  a,
-                )
-              ) > -1 ||
-            (_a?.ibc || [])
-              .findIndex(i =>
-                equals_ignore_case(
-                  i?.symbol,
-                  a,
-                )
-              ) > -1
+    assets =
+      assets
+        .map(a => {
+          const asset_data = assets_data
+            .find(_a =>
+              equals_ignore_case(
+                _a?.id,
+                a,
+              ) ||
+              equals_ignore_case(
+                _a?.symbol,
+                a,
+              ) ||
+              (_a?.contracts || [])
+                .findIndex(c =>
+                  equals_ignore_case(
+                    c?.symbol,
+                    a,
+                  )
+                ) > -1 ||
+              (_a?.ibc || [])
+                .findIndex(i =>
+                  equals_ignore_case(
+                    i?.symbol,
+                    a,
+                  )
+                ) > -1
+            );
+
+          const {
+            id,
+          } = { ...asset_data };
+
+          return (
+            id ||
+            a
           );
-
-        const {
-          id,
-        } = { ...asset_data };
-
-        return (
-          id ||
-          a
+        })
+        .filter(a =>
+          assets_data
+            .findIndex(_a =>
+              _a?.id === a
+            ) > -1
         );
-      })
-      .filter(a =>
-        assets_data
-          .findIndex(_a =>
-            _a?.id === a
-          ) > -1
-      );
   }
 
   chains =
@@ -232,8 +234,11 @@ module.exports = async (
   }
 
   // filter by chains
-  const _evm_chains_data = evm_chains_data
-    .filter(c => chains.includes(c?.id));
+  const _evm_chains_data =
+    evm_chains_data
+      .filter(c =>
+        chains.includes(c?.id)
+      );
 
   const _cosmos_chains_data =
     _.uniqBy(
@@ -287,10 +292,10 @@ module.exports = async (
   const cache_id =
     assets.length === 1 &&
     _evm_chains_data.length >=
-      evm_chains_data
-        .filter(c =>
-          c?.gateway_address
-        ).length &&
+    evm_chains_data
+      .filter(c =>
+        c?.gateway_address
+      ).length &&
     _cosmos_chains_data.length >= cosmos_chains_data.length &&
     _.head(assets);
 
@@ -331,10 +336,10 @@ module.exports = async (
   else if (
     assets.length > 1 &&
     _evm_chains_data.length >=
-      evm_chains_data
-        .filter(
-          c => c?.gateway_address
-        ).length &&
+    evm_chains_data
+      .filter(
+        c => c?.gateway_address
+      ).length &&
     _cosmos_chains_data.length >= cosmos_chains_data.length &&
     !force_update
   ) {
@@ -454,18 +459,21 @@ module.exports = async (
             )
             .filter(url => url);
 
-          const provider = rpcs.length === 1 ?
-            new JsonRpcProvider(rpcs[0]) :
-            new FallbackProvider(
-              rpcs.map((url, i) => {
-                return {
-                  provider: new JsonRpcProvider(url),
-                  priority: i + 1,
-                  stallTimeout: 1000,
-                };
-              }),
-              rpcs.length / 3,
-            );
+          const provider =
+            rpcs.length === 1 ?
+              new JsonRpcProvider(
+                _.head(rpcs)
+              ) :
+              new FallbackProvider(
+                rpcs.map((url, i) => {
+                  return {
+                    provider: new JsonRpcProvider(url),
+                    priority: i + 1,
+                    stallTimeout: 1000,
+                  };
+                }),
+                rpcs.length / 3,
+              );
 
           return [
             id,
@@ -531,7 +539,7 @@ module.exports = async (
           _evm_chains_data
             .map(c =>
               new Promise(
-                async (resolve, reject) => {
+                async resolve => {
                   const {
                     id,
                     chain_id,
@@ -626,7 +634,7 @@ module.exports = async (
           _cosmos_chains_data
             .map(c =>
               new Promise(
-                async (resolve, reject) => {
+                async resolve => {
                   const {
                     id,
                     overrides,
@@ -781,13 +789,15 @@ module.exports = async (
                       ) {
                         ibc_channels = data;
 
-                        escrow_addresses = ibc_channels
-                          .map(d => d?.escrow_address)
-                          .filter(a => a);
+                        escrow_addresses =
+                          ibc_channels
+                            .map(d => d?.escrow_address)
+                            .filter(a => a);
 
-                        source_escrow_addresses = ibc_channels
-                          .map(d => d?.counterparty?.escrow_address)
-                          .filter(a => a);
+                        source_escrow_addresses =
+                          ibc_channels
+                            .map(d => d?.counterparty?.escrow_address)
+                            .filter(a => a);
 
                         break;
                       }
@@ -826,10 +836,11 @@ module.exports = async (
                           escrow_address,
                           {
                             ...denom_data,
-                            denom: (ibc || [])
-                              .find(i =>
-                                i?.chain_id === axelarnet.id
-                              )?.ibc_denom,
+                            denom:
+                              (ibc || [])
+                                .find(i =>
+                                  i?.chain_id === axelarnet.id
+                                )?.ibc_denom,
                           },
                           _lcds,
                         );
@@ -865,10 +876,11 @@ module.exports = async (
                       await getAxelarnetSupply(
                         {
                           ...denom_data,
-                          denom: (ibc || [])
-                            .find(i =>
-                              i?.chain_id === axelarnet.id
-                            )?.ibc_denom,
+                          denom:
+                            (ibc || [])
+                              .find(i =>
+                                i?.chain_id === axelarnet.id
+                              )?.ibc_denom,
                         },
                       ) :
                       0;
@@ -1236,44 +1248,47 @@ module.exports = async (
           ) * 100 / total :
           null;
 
-    data.push({
-      asset,
-      price,
-      tvl,
-      total_on_evm,
-      total_on_cosmos,
-      total,
-      evm_escrow_address,
-      evm_escrow_balance,
-      evm_escrow_address_urls,
-      percent_diff_supply,
-      is_abnormal_supply:
-        evm_escrow_address ?
-          typeof percent_diff_escrow_supply_threshold === 'number' &&
-          percent_diff_supply > percent_diff_escrow_supply_threshold :
-          typeof percent_diff_total_supply_threshold === 'number' &&
-          percent_diff_supply > percent_diff_total_supply_threshold,
-      percent_diff_escrow_supply_threshold,
-      percent_diff_total_supply_threshold,
-      success:
-        Object.values({ ...evm_tvl })
-          .filter(d =>
-            d &&
-            !d.success
-          )
-          .length < 1 &&
-        Object.entries({ ...cosmos_tvl })
-          .filter(([k, v]) =>
-            v &&
-            !v.success &&
-            [
-              'terra',
-            ].findIndex(s =>
-              k?.includes(s)
-            ) < 0
-          )
-          .length < 1,
-    });
+    data
+      .push(
+        {
+          asset,
+          price,
+          tvl,
+          total_on_evm,
+          total_on_cosmos,
+          total,
+          evm_escrow_address,
+          evm_escrow_balance,
+          evm_escrow_address_urls,
+          percent_diff_supply,
+          is_abnormal_supply:
+            evm_escrow_address ?
+              typeof percent_diff_escrow_supply_threshold === 'number' &&
+              percent_diff_supply > percent_diff_escrow_supply_threshold :
+              typeof percent_diff_total_supply_threshold === 'number' &&
+              percent_diff_supply > percent_diff_total_supply_threshold,
+          percent_diff_escrow_supply_threshold,
+          percent_diff_total_supply_threshold,
+          success:
+            Object.values({ ...evm_tvl })
+              .filter(d =>
+                d &&
+                !d.success
+              )
+              .length < 1 &&
+            Object.entries({ ...cosmos_tvl })
+              .filter(([k, v]) =>
+                v &&
+                !v.success &&
+                [
+                  'terra',
+                ].findIndex(s =>
+                  k?.includes(s)
+                ) < 0
+              )
+              .length < 1,
+        }
+      );
   }
 
   response = {
@@ -1314,18 +1329,19 @@ module.exports = async (
       )
       .length > 0
   ) {
-    not_updated_on_chains = data
-      .filter(d =>
-        !d?.success
-      )
-      .flatMap(d =>
-        Object.entries({ ...d?.tvl })
-          .filter(([k, v]) =>
-            v &&
-            !v.success
-          )
-          .map(([k, v]) => k)
-      );
+    not_updated_on_chains =
+      data
+        .filter(d =>
+          !d?.success
+        )
+        .flatMap(d =>
+          Object.entries({ ...d?.tvl })
+            .filter(([k, v]) =>
+              v &&
+              !v.success
+            )
+            .map(([k, v]) => k)
+        );
   }
 
   return {

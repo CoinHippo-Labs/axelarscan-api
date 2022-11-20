@@ -7,6 +7,9 @@ const {
 const {
   update_link,
   update_source,
+  normalize_link,
+  _update_link,
+  _update_send,
 } = require('../../transfers/utils');
 const {
   get_granularity,
@@ -57,6 +60,18 @@ module.exports = async (
         .utc()
         .valueOf();
 
+    const sender_address =
+      messages
+        .find(m =>
+          m?.from_address
+        )?.from_address;
+
+    const recipient_address =
+      messages
+        .find(m =>
+          m?.to_address
+        )?.to_address;
+
     const amount_data =
       _.head(
         messages
@@ -65,41 +80,28 @@ module.exports = async (
           )?.amount
       );
 
+    // transfers
     let record = {
       id: txhash,
       type: 'axelar_transfer',
       status_code: code,
-      status: code ?
-        'failed' :
-        'success',
+      status:
+        code ?
+          'failed' :
+          'success',
       height,
       created_at: get_granularity(created_at),
       sender_chain: axelarnet.id,
-      sender_address:
-        messages
-          .find(m =>
-            m?.from_address
-          )?.from_address,
-      recipient_address:
-        messages
-          .find(m =>
-            m?.to_address
-          )?.to_address,
+      sender_address,
+      recipient_address,
       amount: amount_data?.amount,
       denom: amount_data?.denom,
     };
 
-    const {
-      recipient_address,
-    } = { ...record };
-    let {
-      amount,
-    } = { ...record };
-
     if (
       recipient_address?.length >= 65 &&
       txhash &&
-      amount
+      amount_data?.amount
     ) {
       const _response =
         await read(
@@ -124,6 +126,61 @@ module.exports = async (
         await update_source(
           record,
           link,
+        );
+    }
+
+    // cross-chain transfer
+    if (
+      txhash &&
+      !code &&
+      recipient_address?.length >= 65 &&
+      amount_data?.amount
+    ) {
+      let record = {
+        txhash,
+        height,
+        status:
+          code ?
+            'failed' :
+            'success',
+        type: 'axelar_transfer',
+        created_at: get_granularity(created_at),
+        source_chain: axelarnet.id,
+        sender_address,
+        recipient_address,
+        denom: amount_data.denom,
+        amount: amount_data.amount,
+      };
+
+      const _response =
+        await read(
+          'deposit_addresses',
+          {
+            match: { deposit_address: recipient_address },
+          },
+          {
+            size: 1,
+          },
+        );
+
+      let link =
+        normalize_link(
+          _.head(
+            _response?.data
+          ),
+        );
+
+      link =
+        await _update_link(
+          link,
+          record,
+        );
+
+      record =
+        await _update_send(
+          record,
+          link,
+          'deposit_address',
         );
     }
   } catch (error) {}

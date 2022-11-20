@@ -36,23 +36,26 @@ const log = (
     level = level.toLowerCase();
 
     // generate log message
-    const log_message = `${level === 'error' ?
-      'ERR' :
-      level === 'warn' ?
-        'WARN' :
-        level === 'debug' ?
-          'DBG' :
-          'INF'
-    } [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ?
-      data :
-      typeof data === 'object' ?
-        JSON.stringify(
-          data,
-          null,
-          2,
-        ) :
-        data
-    }`;
+    const log_message =
+      `${
+        level === 'error' ?
+          'ERR' :
+          level === 'warn' ?
+            'WARN' :
+            level === 'debug' ?
+              'DBG' :
+              'INF'
+      } [${from?.toUpperCase()}] ${message}\n${
+        typeof data === 'string' ?
+          data :
+          typeof data === 'object' ?
+            JSON.stringify(
+              data,
+              null,
+              2,
+            ) :
+            data
+      }`;
 
     switch (level) {
       case 'error':
@@ -88,7 +91,10 @@ const equals_ignore_case = (
   a,
   b,
 ) =>
-  (!a && !b) ||
+  (
+    !a &&
+    !b
+  ) ||
   a?.toLowerCase() === b?.toLowerCase();
 
 const capitalize = s =>
@@ -181,38 +187,48 @@ const decode_base64 = s => {
 };
 
 const get_granularity = time => {
-  return time &&
+  return (
+    time &&
     {
-      ms: moment(time)
-        .valueOf(),
-      hour: moment(time)
-        .startOf('hour')
-        .valueOf(),
-      day: moment(time)
-        .startOf('day')
-        .valueOf(),
-      week: moment(time)
-        .startOf('week')
-        .valueOf(),
-      month: moment(time)
-        .startOf('month')
-        .valueOf(),
-      quarter: moment(time)
-        .startOf('quarter')
-        .valueOf(),
-      year: moment(time)
-        .startOf('year')
-        .valueOf(),
-    };
+      ms:
+        moment(time)
+          .valueOf(),
+      hour:
+        moment(time)
+          .startOf('hour')
+          .valueOf(),
+      day:
+        moment(time)
+          .startOf('day')
+          .valueOf(),
+      week:
+        moment(time)
+          .startOf('week')
+          .valueOf(),
+      month:
+        moment(time)
+          .startOf('month')
+          .valueOf(),
+      quarter:
+        moment(time)
+          .startOf('quarter')
+          .valueOf(),
+      year:
+        moment(time)
+          .startOf('year')
+          .valueOf(),
+    }
+  );
 };
 
 const normalize_original_chain = chain => {
   if (chain) {
-    chain = chain
-      .trim()
-      .toLowerCase()
-      .split('"')
-      .join('');
+    chain =
+      chain
+        .trim()
+        .toLowerCase()
+        .split('"')
+        .join('');
   }
 
   return chain;
@@ -222,11 +238,12 @@ const normalize_chain = chain => {
   const regex = /^[0-9.\b]+$/;
 
   if (chain) {
-    chain = chain
-      .trim()
-      .toLowerCase()
-      .split('"')
-      .join('');
+    chain =
+      chain
+        .trim()
+        .toLowerCase()
+        .split('"')
+        .join('');
 
     if (
       chains_data
@@ -237,12 +254,13 @@ const normalize_chain = chain => {
           )
         ) < 0
     ) {
-      chain = chain
-        .split('-')
-        .filter(c =>
-          !regex.test(c)
-        )
-        .join('');
+      chain =
+        chain
+          .split('-')
+          .filter(c =>
+            !regex.test(c)
+          )
+          .join('');
     }
   }
 
@@ -355,28 +373,34 @@ const getProvider = (
   let rpcs =
     _rpcs ||
     rpcUrls;
+
   if (!Array.isArray(rpcs)) {
     rpcs = [rpcs];
   }
-  rpcs = rpcs
-    .filter(url => url);
+
+  rpcs =
+    rpcs
+      .filter(url => url);
   /* end normalize rpcs */
 
-  const provider = rpcs.length > 0 ?
-    rpcs.length === 1 ?
-      new JsonRpcProvider(rpcs[0]) :
-      new FallbackProvider(
-        rpcs
-          .map((url, i) => {
-            return {
-              provider: new JsonRpcProvider(url),
-              priority: i + 1,
-              stallTimeout: 1000,
-            };
-          }),
-        rpcs.length / 3,
-      ) :
-    null;
+  const provider =
+    rpcs.length > 0 ?
+      rpcs.length === 1 ?
+        new JsonRpcProvider(
+          _.head(rpcs)
+        ) :
+        new FallbackProvider(
+          rpcs
+            .map((url, i) => {
+              return {
+                provider: new JsonRpcProvider(url),
+                priority: i + 1,
+                stallTimeout: 1000,
+              };
+            }),
+          rpcs.length / 3,
+        ) :
+      null;
 
   return provider;
 };

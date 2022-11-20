@@ -8,22 +8,23 @@ module.exports = async (
   } = { ...lcd_response };
 
   try {
-    const hashes = tx_responses
-      .filter(t =>
-        !t?.code &&
-        [
-          'RouteIBCTransfersRequest',
-          'MsgAcknowledgement',
-          'MsgTimeout',
-          'ExecutePendingTransfersRequest',
-        ].findIndex(s =>
-          (t?.tx?.body?.messages || [])
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
-        ) > -1
-      )
-      .map(t => t.txhash);
+    const hashes =
+      tx_responses
+        .filter(t =>
+          !t?.code &&
+          [
+            'RouteIBCTransfersRequest',
+            'MsgAcknowledgement',
+            'MsgTimeout',
+            'ExecutePendingTransfersRequest',
+          ].findIndex(s =>
+            (t?.tx?.body?.messages || [])
+              .findIndex(m =>
+                m?.['@type']?.includes(s)
+              ) > -1
+          ) > -1
+        )
+        .map(t => t.txhash);
 
     if (hashes.length > 0) {
       for (let i = 0; i < hashes.length; i++) {

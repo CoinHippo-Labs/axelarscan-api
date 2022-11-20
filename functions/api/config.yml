@@ -60,16 +60,17 @@ mainnet:
       vesting_period: "day"
       vesting_start: "2022-12-27"
       vesting_until: "2026-12-27"
-  percent_diff_escrow_supply_threshold: 5.0
-  percent_diff_total_supply_threshold: 5.0
-  alert_asset_value_threshold: 3000000
+  tvl:
+    percent_diff_escrow_supply_threshold: 5.0
+    percent_diff_total_supply_threshold: 5.0
+    alert_asset_value_threshold: 3000000
   gateway:
     chains:
       ethereum:
         endpoints:
           rpc:
-            - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
             - "https://rpc.ankr.com/eth"
+            - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
       binance:
         endpoints:
           rpc:
@@ -103,8 +104,8 @@ mainnet:
       arbitrum:
         endpoints:
           rpc:
-            - "https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
             - "https://rpc.ankr.com/arbitrum"
+            - "https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
             - "https://arb1.arbitrum.io/rpc"
       optimism:
         endpoints:
@@ -197,27 +198,29 @@ testnet:
       vesting_period: "day"
       vesting_start: "2022-12-27"
       vesting_until: "2026-12-27"
-  percent_diff_escrow_supply_threshold: 5.0
-  percent_diff_total_supply_threshold: 5.0
-  alert_asset_value_threshold: 3000000
+  tvl:
+    percent_diff_escrow_supply_threshold: 5.0
+    percent_diff_total_supply_threshold: 5.0
+    alert_asset_value_threshold: 3000000
   gateway:
     chains:
       ethereum-2:
         endpoints:
           rpc:
-            - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
             - "https://rpc.ankr.com/eth_goerli"
+            - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
       binance:
         endpoints:
           rpc:
+            - "https://rpc.ankr.com/bsc_testnet_chapel"
             - "https://data-seed-prebsc-1-s1.binance.org:8545"
             - "https://data-seed-prebsc-2-s1.binance.org:8545"
             - "https://data-seed-prebsc-1-s2.binance.org:8545"
       polygon:
         endpoints:
           rpc:
-            - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
             - "https://rpc.ankr.com/polygon_mumbai"
+            - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
             - "https://matic-mumbai.chainstacklabs.com"
       avalanche:
         endpoints:

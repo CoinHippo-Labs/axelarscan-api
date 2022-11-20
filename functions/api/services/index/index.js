@@ -195,28 +195,29 @@ const crud = async (
           } catch (error) {}
         }
         else {
-          response = await (
-            path.includes('_update') ?
-              indexer
-                .post(
-                  path,
-                  { doc: params },
-                  { auth },
-                ) :
-              indexer
-                .put(
-                  path,
-                  params,
-                  { auth },
-                )
-          )
-          .catch(error => {
-            return {
-              data: {
-                error,
-              },
-            };
-          });
+          response =
+            await (
+              path.includes('_update') ?
+                indexer
+                  .post(
+                    path,
+                    { doc: params },
+                    { auth },
+                  ) :
+                indexer
+                  .put(
+                    path,
+                    params,
+                    { auth },
+                  )
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
 
           const {
             error,
@@ -224,15 +225,16 @@ const crud = async (
 
           // retry with update / insert
           if (error) {
-            path = path
-              .replace(
-                path.includes('_doc') ?
-                  '_doc' :
-                  '_update',
-                path.includes('_doc') ?
-                  '_update' :
-                  '_doc',
-              );
+            path =
+              path
+                .replace(
+                  path.includes('_doc') ?
+                    '_doc' :
+                    '_update',
+                  path.includes('_doc') ?
+                    '_update' :
+                    '_doc',
+                );
 
             if (
               update_only &&
@@ -258,36 +260,38 @@ const crud = async (
               } = { ..._response?.data };
 
               if (_source) {
-                path = path
-                  .replace(
-                    '_doc',
-                    '_update',
-                  );
+                path =
+                  path
+                    .replace(
+                      '_doc',
+                      '_update',
+                    );
               }
             }
 
-            response = await (
-              path.includes('_update') ?
-                indexer
-                  .post(
-                    path,
-                    { doc: params },
-                    { auth },
-                  ) :
-                indexer
-                  .put(
-                    path,
-                    params,
-                    { auth },
-                  )
-            )
-            .catch(error => {
-              return {
-                data: {
-                  error,
-                },
-              };
-            });
+            response =
+              await (
+                path.includes('_update') ?
+                  indexer
+                    .post(
+                      path,
+                      { doc: params },
+                      { auth },
+                    ) :
+                  indexer
+                    .put(
+                      path,
+                      params,
+                      { auth },
+                    )
+              )
+              .catch(error => {
+                return {
+                  data: {
+                    error,
+                  },
+                };
+              });
           }
         }
         break;

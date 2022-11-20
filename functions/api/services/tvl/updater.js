@@ -37,7 +37,7 @@ module.exports = async context => {
       assets_data
         .map(a =>
           new Promise(
-            async (resolve, reject) => {
+            async resolve => {
               const {
                 id,
               } = { ...a };

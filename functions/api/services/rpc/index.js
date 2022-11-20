@@ -210,34 +210,36 @@ module.exports = async (
                   to_json(log) ||
                   log;
 
-                events = (events || [])
-                  .map(e => {
-                    let {
-                      attributes,
-                    } = { ...e };
+                events =
+                  (events || [])
+                    .map(e => {
+                      let {
+                        attributes,
+                      } = { ...e };
 
-                    attributes = (attributes || [])
-                      .map(a => {
-                        let {
-                          key,
-                          value,
-                        } = { ...a };
+                      attributes =
+                        (attributes || [])
+                          .map(a => {
+                            let {
+                              key,
+                              value,
+                            } = { ...a };
 
-                        key = decode_base64(key);
-                        value = decode_base64(value);
+                            key = decode_base64(key);
+                            value = decode_base64(value);
 
-                        return {
-                          ...a,
-                          key,
-                          value,
-                        };
-                      });
+                            return {
+                              ...a,
+                              key,
+                              value,
+                            };
+                          });
 
-                    return {
-                      ...e,
-                      attributes,
-                    };
-                  });
+                      return {
+                        ...e,
+                        attributes,
+                      };
+                    });
 
                 return {
                   ...t,
@@ -253,22 +255,23 @@ module.exports = async (
                   attributes,
                 } = { ...e };
 
-                attributes = (attributes || [])
-                  .map(a => {
-                    let {
-                      key,
-                      value,
-                    } = { ...a };
+                attributes =
+                  (attributes || [])
+                    .map(a => {
+                      let {
+                        key,
+                        value,
+                      } = { ...a };
 
-                    key = decode_base64(key);
-                    value = decode_base64(value);
+                      key = decode_base64(key);
+                      value = decode_base64(value);
 
-                    return {
-                      ...a,
-                      key,
-                      value,
-                    };
-                  });
+                      return {
+                        ...a,
+                        key,
+                        value,
+                      };
+                    });
 
                 return {
                   ...e,
@@ -283,22 +286,23 @@ module.exports = async (
                   attributes,
                 } = { ...e };
 
-                attributes = (attributes || [])
-                  .map(a => {
-                    let {
-                      key,
-                      value,
-                    } = { ...a };
+                attributes =
+                  (attributes || [])
+                    .map(a => {
+                      let {
+                        key,
+                        value,
+                      } = { ...a };
 
-                    key = decode_base64(key);
-                    value = decode_base64(value);
+                      key = decode_base64(key);
+                      value = decode_base64(value);
 
-                    return {
-                      ...a,
-                      key,
-                      value,
-                    };
-                  });
+                      return {
+                        ...a,
+                        key,
+                        value,
+                      };
+                    });
 
                 return {
                   ...e,

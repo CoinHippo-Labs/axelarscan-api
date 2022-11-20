@@ -12,8 +12,8 @@ module.exports = {
             chainId: '0x1',
             chainName: 'Ethereum',
             rpcUrls: [
-              'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://rpc.ankr.com/eth',
+              'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
             ],
             nativeCurrency: {
               name: 'Ethereum',
@@ -286,8 +286,8 @@ module.exports = {
             chainId: '0xa4b1',
             chainName: 'Arbitrum',
             rpcUrls: [
-              'https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://rpc.ankr.com/arbitrum',
+              'https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://arb1.arbitrum.io/rpc',
             ],
             nativeCurrency: {
@@ -1218,8 +1218,8 @@ module.exports = {
             chainId: '0x13881',
             chainName: 'Polygon Mumbai',
             rpcUrls: [
-              'https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://rpc.ankr.com/polygon_mumbai',
+              'https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://matic-mumbai.chainstacklabs.com',
             ],
             nativeCurrency: {

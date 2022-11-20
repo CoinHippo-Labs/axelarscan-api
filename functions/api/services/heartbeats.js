@@ -54,22 +54,24 @@ module.exports = async (
     };
   }
 
-  return await read(
-    'heartbeats',
-    query,
-    {
-      from:
-        typeof from === 'number' ?
-          from :
-          0,
-      size:
-        typeof size === 'number' ?
-          size :
-          200,
-      sort:
-        sort ||
-        [{ period_height: 'desc' }],
-      track_total_hits: true,
-    },
+  return (
+    await read(
+      'heartbeats',
+      query,
+      {
+        from:
+          typeof from === 'number' ?
+            from :
+            0,
+        size:
+          typeof size === 'number' ?
+            size :
+            200,
+        sort:
+          sort ||
+          [{ period_height: 'desc' }],
+        track_total_hits: true,
+      },
+    )
   );
 };

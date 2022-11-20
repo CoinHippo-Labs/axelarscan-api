@@ -14,6 +14,10 @@ const {
   saveTimeSpent,
   update_link,
   update_source,
+  normalize_link,
+  _update_link,
+  _update_send,
+  save_time_spent,
 } = require('../../transfers/utils');
 const {
   sleep,
@@ -149,6 +153,48 @@ module.exports = async (
         '',
       );
 
+    let created_at =
+      moment(timestamp)
+        .utc()
+        .valueOf();
+
+    const deposit_address =
+      to_hex(
+        messages
+          .find(m =>
+            m?.deposit_address
+          )?.deposit_address ||
+        (attributes || [])
+          .find(a =>
+            [
+              'deposit_address',
+              'depositAddress',
+            ].includes(a?.key)
+          )?.value
+      );
+
+    const token_address =
+      to_hex(
+        (attributes || [])
+          .find(a =>
+            [
+              'token_address',
+              'tokenAddress',
+            ].includes(a?.key)
+          )?.value
+      );
+
+    const asset =
+      (
+        (attributes || [])
+          .find(a =>
+            a?.key === 'asset'
+          )?.value ||
+        ''
+      )
+      .split('"')
+      .join('');
+
     const poll_id =
       to_json(
         (attributes || [])
@@ -163,34 +209,11 @@ module.exports = async (
           )?.value
       )?.id;
 
-    let created_at =
-      moment(timestamp)
-        .utc()
-        .valueOf();
-
-    const token_address =
-      to_hex(
+    let transfer_id =
+      Number(
         (attributes || [])
           .find(a =>
-            [
-              'token_address',
-              'tokenAddress',
-            ].includes(a?.key)
-          )?.value
-      );
-
-    const deposit_address =
-      to_hex(
-        messages
-          .find(m =>
-            m?.deposit_address
-          )?.deposit_address ||
-        (attributes || [])
-          .find(a =>
-            [
-              'deposit_address',
-              'depositAddress',
-            ].includes(a?.key)
+            a?.key === 'transferID'
           )?.value
       );
 
@@ -213,108 +236,20 @@ module.exports = async (
       transaction_id = null;
     }
 
-    const asset =
-      (
-        (attributes || [])
-          .find(a =>
-            a?.key === 'asset'
-          )?.value ||
-        ''
-      )
-      .split('"')
-      .join('');
-
     const {
       participants,
     } = {
-      ...to_json(
-        (attributes || [])
-          .find(a =>
-            a?.key === 'participants'
-          )?.value
+      ...(
+        to_json(
+          (attributes || [])
+            .find(a =>
+              a?.key === 'participants'
+            )?.value
+        )
       ),
     };
 
-    const record = {
-      id: txhash,
-      type,
-      status_code: code,
-      status: code ?
-        'failed' :
-        'success',
-      height,
-      created_at: get_granularity(created_at),
-      user: messages
-        .find(m =>
-          m?.sender
-        )?.sender,
-      module:
-        (attributes || [])
-          .find(a =>
-            a?.key === 'module'
-          )?.value ||
-        (type === 'ConfirmDeposit' ?
-          axelarnet.id :
-          'evm'
-        ),
-      sender_chain:
-        normalize_chain(
-          messages
-            .find(m =>
-              m?.chain
-            )?.chain ||
-          (attributes || [])
-            .find(a =>
-              [
-                'sourceChain',
-                'chain',
-              ].includes(a?.key)
-            )?.value
-        ),
-      recipient_chain:
-        normalize_chain(
-          (attributes || [])
-            .find(a =>
-              [
-                'destinationChain',
-              ].includes(a?.key)
-            )?.value
-        ),
-      deposit_address,
-      token_address,
-      amount:
-        (attributes || [])
-          .find(a =>
-            a?.key === 'amount'
-          )?.value,
-      denom:
-        tx_response.denom ||
-        messages
-          .find(m =>
-            m?.denom
-          )?.denom ||
-        asset,
-      transfer_id:
-        Number(
-          (attributes || [])
-            .find(a =>
-              a?.key === 'transferID'
-            )?.value
-        ),
-      poll_id,
-      transaction_id,
-      participants,
-    };
-
-    const {
-      id,
-      status_code,
-    } = { ...record };
-    let {
-      recipient_chain,
-      transfer_id,
-    } = { ...record };
-
+    // transfer
     if (
       id &&
       !status_code &&
@@ -323,6 +258,81 @@ module.exports = async (
         transfer_id
       )
     ) {
+      const record = {
+        id: txhash,
+        type,
+        status_code: code,
+        status:
+          code ?
+            'failed' :
+            'success',
+        height,
+        created_at: get_granularity(created_at),
+        user:
+          messages
+            .find(m =>
+              m?.sender
+            )?.sender,
+        module:
+          (attributes || [])
+            .find(a =>
+              a?.key === 'module'
+            )?.value ||
+          (type === 'ConfirmDeposit' ?
+            axelarnet.id :
+            'evm'
+          ),
+        sender_chain:
+          normalize_chain(
+            messages
+              .find(m =>
+                m?.chain
+              )?.chain ||
+            (attributes || [])
+              .find(a =>
+                [
+                  'sourceChain',
+                  'chain',
+                ].includes(a?.key)
+              )?.value
+          ),
+        recipient_chain:
+          normalize_chain(
+            (attributes || [])
+              .find(a =>
+                [
+                  'destinationChain',
+                ].includes(a?.key)
+              )?.value
+          ),
+        deposit_address,
+        token_address,
+        amount:
+          (attributes || [])
+            .find(a =>
+              a?.key === 'amount'
+            )?.value,
+        denom:
+          tx_response.denom ||
+          messages
+            .find(m =>
+              m?.denom
+            )?.denom ||
+          asset,
+        poll_id,
+        transfer_id,
+        transaction_id,
+        participants,
+      };
+
+      const {
+        id,
+        status_code,
+      } = { ...record };
+      let {
+        recipient_chain,
+      } = { ...record };
+
       if (
         poll_id &&
         !(
@@ -337,16 +347,16 @@ module.exports = async (
           );
 
         if (_response) {
-          transaction_id =
-            _response.transaction_id ||
-            transaction_id;
-
           transfer_id =
             _response.transfer_id ||
             transfer_id;
 
-          record.transaction_id = transaction_id;
+          transaction_id =
+            _response.transaction_id ||
+            transaction_id;
+
           record.transfer_id = transfer_id;
+          record.transaction_id = transaction_id;
         }
       }
 
@@ -355,7 +365,6 @@ module.exports = async (
           try {
             if (!recipient_chain) {
               const _response =
-                !recipient_chain &&
                 await read(
                   'deposit_addresses',
                   {
@@ -396,9 +405,13 @@ module.exports = async (
                     bool: {
                       must: [
                         { match: { chain: recipient_chain } },
-                        { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
                         { match: { command_ids: command_id } },
                       ],
+                      should: [
+                        { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNING' } },
+                        { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                      ],
+                      minimum_should_match: 1,
                     },
                   },
                   {
@@ -484,7 +497,7 @@ module.exports = async (
                       },
                     );
 
-                  const command_event = _.head(__response?.data);
+                  const command_event = _.head(_response?.data);
 
                   if (command_event) {
                     transactionHash = command_event.transactionHash;
@@ -540,13 +553,14 @@ module.exports = async (
               );
 
             let {
-              data
+              data,
             } = { ..._response };
 
-            data = (data || [])
-              .filter(t =>
-                t?.source?.id
-              );
+            data =
+              (data || [])
+                .filter(t =>
+                  t?.source?.id
+                );
 
             if (
               data.length < 1 &&
@@ -573,10 +587,11 @@ module.exports = async (
                   },
                 );
 
-              data = (_response?.data || [])
-                .filter(t =>
-                  t?.source?.id
-                );
+              data =
+                (_response?.data || [])
+                  .filter(t =>
+                    t?.source?.id
+                  );
             }
 
             for (const d of data) {
@@ -857,6 +872,634 @@ module.exports = async (
           break;
         default:
           break;
+      }
+    }
+
+    // cross-chain transfer
+    if (
+      txhash &&
+      !code
+    ) {
+      if (
+        poll_id &&
+        !(
+          transfer_id &&
+          transaction_id
+        )
+      ) {
+        const _response =
+          await get(
+            'evm_polls',
+            poll_id,
+          );
+
+        if (_response) {
+          transfer_id =
+            _response.transfer_id ||
+            transfer_id;
+
+          transaction_id =
+            _response.transaction_id ||
+            transaction_id;
+        }
+      }
+
+      if (
+        poll_id ||
+        transfer_id
+      ) {
+        const record = {
+          txhash,
+          height,
+          status:
+            code ?
+              'failed' :
+              'success',
+          type,
+          created_at: get_granularity(created_at),
+          source_chain:
+            normalize_chain(
+              messages
+                .find(m =>
+                  m?.chain
+                )?.chain ||
+              (attributes || [])
+                .find(a =>
+                  [
+                    'sourceChain',
+                    'chain',
+                  ].includes(a?.key)
+                )?.value
+            ),
+          destination_chain:
+            normalize_chain(
+              (attributes || [])
+                .find(a =>
+                  [
+                    'destinationChain',
+                  ].includes(a?.key)
+                )?.value
+            ),
+          deposit_address,
+          token_address,
+          denom:
+            tx_response.denom ||
+            messages
+              .find(m =>
+                m?.denom
+              )?.denom ||
+            asset,
+          amount:
+            (attributes || [])
+              .find(a =>
+                a?.key === 'amount'
+              )?.value,
+          poll_id,
+          transfer_id,
+          transaction_id,
+          participants,
+        };
+
+        let {
+          destination_chain,
+        } = { ...record };
+
+        switch (type) {
+          case 'ConfirmDeposit':
+            try {
+              // get destination chain from link
+              if (!destination_chain) {
+                const _response =
+                  await read(
+                    'deposit_addresses',
+                    {
+                      match: { deposit_address },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                const link =
+                  normalize_link(
+                    _.head(
+                      _response?.data
+                    ),
+                  );
+
+                destination_chain =
+                  normalize_chain(
+                    link?.destination_chain ||
+                    destination_chain
+                  );
+              }
+
+              // command data in evm batch
+              let command;
+
+              if (
+                destination_chain &&
+                transfer_id
+              ) {
+                const command_id =
+                  transfer_id
+                    .toString(16)
+                    .padStart(
+                      64,
+                      '0',
+                    );
+
+                const _response =
+                  await read(
+                    'batches',
+                    {
+                      bool: {
+                        must: [
+                          { match: { chain: destination_chain } },
+                          { match: { command_ids: command_id } },
+                        ],
+                        should: [
+                          { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNING' } },
+                          { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                const batch =
+                  _.head(
+                    _response?.data
+                  );
+
+                if (batch) {
+                  const {
+                    batch_id,
+                    commands,
+                    created_at,
+                  } = { ...batch };
+
+                  const command_data = (commands || [])
+                    .find(c =>
+                      c?.id === command_id
+                    );
+
+                  let {
+                    executed,
+                    transactionHash,
+                    transactionIndex,
+                    logIndex,
+                    block_timestamp,
+                  } = { ...command_data };
+
+                  if (!transactionHash) {
+                    const _response =
+                      await read(
+                        'command_events',
+                        {
+                          bool: {
+                            must: [
+                              { match: { chain: destination_chain } },
+                              { match: { command_id } },
+                            ],
+                          },
+                        },
+                        {
+                          size: 1,
+                        },
+                      );
+
+                    const command_event =
+                      _.head(
+                        _response?.data
+                      );
+
+                    if (command_event) {
+                      transactionHash = command_event.transactionHash;
+                      transactionIndex = command_event.transactionIndex;
+                      logIndex = command_event.logIndex;
+                      block_timestamp = command_event.block_timestamp;
+
+                      if (transactionHash) {
+                        executed = true;
+                      }
+                    }
+                  }
+
+                  executed =
+                    executed ||
+                    !!transactionHash;
+
+                  if (!executed) {
+                    const chain_data = evm_chains_data
+                      .find(c =>
+                        equals_ignore_case(
+                          c?.id,
+                          destination_chain,
+                        )
+                      );
+
+                    const {
+                      chain_id,
+                      gateway_address,
+                    } = { ...chain_data };
+
+                    if (gateway_address) {
+                      try {
+                        const gateway_contract =
+                          new Contract(
+                            gateway_address,
+                            IAxelarGateway.abi,
+                            getProvider(chain_data),
+                          );
+
+                        executed =
+                          await gateway_contract
+                            .isCommandExecuted(
+                              `0x${command_id}`,
+                            );
+                      } catch (error) {}
+                    }
+                  }
+
+                  command = {
+                    chain: destination_chain,
+                    command_id,
+                    transfer_id,
+                    batch_id,
+                    created_at,
+                    executed,
+                    transactionHash,
+                    transactionIndex,
+                    logIndex,
+                    block_timestamp,
+                  };
+                }
+              }
+
+              const _response =
+                await read(
+                  'cross_chain_transfers',
+                  {
+                    bool: {
+                      must: [
+                        { exists: { field: 'send.txhash' } },
+                        { match: { 'send.status': 'success' } },
+                        { range: { 'send.created_at.ms': { lte: created_at } } },
+                        { match: { 'send.recipient_address': deposit_address } },
+                      ],
+                      should: [
+                        { range: { 'confirm.created_at.ms': { gt: created_at } } },
+                        {
+                          bool: {
+                            must_not: [
+                              { exists: { field: 'confirm' } },
+                            ],
+                          },
+                        },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                  {
+                    size: 25,
+                  },
+                );
+
+              let {
+                data,
+              } = { ..._response };
+
+              if (
+                command &&
+                (data || [])
+                  .length < 1
+              ) {
+                const _response =
+                  await read(
+                    'cross_chain_transfers',
+                    {
+                      bool: {
+                        must: [
+                          { exists: { field: 'send.txhash' } },
+                          { match: { 'send.status': 'success' } },
+                          { match: { 'send.recipient_address': deposit_address } },
+                        ],
+                        should: [
+                          { match: { 'confirm.transfer_id': transfer_id } },
+                          { match: { 'vote.transfer_id': transfer_id } },
+                          { match: { transfer_id } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
+                    {
+                      size: 25,
+                    },
+                  );
+
+                data =
+                  _response?.data ||
+                  [];
+              }
+
+              for (const d of data) {
+                let {
+                  send,
+                  link,
+                } = { ...d };
+                const {
+                  txhash,
+                  sender_address,
+                } = { ...send };
+                let {
+                  source_chain,
+                } = { ...send };
+
+                source_chain =
+                  normalize_chain(
+                    cosmos_non_axelarnet_chains_data
+                      .find(c =>
+                        sender_address?.startsWith(c?.prefix_address)
+                      )?.id ||
+                    source_chain ||
+                    record.source_chain
+                  );
+
+                send.source_chain = source_chain;
+                send.destination_chain = destination_chain;
+
+                link =
+                  await _update_link(
+                    link,
+                    send,
+                  );
+
+                send =
+                  await _update_send(
+                    send,
+                    link,
+                    'deposit_address',
+                    true,
+                  );
+
+                if (source_chain) {
+                  const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+                  await sleep(0.5 * 1000);
+
+                  await write(
+                    'cross_chain_transfers',
+                    _id,
+                    {
+                      ...d,
+                      type: 'deposit_address',
+                      send,
+                      link,
+                      confirm: record,
+                      command:
+                        command ||
+                        undefined,
+                    },
+                  );
+
+                  await save_time_spent(
+                    _id,
+                  );
+                }
+              }
+            } catch (error) {}
+            break;
+          case 'ConfirmERC20Deposit':
+            try {
+              const {
+                source_chain,
+                destination_chain,
+                deposit_address,
+                token_address,
+                transaction_id,
+              } = { ...record };
+              let {
+                denom,
+                amount,
+              } = { ...record };
+
+              if (transaction_id) {
+                const chain_data = evm_chains_data
+                  .find(c =>
+                    equals_ignore_case(
+                      c?.id,
+                      source_chain,
+                    )
+                  );
+
+                const {
+                  chain_id,
+                } = { ...chain_data };
+
+                if (chain_id) {
+                  const provider = getProvider(chain_data);
+
+                  if (provider) {
+                    const transaction =
+                      await provider
+                        .getTransaction(
+                          transaction_id,
+                        );
+
+                    const {
+                      blockNumber,
+                      from,
+                      to,
+                      input,
+                    } = { ...transaction };
+
+                    if (blockNumber) {
+                      let _amount;
+
+                      const asset_data = assets_data
+                        .find(a =>
+                          (a?.contracts || [])
+                            .findIndex(c =>
+                              c?.chain_id === chain_id &&
+                              [
+                                to,
+                                token_address,
+                              ].findIndex(_a =>
+                                equals_ignore_case(
+                                  c?.contract_address,
+                                  _a,
+                                )
+                              ) > -1
+                            ) > -1
+                        );
+
+                      if (!asset_data) {
+                        const receipt =
+                          await provider
+                            .getTransactionReceipt(
+                              transaction_id,
+                            );
+
+                        const {
+                          logs,
+                        } = { ...receipt };
+
+                        _amount =
+                          _.head(
+                            (logs || [])
+                              .map(l => l?.data)
+                              .filter(d =>
+                                d?.length >= 64
+                              )
+                              .map(d =>
+                                d
+                                  .substring(
+                                    d.length - 64,
+                                  )
+                                  .replace(
+                                    '0x',
+                                    '',
+                                  )
+                                  .replace(
+                                    /^0+/,
+                                    '',
+                                  )
+                              )
+                              .filter(d => {
+                                try {
+                                  d =
+                                    BigNumber.from(
+                                      `0x${d}`
+                                    );
+
+                                  return true;
+                                } catch (error) {
+                                  return false;
+                                }
+                              })
+                          );
+                      }
+
+                      denom =
+                        asset_data?.id ||
+                        denom;
+
+                      amount =
+                        BigNumber.from(
+                          `0x${
+                            (transaction.data || '')
+                              .substring(
+                                10 + 64,
+                              ) ||
+                            (input || '')
+                              .substring(
+                                10 + 64
+                              ) ||
+                            _amount ||
+                            '0'
+                          }`
+                        )
+                        .toString() ||
+                        amount;
+
+                      const block_timestamp =
+                        await getBlockTime(
+                          provider,
+                          blockNumber,
+                        );
+
+                      if (block_timestamp) {
+                        created_at = block_timestamp * 1000;
+                      }
+
+                      let send = {
+                        txhash: transaction_id,
+                        height: blockNumber,
+                        status: 'success',
+                        type: 'evm_transfer',
+                        created_at: get_granularity(created_at),
+                        source_chain,
+                        destination_chain,
+                        sender_address: from,
+                        recipient_address: deposit_address,
+                        denom,
+                        amount,
+                      };
+
+                      const _response =
+                        await read(
+                          'deposit_addresses',
+                          {
+                            match: { deposit_address },
+                          },
+                          {
+                            size: 1,
+                          },
+                        );
+
+                      let link =
+                        _.head(
+                          _response?.data
+                        );
+
+                      link =
+                        await _update_link(
+                          link,
+                          send,
+                        );
+
+                      send =
+                        await _update_send(
+                          send,
+                          link,
+                        );
+
+                      if (
+                        send.txhash &&
+                        send.source_chain
+                      ) {
+                        const {
+                          txhash,
+                          source_chain,
+                        } = { ...send };
+
+                        const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+                        await sleep(0.5 * 1000);
+
+                        await write(
+                          'cross_chain_transfers',
+                          _id,
+                          {
+                            type: 'deposit_address',
+                            send: {
+                              ...send,
+                              amount,
+                            },
+                            link:
+                              link ||
+                              undefined,
+                            confirm: record,
+                          },
+                        );
+
+                        await save_time_spent(
+                          _id,
+                        );
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (error) {}
+            break;
+          default:
+            break;
+        }
       }
     }
   } catch (error) {}

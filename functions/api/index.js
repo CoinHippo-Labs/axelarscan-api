@@ -47,11 +47,12 @@ exports.handler = async (
 
   // parse function event to req
   const req = {
-    url: (event.routeKey || '')
-      .replace(
-        'ANY ',
-        '',
-      ),
+    url:
+      (event.routeKey || '')
+        .replace(
+          'ANY ',
+          '',
+        ),
     method: event.requestContext?.http?.method,
     headers: event.headers,
     params: {
@@ -306,15 +307,16 @@ exports.handler = async (
           };
           break;
         case 'assets':
-          response = assets_data
-            .map(a =>
-              Object.fromEntries(
-                Object.entries({ ...a })
-                  .filter(([k, v]) =>
-                    !['coingecko_id'].includes(k)
-                  )
-              )
-            );
+          response =
+            assets_data
+              .map(a =>
+                Object.fromEntries(
+                  Object.entries({ ...a })
+                    .filter(([k, v]) =>
+                      !['coingecko_id'].includes(k)
+                    )
+                )
+              );
           break;
         case 'tvl':
           try {

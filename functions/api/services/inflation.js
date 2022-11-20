@@ -19,8 +19,11 @@ module.exports = async (
 ) => {
   let response;
 
-  const _evm_chains_data = evm_chains_data
-    .filter(c => !c?.no_inflation);
+  const _evm_chains_data =
+    evm_chains_data
+      .filter(c =>
+        !c?.no_inflation
+      );
 
   let {
     uptimeRate,
