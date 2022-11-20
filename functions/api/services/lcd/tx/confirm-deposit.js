@@ -251,8 +251,8 @@ module.exports = async (
 
     // transfer
     if (
-      id &&
-      !status_code &&
+      txhash &&
+      !code &&
       (
         poll_id ||
         transfer_id

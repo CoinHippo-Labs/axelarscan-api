@@ -102,242 +102,240 @@ module.exports = async (
       provider,
     );
 
-  if (chain_id) {
-    chain =
-      chain_data.id ||
-      chain;
+  chain =
+    chain_data?.id ||
+    chain;
 
-    const _response =
-      await read(
-        'batches',
-        {
-          match_phrase: { batch_id },
-        },
-        {
-          size: 1,
-        },
-      );
+  const _response =
+    await read(
+      'batches',
+      {
+        match_phrase: { batch_id },
+      },
+      {
+        size: 1,
+      },
+    );
 
-    let {
-      commands,
-    } = {
-      ...(
-        _.head(
-          _response?.data
-        )
-      ),
-    };
+  let {
+    commands,
+  } = {
+    ...(
+      _.head(
+        _response?.data
+      )
+    ),
+  };
 
-    commands =
-      commands ||
-      [];
+  commands =
+    commands ||
+    [];
 
-    if (command_ids) {
-      const _commands = _.cloneDeep(commands);
+  if (command_ids) {
+    const _commands = _.cloneDeep(commands);
 
-      for (const command_id of command_ids) {
-        if (command_id) {
-          const index = commands
-            .findIndex(c =>
-              equals_ignore_case(
-                c?.id,
-                command_id,
-              )
+    for (const command_id of command_ids) {
+      if (command_id) {
+        const index = commands
+          .findIndex(c =>
+            equals_ignore_case(
+              c?.id,
+              command_id,
+            )
+          );
+
+        let command = commands[index];
+
+        if (!command) {
+          const _response =
+            await cli(
+              '',
+              {
+                cmd: `axelard q evm command ${chain} ${command_id} -oj`,
+              },
             );
 
-          let command = commands[index];
+          command =
+            to_json(
+              _response?.stdout
+            );
+        }
 
-          if (!command) {
-            const _response =
-              await cli(
-                '',
-                {
-                  cmd: `axelard q evm command ${chain} ${command_id} -oj`,
-                },
-              );
+        if (command) {
+          let {
+            executed,
+            deposit_address,
+          } = { ...command };
+          const {
+            salt,
+          } = { ...command.params };
 
-            command =
-              to_json(
-                _response?.stdout
-              );
+          if (!executed) {
+            try {
+              if (gateway_contract) {
+                executed =
+                  await gateway_contract
+                    .isCommandExecuted(
+                      `0x${command_id}`,
+                    );
+              }
+            } catch (error) {}
           }
 
-          if (command) {
-            let {
-              executed,
-              deposit_address,
-            } = { ...command };
-            const {
-              salt,
-            } = { ...command.params };
+          if (
+            !deposit_address &&
+            salt &&
+            (
+              command_ids.length < 15 ||
+              _commands
+                .filter(c =>
+                  c?.salt &&
+                  !c.deposit_address
+                ).length < 15 ||
+              Math.random(
+                0,
+                1,
+              ) < 0.3
+            )
+          ) {
+            try {
+              const asset_data = assets_data
+                .find(a =>
+                  (a?.contracts || [])
+                    .findIndex(c =>
+                      c?.chain_id === chain_id &&
+                      !c.is_native
+                    ) > -1
+                );
 
-            if (!executed) {
-              try {
-                if (gateway_contract) {
-                  executed =
-                    await gateway_contract
-                      .isCommandExecuted(
-                        `0x${command_id}`,
-                      );
-                }
-              } catch (error) {}
-            }
+              const {
+                contracts,
+              } = { ...asset_data };
 
-            if (
-              !deposit_address &&
-              salt &&
-              (
-                command_ids.length < 15 ||
-                _commands
-                  .filter(c =>
-                    c?.salt &&
-                    !c.deposit_address
-                  ).length < 15 ||
-                Math.random(
-                  0,
-                  1,
-                ) < 0.3
-              )
-            ) {
-              try {
-                const asset_data = assets_data
-                  .find(a =>
-                    (a?.contracts || [])
-                      .findIndex(c =>
-                        c?.chain_id === chain_id &&
-                        !c.is_native
-                      ) > -1
-                  );
+              const contract_data = (contracts || [])
+                .find(c =>
+                  c?.chain_id === chain_id
+                );
 
-                const {
-                  contracts,
-                } = { ...asset_data };
+              const {
+                contract_address,
+              } = { ...contract_data };
 
-                const contract_data = (contracts || [])
-                  .find(c =>
-                    c?.chain_id === chain_id
-                  );
-
-                const {
+              const erc20_contract =
+                contract_address &&
+                new Contract(
                   contract_address,
-                } = { ...contract_data };
+                  IBurnableMintableCappedERC20.abi,
+                  provider,
+                );
 
-                const erc20_contract =
-                  contract_address &&
-                  new Contract(
-                    contract_address,
-                    IBurnableMintableCappedERC20.abi,
-                    provider,
-                  );
-
-                if (erc20_contract) {
-                  deposit_address =
-                    await erc20_contract
-                      .depositAddress(
-                        salt,
-                      );
-                }
-              } catch (error) {}
-            }
-
-            command = {
-              ...command,
-              executed,
-              deposit_address,
-            };
+              if (erc20_contract) {
+                deposit_address =
+                  await erc20_contract
+                    .depositAddress(
+                      salt,
+                    );
+              }
+            } catch (error) {}
           }
 
-          if (index > -1) {
-            commands[index] = command;
-          }
-          else {
-            commands.push(command);
-          }
+          command = {
+            ...command,
+            executed,
+            deposit_address,
+          };
+        }
+
+        if (index > -1) {
+          commands[index] = command;
+        }
+        else {
+          commands.push(command);
         }
       }
     }
+  }
 
-    commands =
-      commands
-        .filter(c => c);
+  commands =
+    commands
+      .filter(c => c);
 
-    if (
-      commands
-        .findIndex(c =>
-          !c.transactionHash
-        ) > -1
-    ) {
-      const _response =
-        await read(
-          'command_events',
-          {
-            bool: {
-              must: [
-                { match: { chain } },
-              ],
-              should:
-                _.concat(
-                  { match_phrase: { batch_id } },
-                  commands
-                    .filter(c => !c.transactionHash)
-                    .map(c => {
-                      const {
-                        id,
-                      } = { ...c };
+  if (
+    commands
+      .findIndex(c =>
+        !c.transactionHash
+      ) > -1
+  ) {
+    const _response =
+      await read(
+        'command_events',
+        {
+          bool: {
+            must: [
+              { match: { chain } },
+            ],
+            should:
+              _.concat(
+                { match_phrase: { batch_id } },
+                commands
+                  .filter(c => !c.transactionHash)
+                  .map(c => {
+                    const {
+                      id,
+                    } = { ...c };
 
-                      return {
-                        match: { command_id: id },
-                      };
-                    }),
-                ),
-              minimum_should_match: 1,
-            },
+                    return {
+                      match: { command_id: id },
+                    };
+                  }),
+              ),
+            minimum_should_match: 1,
           },
-          {
-            size: 100,
-          },
-        );
+        },
+        {
+          size: 100,
+        },
+      );
 
-      const command_events = _response?.data;
+    const command_events = _response?.data;
 
-      if (Array.isArray(command_events)) {
-        commands =
-          commands
-            .map(c => {
-              if (
-                c.id &&
-                !c.transactionHash
-              ) {
-                const command_event = command_events
-                  .find(_c =>
-                    equals_ignore_case(
-                      _c?.command_id,
-                      c.id,
-                    )
-                  );
+    if (Array.isArray(command_events)) {
+      commands =
+        commands
+          .map(c => {
+            if (
+              c.id &&
+              !c.transactionHash
+            ) {
+              const command_event = command_events
+                .find(_c =>
+                  equals_ignore_case(
+                    _c?.command_id,
+                    c.id,
+                  )
+                );
 
-                if (command_event) {
-                  const {
-                    transactionHash,
-                    transactionIndex,
-                    logIndex,
-                    block_timestamp,
-                  } = { ...command_event };
+              if (command_event) {
+                const {
+                  transactionHash,
+                  transactionIndex,
+                  logIndex,
+                  block_timestamp,
+                } = { ...command_event };
 
-                  c.transactionHash = transactionHash;
-                  c.transactionIndex = transactionIndex;
-                  c.logIndex = logIndex;
-                  c.block_timestamp = block_timestamp;
+                c.transactionHash = transactionHash;
+                c.transactionIndex = transactionIndex;
+                c.logIndex = logIndex;
+                c.block_timestamp = block_timestamp;
 
-                  if (transactionHash) {
-                    c.executed = true;
-                  }
+                if (transactionHash) {
+                  c.executed = true;
                 }
               }
+            }
 
-              return c;
-            });
-      }
+            return c;
+          });
     }
   }
 
