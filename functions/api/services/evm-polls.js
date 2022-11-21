@@ -43,6 +43,8 @@ module.exports = async (
     depositAddress,
     voter,
     vote,
+    fromBlock,
+    toBlock,
     from,
     size,
     sort,
@@ -84,6 +86,18 @@ module.exports = async (
         must_not.push({ match: { confirmation: true } });
         must_not.push({ match: { success: true } });
         must_not.push({ match: { failed: true } });
+        break;
+      case 'not_pending':
+        must.push({
+          bool: {
+            should: [
+              { match: { success: true } },
+              { match: { failed: true } },
+              { match: { confirmation: true } },
+            ],
+            minimum_should_match: 1,
+          },
+        });
         break;
       case 'to_recover':
         must.push({ exists: { field: 'height' } });
@@ -314,6 +328,23 @@ module.exports = async (
           break;
       }
     }
+  }
+
+  if (
+    fromBlock ||
+    toBlock
+  ) {
+    const range = {};
+
+    if (fromBlock) {
+      range.gte = fromBlock;
+    }
+
+    if (toBlock) {
+      range.lte = toBlock;
+    }
+
+    must.push({ range: { height: range } });
   }
 
   if (fromTime) {

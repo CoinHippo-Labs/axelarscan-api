@@ -30,9 +30,11 @@ module.exports = async (
     toBlock
   ) {
     const range = {};
+
     if (fromBlock) {
       range.gte = fromBlock;
     }
+
     if (toBlock) {
       range.lte = toBlock;
     }
