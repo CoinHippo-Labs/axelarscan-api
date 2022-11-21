@@ -1512,7 +1512,7 @@ module.exports = async (
                               txhash: transaction_id,
                               height: blockNumber,
                               status: 'success',
-                              type: 'evm_transfer',
+                              type: 'evm',
                               created_at: get_granularity(created_at),
                               source_chain,
                               destination_chain,

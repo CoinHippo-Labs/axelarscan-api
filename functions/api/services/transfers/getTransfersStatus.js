@@ -1224,7 +1224,7 @@ module.exports = async (
                     txhash: txHash,
                     status: 'success',
                     height: blockNumber,
-                    type: 'evm_transfer',
+                    type: 'evm',
                     created_at: get_granularity(created_at),
                     source_chain: chain_data?.id,
                     sender_address: from,
@@ -1361,13 +1361,13 @@ module.exports = async (
                     amount_data?.amount
                   ) {
                     let send = {
-                    txhash,
+                      txhash,
                       height: Number(height),
                       status:
                         code ?
                           'failed' :
                           'success',
-                      type: 'ibc_transfer',
+                      type: 'ibc',
                       created_at: get_granularity(created_at),
                       sender_chain: chain_data?.id,
                       sender_address,

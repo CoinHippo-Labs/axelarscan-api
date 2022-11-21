@@ -351,7 +351,7 @@ module.exports = async (
                       code ?
                         'failed' :
                         'success',
-                    type: 'ibc_transfer',
+                    type: 'ibc',
                     created_at: get_granularity(created_at),
                     source_chain: chain_data.id,
                     sender_address,

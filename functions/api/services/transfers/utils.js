@@ -1102,6 +1102,8 @@ const update_event = async (
 
 const normalize_link = link => {
   if (link) {
+    link = _.cloneDeep(link);
+
     const {
       original_sender_chain,
       original_recipient_chain,
@@ -1116,6 +1118,11 @@ const normalize_link = link => {
       source_chain: sender_chain,
       destination_chain: recipient_chain,
     };
+
+    delete link.original_sender_chain;
+    delete link.original_recipient_chain;
+    delete link.sender_chain;
+    delete link.recipient_chain;
   }
 
   return link;

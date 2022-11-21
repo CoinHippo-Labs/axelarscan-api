@@ -548,114 +548,96 @@ module.exports = async (
             },
           );
 
-        const {
-          send,
-          link,
-          ibc_send,
-        } = {
-          ...(
-            _.head(
-              _response?.data
-            )
-          ),
-        };
-        let {
-          destination_chain,
-        } = { ...send };
-        const {
-          packet_data_hex,
-          packet_sequence,
-        } = { ...ibc_send?.packet };
-
-        destination_chain =
-          destination_chain ||
-          link?.destination_chain;
-
-        if (
-          send?.txhash &&
-          send.source_chain
-        ) {
+        if (Array.isArray(_response?.data)) {
           const {
-            txhash,
-            source_chain,
+            send,
+            link,
+            ibc_send,
+          } = {
+            ...(
+              _.head(
+                _response.data
+              )
+            ),
+          };
+          let {
+            destination_chain,
           } = { ...send };
+          const {
+            packet_data_hex,
+            packet_sequence,
+          } = { ...ibc_send?.packet };
 
-          const _id = `${txhash}_${source_chain}`.toLowerCase();
-
-          await write(
-            'cross_chain_transfers',
-            _id,
-            {
-              ibc_send: {
-                ...ibc_send,
-                ack_txhash: id,
-                failed_txhash:
-                  transfer_id ?
-                    null :
-                    undefined,
-              },
-            },
-            true,
-          );
-
-          await save_time_spent(
-            _id,
-          );
-
-          updated = true;
+          destination_chain =
+            destination_chain ||
+            link?.destination_chain;
 
           if (
-            height &&
-            destination_chain &&
-            packet_data_hex
+            send?.txhash &&
+            send.source_chain
           ) {
-            const chain_data = cosmos_non_axelarnet_chains_data
-              .find(c =>
-                equals_ignore_case(
-                  c?.id,
-                  destination_chain,
-                )
-              );
+            const {
+              txhash,
+              source_chain,
+            } = { ...send };
 
-            const _lcds =
-              _.concat(
-                chain_data?.endpoints?.lcd,
-                chain_data?.endpoints?.lcds,
-              )
-              .filter(l => l);
+            const _id = `${txhash}_${source_chain}`.toLowerCase();
 
-            for (const _lcd of _lcds) {
-              const lcd =
-                axios.create(
-                  {
-                    baseURL: _lcd,
-                    timeout: 3000,
-                  },
+            await write(
+              'cross_chain_transfers',
+              _id,
+              {
+                ibc_send: {
+                  ...ibc_send,
+                  ack_txhash: id,
+                  failed_txhash:
+                    transfer_id ?
+                      null :
+                      undefined,
+                },
+              },
+              true,
+            );
+
+            await save_time_spent(
+              _id,
+            );
+
+            updated = true;
+
+            if (
+              height &&
+              destination_chain &&
+              packet_data_hex
+            ) {
+              const chain_data = cosmos_non_axelarnet_chains_data
+                .find(c =>
+                  equals_ignore_case(
+                    c?.id,
+                    destination_chain,
+                  )
                 );
 
-              let _response =
-                await lcd
-                  .get(
-                    `/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`,
-                  )
-                  .catch(error => {
-                    return {
-                      data: {
-                        error,
-                      },
-                    };
-                  });
+              const _lcds =
+                _.concat(
+                  chain_data?.endpoints?.lcd,
+                  chain_data?.endpoints?.lcds,
+                )
+                .filter(l => l);
 
-              let {
-                tx_responses,
-                txs,
-              } = { ..._response?.data };
+              for (const _lcd of _lcds) {
+                const lcd =
+                  axios.create(
+                    {
+                      baseURL: _lcd,
+                      timeout: 3000,
+                    },
+                  );
 
-              if (tx_responses?.length < 1) {
-                _response =
+                let _response =
                   await lcd
                     .get(
-                      `/cosmos/tx/v1beta1/txs?limit=5&events=recv_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`,
+                      `/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`,
                     )
                     .catch(error => {
                       return {
@@ -665,75 +647,95 @@ module.exports = async (
                       };
                     });
 
-                if (_response?.data) {
-                  tx_responses = _response.data.tx_responses;
-                  txs = _response.data.txs;
-                }
-              }
+                let {
+                  tx_responses,
+                  txs,
+                } = { ..._response?.data };
 
-              const index = (tx_responses || [])
-                .findIndex(t => {
-                  const recv_packet =
-                    _.head(
-                      (t?.logs || [])
-                        .flatMap(l =>
-                          (l?.events || [])
-                            .filter(e =>
-                              equals_ignore_case(
-                                e?.type,
-                                'recv_packet',
+                if (tx_responses?.length < 1) {
+                  _response =
+                    await lcd
+                      .get(
+                        `/cosmos/tx/v1beta1/txs?limit=5&events=recv_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`,
+                      )
+                      .catch(error => {
+                        return {
+                          data: {
+                            error,
+                          },
+                        };
+                      });
+
+                  if (_response?.data) {
+                    tx_responses = _response.data.tx_responses;
+                    txs = _response.data.txs;
+                  }
+                }
+
+                const index = (tx_responses || [])
+                  .findIndex(t => {
+                    const recv_packet =
+                      _.head(
+                        (t?.logs || [])
+                          .flatMap(l =>
+                            (l?.events || [])
+                              .filter(e =>
+                                equals_ignore_case(
+                                  e?.type,
+                                  'recv_packet',
+                                )
                               )
-                            )
-                        )
+                          )
+                      );
+
+                    const {
+                      attributes,
+                    } = { ...recv_packet };
+
+                    return (
+                      packet_sequence ===
+                      (
+                        (attributes || [])
+                          .find(a =>
+                            a?.key === 'packet_sequence'
+                          )?.value
+                      )
+                    );
+                  });
+
+                if (index > -1) {
+                  const {
+                    txhash,
+                    timestamp,
+                  } = { ...tx_responses[index] };
+
+                  if (txhash) {
+                    const received_at =
+                      moment(timestamp)
+                        .utc()
+                        .valueOf();
+
+                    await write(
+                      'cross_chain_transfers',
+                      _id,
+                      {
+                        ibc_send: {
+                          ...ibc_send,
+                          ack_txhash: id,
+                          recv_txhash: txhash,
+                          received_at: get_granularity(received_at),
+                        },
+                      },
+                      true,
                     );
 
-                  const {
-                    attributes,
-                  } = { ...recv_packet };
+                    await save_time_spent(
+                      _id,
+                    );
+                  }
 
-                  return (
-                    packet_sequence ===
-                    (
-                      (attributes || [])
-                        .find(a =>
-                          a?.key === 'packet_sequence'
-                        )?.value
-                    )
-                  );
-                });
-
-              if (index > -1) {
-                const {
-                  txhash,
-                  timestamp,
-                } = { ...tx_responses[index] };
-
-                if (txhash) {
-                  const received_at =
-                    moment(timestamp)
-                      .utc()
-                      .valueOf();
-
-                  await write(
-                    'cross_chain_transfers',
-                    _id,
-                    {
-                      ibc_send: {
-                        ...ibc_send,
-                        ack_txhash: id,
-                        recv_txhash: txhash,
-                        received_at: get_granularity(received_at),
-                      },
-                    },
-                    true,
-                  );
-
-                  await save_time_spent(
-                    _id,
-                  );
+                  break;
                 }
-
-                break;
               }
             }
           }

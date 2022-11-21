@@ -341,7 +341,7 @@ module.exports = async (
                   code ?
                     'failed' :
                     'success',
-                type: 'axelar_transfer',
+                type: 'axelar',
                 created_at: get_granularity(created_at),
                 destination_chain: axelarnet.id,
                 recipient_address: recipient,

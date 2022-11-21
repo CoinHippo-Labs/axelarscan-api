@@ -321,7 +321,7 @@ module.exports = async (
               txhash: transactionHash,
               height: blockNumber,
               status: 'success',
-              type: 'evm_transfer',
+              type: 'evm',
               created_at: event.created_at,
               source_chain: chain,
               destination_chain: normalize_chain(destinationChain),
@@ -334,7 +334,7 @@ module.exports = async (
             let link = {
               txhash: transactionHash,
               height: blockNumber,
-              type: 'link',
+              type: 'gateway',
               created_at: event.created_at,
               original_source_chain: chain,
               original_destination_chain: normalize_original_chain(destinationChain),
