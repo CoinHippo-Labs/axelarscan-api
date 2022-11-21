@@ -780,9 +780,11 @@ module.exports = async (
                     .filter(id => id)
                     .map(id =>
                       to_hex(
-                        id
-                          .split('"')
-                          .join('')
+                        typeof id === 'string' ?
+                          id
+                            .split('"')
+                            .join('') :
+                          id
                       )
                     )
                 );
@@ -797,9 +799,11 @@ module.exports = async (
                     .filter(id => id)
                     .map(id =>
                       Number(
-                        id
-                          .split('"')
-                          .join('')
+                        typeof id === 'string' ?
+                          id
+                            .split('"')
+                            .join('') :
+                          id
                       )
                     )
                 );
