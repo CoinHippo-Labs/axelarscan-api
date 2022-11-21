@@ -1198,7 +1198,7 @@ module.exports = async (
             confirmation_events :
             undefined,
         [voter.toLowerCase()]: {
-          id,
+          id: txhash,
           height,
           type,
           created_at: ms,
