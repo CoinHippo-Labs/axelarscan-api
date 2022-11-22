@@ -18,6 +18,10 @@ exports.handler = async (
     searchTransfersStatsChart,
     getCumulativeVolume,
     getTransfersStatus,
+    saveDepositForWrap,
+    saveWrap,
+    saveDepositForUnwrap,
+    saveUnwrap,
   } = require('./services/transfers');
   const tvl = require('./services/tvl');
   const {
@@ -293,6 +297,50 @@ exports.handler = async (
         case 'cumulative-volume':
           try {
             response = await getCumulativeVolume(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'save-deposit-for-wrap':
+          try {
+            response = await saveDepositForWrap(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'save-wrap':
+          try {
+            response = await saveWrap(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'save-deposit-for-unwrap':
+          try {
+            response = await saveDepositForUnwrap(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'save-unwrap':
+          try {
+            response = await saveUnwrap(params);
           } catch (error) {
             response = {
               error: true,
