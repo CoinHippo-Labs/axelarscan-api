@@ -21,6 +21,8 @@ const transfer_collections =
   [
     'cross_chain_transfers',
     'deposit_addresses',
+    'wraps',
+    'unwraps',
     'transfers',
     'batches',
     'command_events',
