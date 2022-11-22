@@ -1557,6 +1557,44 @@ module.exports = {
         website: 'https://kava.io',
         gateway_address: '',
       },
+      {
+        id: 'hero',
+        maintainer_id: 'hero',
+        name: 'Heros of Nft',
+        short_name: 'HERO',
+        chain_id: 17771,
+        provider_params: [
+          {
+            chainId: '0x456b',
+            chainName: 'Hero Testnet',
+            rpcUrls: [
+              'https://herotestnet.heroesofnft.com:443/ext/bc/2kdzD7eps9QRC449zypVGBbrzkwFrefLzmt24tS8MxmvEBuWvP/rpc',
+            ],
+            nativeCurrency: {
+              name: 'Hero',
+              symbol: 'HRM',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://testnet.avascan.info/blockchain/hero',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Avascan',
+          url: 'https://testnet.avascan.info/blockchain/hero',
+          icon: '/logos/explorers/avascan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/hero.svg',
+        color: '#d085f6',
+        website: 'https://heroesofnft.com',
+        gateway_address: '',
+      },
     ],
     cosmos: [
       {

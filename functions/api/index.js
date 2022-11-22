@@ -346,6 +346,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'validators-evm-votes':
+          try {
+            response = await require('./services/validators-evm-votes')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'evm-votes':
           try {
             response = await require('./services/evm-votes')(params);
