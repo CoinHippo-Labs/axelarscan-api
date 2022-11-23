@@ -1555,7 +1555,7 @@ module.exports = {
         image: '/logos/chains/kava.svg',
         color: '#ff433e',
         website: 'https://kava.io',
-        gateway_address: '',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'hero',
