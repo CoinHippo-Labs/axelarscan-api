@@ -29,7 +29,7 @@ const fields =
 
 module.exports = async (
   params = {},
-  collection = 'wrap',
+  collection = 'wraps',
 ) => {
   if (
     fields
