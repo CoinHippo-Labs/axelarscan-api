@@ -904,6 +904,31 @@ module.exports = async (
         }
       }
 
+      const source_chain =
+        normalize_chain(
+          messages
+            .find(m =>
+              m?.chain
+            )?.chain ||
+          (attributes || [])
+            .find(a =>
+              [
+                'sourceChain',
+                'chain',
+              ].includes(a?.key)
+            )?.value
+        );
+
+      let destination_chain =
+        normalize_chain(
+          (attributes || [])
+            .find(a =>
+              [
+                'destinationChain',
+              ].includes(a?.key)
+            )?.value
+        );
+
       if (
         poll_id ||
         transfer_id
@@ -917,29 +942,8 @@ module.exports = async (
               'success',
           type,
           created_at: get_granularity(created_at),
-          source_chain:
-            normalize_chain(
-              messages
-                .find(m =>
-                  m?.chain
-                )?.chain ||
-              (attributes || [])
-                .find(a =>
-                  [
-                    'sourceChain',
-                    'chain',
-                  ].includes(a?.key)
-                )?.value
-            ),
-          destination_chain:
-            normalize_chain(
-              (attributes || [])
-                .find(a =>
-                  [
-                    'destinationChain',
-                  ].includes(a?.key)
-                )?.value
-            ),
+          source_chain,
+          destination_chain,
           deposit_address,
           token_address,
           denom:
@@ -959,10 +963,6 @@ module.exports = async (
           transaction_id,
           participants,
         };
-
-        let {
-          destination_chain,
-        } = { ...record };
 
         switch (type) {
           case 'ConfirmDeposit':
@@ -1500,6 +1500,27 @@ module.exports = async (
           default:
             break;
         }
+      }
+
+      if (
+        poll_id &&
+        transaction_id
+      ) {
+        await write(
+          'evm_polls',
+          poll_id,
+          {
+            id: poll_id,
+            height,
+            created_at: get_granularity(created_at),
+            sender_chain: source_chain,
+            transaction_id,
+            participants:
+              participants ||
+              undefined,
+          },
+          true,
+        );
       }
     }
   } catch (error) {}

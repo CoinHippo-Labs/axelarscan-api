@@ -122,9 +122,29 @@ module.exports = async (
             minimum_should_match: 1,
           },
         });
-        must_not.push({ match: { confirmation: true } });
-        must_not.push({ match: { success: true } });
-        must_not.push({ match: { failed: true } });
+        must.push({
+          bool: {
+            should: [
+              {
+                bool: {
+                  must_not: [
+                    { match: { confirmation: true } },
+                    { match: { success: true } },
+                    { match: { failed: true } },
+                  ],
+                },
+              },
+              {
+                bool: {
+                  must_not: [
+                    { exists: { field: 'participants' } },
+                  ],
+                },
+              },
+            ],
+            minimum_should_match: 1,
+          },
+        });
         break;
       default:
         break;
