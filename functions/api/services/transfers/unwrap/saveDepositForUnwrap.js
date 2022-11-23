@@ -32,7 +32,7 @@ const fields =
 
 module.exports = async (
   params = {},
-  collection = 'unwrap',
+  collection = 'unwraps',
 ) => {
   if (
     fields
