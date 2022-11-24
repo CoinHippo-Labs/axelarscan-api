@@ -1097,7 +1097,7 @@ const update_event = async (
     }
   }
 
-  return source;
+  return event;
 };
 
 const normalize_link = link => {
