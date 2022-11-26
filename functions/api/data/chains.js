@@ -314,7 +314,6 @@ module.exports = {
         color: '#28a0f0',
         website: 'https://arbitrum.io',
         gateway_address: '',
-        no_inflation: true,
       },
       {
         id: 'optimism',
@@ -394,7 +393,6 @@ module.exports = {
         color: '#35d07f',
         website: 'https://celo.org',
         gateway_address: '',
-        no_inflation: true,
       },
       {
         id: 'kava',
