@@ -1558,7 +1558,7 @@ module.exports = {
       {
         id: 'hero',
         maintainer_id: 'hero',
-        name: 'Heros of Nft',
+        name: 'Heroes of Nft',
         short_name: 'HERO',
         chain_id: 17771,
         provider_params: [
