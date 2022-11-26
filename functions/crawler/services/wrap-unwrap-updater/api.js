@@ -22,7 +22,7 @@ const API = (env = environment) => {
     );
 };
 
-const getPolls = async params => {
+const getWraps = async params => {
   let output;
 
   const api = API();
@@ -31,7 +31,7 @@ const getPolls = async params => {
     log(
       'info',
       service_name,
-      'get polls',
+      'get wraps',
       {
         ...params,
       },
@@ -40,7 +40,7 @@ const getPolls = async params => {
     const response =
       await api
         .get(
-          '/evm-polls',
+          '/wraps',
           { params },
         )
         .catch(error => {
@@ -56,7 +56,52 @@ const getPolls = async params => {
     log(
       'debug',
       service_name,
-      'polls',
+      'wraps',
+      {
+        output,
+        ...params,
+      },
+    );
+  }
+
+  return output;
+};
+
+const getUnwraps = async params => {
+  let output;
+
+  const api = API();
+
+  if (api) {
+    log(
+      'info',
+      service_name,
+      'get unwraps',
+      {
+        ...params,
+      },
+    );
+
+    const response =
+      await api
+        .get(
+          '/unwraps',
+          { params },
+        )
+        .catch(error => {
+          return {
+            data: {
+              error,
+            },
+          };
+        });
+
+    output = response?.data;
+
+    log(
+      'debug',
+      service_name,
+      'unwraps',
       {
         output,
         ...params,
@@ -69,5 +114,6 @@ const getPolls = async params => {
 
 module.exports = {
   API,
-  getPolls,
+  getWraps,
+  getUnwraps,
 };

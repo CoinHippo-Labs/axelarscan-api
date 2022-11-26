@@ -405,17 +405,6 @@ exports.handler = async (
             };
           }
           break;
-        case 'evm-votes':
-          try {
-            response = await require('./services/evm-votes')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
         case 'heartbeats':
           try {
             response = await require('./services/heartbeats')(params);
@@ -463,6 +452,28 @@ exports.handler = async (
         case 'proxy-address':
           try {
             response = await require('./services/proxy-address')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'wraps':
+          try {
+            response = await require('./services/wraps')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'unwraps':
+          try {
+            response = await require('./services/unwraps')(params);
           } catch (error) {
             response = {
               error: true,

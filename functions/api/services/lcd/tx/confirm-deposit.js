@@ -27,6 +27,7 @@ const {
   get_granularity,
   normalize_chain,
   transfer_actions,
+  getTransaction,
   getBlockTime,
   getProvider,
 } = require('../../../utils');
@@ -1214,6 +1215,7 @@ module.exports = async (
                 const {
                   txhash,
                   sender_address,
+                  recipient_address,
                 } = { ...send };
                 let {
                   source_chain,
@@ -1232,6 +1234,94 @@ module.exports = async (
                 send.source_chain = source_chain;
                 send.destination_chain = destination_chain;
 
+                const _response =
+                  await read(
+                    'unwraps',
+                    {
+                      bool: {
+                        must: [
+                          { match: { deposit_address_link: recipient_address } },
+                          { match: { source_chain } },
+                        ],
+                      },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                let unwrap =
+                  _.head(
+                    _response?.data
+                  );
+
+                if (unwrap) {
+                  const {
+                    tx_hash_unwrap,
+                    destination_chain,
+                  } = { ...unwrap };
+
+                  const chain_data = evm_chains_data
+                    .find(c =>
+                      equals_ignore_case(
+                        c?.id,
+                        destination_chain,
+                      )
+                    );
+
+                  if (
+                    tx_hash_unwrap &&
+                    chain_data
+                  ) {
+                    const provider = getProvider(chain_data);
+
+                    const data =
+                      await getTransaction(
+                        provider,
+                        tx_hash_unwrap,
+                        destination_chain,
+                      );
+
+                    const {
+                      blockNumber,
+                    } = { ...data?.transaction };
+
+                    if (blockNumber) {
+                      const block_timestamp =
+                        await getBlockTime(
+                          provider,
+                          blockNumber,
+                        );
+
+                      unwrap = {
+                        ...unwrap,
+                        txhash: tx_hash_unwrap,
+                        height: blockNumber,
+                        type: 'evm',
+                        created_at:
+                          get_granularity(
+                            moment(
+                              block_timestamp * 1000
+                            )
+                            .utc()
+                          ),
+                      };
+                    }
+                  }
+                }
+
+                const type =
+                  unwrap ?
+                    'unwrap' :
+                    'deposit_address';
+
+                const data = {
+                  type,
+                  unwrap:
+                    unwrap ||
+                    undefined,
+                };
+
                 link =
                   await _update_link(
                     link,
@@ -1242,7 +1332,7 @@ module.exports = async (
                   await _update_send(
                     send,
                     link,
-                    'deposit_address',
+                    data,
                     true,
                   );
 
@@ -1256,7 +1346,7 @@ module.exports = async (
                     _id,
                     {
                       ...d,
-                      type: 'deposit_address',
+                      ...data,
                       send,
                       link,
                       confirm: record,
@@ -1465,7 +1555,96 @@ module.exports = async (
                         const {
                           txhash,
                           source_chain,
+                          recipient_address,
                         } = { ...send };
+
+                        const _response =
+                          await read(
+                            'unwraps',
+                            {
+                              bool: {
+                                must: [
+                                  { match: { deposit_address_link: recipient_address } },
+                                  { match: { source_chain } },
+                                ],
+                              },
+                            },
+                            {
+                              size: 1,
+                            },
+                          );
+
+                        let unwrap =
+                          _.head(
+                            _response?.data
+                          );
+
+                        if (unwrap) {
+                          const {
+                            tx_hash_unwrap,
+                            destination_chain,
+                          } = { ...unwrap };
+
+                          const chain_data = evm_chains_data
+                            .find(c =>
+                              equals_ignore_case(
+                                c?.id,
+                                destination_chain,
+                              )
+                            );
+
+                          if (
+                            tx_hash_unwrap &&
+                            chain_data
+                          ) {
+                            const provider = getProvider(chain_data);
+
+                            const data =
+                              await getTransaction(
+                                provider,
+                                tx_hash_unwrap,
+                                destination_chain,
+                              );
+
+                            const {
+                              blockNumber,
+                            } = { ...data?.transaction };
+
+                            if (blockNumber) {
+                              const block_timestamp =
+                                await getBlockTime(
+                                  provider,
+                                  blockNumber,
+                                );
+
+                              unwrap = {
+                                ...unwrap,
+                                txhash: tx_hash_unwrap,
+                                height: blockNumber,
+                                type: 'evm',
+                                created_at:
+                                  get_granularity(
+                                    moment(
+                                      block_timestamp * 1000
+                                    )
+                                    .utc()
+                                  ),
+                              };
+                            }
+                          }
+                        }
+
+                        const type =
+                          unwrap ?
+                            'unwrap' :
+                            'deposit_address';
+
+                        const data = {
+                          type,
+                          unwrap:
+                            unwrap ||
+                            undefined,
+                        };
 
                         const _id = `${txhash}_${source_chain}`.toLowerCase();
 
@@ -1475,7 +1654,7 @@ module.exports = async (
                           'cross_chain_transfers',
                           _id,
                           {
-                            type: 'deposit_address',
+                            ...data,
                             send: {
                               ...send,
                               amount,

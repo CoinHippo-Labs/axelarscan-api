@@ -40,6 +40,7 @@ const onEmit = async (
         id,
         gateway,
       } = { ...chain_config };
+
       const chain = id;
 
       // contract parameters
@@ -228,10 +229,12 @@ const getPastEvents = async (
 
         await sleep(1.5 * 1000);
 
-        return await getPastEvents(
-          chain_config,
-          filters,
-          options,
+        return (
+          await getPastEvents(
+            chain_config,
+            filters,
+            options,
+          )
         );
       }
     }

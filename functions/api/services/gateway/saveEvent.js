@@ -315,7 +315,79 @@ module.exports = async (
 
           try {
             // cross-chain transfer
-            const _id = `${transactionHash}_${chain}`.toLowerCase();
+            const _response =
+              await read(
+                'wraps',
+                {
+                  bool: {
+                    must: [
+                      { match: { tx_hash_wrap: transactionHash } },
+                      { match: { source_chain: chain } },
+                    ],
+                  },
+                },
+                {
+                  size: 1,
+                },
+              );
+
+            let wrap =
+              _.head(
+                _response?.data
+              );
+
+            if (wrap) {
+              const {
+                tx_hash,
+              } = { ...wrap };
+
+              if (tx_hash) {
+                const data =
+                  await getTransaction(
+                    provider,
+                    tx_hash,
+                    chain,
+                  );
+
+                const {
+                  blockNumber,
+                } = { ...data?.transaction };
+
+                if (blockNumber) {
+                  const block_timestamp =
+                    await getBlockTime(
+                      provider,
+                      blockNumber,
+                    );
+
+                  wrap = {
+                    ...wrap,
+                    txhash: tx_hash,
+                    height: blockNumber,
+                    type: 'evm',
+                    created_at:
+                      get_granularity(
+                        moment(
+                          block_timestamp * 1000
+                        )
+                        .utc()
+                      ),
+                  };
+                }
+              }
+            }
+
+            const type =
+              wrap ?
+                'wrap' :
+                'send_token';
+
+            const data = {
+              type,
+              wrap:
+                wrap ||
+                undefined,
+            };
 
             let send = {
               txhash: transactionHash,
@@ -357,13 +429,13 @@ module.exports = async (
               await _update_send(
                 send,
                 link,
-                'send_token',
+                data,
               );
 
             response = {
-              type: 'send_token',
               send,
               link,
+              data,
             };
           } catch (error) {}
         } catch (error) {}

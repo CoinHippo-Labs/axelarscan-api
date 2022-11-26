@@ -1293,7 +1293,7 @@ const _update_link = async (
 const _update_send = async (
   send,
   link,
-  type,
+  data,
   update_only = false,
 ) => {
   if (send) {
@@ -1509,7 +1509,7 @@ const _update_send = async (
         'cross_chain_transfers',
         _id,
         {
-          type,
+          ...data,
           send,
           link:
             link ||
@@ -1556,6 +1556,8 @@ const save_time_spent = async (
     command,
     ibc_send,
     axelar_transfer,
+    wrap,
+    unwrap,
   } = { ...data };
   const {
     source_chain,
@@ -1616,6 +1618,18 @@ const save_time_spent = async (
       chain_types
         .join('_') :
       undefined;
+
+  if (
+    send?.created_at?.ms &&
+    wrap?.created_at?.ms
+  ) {
+    time_spent = {
+      ...time_spent,
+      wrap_send:
+        send.created_at.ms / 1000 -
+        wrap.created_at.ms / 1000,
+    };
+  }
 
   if (
     confirm?.created_at?.ms &&
@@ -1714,6 +1728,18 @@ const save_time_spent = async (
   }
 
   if (
+    unwrap?.created_at?.ms &&
+    command?.block_timestamp
+  ) {
+    time_spent = {
+      ...time_spent,
+      execute_unwrap:
+        unwrap.created_at.ms / 1000 -
+        command.block_timestamp,
+    };
+  }
+
+  if (
     type &&
     time_spent
   ) {
@@ -1723,6 +1749,28 @@ const save_time_spent = async (
     switch (destination_chain_type) {
       case 'evm':
         if (
+          command?.block_timestamp &&
+          wrap?.created_at?.ms
+        ) {
+          time_spent = {
+            ...time_spent,
+            total:
+              command.block_timestamp -
+              wrap.created_at.ms / 1000,
+          };
+        }
+        else if (
+          unwrap?.created_at?.ms &&
+          send?.created_at?.ms
+        ) {
+          time_spent = {
+            ...time_spent,
+            total:
+              unwrap.created_at.ms / 1000 -
+              send.created_at.ms / 1000,
+          };
+        }
+        else if (
           command?.block_timestamp &&
           send?.created_at?.ms
         ) {
@@ -1736,6 +1784,17 @@ const save_time_spent = async (
         break;
       case 'cosmos':
         if (
+          ibc_send?.received_at?.ms &&
+          wrap?.created_at?.ms
+        ) {
+          time_spent = {
+            ...time_spent,
+            total:
+              ibc_send.received_at.ms / 1000 -
+              wrap.created_at.ms / 1000,
+          };
+        }
+        else if (
           ibc_send?.received_at?.ms &&
           send?.created_at?.ms
         ) {
@@ -1751,6 +1810,39 @@ const save_time_spent = async (
         switch (source_chain_type) {
           case 'evm':
             if (
+              axelar_transfer?.created_at?.ms &&
+              wrap?.created_at?.ms
+            ) {
+              time_spent = {
+                ...time_spent,
+                total:
+                  axelar_transfer.created_at.ms / 1000 -
+                  wrap.created_at.ms / 1000,
+              };
+            }
+            else if (
+              axelar_transfer?.created_at?.ms &&
+              send?.created_at?.ms
+            ) {
+              time_spent = {
+                ...time_spent,
+                total:
+                  axelar_transfer.created_at.ms / 1000 -
+                  send.created_at.ms / 1000,
+              };
+            }
+            else if (
+              vote?.created_at?.ms &&
+              wrap?.created_at?.ms
+            ) {
+              time_spent = {
+                ...time_spent,
+                total:
+                  vote.created_at.ms / 1000 -
+                  wrap.created_at.ms / 1000,
+              };
+            }
+            else if (
               vote?.created_at?.ms &&
               send?.created_at?.ms
             ) {
@@ -1763,31 +1855,44 @@ const save_time_spent = async (
             }
             break;
           default:
-            if (time_spent.send_confirm) {
+            if (
+              axelar_transfer?.created_at?.ms &&
+              send?.created_at?.ms
+            ) {
               time_spent = {
                 ...time_spent,
-                total: time_spent.send_confirm,
+                total:
+                  axelar_transfer.created_at.ms / 1000 -
+                  send.created_at.ms / 1000,
               };
             }
-            else if (time_spent.send_vote) {
-              time_spent = {
-                ...time_spent,
-                total: time_spent.send_vote,
-              };
+            else {
+              if (time_spent.send_confirm) {
+                time_spent = {
+                  ...time_spent,
+                  total: time_spent.send_confirm,
+                };
+              }
+              else if (time_spent.send_vote) {
+                time_spent = {
+                  ...time_spent,
+                  total: time_spent.send_vote,
+                };
+              }
+
+              if (
+                time_spent.vote_axelar_transfer ||
+                time_spent.confirm_axelar_transfer
+              ) {
+                time_spent = {
+                  ...time_spent,
+                  total:
+                    time_spent.vote_axelar_transfer ||
+                    time_spent.confirm_axelar_transfer,
+                };
+              }
             }
             break;
-        }
-
-        if (
-          time_spent.vote_axelar_transfer ||
-          time_spent.confirm_axelar_transfer
-        ) {
-          time_spent = {
-            ...time_spent,
-            total:
-              time_spent.vote_axelar_transfer ||
-              time_spent.confirm_axelar_transfer,
-          };
         }
         break;
       default:

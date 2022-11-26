@@ -9,6 +9,9 @@ exports.handler = async (
   // run poll updater
   require('./services/polls-updater')();
 
+  // run wrap & unwrap updater
+  require('./services/wrap-unwrap-updater')();
+
   // hold lambda function to not exit before timeout
   const {
     sleep,
