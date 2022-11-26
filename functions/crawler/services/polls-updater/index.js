@@ -7,8 +7,6 @@ const {
   sleep,
 } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT;
-
 module.exports = async () => {
   const api = API();
 
@@ -86,7 +84,8 @@ module.exports = async () => {
                           undefined,
                     },
                   },
-                ).catch(error => {
+                )
+                .catch(error => {
                   return {
                     data: {
                       error,

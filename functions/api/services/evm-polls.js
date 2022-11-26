@@ -439,7 +439,7 @@ module.exports = async (
       const _d = {
         ...d,
         failed: true,
-      }
+      };
 
       await write(
         'evm_polls',

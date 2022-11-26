@@ -1,3 +1,4 @@
+const moment = require('moment');
 const config = require('config-yml');
 
 const {
@@ -15,22 +16,24 @@ const log = (
     level = level.toLowerCase();
 
     // generate log message
-    const log_message = `${level === 'error' ?
-      'ERR' :
-      level === 'warn' ?
-        'WARN' :
-        level === 'debug' ?
-          'DBG' :
-          'INF'
-    } [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ?
-      data :
-      typeof data === 'object' ?
-        JSON.stringify(
-          data,
-          null,
-          2,
-        ) :
-        data
+    const log_message = `${
+      level === 'error' ?
+        'ERR' :
+        level === 'warn' ?
+          'WARN' :
+          level === 'debug' ?
+            'DBG' :
+            'INF'
+    } [${from?.toUpperCase()}] ${message}\n${
+      typeof data === 'string' ?
+        data :
+        typeof data === 'object' ?
+          JSON.stringify(
+            data,
+            null,
+            2,
+          ) :
+          data
     }`;
 
     switch (level) {
@@ -56,6 +59,41 @@ const log = (
   } catch (error) {}
 };
 
+const get_granularity = time => {
+  return (
+    time &&
+    {
+      ms:
+        moment(time)
+          .valueOf(),
+      hour:
+        moment(time)
+          .startOf('hour')
+          .valueOf(),
+      day:
+        moment(time)
+          .startOf('day')
+          .valueOf(),
+      week:
+        moment(time)
+          .startOf('week')
+          .valueOf(),
+      month:
+        moment(time)
+          .startOf('month')
+          .valueOf(),
+      quarter:
+        moment(time)
+          .startOf('quarter')
+          .valueOf(),
+      year:
+        moment(time)
+          .startOf('year')
+          .valueOf(),
+    }
+  );
+};
+
 const sleep = ms =>
   new Promise(resolve =>
     setTimeout(
@@ -66,5 +104,6 @@ const sleep = ms =>
 
 module.exports = {
   log,
+  get_granularity,
   sleep,
 };

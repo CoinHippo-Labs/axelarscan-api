@@ -13,6 +13,9 @@ const {
 } = require('../../transfers/utils');
 const {
   get_granularity,
+  getTransaction,
+  getBlockTime,
+  getProvider,
 } = require('../../../utils');
 
 const environment =
@@ -136,52 +139,142 @@ module.exports = async (
       recipient_address?.length >= 65 &&
       amount_data?.amount
     ) {
-      let record = {
-        txhash,
-        height,
-        status:
-          code ?
-            'failed' :
-            'success',
-        type: 'axelar',
-        created_at: get_granularity(created_at),
-        source_chain: axelarnet.id,
-        sender_address,
-        recipient_address,
-        denom: amount_data.denom,
-        amount: amount_data.amount,
-      };
-
       const _response =
         await read(
-          'deposit_addresses',
+          'unwraps',
           {
-            match: { deposit_address: recipient_address },
+            bool: {
+              must: [
+                { match: { deposit_address_link: recipient_address } },
+                { match: { source_chain: axelarnet.id } },
+              ],
+            },
           },
           {
             size: 1,
           },
         );
 
-      let link =
-        normalize_link(
-          _.head(
-            _response?.data
-          ),
+      let unwrap =
+        _.head(
+          _response?.data
         );
 
-      link =
-        await _update_link(
-          link,
-          record,
-        );
+      if (unwrap) {
+        const {
+          tx_hash_unwrap,
+          destination_chain,
+        } = { ...unwrap };
 
-      record =
-        await _update_send(
-          record,
-          link,
-          'deposit_address',
-        );
+        const chain_data = evm_chains_data
+          .find(c =>
+            equals_ignore_case(
+              c?.id,
+              destination_chain,
+            )
+          );
+
+        if (
+          tx_hash_unwrap &&
+          chain_data
+        ) {
+          const provider = getProvider(chain_data);
+
+          const data =
+            await getTransaction(
+              provider,
+              tx_hash_unwrap,
+              destination_chain,
+            );
+
+          const {
+            blockNumber,
+          } = { ...data?.transaction };
+
+          if (blockNumber) {
+            const block_timestamp =
+              await getBlockTime(
+                provider,
+                blockNumber,
+              );
+
+            unwrap = {
+              ...unwrap,
+              txhash: tx_hash_unwrap,
+              height: blockNumber,
+              type: 'evm',
+              created_at:
+                get_granularity(
+                  moment(
+                    block_timestamp * 1000
+                  )
+                  .utc()
+                ),
+            };
+          }
+        }
+      }
+
+      const type =
+        unwrap ?
+          'unwrap' :
+          'deposit_address';
+
+      const data = {
+        type,
+        unwrap:
+          unwrap ||
+          undefined,
+      };
+
+      try {
+        let record = {
+          txhash,
+          height,
+          status:
+            code ?
+              'failed' :
+              'success',
+          type: 'axelar',
+          created_at: get_granularity(created_at),
+          source_chain: axelarnet.id,
+          sender_address,
+          recipient_address,
+          denom: amount_data.denom,
+          amount: amount_data.amount,
+        };
+
+        const _response =
+          await read(
+            'deposit_addresses',
+            {
+              match: { deposit_address: recipient_address },
+            },
+            {
+              size: 1,
+            },
+          );
+
+        let link =
+          normalize_link(
+            _.head(
+              _response?.data
+            ),
+          );
+
+        link =
+          await _update_link(
+            link,
+            record,
+          );
+
+        record =
+          await _update_send(
+            record,
+            link,
+            data,
+          );
+      } catch (error) {}
     }
   } catch (error) {}
 };

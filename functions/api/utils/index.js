@@ -24,6 +24,11 @@ const chains_data =
     evm_chains_data,
     cosmos_chains_data,
   );
+const axelarnet =
+  chains_data
+    .find(c =>
+      c?.id === 'axelarnet'
+    );
 
 const log = (
   level = 'info',
@@ -229,6 +234,14 @@ const normalize_original_chain = chain => {
         .toLowerCase()
         .split('"')
         .join('');
+
+    switch (chain) {
+      case 'axelar':
+        chain = axelarnet.id;
+        break;
+      default:
+        break;
+    }
   }
 
   return chain;
@@ -261,6 +274,14 @@ const normalize_chain = chain => {
             !regex.test(c)
           )
           .join('');
+    }
+
+    switch (chain) {
+      case 'axelar':
+        chain = axelarnet.id;
+        break;
+      default:
+        break;
     }
   }
 

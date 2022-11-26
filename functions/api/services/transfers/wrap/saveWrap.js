@@ -1,6 +1,10 @@
+const moment = require('moment');
 const {
   write,
 } = require('../../index');
+const {
+  normalize_chain,
+} = require('../../../utils');
 
 const fields =
   [
@@ -24,6 +28,7 @@ const fields =
     {
       id: 'destination_chain',
       type: 'string',
+      normalize: s => normalize_chain(s),
     },
   ];
 
@@ -84,9 +89,13 @@ module.exports = async (
           .map(f => {
             const {
               id,
+              normalize,
             } = { ...f };
 
-            const value = params[id];
+            const value =
+              typeof normalize === 'function' ?
+                normalize(params[id]) :
+                params[id];
 
             return [
               id,
@@ -111,7 +120,12 @@ module.exports = async (
       await write(
         collection,
         _id,
-        data,
+        {
+          ...data,
+          updated_at:
+            moment()
+              .valueOf(),
+        },
         true,
       );
 

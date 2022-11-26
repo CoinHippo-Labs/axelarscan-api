@@ -26,6 +26,7 @@ const {
   get_granularity,
   normalize_chain,
   vote_types,
+  getTransaction,
   getBlockTime,
   getProvider,
 } = require('../../../utils');
@@ -1592,7 +1593,89 @@ module.exports = async (
                                 const {
                                   txhash,
                                   source_chain,
+                                  recipient_address,
                                 } = { ...send };
+
+                                const _response =
+                                  await read(
+                                    'unwraps',
+                                    {
+                                      bool: {
+                                        must: [
+                                          { match: { deposit_address_link: recipient_address } },
+                                          { match: { source_chain } },
+                                        ],
+                                      },
+                                    },
+                                    {
+                                      size: 1,
+                                    },
+                                  );
+
+                                let unwrap =
+                                  _.head(
+                                    _response?.data
+                                  );
+
+                                if (unwrap) {
+                                  const {
+                                    tx_hash_unwrap,
+                                    destination_chain,
+                                  } = { ...unwrap };
+
+                                  const chain_data = evm_chains_data
+                                    .find(c =>
+                                      equals_ignore_case(
+                                        c?.id,
+                                        destination_chain,
+                                      )
+                                    );
+
+                                  if (
+                                    tx_hash_unwrap &&
+                                    chain_data
+                                  ) {
+                                    const provider = getProvider(chain_data);
+
+                                    const data =
+                                      await getTransaction(
+                                        provider,
+                                        tx_hash_unwrap,
+                                        destination_chain,
+                                      );
+
+                                    const {
+                                      blockNumber,
+                                    } = { ...data?.transaction };
+
+                                    if (blockNumber) {
+                                      const block_timestamp =
+                                        await getBlockTime(
+                                          provider,
+                                          blockNumber,
+                                        );
+
+                                      unwrap = {
+                                        ...unwrap,
+                                        txhash: tx_hash_unwrap,
+                                        height: blockNumber,
+                                        type: 'evm',
+                                        created_at:
+                                          get_granularity(
+                                            moment(
+                                              block_timestamp * 1000
+                                            )
+                                            .utc()
+                                          ),
+                                      };
+                                    }
+                                  }
+                                }
+
+                                const type =
+                                  unwrap ?
+                                    'unwrap' :
+                                    'deposit_address';
 
                                 const _id = `${txhash}_${source_chain}`.toLowerCase();
 
@@ -1600,7 +1683,7 @@ module.exports = async (
                                   'cross_chain_transfers',
                                   _id,
                                   {
-                                    type: 'deposit_address',
+                                    type,
                                     send,
                                     link:
                                       link ||
@@ -1618,6 +1701,9 @@ module.exports = async (
                                           record :
                                           vote :
                                         record,
+                                    unwrap:
+                                      unwrap ||
+                                      undefined,
                                   },
                                 );
 
