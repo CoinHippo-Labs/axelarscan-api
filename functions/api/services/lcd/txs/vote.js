@@ -1013,56 +1013,6 @@ module.exports = async (
                   }
                 }
 
-                if (
-                  !transaction_id ||
-                  !transfer_id
-                ) {
-                  const _response =
-                    await read(
-                      'evm_votes',
-                      {
-                        bool: {
-                          must: [
-                            { match: { poll_id } },
-                          ],
-                          should: [
-                            { exists: { field: 'transaction_id' } },
-                            { exists: { field: 'transfer_id' } },
-                          ],
-                          minimum_should_match: 1,
-                          must_not: [
-                            { match: { transaction_id: poll_id } },
-                          ],
-                        },
-                      },
-                      {
-                        size: 1,
-                      },
-                    );
-
-                  const data =
-                    _.head(
-                      _response?.data
-                    );
-
-                  if (data) {
-                    transaction_id =
-                      data.transaction_id ||
-                      transaction_id;
-
-                    transfer_id =
-                      data.transfer_id ||
-                      transfer_id;
-
-                    if (
-                      transfer_id &&
-                      polls_data[poll_id]
-                    ) {
-                      polls_data[poll_id].transfer_id = transfer_id;
-                    }
-                  }
-                }
-
                 transaction_id = to_hex(transaction_id);
 
                 if (
@@ -1147,25 +1097,6 @@ module.exports = async (
       const {
         ms,
       } = { ...created_at };
-
-      write(
-        'evm_votes',
-        `${poll_id}_${voter}`.toLowerCase(),
-        {
-          txhash,
-          height,
-          created_at,
-          sender_chain,
-          poll_id,
-          transaction_id,
-          transfer_id,
-          voter,
-          vote,
-          confirmation,
-          unconfirmed,
-          late,
-        },
-      );
 
       const data = {
         id: poll_id,

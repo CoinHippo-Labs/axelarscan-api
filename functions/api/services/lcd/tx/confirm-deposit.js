@@ -1284,6 +1284,7 @@ module.exports = async (
 
                     const {
                       blockNumber,
+                      from,
                     } = { ...data?.transaction };
 
                     if (blockNumber) {
@@ -1305,6 +1306,7 @@ module.exports = async (
                             )
                             .utc()
                           ),
+                        sender_address: from,
                       };
                     }
                   }
@@ -1608,6 +1610,7 @@ module.exports = async (
 
                             const {
                               blockNumber,
+                              from,
                             } = { ...data?.transaction };
 
                             if (blockNumber) {
@@ -1629,6 +1632,7 @@ module.exports = async (
                                     )
                                     .utc()
                                   ),
+                                sender_address: from,
                               };
                             }
                           }
