@@ -3,12 +3,11 @@ const moment = require('moment');
 const config = require('config-yml');
 const getTransfersStatus = require('./getTransfersStatus');
 const {
-  saveTimeSpent,
+  save_time_spent,
   get_others_version_chain_ids,
 } = require('./utils');
 const {
   read,
-  write,
 } = require('../index');
 const {
   sleep,
@@ -43,9 +42,9 @@ module.exports = async (
 
   const {
     txHash,
+    type,
     confirmed,
     state,
-    status,
     sourceChain,
     destinationChain,
     asset,
@@ -68,17 +67,33 @@ module.exports = async (
     must_not = [];
 
   if (txHash) {
-    must.push({ match: { 'source.id': txHash } });
+    must
+      .push(
+        {
+          bool: {
+            should: [
+              { match: { 'send.txhash': txHash } },
+              { match: { 'wrap.txhash': txHash } },
+              { match: { 'unwrap.txhash': txHash } },
+            ],
+            minimum_should_match: 1,
+          },
+        }
+      );
+  }
+
+  if (type) {
+    must.push({ match: { type } });
   }
 
   if (confirmed) {
     switch (confirmed) {
       case 'confirmed':
-        should.push({ exists: { field: 'confirm_deposit' } });
+        should.push({ exists: { field: 'confirm' } });
         should.push({ exists: { field: 'vote' } });
         break;
       case 'unconfirmed':
-        must_not.push({ exists: { field: 'confirm_deposit' } });
+        must_not.push({ exists: { field: 'confirm' } });
         must_not.push({ exists: { field: 'vote' } });
         break;
       default:
@@ -89,96 +104,32 @@ module.exports = async (
   if (state) {
     switch (state) {
       case 'completed':
-        const _should = [];
-
-        _should.push({
-          bool: {
-            must: [
-              { exists: { field: 'sign_batch' } },
-            ],
-            should: evm_chains_data
-              .map(c => {
-                return { match_phrase: { 'source.original_recipient_chain': c?.id } };
-              }),
-            minimum_should_match: 1,
-          },
-        });
-
-        _should.push({
-          bool: {
-            must: [
-              { exists: { field: 'ibc_send' } },
-            ],
-            should: cosmos_chains_data
-              .flatMap(c => {
-                const {
-                  id,
-                  overrides,
-                } = { ...c };
-
-                return (
-                  _.uniq(
-                    _.concat(
-                      id,
-                      Object.keys({ ...overrides }),
-                    )
-                  )
-                  .map(id => {
-                    return { match_phrase: { 'source.original_recipient_chain': id } };
-                  })
-                );
-              }),
-            must_not: [
-              { exists: { field: 'ibc_send.failed_txhash' } },
-            ],
-            minimum_should_match: 1,
-          },
-        });
-
-        _should.push({
-          bool: {
-            must: [
-              { match_phrase: { 'source.original_recipient_chain': axelarnet.id } },
-            ],
-            should: [
-              { exists: { field: 'axelar_transfer' } },
-            ],
-            minimum_should_match: 1,
-          },
-        });
-
-        must.push({
-          bool: {
-            should: _should,
-            minimum_should_match:
-              _should.length > 0 ?
-                1 :
-                0,
-          },
-        });
-        break
-      case 'pending':
-        must_not.push({
-          bool: {
-            should: [
-              {
-                bool: {
-                  must: [
-                    { exists: { field: 'sign_batch' } },
-                  ],
-                  should: evm_chains_data
+        const _should =
+          [
+            {
+              bool: {
+                must: [
+                  { exists: { field: 'command' } },
+                ],
+                should:
+                  evm_chains_data
                     .map(c => {
-                      return { match_phrase: { 'source.original_recipient_chain': c?.id } };
+                      return {
+                        match_phrase: {
+                          'send.original_destination_chain': c?.id,
+                        },
+                      };
                     }),
-                  minimum_should_match: 1,
-                },
+                minimum_should_match: 1,
               },
-              {
-                bool: {
-                  must: [
-                    { exists: { field: 'ibc_send' } },
-                  ],
-                  should: cosmos_chains_data
+            },
+            {
+              bool: {
+                must: [
+                  { exists: { field: 'ibc_send' } },
+                ],
+                should:
+                  cosmos_chains_data
                     .flatMap(c => {
                       const {
                         id,
@@ -193,60 +144,111 @@ module.exports = async (
                           )
                         )
                         .map(id => {
-                          return { match_phrase: { 'source.original_recipient_chain': id } };
+                          return {
+                            match_phrase: {
+                              'send.original_destination_chain': id,
+                            },
+                          };
                         })
                       );
                     }),
-                  minimum_should_match: 1,
-                },
+                must_not: [
+                  { exists: { field: 'ibc_send.failed_txhash' } },
+                ],
+                minimum_should_match: 1,
               },
-              {
-                bool: {
-                  must: [
-                    { match_phrase: { 'source.original_recipient_chain': axelarnet.id } },
-                  ],
-                  should: [
-                    { exists: { field: 'axelar_transfer' } },
-                  ],
-                  minimum_should_match: 1,
-                },
+            },
+            {
+              bool: {
+                must: [
+                  { match_phrase: { 'send.original_destination_chain': axelarnet.id } },
+                  { exists: { field: 'axelar_transfer' } },
+                ],
               },
-            ],
-            minimum_should_match: 1,
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  }
+            },
+          ];
 
-  if (status) {
-    switch (status) {
-      case 'to_migrate':
-        must.push({ exists: { field: 'source.id' } });
-        must.push({ exists: { field: 'source.recipient_address' } });
-        must.push({
-          bool: {
-            should: [
-              {
-                bool: {
-                  must_not: [
-                    { exists: { field: 'num_migrate_time' } },
-                  ],
-                },
+        must
+          .push(
+            {
+              bool: {
+                should: _should,
+                minimum_should_match:
+                  _should.length > 0 ?
+                    1 :
+                    0,
               },
-              {
-                range: {
-                  num_migrate_time: {
-                    lt: 5,
+            }
+          );
+        break
+      case 'pending':
+        must_not
+          .push(
+            {
+              bool: {
+                should: [
+                  {
+                    bool: {
+                      must: [
+                        { exists: { field: 'command' } },
+                      ],
+                      should:
+                        evm_chains_data
+                          .map(c => {
+                            return {
+                              match_phrase: {
+                                'send.original_destination_chain': c?.id,
+                              },
+                            };
+                          }),
+                      minimum_should_match: 1,
+                    },
                   },
-                },
+                  {
+                    bool: {
+                      must: [
+                        { exists: { field: 'ibc_send' } },
+                      ],
+                      should:
+                        cosmos_chains_data
+                          .flatMap(c => {
+                            const {
+                              id,
+                              overrides,
+                            } = { ...c };
+
+                            return (
+                              _.uniq(
+                                _.concat(
+                                  id,
+                                  Object.keys({ ...overrides }),
+                                )
+                              )
+                              .map(id => {
+                                return {
+                                  match_phrase: {
+                                    'send.original_destination_chain': id,
+                                  },
+                                };
+                              })
+                            );
+                          }),
+                      minimum_should_match: 1,
+                    },
+                  },
+                  {
+                    bool: {
+                      must: [
+                        { match_phrase: { 'send.original_destination_chain': axelarnet.id } },
+                        { exists: { field: 'axelar_transfer' } },
+                      ],
+                    },
+                  },
+                ],
+                minimum_should_match: 1,
               },
-            ],
-            minimum_should_match: 1,
-          },
-        });
+            }
+          );
         break;
       default:
         break;
@@ -254,37 +256,72 @@ module.exports = async (
   }
 
   if (sourceChain) {
-    must.push({ match_phrase: { 'source.original_sender_chain': sourceChain } });
+    must.push({ match_phrase: { 'send.original_source_chain': sourceChain } });
 
     for (const id of get_others_version_chain_ids(sourceChain)) {
-      must_not.push({ match_phrase: { 'source.original_sender_chain': id } });
-      must_not.push({ match_phrase: { 'source.sender_chain': id } });
+      must_not.push({ match_phrase: { 'send.original_source_chain': id } });
+      must_not.push({ match_phrase: { 'send.source_chain': id } });
     }
   }
 
   if (destinationChain) {
-    must.push({ match_phrase: { 'source.original_recipient_chain': destinationChain } });
+    must.push({ match_phrase: { 'send.original_destination_chain': destinationChain } });
 
     for (const id of get_others_version_chain_ids(destinationChain)) {
-      must_not.push({ match_phrase: { 'source.original_recipient_chain': id } });
-      must_not.push({ match_phrase: { 'source.recipient_chain': id } });
+      must_not.push({ match_phrase: { 'send.original_destination_chain': id } });
+      must_not.push({ match_phrase: { 'send.destination_chain': id } });
     }
   }
 
   if (asset) {
-    must.push({ match_phrase: { 'source.denom': asset } });
+    must.push({ match_phrase: { 'send.denom': asset } });
   }
 
   if (depositAddress) {
-    must.push({ match: { 'source.recipient_address': depositAddress } });
+    must
+      .push(
+        {
+          bool: {
+            should: [
+              { match: { 'send.recipient_address': depositAddress } },
+              { match: { 'wrap.deposit_address': depositAddress } },
+              { match: { 'unwrap.deposit_address': depositAddress } },
+              { match: { 'unwrap.deposit_address_link': depositAddress } },
+            ],
+            minimum_should_match: 1,
+          },
+        }
+      );
   }
 
   if (senderAddress) {
-    must.push({ match: { 'source.sender_address': senderAddress } });
+    must
+      .push(
+        {
+          bool: {
+            should: [
+              { match: { 'send.sender_address': senderAddress } },
+              { match: { 'wrap.sender_address': senderAddress } },
+            ],
+            minimum_should_match: 1,
+          },
+        }
+      );
   }
 
   if (recipientAddress) {
-    must.push({ match: { 'link.recipient_address': recipientAddress } });
+    must
+      .push(
+        {
+          bool: {
+            should: [
+              { match: { 'link.recipient_address': recipientAddress } },
+              { match: { 'unwrap.recipient_address': recipientAddress } },
+            ],
+            minimum_should_match: 1,
+          },
+        }
+      );
   }
 
   if (transferId) {
@@ -308,7 +345,7 @@ module.exports = async (
         moment()
           .valueOf();
 
-    must.push({ range: { 'source.created_at.ms': { gte: fromTime, lte: toTime } } });
+    must.push({ range: { 'send.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
 
   if (!query) {
@@ -336,13 +373,13 @@ module.exports = async (
         100,
     sort:
       sort ||
-      [{ 'source.created_at.ms': 'desc' }],
+      [{ 'send.created_at.ms': 'desc' }],
     track_total_hits: true,
   };
 
   response =
     await read(
-      'transfers',
+      'cross_chain_transfers',
       query,
       read_params,
     );
@@ -356,25 +393,25 @@ module.exports = async (
       data
         .filter(d => {
           const {
-            source,
-            confirm_deposit,
+            send,
+            confirm,
             vote,
-            sign_batch,
+            command,
             ibc_send,
           } = { ...d };
           const {
-            id,
-            recipient_chain,
+            txhash,
+            destination_chain,
             amount,
             value,
             insufficient_fee,
-          } = { ...source };
+          } = { ...send };
 
           return (
-            id &&
+            txhash &&
             (
               !(
-                recipient_chain &&
+                destination_chain &&
                 typeof amount === 'number' &&
                 typeof value === 'number'
               ) ||
@@ -383,13 +420,13 @@ module.exports = async (
                   .findIndex(c =>
                     equals_ignore_case(
                       c?.id,
-                      recipient_chain,
+                      destination_chain,
                     )
                   ) > -1 &&
                 !insufficient_fee &&
                 (
                   vote ||
-                  confirm_deposit
+                  confirm
                 ) &&
                 !(
                   ibc_send?.failed_txhash ||
@@ -402,19 +439,19 @@ module.exports = async (
                   .findIndex(c =>
                     equals_ignore_case(
                       c?.id,
-                      recipient_chain,
+                      destination_chain,
                     )
                   ) > -1 &&
                 !insufficient_fee &&
                 (
                   vote ||
-                  confirm_deposit
+                  confirm
                 ) &&
-                !sign_batch?.executed
+                !command?.executed
               ) ||
               !(
                 vote?.transfer_id ||
-                confirm_deposit?.transfer_id
+                confirm?.transfer_id
               )
             )
           );
@@ -423,17 +460,17 @@ module.exports = async (
     if (data.length > 0) {
       for (const d of data) {
         const {
-          source,
+          send,
         } = { ...d };
         const {
-          id,
-          sender_chain,
-        } = { ...source };
+          txhash,
+          source_chain,
+        } = { ...send };
 
         getTransfersStatus(
           {
-            txHash: id,
-            sourceChain: sender_chain,
+            txHash: txhash,
+            sourceChain: source_chain,
           },
         );
       }
@@ -442,7 +479,7 @@ module.exports = async (
 
       response =
         await read(
-          'transfers',
+          'cross_chain_transfers',
           query,
           read_params,
         );
@@ -458,19 +495,28 @@ module.exports = async (
       data
         .filter(d => {
           const {
-            sign_batch,
+            send,
+            command,
             ibc_send,
+            unwrap,
             time_spent,
           } = { ...d };
+          const {
+            txhash,
+            source_chain,
+          } = { ...send };
           const {
             total,
           } = { ...time_spent };
 
           return (
+            txhash &&
+            source_chain &&
             !total &&
             (
-              sign_batch?.executed ||
-              ibc_send?.ack_txhash
+              command?.executed ||
+              ibc_send?.ack_txhash ||
+              unwrap
             )
           );
         });
@@ -478,12 +524,17 @@ module.exports = async (
     if (data.length > 0) {
       for (const d of data) {
         const {
-          id,
+          send,
         } = { ...d };
+        const {
+          txhash,
+          source_chain,
+        } = { ...send };
 
-        saveTimeSpent(
-          id,
-          d,
+        const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+        save_time_spent(
+          _id,
         );
       }
 
@@ -491,7 +542,7 @@ module.exports = async (
 
       response =
         await read(
-          'transfers',
+          'cross_chain_transfers',
           query,
           read_params,
         );
@@ -503,18 +554,20 @@ module.exports = async (
       response.data
         .map(d => {
           const {
-            source,
+            send,
             link,
-            confirm_deposit,
+            confirm,
             vote,
-            sign_batch,
+            command,
             ibc_send,
             axelar_transfer,
+            wrap,
+            unwrap,
           } = { ...d };
           const {
             amount,
             value,
-          } = { ...source };
+          } = { ...send };
           let {
             price,
           } = { ...link };
@@ -532,20 +585,24 @@ module.exports = async (
               ibc_send.failed_txhash &&
               !ibc_send.ack_txhash ?
                 'ibc_failed' :
-                ibc_send.recv_txhash ?
+                ibc_send.recv_txhash ||
+                unwrap ?
                   'executed' :
                   'ibc_sent' :
-              sign_batch?.executed ?
+              command?.executed ||
+              unwrap ?
                 'executed' :
-                 sign_batch ?
+                 command ?
                   'batch_signed' :
-                  axelar_transfer ?
+                  axelar_transfer ||
+                  unwrap ?
                     'executed' :
                     vote ?
                       'voted' :
-                      confirm_deposit ?
+                      confirm ?
                         'deposit_confirmed' :
-                        source?.status === 'failed' ?
+                        send?.status === 'failed' &&
+                        !wrap ?
                           'send_failed' :
                           'asset_sent';
 
@@ -582,62 +639,6 @@ module.exports = async (
             simplified_status,
           };
         });
-  }
-
-  if (Array.isArray(response?.data)) {
-    const {
-      data,
-    } = { ...response };
-
-    if (status === 'to_migrate') {
-      for (const d of data) {
-        const {
-          source,
-        } = { ...d };
-        let {
-          num_migrate_time,
-        } = { ...d };
-        const {
-          id,
-          recipient_address,
-        } = { ...source };
-
-        num_migrate_time =
-          (typeof num_migrate_time === 'number' ?
-            num_migrate_time :
-            -1
-          ) +
-          1;
-
-        const _d = {
-          ...d,
-          num_migrate_time,
-        };
-
-        const _id = `${id}_${recipient_address}`.toLowerCase();
-
-        await write(
-          'transfers',
-          _id,
-          _d,
-          true,
-        );
-
-        const index = data
-          .findIndex(_d =>
-            equals_ignore_case(
-              _d?.id,
-              id,
-            )
-          );
-
-        if (index > -1) {
-          data[index] = _d;
-        }
-      }
-    }
-
-    response.data = data;
   }
 
   return response;

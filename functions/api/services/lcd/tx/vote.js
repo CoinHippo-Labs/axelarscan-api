@@ -839,71 +839,9 @@ module.exports = async (
               }
             }
 
-            if (
-              !transaction_id ||
-              !transfer_id
-            ) {
-              const _response =
-                await read(
-                  'evm_votes',
-                  {
-                    bool: {
-                      must: [
-                        { match: { poll_id } },
-                      ],
-                      should: [
-                        { exists: { field: 'transaction_id' } },
-                        { exists: { field: 'transfer_id' } },
-                      ],
-                      minimum_should_match: 1,
-                      must_not: [
-                        { match: { transaction_id: poll_id } },
-                      ],
-                    },
-                  },
-                  {
-                    size: 1,
-                  },
-                );
-
-              const data =
-                _.head(
-                  _response?.data
-                );
-
-              if (data) {
-                transaction_id =
-                  data.transaction_id ||
-                  transaction_id;
-
-                transfer_id =
-                  data.transfer_id ||
-                  transfer_id;
-              }
-            }
-
             transaction_id = to_hex(transaction_id);
 
             if (voter) {
-              await write(
-                'evm_votes',
-                `${poll_id}_${voter}`.toLowerCase(),
-                {
-                  txhash,
-                  height,
-                  created_at: get_granularity(created_at),
-                  sender_chain,
-                  poll_id,
-                  transaction_id,
-                  transfer_id,
-                  voter,
-                  vote,
-                  confirmation,
-                  late,
-                  unconfirmed,
-                },
-              );
-
               await write(
                 'evm_polls',
                 poll_id,
@@ -1646,6 +1584,7 @@ module.exports = async (
 
                                     const {
                                       blockNumber,
+                                      from,
                                     } = { ...data?.transaction };
 
                                     if (blockNumber) {
@@ -1667,6 +1606,7 @@ module.exports = async (
                                             )
                                             .utc()
                                           ),
+                                        sender_address: from,
                                       };
                                     }
                                   }

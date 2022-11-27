@@ -13,6 +13,7 @@ exports.handler = async (
   const coingecko = require('./services/coingecko');
   const ens = require('./services/ens');
   const {
+    transfers,
     searchTransfers,
     searchTransfersStats,
     searchTransfersStatsChart,
@@ -239,6 +240,17 @@ exports.handler = async (
       break;
     case '/cross-chain/{function}':
       switch (req.params.function?.toLowerCase()) {
+        case '_transfers':
+          try {
+            response = await transfers(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'transfers':
           try {
             response = await searchTransfers(params);
