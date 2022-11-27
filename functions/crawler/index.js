@@ -12,6 +12,9 @@ exports.handler = async (
   // run wrap & unwrap updater
   require('./services/wrap-unwrap-updater')();
 
+  // run transfers migration
+  require('./services/transfers-migration')();
+
   // hold lambda function to not exit before timeout
   const {
     sleep,
