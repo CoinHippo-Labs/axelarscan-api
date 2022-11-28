@@ -39,9 +39,9 @@ const getTransfers = async params => {
 
     const response =
       await api
-        .get(
+        .post(
           '/cross-chain/transfers',
-          { params },
+          params,
         )
         .catch(error => {
           return {
