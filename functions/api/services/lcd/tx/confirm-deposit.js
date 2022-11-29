@@ -1558,6 +1558,7 @@ module.exports = async (
                           txhash,
                           source_chain,
                           recipient_address,
+                          amount,
                         } = { ...send };
 
                         const _response =

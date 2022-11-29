@@ -1443,10 +1443,11 @@ module.exports = async (
                         m?.receiver
                       )?.receiver;
 
-                  const amount_data = messages
-                    .find(m =>
-                      m?.token
-                    )?.token;
+                  const amount_data =
+                    messages
+                      .find(m =>
+                        m?.token
+                      )?.token;
 
                   if (
                     txhash &&
