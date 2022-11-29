@@ -7,7 +7,7 @@ const {
   getTransaction,
   getBlockTime,
   getProvider,
-} = require('./utils');
+} = require('../utils');
 const {
   get_granularity,
   sleep,
