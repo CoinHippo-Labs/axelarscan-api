@@ -854,20 +854,22 @@ module.exports = async (
                   transaction_id,
                   deposit_address,
                   transfer_id,
-                  confirmation:
-                    confirmation ||
-                    undefined,
-                  failed:
-                    success ?
-                      false :
-                      failed ||
-                      undefined,
-                  success:
-                    success ||
-                    undefined,
                   event:
                     event_name ||
                     undefined,
+                  confirmation:
+                    confirmation ||
+                    undefined,
+                  success:
+                    success ||
+                    confirmation ||
+                    undefined,
+                  failed:
+                    success ||
+                    confirmation ?
+                      false :
+                      failed ||
+                      undefined,
                   participants:
                     participants ||
                     undefined,

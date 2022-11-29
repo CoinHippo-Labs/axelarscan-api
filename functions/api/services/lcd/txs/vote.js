@@ -1115,9 +1115,11 @@ module.exports = async (
           undefined,
         success:
           success ||
+          confirmation ||
           undefined,
         failed:
-          success ?
+          success ||
+          confirmation ?
             false :
             failed ||
             undefined,
