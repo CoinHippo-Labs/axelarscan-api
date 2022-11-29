@@ -14,6 +14,9 @@ exports.handler = async (
   const ens = require('./services/ens');
   const {
     transfers,
+    transfersStats,
+    transfersStatsChart,
+    cumulativeVolume,
     searchTransfers,
     searchTransfersStats,
     searchTransfersStatsChart,
@@ -243,6 +246,39 @@ exports.handler = async (
         case '_transfers':
           try {
             response = await transfers(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case '_transfers-stats':
+          try {
+            response = await transfersStats(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case '_transfers-chart':
+          try {
+            response = await transfersStatsChart(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case '_cumulative-volume':
+          try {
+            response = await cumulativeVolume(params);
           } catch (error) {
             response = {
               error: true,

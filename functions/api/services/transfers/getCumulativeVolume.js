@@ -134,26 +134,27 @@ module.exports = async (
 
   if (buckets) {
     _response = {
-      data: buckets
-        .map(c => {
-          const {
-            key,
-            volume,
-            cumulative_volume,
-            doc_count,
-          } = { ...c };
+      data:
+        buckets
+          .map(c => {
+            const {
+              key,
+              volume,
+              cumulative_volume,
+              doc_count,
+            } = { ...c };
 
-          return {
-            timestamp: key,
-            volume:
-              volume?.value ||
-              0,
-            cumulative_volume:
-              cumulative_volume?.value ||
-              0,
-            num_txs: doc_count,
-          };
-        }),
+            return {
+              timestamp: key,
+              volume:
+                volume?.value ||
+                0,
+              cumulative_volume:
+                cumulative_volume?.value ||
+                0,
+              num_txs: doc_count,
+            };
+          }),
       total,
     };
 
@@ -248,26 +249,27 @@ module.exports = async (
 
     if (buckets) {
       _response = {
-        data: buckets
-          .map(c => {
-            const {
-              key,
-              volume,
-              cumulative_volume,
-              doc_count,
-            } = { ...c };
+        data:
+          buckets
+            .map(c => {
+              const {
+                key,
+                volume,
+                cumulative_volume,
+                doc_count,
+              } = { ...c };
 
-            return {
-              timestamp: key,
-              volume:
-                volume?.value ||
-                0,
-              cumulative_volume:
-                cumulative_volume?.value ||
-                0,
-              num_txs: doc_count,
-            };
-          }),
+              return {
+                timestamp: key,
+                volume:
+                  volume?.value ||
+                  0,
+                cumulative_volume:
+                  cumulative_volume?.value ||
+                  0,
+                num_txs: doc_count,
+              };
+            }),
         total,
       };
     }
