@@ -195,7 +195,11 @@ const getPastEvents = async (
             fromBlock,
             toBlock,
           )
-          .catch(error => { return { error }; });
+          .catch(error => {
+            return {
+              error,
+            };
+          });
 
       if (!events?.error) {
         if (events) {
@@ -341,7 +345,9 @@ const sync = async (
       // update latest block
       if (!synced) {
         try {
-          latest_block = await provider.getBlockNumber();
+          latest_block =
+            await provider
+              .getBlockNumber();
         } catch (error) {}
       }
     }
