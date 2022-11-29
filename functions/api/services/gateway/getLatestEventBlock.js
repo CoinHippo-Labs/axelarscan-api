@@ -2,6 +2,9 @@ const _ = require('lodash');
 const {
   read,
 } = require('../index');
+const {
+  get_others_version_chain_ids,
+} = require('../transfers/utils');
 
 module.exports = async (
   params = {},
@@ -31,9 +34,18 @@ module.exports = async (
         {
           bool: {
             must: [
-              { match: { 'event.chain': chain } },
+              { match_phrase: { 'event.chain': chain } },
               { exists: { field: 'event.blockNumber' } },
             ],
+            must_not:
+              get_others_version_chain_ids(chain)
+                .map(id => {
+                  return {
+                    match_phrase: {
+                      'event.chain': id,
+                    },
+                  };
+                }),
           },
         },
         {
@@ -55,8 +67,17 @@ module.exports = async (
           bool: {
             must: [
               { exists: { field: 'send.height' } },
-              { match: { 'send.source_chain': chain } },
+              { match_phrase: { 'send.source_chain': chain } },
             ],
+            must_not:
+              get_others_version_chain_ids(chain)
+                .map(id => {
+                  return {
+                    match_phrase: {
+                      'send.source_chain': id,
+                    },
+                  };
+                }),
           },
         },
         {
@@ -86,9 +107,18 @@ module.exports = async (
         {
           bool: {
             must: [
-              { match: { chain } },
+              { match_phrase: { chain } },
               { exists: { field: 'blockNumber' } },
             ],
+            must_not:
+              get_others_version_chain_ids(chain)
+                .map(id => {
+                  return {
+                    match_phrase: {
+                      chain: id,
+                    },
+                  };
+                }),
           },
         },
         {
