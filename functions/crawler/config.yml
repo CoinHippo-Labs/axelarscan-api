@@ -78,11 +78,11 @@ mainnet:
     aurora:
       address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
     arbitrum:
-      address: ""
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism:
       address: ""
     celo:
-      address: ""
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
       address: ""
 
@@ -160,10 +160,10 @@ testnet:
     aurora:
       address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
     arbitrum:
-      address: "0xe432150cce91c13a887f7d836923d5597add8e31"
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism:
       address: ""
     celo:
-      address: "0xe432150cce91c13a887f7d836923d5597add8e31"
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
       address: "0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c"

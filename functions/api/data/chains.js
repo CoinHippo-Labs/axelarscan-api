@@ -313,7 +313,7 @@ module.exports = {
         image: '/logos/chains/arbitrum.svg',
         color: '#28a0f0',
         website: 'https://arbitrum.io',
-        gateway_address: '',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'optimism',
@@ -392,7 +392,7 @@ module.exports = {
         image: '/logos/chains/celo.svg',
         color: '#35d07f',
         website: 'https://celo.org',
-        gateway_address: '',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'kava',
@@ -1436,7 +1436,7 @@ module.exports = {
         image: '/logos/chains/arbitrum.svg',
         color: '#28a0f0',
         website: 'https://arbitrum.io',
-        gateway_address: '0xe432150cce91c13a887f7d836923d5597add8e31',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'optimism',
@@ -1515,7 +1515,7 @@ module.exports = {
         image: '/logos/chains/celo.svg',
         color: '#35d07f',
         website: 'https://celo.org',
-        gateway_address: '0xe432150cce91c13a887f7d836923d5597add8e31',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'kava',
