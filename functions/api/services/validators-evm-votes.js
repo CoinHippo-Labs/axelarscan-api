@@ -109,7 +109,7 @@ const get_broadcaster_lookup = async () => {
 module.exports = async (
   params = {},
   size = 100,
-  max_page = 25,
+  max_page = 100,
 ) => {
   let {
     fromBlock,
