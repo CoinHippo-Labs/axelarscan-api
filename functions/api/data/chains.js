@@ -728,9 +728,9 @@ module.exports = {
           'secret-',
         ],
         endpoints: {
-          lcd: 'https://api.scrt.network',
+          lcd: 'https://secret-api.lavenderfive.com',
           lcds: [
-            'https://secret-api.lavenderfive.com',
+            // 'https://api.scrt.network',
             'https://scrt-lcd.blockpane.com',
             'https://secret.api.consensus.one',
             'https://api.secret.forbole.com',
@@ -762,10 +762,10 @@ module.exports = {
           'stargaze-',
         ],
         endpoints: {
-          lcd: 'https://api.stargaze.pupmos.network',
+          lcd: 'https://api-stargaze-ia.cosmosia.notional.ventures',
           lcds: [
+            // 'https://api.stargaze.pupmos.network',
             'https://api-stargaze.ezstaking.dev',
-            'https://api-stargaze-ia.cosmosia.notional.ventures',
           ],
           cosmostation: 'https://api-stargaze.cosmostation.io/v1',
         },
@@ -990,10 +990,10 @@ module.exports = {
           'umee-',
         ],
         endpoints: {
-          lcd: 'https://api.barnacle.mainnet.network.umee.cc',
+          lcd: 'https://api-umee-ia.cosmosia.notional.ventures',
           lcds: [
-            'https://api-umee-ia.cosmosia.notional.ventures',
             'https://umee-api.polkachu.com',
+            // 'https://api.barnacle.mainnet.network.umee.cc',
           ],
           cosmostation: 'https://api-regen.cosmostation.io/v1',
         },
