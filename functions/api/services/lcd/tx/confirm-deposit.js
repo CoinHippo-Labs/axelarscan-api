@@ -716,7 +716,10 @@ module.exports = async (
 
               let _amount;
 
-              if (!asset_data) {
+              if (
+                !asset_data ||
+                !amount
+              ) {
                 const receipt =
                   await provider
                     .getTransactionReceipt(
@@ -763,6 +766,7 @@ module.exports = async (
 
               if (blockNumber) {
                 amount =
+                  amount ||
                   BigNumber.from(
                     `0x${
                       (transaction.data || '')
@@ -777,8 +781,7 @@ module.exports = async (
                       '0'
                     }`
                   )
-                  .toString() ||
-                  amount;
+                  .toString();
 
                 denom =
                   asset_data?.id ||
@@ -1429,7 +1432,10 @@ module.exports = async (
                             ) > -1
                         );
 
-                      if (!asset_data) {
+                      if (
+                        !asset_data ||
+                        !amount
+                      ) {
                         const receipt =
                           await provider
                             .getTransactionReceipt(
@@ -1481,6 +1487,7 @@ module.exports = async (
                         denom;
 
                       amount =
+                        amount ||
                         BigNumber.from(
                           `0x${
                             (transaction.data || '')
@@ -1495,8 +1502,7 @@ module.exports = async (
                             '0'
                           }`
                         )
-                        .toString() ||
-                        amount;
+                        .toString();
 
                       const block_timestamp =
                         await getBlockTime(
