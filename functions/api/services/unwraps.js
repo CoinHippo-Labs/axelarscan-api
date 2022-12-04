@@ -12,6 +12,7 @@ module.exports = async (
 ) => {
   const {
     depositAddress,
+    txHash,
     depositAddressLink,
     txHashUnwrap
     sourceChain,
@@ -36,12 +37,16 @@ module.exports = async (
     must.push({ match: { deposit_address: depositAddress } });
   }
 
+  if (txHash) {
+    must.push({ match: { tx_hash: txHash } });
+  }
+
   if (depositAddressLink) {
     must.push({ match: { deposit_address_link: depositAddressLink } });
   }
 
   if (txHashUnwrap) {
-    must.push({ match: { tx_hash_wrap: txHashUnwrap } });
+    must.push({ match: { tx_hash_unwrap: txHashUnwrap } });
   }
 
   if (sourceChain) {
@@ -59,6 +64,7 @@ module.exports = async (
   if (status) {
     switch (status) {
       case 'to_update':
+        must.push({ exists: { field: 'tx_hash' } });
         must.push({ exists: { field: 'deposit_address_link' } });
         must.push({ exists: { field: 'tx_hash_unwrap' } });
         must.push({ exists: { field: 'source_chain' } });

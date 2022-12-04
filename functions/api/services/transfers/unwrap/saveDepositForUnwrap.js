@@ -15,10 +15,15 @@ const fields =
       is_key: true,
     },
     {
-      id: 'deposit_address_link',
+      id: 'tx_hash',
       type: 'string',
       required: true,
       is_key: true,
+    },
+    {
+      id: 'deposit_address_link',
+      type: 'string',
+      required: true,
     },
     {
       id: 'source_chain',

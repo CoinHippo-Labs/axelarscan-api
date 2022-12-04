@@ -145,6 +145,7 @@ module.exports = async (
           {
             bool: {
               must: [
+                { match: { tx_hash: txhash } },
                 { match: { deposit_address_link: recipient_address } },
                 { match: { source_chain: axelarnet.id } },
               ],
@@ -201,7 +202,6 @@ module.exports = async (
 
             unwrap = {
               ...unwrap,
-              txhash: tx_hash_unwrap,
               height: blockNumber,
               type: 'evm',
               created_at:
