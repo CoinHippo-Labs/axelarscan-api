@@ -1,5 +1,5 @@
 const {
-  providers: { FallbackProvider, JsonRpcProvider },
+  providers: { FallbackProvider, StaticJsonRpcProvider },
 } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
@@ -379,11 +379,23 @@ const getBlockTime = async (
   return output;
 };
 
+const createRpcProvider = (
+  url,
+  chain_id,
+) => 
+  new StaticJsonRpcProvider(
+    url,
+    chain_id ?
+      Number(chain_id) :
+      undefined
+  );
+
 const getProvider = (
   chain_data,
   _rpcs,
 ) => {
   const {
+    chain_id,
     provider_params,
   } = { ...chain_data };
   const {
@@ -393,7 +405,8 @@ const getProvider = (
   /* start normalize rpcs */
   let rpcs =
     _rpcs ||
-    rpcUrls;
+    rpcUrls ||
+    [];
 
   if (!Array.isArray(rpcs)) {
     rpcs = [rpcs];
@@ -407,14 +420,19 @@ const getProvider = (
   const provider =
     rpcs.length > 0 ?
       rpcs.length === 1 ?
-        new JsonRpcProvider(
-          _.head(rpcs)
+        createRpcProvider(
+          _.head(rpcs),
+          chain_id,
         ) :
         new FallbackProvider(
           rpcs
             .map((url, i) => {
               return {
-                provider: new JsonRpcProvider(url),
+                provider:
+                  createRpcProvider(
+                    url,
+                    chain_id,
+                  ),
                 priority: i + 1,
                 stallTimeout: 1000,
               };
@@ -443,5 +461,6 @@ module.exports = {
   vote_types,
   getTransaction,
   getBlockTime,
+  createRpcProvider,
   getProvider,
 };

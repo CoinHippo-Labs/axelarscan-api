@@ -14,12 +14,14 @@ const API = (env = environment) => {
     api,
   } = { ...config?.[env] };
 
-  return api &&
+  return (
+    api &&
     axios.create(
       {
         baseURL: api,
       },
-    );
+    )
+  );
 };
 
 const getLatestEventBlock = async chain => {

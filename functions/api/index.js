@@ -32,6 +32,7 @@ exports.handler = async (
     saveEvent,
     getLatestEventBlock,
     searchTokenSent,
+    recoverEvents,
   } = require('./services/gateway');
   const {
     sleep,
@@ -619,6 +620,40 @@ exports.handler = async (
             response = await searchTokenSent(params);
           } catch (error) {
             response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'recover-events':
+          try {
+            const {
+              chain,
+              txHash,
+              blockNumber,
+              toBlockNumber,
+            } = { ...params };
+
+            const chains_config = {
+              ...config?.[environment]?.gateway?.chains,
+            };
+
+            const contracts_config = {
+              ...config?.[environment]?.gateway?.contracts,
+            };
+
+            output =
+              await recoverEvents(
+                chains_config,
+                contracts_config,
+                chain,
+                txHash,
+                blockNumber,
+                toBlockNumber,
+              );
+          } catch (error) {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
