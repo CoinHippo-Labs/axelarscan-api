@@ -1,5 +1,5 @@
 const {
-  providers: { FallbackProvider, JsonRpcProvider },
+  providers: { FallbackProvider },
 } = require('ethers');
 const axios = require('axios');
 const _ = require('lodash');
@@ -21,6 +21,7 @@ const {
 const assets_price = require('../assets-price');
 const {
   equals_ignore_case,
+  createRpcProvider,
 } = require('../../utils');
 const {
   to_hash,
@@ -32,6 +33,10 @@ const environment =
   config?.environment;
 
 const private_rpcs_avalanche = process.env.PRIVATE_RPCS_AVALANCHE;
+
+const {
+  agent,
+} = { ...config?.[environment] };
 
 const evm_chains_data =
   require('../../data')?.chains?.[environment]?.evm ||
@@ -423,6 +428,7 @@ module.exports = async (
         .map(c => {
           const {
             id,
+            chain_id,
             provider_params,
           } = { ...c };
           const {
@@ -461,17 +467,23 @@ module.exports = async (
 
           const provider =
             rpcs.length === 1 ?
-              new JsonRpcProvider(
-                _.head(rpcs)
+              createRpcProvider(
+                _.head(rpcs),
+                chain_id,
               ) :
               new FallbackProvider(
-                rpcs.map((url, i) => {
-                  return {
-                    provider: new JsonRpcProvider(url),
-                    priority: i + 1,
-                    stallTimeout: 1000,
-                  };
-                }),
+                rpcs
+                  .map((url, i) => {
+                    return {
+                      provider:
+                        createRpcProvider(
+                          url,
+                          chain_id,
+                        ),
+                      priority: i + 1,
+                      stallTimeout: 1000,
+                    };
+                  }),
                 rpcs.length / 3,
               );
 
@@ -512,6 +524,9 @@ module.exports = async (
                   {
                     baseURL: url,
                     timeout: 5000,
+                    headers: {
+                      agent,
+                    },
                   },
                 )
               ),
@@ -708,15 +723,19 @@ module.exports = async (
                       original_chain_id,
                     )
                   ) {
-                    _lcds = lcd_urls
-                      .map(url =>
-                        axios.create(
-                          {
-                            baseURL: url,
-                            timeout: 5000,
-                          },
-                        )
-                      );
+                    _lcds =
+                      lcd_urls
+                        .map(url =>
+                          axios.create(
+                            {
+                              baseURL: url,
+                              timeout: 5000,
+                              headers: {
+                                agent,
+                              },
+                            },
+                          )
+                        );
                   }
 
                   let result;

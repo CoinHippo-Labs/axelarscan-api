@@ -1,5 +1,5 @@
 const {
-  providers: { FallbackProvider, JsonRpcProvider },
+  providers: { FallbackProvider, StaticJsonRpcProvider },
 } = require('ethers');
 const _ = require('lodash');
 const config = require('config-yml');
@@ -79,6 +79,17 @@ const getBlockTime = async (
   return output;
 };
 
+const createRpcProvider = (
+  url,
+  chain_id,
+) => 
+  new StaticJsonRpcProvider(
+    url,
+    chain_id ?
+      Number(chain_id) :
+      undefined
+  );
+
 const getProvider = (
   chain,
   env = environment,
@@ -90,11 +101,16 @@ const getProvider = (
   const chains_config = chains;
 
   const {
-    rpc,
-  } = { ...chains_config?.[chain]?.endpoints };
+    endpoints,
+    chain_id,
+  } = {
+    ...chains_config?.[chain],
+  };
 
   /* start normalize rpcs */
-  let rpcs = rpc;
+  let rpcs =
+    endpoints?.rpc ||
+    [];
 
   if (!Array.isArray(rpcs)) {
     rpcs = [rpcs];
@@ -108,14 +124,19 @@ const getProvider = (
   const provider =
     rpcs.length > 0 ?
       rpcs.length === 1 ?
-        new JsonRpcProvider(
-          _.head(rpcs)
+        createRpcProvider(
+          _.head(rpcs),
+          chain_id,
         ) :
         new FallbackProvider(
           rpcs
             .map((url, i) => {
               return {
-                provider: new JsonRpcProvider(url),
+                provider:
+                  createRpcProvider(
+                    url,
+                    chain_id,
+                  ),
                 priority: i + 1,
                 stallTimeout: 1000,
               };

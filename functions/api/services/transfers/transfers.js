@@ -384,6 +384,54 @@ module.exports = async (
       read_params,
     );
 
+  if (txHash) {
+    const {
+      data,
+    } = { ...response };
+
+    // flag to check is there any update
+    let updated;
+
+    if (data?.length < 1) {
+      const chains_config = {
+        ...config?.[environment]?.gateway?.chains,
+      };
+
+      const contracts_config = {
+        ...config?.[environment]?.gateway?.contracts,
+      };
+
+      const chains = Object.keys({ ...chains_config });
+
+      for (const chain of chains) {
+        const _response =
+          await require('../gateway/recoverEvents')(
+            chains_config,
+            contracts_config,
+            chain,
+            txHash,
+          );
+
+        if (_response?.code === 200) {
+          updated = true;
+          break;
+        }
+      }
+    }
+
+    if (updated) {
+      // search again after updated
+      await sleep(1 * 1000);
+
+      response =
+        await read(
+          'cross_chain_transfers',
+          query,
+          read_params,
+        );
+    }
+  }
+
   if (Array.isArray(response?.data)) {
     let {
       data,

@@ -20,6 +20,10 @@ const environment =
   process.env.ENVIRONMENT ||
   config?.environment;
 
+const {
+  agent,
+} = { ...config?.[environment] };
+
 const evm_chains_data =
   require('../../../data')?.chains?.[environment]?.evm ||
   [];
@@ -384,6 +388,9 @@ module.exports = async (
                 {
                   baseURL: _lcd,
                   timeout: 3000,
+                  headers: {
+                    agent,
+                  },
                 },
               );
 
@@ -631,6 +638,9 @@ module.exports = async (
                     {
                       baseURL: _lcd,
                       timeout: 3000,
+                      headers: {
+                        agent,
+                      },
                     },
                   );
 
