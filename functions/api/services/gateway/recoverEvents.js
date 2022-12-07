@@ -5,10 +5,19 @@ const config = require('config-yml');
 const gateway_subscriber = require('./subscribe');
 const {
   sleep,
+  equals_ignore_case,
   getTransaction,
   getProvider,
 } = require('../../utils');
 const IAxelarGateway = require('../../data/contracts/interfaces/IAxelarGateway.json');
+
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
+
+const evm_chains_data =
+  require('../../data')?.chains?.[environment]?.evm ||
+  [];
 
 module.exports = async (
   chains_config = {},
@@ -75,10 +84,18 @@ module.exports = async (
     };
   }
   else {
+    const chain_data = evm_chains_data
+      .find(c =>
+        equals_ignore_case(
+          c?.id,
+          chain,
+        )
+      );
+
     // initial provider
     const provider =
       getProvider(
-        chain,
+        chain_data,
       );
 
     // get block number (if not exists) from transaction hash

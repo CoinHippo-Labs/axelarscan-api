@@ -87,7 +87,7 @@ const createRpcProvider = (
     url,
     chain_id ?
       Number(chain_id) :
-      undefined
+      undefined,
   );
 
 const getProvider = (
@@ -101,8 +101,8 @@ const getProvider = (
   const chains_config = chains;
 
   const {
-    endpoints,
     chain_id,
+    endpoints,
   } = {
     ...chains_config?.[chain],
   };
