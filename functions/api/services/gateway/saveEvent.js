@@ -102,11 +102,18 @@ module.exports = async (
     };
   }
   else {
+    const chain_data = evm_chains_data
+      .find(c =>
+        equals_ignore_case(
+          c?.id,
+          chain,
+        )
+      );
+
     // setup provider
     const provider =
       getProvider(
-        null,
-        endpoints.rpc,
+        chain_data,
       );
 
     const {
@@ -174,14 +181,6 @@ module.exports = async (
                 ),
             };
           }
-
-          const chain_data = evm_chains_data
-            .find(c =>
-              equals_ignore_case(
-                c?.id,
-                chain,
-              )
-            );
 
           const {
             chain_id,

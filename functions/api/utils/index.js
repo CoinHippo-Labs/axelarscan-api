@@ -387,7 +387,7 @@ const createRpcProvider = (
     url,
     chain_id ?
       Number(chain_id) :
-      undefined
+      undefined,
   );
 
 const getProvider = (
