@@ -526,6 +526,7 @@ module.exports = async (
                     timeout: 5000,
                     headers: {
                       agent,
+                      'Accept-Encoding': 'gzip',
                     },
                   },
                 )
@@ -732,6 +733,7 @@ module.exports = async (
                               timeout: 5000,
                               headers: {
                                 agent,
+                                'Accept-Encoding': 'gzip',
                               },
                             },
                           )
