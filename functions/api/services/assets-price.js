@@ -86,17 +86,18 @@ module.exports = async (
             must: [
               { match: { price_timestamp } },
             ],
-            should: denoms
-              .map(d => {
-                return {
-                  match: {
-                    denom:
-                      typeof d === 'object' ?
-                        d?.denom :
-                        d,
-                  },
-                };
-              }),
+            should:
+              denoms
+                .map(d => {
+                  return {
+                    match: {
+                      denom:
+                        typeof d === 'object' ?
+                          d?.denom :
+                          d,
+                    },
+                  };
+                }),
             minimum_should_match: 1,
           },
         },
@@ -209,6 +210,9 @@ module.exports = async (
           {
             baseURL: endpoints.coingecko,
             timeout: 10000,
+            headers: {
+              'Accept-Encoding': 'gzip',
+            },
           },
         );
 
@@ -359,7 +363,7 @@ module.exports = async (
             )
           ) &&
           ('denom' in d) &&
-          ('price' in d)
+          typeof d?.price === 'number'
         );
 
     for (const d of to_update_cache) {
