@@ -148,7 +148,7 @@ testnet:
       chain_id: 43113
       endpoints:
         rpc:
-          - "https://avalanchetestapi.terminet.io/ext/bc/C/rpc"
+          - "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://rpc.ankr.com/avalanche_fuji"
     fantom:
       chain_id: 4002

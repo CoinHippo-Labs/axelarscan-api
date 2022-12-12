@@ -1274,7 +1274,7 @@ module.exports = {
             chainId: '0xa869',
             chainName: 'Avalanche Fuji',
             rpcUrls: [
-              'https://avalanchetestapi.terminet.io/ext/bc/C/rpc',
+              'https://ava-testnet.public.blastapi.io/ext/bc/C/rpc',
               'https://rpc.ankr.com/avalanche_fuji',
             ],
             nativeCurrency: {
