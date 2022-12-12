@@ -448,7 +448,6 @@ module.exports = {
         color: '#ff433e',
         website: 'https://kava.io',
         gateway_address: '',
-        no_inflation: true,
       },
     ],
     cosmos: [
@@ -1983,6 +1982,58 @@ module.exports = {
           lcds: [
             'https://persistence-testnet-rpc.allthatnode.com:1317',
           ],
+        },
+      },
+      {
+        id: 'xpla',
+        name: 'XPLA',
+        short_name: 'XPLA',
+        explorer: {
+          name: 'XPLA',
+          url: 'https://explorer.xpla.io/testnet',
+          icon: '/logos/explorers/xpla.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/xpla.svg',
+        color: '#04a7f1',
+        website: 'https://xpla.io',
+        prefix_address: 'xpla',
+        prefix_chain_ids: [
+          'cube_',
+        ],
+        endpoints: {
+          lcd: 'https://cube-lcd.xpla.dev',
+          lcds: [],
+        },
+      },
+      {
+        id: 'burnt',
+        name: 'Burnt',
+        short_name: 'BURNT',
+        explorer: {
+          name: 'Burnt',
+          url: '',
+          icon: '/logos/explorers/burnt.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/burnt.svg',
+        color: '#e60348',
+        website: 'https://burnt.com',
+        prefix_address: 'burnt',
+        prefix_chain_ids: [
+          'carbon-',
+        ],
+        endpoints: {
+          lcd: 'https://api.carbon-2.burnt.com/9909089ac2fa57a8f5661976ad0bcb3f0629372e5afa131e2e29e737588e505f',
+          lcds: [],
         },
       },
       {

@@ -3480,6 +3480,16 @@ module.exports = {
           decimals: 6,
         },
         {
+          ibc_denom: 'ibc/5BDD47E9E73BF91C14497E254F0A751F1A7D3A6084343F66EA7CEE834A384651',
+          chain_id: 'xpla',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/4BDF2D63B8FFE3454AF30E9BC10D2D7979BD3A938D989889ABC94FC5B86F1E2D',
+          chain_id: 'burnt',
+          decimals: 6,
+        },
+        {
           ibc_denom: 'ibc/720B52BDE1E2B84C5898D07C983B085C77EB5ED2D4C0ACD56B882A14777F750C',
           chain_id: 'terra-3',
           decimals: 6,
@@ -3661,6 +3671,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/6D2941E457157854297D7DB338E754E3359581D70CD16A37911A1BAD82CFD1BD',
           chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/13F73121EEA6CAA0DF51B06F64C39FD55EF394C64223881569DFA5628FA1288D',
+          chain_id: 'burnt',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -3917,6 +3939,18 @@ module.exports = {
           symbol: 'axlWBNB',
         },
         {
+          ibc_denom: 'ibc/FEC1C247382FE8A2E67AC699D8AADC01AD1DE04A860D85A2C68BF5BFCB7D8468',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/52F7DAC8D338E4D7388D02EBD6E522B86EBB62A48C6732C2651423A9E79377DE',
+          chain_id: 'burnt',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
           ibc_denom: 'ibc/8291F71592AEE7C593D5DC05C1B66CD190B2EEA74DF09D2B8BF57BF6C4E8BCAA',
           chain_id: 'terra-3',
           decimals: 18,
@@ -4057,6 +4091,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/09C3249B2D55421228D10E5C75BA4C06E5255C3CE4E773EF72AA128D404EACD4',
           chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/6771714762A6F8F541DE7C461F09C68F310621315FA70C70799F66A0DE6B95D2',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/78D5DAB545549A930F5DB22CFA7C821ACE8EF55DCF787BED93A56D04CC7477F5',
+          chain_id: 'burnt',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -4205,6 +4251,18 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/8BCD6BB5E8AD820584B798724B16398C413D7B7C475E1B676DEC223FCD32F7E5',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/7BFC5893BCCC6C9A4B173BC1183D2706141CBF71679EA6BDCE15E679CEC05183',
+          chain_id: 'burnt',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/8DE781194A674B7129D9EFA838F3E50B5F50212995AA825634BF702E0D037AC3',
           chain_id: 'terra-3',
           decimals: 18,
@@ -4349,6 +4407,18 @@ module.exports = {
           symbol: 'axlWFTM',
         },
         {
+          ibc_denom: 'ibc/9B50579E4AE3CF7B1705F04A4C715EE4E859F03620F0DE560C67CBB9B9A239A2',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/301A96A9BB897EF914BA74534EE1D75417753A0E113F2F766838274057290B79',
+          chain_id: 'burnt',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
           ibc_denom: 'ibc/F2D6753B652120212D09EE59075F0D820FCF580620DA8D3DE0349B614ED69A2B',
           chain_id: 'terra-3',
           decimals: 18,
@@ -4489,6 +4559,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/836BE368D315B5F0B8D1DC4948183A4722D35247DB71EFB7B27EBB9A463508A5',
           chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          ibc_denom: 'ibc/9790D25467E96C073CC3701C5BF9B74009955604859C7A31C6EE2F673EF67A3C',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          ibc_denom: 'ibc/6A4043BCBD3FB6E9D86A14F6A018C33CD4E05990E977729CC1946395B2972B11',
+          chain_id: 'burnt',
           decimals: 18,
           symbol: 'axlWDEV',
         },
