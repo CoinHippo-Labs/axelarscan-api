@@ -2026,7 +2026,7 @@ module.exports = {
         },
         image: '/logos/chains/burnt.svg',
         color: '#e60348',
-        website: 'https://burnt.com',
+        website: 'https://carbon.network',
         prefix_address: 'burnt',
         prefix_chain_ids: [
           'carbon-',
@@ -2034,6 +2034,35 @@ module.exports = {
         endpoints: {
           lcd: 'https://api.carbon-2.burnt.com/9909089ac2fa57a8f5661976ad0bcb3f0629372e5afa131e2e29e737588e505f',
           lcds: [],
+        },
+      },
+      {
+        id: 'acre',
+        name: 'Acrechain',
+        short_name: 'acre',
+        explorer: {
+          name: 'Acrescan',
+          url: 'https://testnet.acrescan.com',
+          icon: '/logos/explorers/acre.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/acre.svg',
+        color: '#86c032',
+        website: 'https://arable.finance',
+        prefix_address: 'acre',
+        prefix_chain_ids: [
+          'bamboo_',
+        ],
+        endpoints: {
+          lcd: 'https://lcd-testnet2-acre.synergynodes.com',
+          lcds: [
+            'https://rest.testnet.acrescan.com',
+            'https://api-t.acre.nodestake.top',
+          ],
         },
       },
       {
