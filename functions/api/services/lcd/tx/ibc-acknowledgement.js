@@ -557,17 +557,18 @@ module.exports = async (
           );
 
         if (Array.isArray(_response?.data)) {
+          const _data =
+            _.head(
+              _response.data
+            );
+
           const {
             send,
             link,
+          } = { ..._data };
+          let {
             ibc_send,
-          } = {
-            ...(
-              _.head(
-                _response.data
-              )
-            ),
-          };
+          } = { ..._data };
           let {
             destination_chain,
           } = { ...send };
@@ -591,18 +592,21 @@ module.exports = async (
 
             const _id = `${txhash}_${source_chain}`.toLowerCase();
 
+            ibc_send = {
+              ...ibc_send,
+              ack_txhash: id,
+              failed_txhash:
+                transfer_id ?
+                  null :
+                  undefined,
+            };
+
             await write(
               'cross_chain_transfers',
               _id,
               {
-                ibc_send: {
-                  ...ibc_send,
-                  ack_txhash: id,
-                  failed_txhash:
-                    transfer_id ?
-                      null :
-                      undefined,
-                },
+                ..._data,
+                ibc_send,
               },
               true,
             );
@@ -727,16 +731,19 @@ module.exports = async (
                         .utc()
                         .valueOf();
 
+                    ibc_send = {
+                      ...ibc_send,
+                      ack_txhash: id,
+                      recv_txhash: txhash,
+                      received_at: get_granularity(received_at),
+                    };
+
                     await write(
                       'cross_chain_transfers',
                       _id,
                       {
-                        ibc_send: {
-                          ...ibc_send,
-                          ack_txhash: id,
-                          recv_txhash: txhash,
-                          received_at: get_granularity(received_at),
-                        },
+                        ..._data,
+                        ibc_send,
                       },
                       true,
                     );

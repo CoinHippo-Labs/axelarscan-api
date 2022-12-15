@@ -756,15 +756,14 @@ module.exports = async (
               },
             );
 
+          const _data =
+            _.head(
+              _response?.data
+            );
+
           const {
             send,
-          } = {
-            ...(
-              _.head(
-                _response?.data
-              )
-            ),
-          };
+          } = { ..._data };
 
           if (
             send?.txhash &&
@@ -781,6 +780,7 @@ module.exports = async (
               'cross_chain_transfers',
               _id,
               {
+                ..._data,
                 ibc_send: _record,
               },
               true,
@@ -794,16 +794,15 @@ module.exports = async (
           }
         }
         else {
+          const _data =
+            _.head(
+              _response?.data
+            );
+
           const {
             send,
             ibc_send,
-          } = {
-            ...(
-              _.head(
-                _response?.data
-              )
-            ),
-          };
+          } = { ..._data };
 
           if (
             send?.txhash &&
@@ -824,6 +823,7 @@ module.exports = async (
               'cross_chain_transfers',
               _id,
               {
+                ..._data,
                 ibc_send: _record,
               },
               true,

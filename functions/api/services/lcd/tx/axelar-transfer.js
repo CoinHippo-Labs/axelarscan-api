@@ -309,15 +309,14 @@ module.exports = async (
             },
           );
 
+        const _data =
+          _.head(
+            _response?.data
+          );
+
         const {
           send,
-        } = {
-          ...(
-            _.head(
-              _response?.data
-            )
-          ),
-        };
+        } = { ..._data };
 
         if (
           send?.txhash &&
@@ -334,6 +333,7 @@ module.exports = async (
             'cross_chain_transfers',
             _id,
             {
+              ..._data,
               axelar_transfer: {
                 txhash,
                 height,
