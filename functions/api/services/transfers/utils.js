@@ -792,6 +792,32 @@ const update_source = async (
               6
           );
 
+        let _decimals = decimals;
+
+        // custom decimals for non-axelar wrap assets
+        if (
+          source.token_address &&
+          (contracts || [])
+            .findIndex(c =>
+              c?.chain_id === chain_id &&
+              !equals_ignore_case(
+                c?.contract_address,
+                source.token_address,
+              )
+            ) < 0
+        ) {
+          if (
+            [
+              'uusd',
+            ].includes(source.denom) &&
+            [
+              137,
+            ].includes(chain_id)
+          ) {
+            _decimals = 18;
+          }
+        }
+
         if (asset_data) {
           source.denom =
             asset_data.id ||
@@ -805,7 +831,7 @@ const update_source = async (
                     source.amount
                   )
                   .toString(),
-                  decimals,
+                  _decimals,
                 )
               );
           }
@@ -1392,6 +1418,32 @@ const _update_send = async (
               6
           );
 
+        let _decimals = decimals;
+
+        // custom decimals for non-axelar wrap assets
+        if (
+          send.token_address &&
+          (contracts || [])
+            .findIndex(c =>
+              c?.chain_id === chain_id &&
+              !equals_ignore_case(
+                c?.contract_address,
+                send.token_address,
+              )
+            ) < 0
+        ) {
+          if (
+            [
+              'uusd',
+            ].includes(send.denom) &&
+            [
+              137,
+            ].includes(chain_id)
+          ) {
+            _decimals = 18;
+          }
+        }
+
         if (asset_data) {
           send.denom =
             asset_data.id ||
@@ -1405,7 +1457,7 @@ const _update_send = async (
                     send.amount
                   )
                   .toString(),
-                  decimals,
+                  _decimals,
                 )
               );
           }

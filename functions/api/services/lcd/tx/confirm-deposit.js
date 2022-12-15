@@ -808,6 +808,7 @@ module.exports = async (
                   recipient_chain,
                   sender_address: from,
                   recipient_address: deposit_address,
+                  token_address,
                   amount,
                   denom,
                 };
@@ -1524,6 +1525,7 @@ module.exports = async (
                         destination_chain,
                         sender_address: from,
                         recipient_address: deposit_address,
+                        token_address,
                         denom,
                         amount,
                       };

@@ -3302,7 +3302,7 @@ module.exports = {
         {
           contract_address: '0xeddc6ede8f3af9b4971e1fa9639314905458be87',
           chain_id: 137,
-          decimals: 18,
+          decimals: 6,
         },
         {
           contract_address: '0x2b9d3f168905067d88d93f094c938bacee02b0cb',
