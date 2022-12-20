@@ -849,7 +849,13 @@ const update_source = async (
             .utc()
             .valueOf()
           ) {
-            source.fee = source.amount * 0.001;
+            source.fee =
+              parseFloat(
+                (
+                  source.amount * 0.001
+                )
+                .toFixed(6)
+              );
           }
 
           if (
@@ -1491,7 +1497,13 @@ const _update_send = async (
             .utc()
             .valueOf()
           ) {
-            send.fee = send.amount * 0.001;
+            send.fee =
+              parseFloat(
+                (
+                  send.amount * 0.001
+                )
+                .toFixed(6)
+              );
           }
 
           if (
