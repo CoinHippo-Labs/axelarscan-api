@@ -630,7 +630,7 @@ module.exports = async (
               'YYYYMMDD',
             )
             .utc()
-            .value() &&
+            .valueOf() &&
             fee > amount * 0.001
           );
         });
