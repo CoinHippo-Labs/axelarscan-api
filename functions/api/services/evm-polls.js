@@ -8,6 +8,7 @@ const {
 } = require('./index');
 const {
   equals_ignore_case,
+  get_granularity,
 } = require('../utils');
 
 const environment =
@@ -506,7 +507,46 @@ module.exports = async (
       }
     }
 
-    response.data = data;
+    response.data =
+      data
+        .map(d => {
+          let {
+            created_at,
+            updated_at,
+          } = { ...d };
+
+          const votes =
+            Object.entries({ ...d })
+              .filter(([k, v]) =>
+                k?.startsWith(axelarnet.prefix_address)
+              )
+              .map(([k, v]) => v);
+
+          updated_at =
+            get_granularity(
+              _.maxBy(
+                votes,
+                'created_at',
+              )?.created_at
+            ) ||
+            updated_at ||
+            created_at;
+
+          created_at =
+            get_granularity(
+              _.minBy(
+                votes,
+                'created_at',
+              )?.created_at
+            ) ||
+            created_at;
+
+          return {
+            ...d,
+            created_at,
+            updated_at,
+          };
+        });
   }
 
   return response;
