@@ -5,6 +5,7 @@ const getTransfersStatus = require('./getTransfersStatus');
 const {
   saveTimeSpent,
   get_others_version_chain_ids,
+  update_source,
 } = require('./utils');
 const {
   read,
@@ -484,6 +485,68 @@ module.exports = async (
         saveTimeSpent(
           id,
           d,
+        );
+      }
+
+      await sleep(0.5 * 1000);
+
+      response =
+        await read(
+          'transfers',
+          query,
+          read_params,
+        );
+    }
+  }
+
+  if (Array.isArray(response?.data)) {
+    let {
+      data,
+    } = { ...response };
+
+    data =
+      data
+        .filter(d => {
+          const {
+            source,
+          } = { ...d };
+          const {
+            created_at,
+            denom,
+            amount,
+            fee,
+          } = { ...source };
+          const {
+            ms,
+          } = { ...created_at };
+
+          return (
+            [
+              'uluna',
+              'uusd',
+            ].includes(denom) &&
+            ms <
+            moment(
+              '20220401',
+              'YYYYMMDD',
+            )
+            .utc()
+            .value() &&
+            fee > amount * 0.001
+          );
+        });
+
+    if (data.length > 0) {
+      for (const d of data) {
+        const {
+          source,
+          link,
+        } = { ...d };
+
+        update_source(
+          source,
+          link,
+          true,
         );
       }
 
