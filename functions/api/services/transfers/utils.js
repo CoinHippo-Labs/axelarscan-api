@@ -847,7 +847,7 @@ const update_source = async (
               'YYYYMMDD',
             )
             .utc()
-            .value()
+            .valueOf()
           ) {
             source.fee = source.amount * 0.001;
           }
@@ -1489,7 +1489,7 @@ const _update_send = async (
               'YYYYMMDD',
             )
             .utc()
-            .value()
+            .valueOf()
           ) {
             send.fee = send.amount * 0.001;
           }
