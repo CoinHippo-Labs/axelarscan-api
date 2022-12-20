@@ -532,7 +532,13 @@ module.exports = async (
             )
             .utc()
             .valueOf() &&
-            fee > amount * 0.001
+            fee >
+            parseFloat(
+              (
+                amount * 0.001
+              )
+              .toFixed(6)
+            )
           );
         });
 
