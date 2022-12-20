@@ -3,8 +3,9 @@ const moment = require('moment');
 const config = require('config-yml');
 const getTransfersStatus = require('./getTransfersStatus');
 const {
-  save_time_spent,
   get_others_version_chain_ids,
+  _update_send,
+  save_time_spent,
 } = require('./utils');
 const {
   read,
@@ -583,6 +584,69 @@ module.exports = async (
 
         save_time_spent(
           _id,
+        );
+      }
+
+      await sleep(0.5 * 1000);
+
+      response =
+        await read(
+          'cross_chain_transfers',
+          query,
+          read_params,
+        );
+    }
+  }
+
+  if (Array.isArray(response?.data)) {
+    let {
+      data,
+    } = { ...response };
+
+    data =
+      data
+        .filter(d => {
+          const {
+            send,
+          } = { ...d };
+          const {
+            created_at,
+            denom,
+            amount,
+            fee,
+          } = { ...send };
+          const {
+            ms,
+          } = { ...created_at };
+
+          return (
+            [
+              'uluna',
+              'uusd',
+            ].includes(denom) &&
+            ms <
+            moment(
+              '20220401',
+              'YYYYMMDD',
+            )
+            .utc()
+            .value() &&
+            fee > amount * 0.001
+          );
+        });
+
+    if (data.length > 0) {
+      for (const d of data) {
+        const {
+          send,
+          link,
+        } = { ...d };
+
+        _update_send(
+          send,
+          link,
+          d,
+          true,
         );
       }
 

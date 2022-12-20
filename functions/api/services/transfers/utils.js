@@ -837,6 +837,22 @@ const update_source = async (
           }
 
           if (
+            [
+              'uluna',
+              'uusd',
+            ].includes(source.denom) &&
+            source.created_at?.ms <
+            moment(
+              '20220401',
+              'YYYYMMDD',
+            )
+            .utc()
+            .value()
+          ) {
+            source.fee = source.amount * 0.001;
+          }
+
+          if (
             typeof source.fee !== 'number' &&
             endpoints?.lcd
           ) {
@@ -1460,6 +1476,22 @@ const _update_send = async (
                   _decimals,
                 )
               );
+          }
+
+          if (
+            [
+              'uluna',
+              'uusd',
+            ].includes(send.denom) &&
+            send.created_at?.ms <
+            moment(
+              '20220401',
+              'YYYYMMDD',
+            )
+            .utc()
+            .value()
+          ) {
+            send.fee = send.amount * 0.001;
           }
 
           if (
