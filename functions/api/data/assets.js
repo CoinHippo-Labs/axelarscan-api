@@ -56,6 +56,12 @@ module.exports = {
           decimals: 6,
           symbol: 'wAXL',
         },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 2222,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
       ],
       ibc: [
         {
@@ -140,6 +146,12 @@ module.exports = {
         {
           contract_address: '0xEB466342C4d449BC9f53A865D5Cb90586f405215',
           chain_id: 42220,
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
+          contract_address: '0xEB466342C4d449BC9f53A865D5Cb90586f405215',
+          chain_id: 2222,
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -317,6 +329,12 @@ module.exports = {
           decimals: 6,
           symbol: 'axlUSDT',
         },
+        {
+          contract_address: '0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6',
+          chain_id: 2222,
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
       ],
       ibc: [
         {
@@ -483,6 +501,12 @@ module.exports = {
         {
           contract_address: '0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7',
           chain_id: 42220,
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          contract_address: '0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7',
+          chain_id: 2222,
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -1735,6 +1759,12 @@ module.exports = {
           decimals: 18,
           symbol: 'axlFRAX',
         },
+        {
+          contract_address: '0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040',
+          chain_id: 2222,
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
       ],
       ibc: [
         {
@@ -1897,6 +1927,12 @@ module.exports = {
           decimals: 6,
           symbol: 'axlATOM',
         },
+        {
+          contract_address: '0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff',
+          chain_id: 2222,
+          decimals: 6,
+          symbol: 'axlATOM',
+        },
       ],
       ibc: [
         {
@@ -1961,6 +1997,11 @@ module.exports = {
           chain_id: 42220,
           decimals: 6,
         },
+        {
+          contract_address: '0x54B1aa9386f36079fe4B39278c06eadaD457ac15',
+          chain_id: 2222,
+          decimals: 6,
+        },
       ],
       ibc: [
         {
@@ -2022,6 +2063,11 @@ module.exports = {
         {
           contract_address: '0xEeD07F7ef719f69f7D0A50aF2f50bA2d959A3839',
           chain_id: 42220,
+          decimals: 6,
+        },
+        {
+          contract_address: '0xEeD07F7ef719f69f7D0A50aF2f50bA2d959A3839',
+          chain_id: 2222,
           decimals: 6,
         },
       ],
