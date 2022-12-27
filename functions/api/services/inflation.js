@@ -1,10 +1,6 @@
 const config = require('config-yml');
 const _ = require('lodash');
 const lcd = require('./lcd');
-const cli = require('./cli');
-const {
-  to_json,
-} = require('../utils');
 
 const environment =
   process.env.ENVIRONMENT ||
@@ -77,21 +73,18 @@ module.exports = async (
       null;
 
   response =
-    await cli(
-      undefined,
+    await lcd(
+      '/cosmos/params/v1beta1/params',
       {
-        cmd: 'axelard q params subspace reward KeyMgmtRelativeInflationRate -oj',
+        subspace: 'reward',
+        key: 'KeyMgmtRelativeInflationRate',
       },
-      true,
-      30,
     );
 
   const keyMgmtRelativeInflationRate =
     Number(
       (
-        {
-          ...to_json(response?.stdout),
-        }.value ||
+        response?.param?.value ||
         ''
       )
       .split('"')
@@ -99,21 +92,18 @@ module.exports = async (
     );
 
   response =
-    await cli(
-      undefined,
+    await lcd(
+      '/cosmos/params/v1beta1/params',
       {
-        cmd: 'axelard q params subspace reward ExternalChainVotingInflationRate -oj',
+        subspace: 'reward',
+        key: 'ExternalChainVotingInflationRate',
       },
-      true,
-      30,
     );
 
   const externalChainVotingInflationRate =
     Number(
       (
-        {
-          ...to_json(response?.stdout),
-        }.value ||
+        response?.param?.value ||
         ''
       )
       .split('"')
