@@ -80,6 +80,7 @@ module.exports = async (
           [
             'pagination',
             'events',
+            'subspace',
           ].findIndex(s =>
             k?.includes(s)
           ) > -1
