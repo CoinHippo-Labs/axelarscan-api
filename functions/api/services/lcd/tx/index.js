@@ -327,6 +327,7 @@ module.exports = async (
             'payload_hash',
             'pre_operators',
             'new_operators',
+            'new_weights',
             'token_address',
           ];
 
