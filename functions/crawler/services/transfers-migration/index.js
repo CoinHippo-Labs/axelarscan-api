@@ -1,3 +1,4 @@
+const fixValues = require('./fix-values');
 const {
   API,
   getTransfers,
@@ -10,6 +11,8 @@ module.exports = async (
   collection = 'cross_chain_transfers',
 ) => {
   const api = API();
+
+  fixValues();
 
   while (true) {
     const response =
@@ -66,6 +69,14 @@ module.exports = async (
               amount_received: source.amount_received,
               fee: source.fee,
               insufficient_fee: source.insufficient_fee,
+              value:
+                source.value ||
+                (
+                  typeof source.amount === 'number' &&
+                  typeof link?.price === 'number' ?
+                    source.amount * link.price :
+                    undefined
+                ),
             },
             link:
               (
@@ -203,6 +214,7 @@ module.exports = async (
                 collection,
                 id: _id,
                 path: `/${collection}/_update/${_id}`,
+                update_only: true,
                 ..._d,
               },
             )
