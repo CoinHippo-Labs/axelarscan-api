@@ -46,6 +46,7 @@ module.exports = async (
     type,
     confirmed,
     state,
+    status,
     sourceChain,
     destinationChain,
     asset,
@@ -250,6 +251,18 @@ module.exports = async (
               },
             }
           );
+        break;
+      default:
+        break;
+    }
+  }
+
+  if (status) {
+    switch (status) {
+      case 'to_fix_value':
+        must.push({ exists: { field: 'send.amount' } });
+        must.push({ exists: { field: 'link.price' } });
+        must_not.push({ exists: { field: 'send.value' } });
         break;
       default:
         break;

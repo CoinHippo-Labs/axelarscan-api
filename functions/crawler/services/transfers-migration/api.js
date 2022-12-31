@@ -24,7 +24,10 @@ const API = (env = environment) => {
   );
 };
 
-const getTransfers = async params => {
+const getTransfers = async (
+  params = {},
+  route = '/cross-chain/transfers',
+) => {
   let output;
 
   const api = API();
@@ -42,7 +45,7 @@ const getTransfers = async params => {
     const response =
       await api
         .post(
-          '/cross-chain/transfers',
+          route,
           params,
         )
         .catch(error => {
