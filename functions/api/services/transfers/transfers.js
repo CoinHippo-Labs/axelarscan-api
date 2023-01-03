@@ -260,9 +260,15 @@ module.exports = async (
   if (status) {
     switch (status) {
       case 'to_fix_value':
+        must.push({ exists: { field: 'send.txhash' } });
         must.push({ exists: { field: 'send.amount' } });
         must.push({ exists: { field: 'link.price' } });
         must_not.push({ exists: { field: 'send.value' } });
+        break;
+      case 'to_fix_confirm':
+        must.push({ exists: { field: 'send.txhash' } });
+        must.push({ exists: { field: 'send.value' } });
+        must_not.push({ exists: { field: 'confirm' } });
         break;
       default:
         break;
