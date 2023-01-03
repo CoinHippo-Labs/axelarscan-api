@@ -1,4 +1,5 @@
 const fixValues = require('./fix-values');
+const fixConfirms = require('./fix-confirms');
 const {
   API,
   getTransfers,
@@ -13,6 +14,7 @@ module.exports = async (
   const api = API();
 
   fixValues();
+  fixConfirms();
 
   while (true) {
     const response =
