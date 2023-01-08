@@ -807,12 +807,22 @@ const update_source = async (
             ) < 0
         ) {
           if (
-            [
-              'uusd',
-            ].includes(source.denom) &&
-            [
-              137,
-            ].includes(chain_id)
+            (
+              [
+                'uusd',
+              ].includes(source.denom) &&
+              [
+                137,
+              ].includes(chain_id)
+            ) ||
+            (
+              [
+                'uusdc',
+              ].includes(source.denom) &&
+              [
+                250,
+              ].includes(chain_id)
+            )
           ) {
             _decimals = 18;
           }
@@ -1455,12 +1465,22 @@ const _update_send = async (
             ) < 0
         ) {
           if (
-            [
-              'uusd',
-            ].includes(send.denom) &&
-            [
-              137,
-            ].includes(chain_id)
+            (
+              [
+                'uusd',
+              ].includes(send.denom) &&
+              [
+                137,
+              ].includes(chain_id)
+            ) ||
+            (
+              [
+                'uusdc',
+              ].includes(send.denom) &&
+              [
+                250,
+              ].includes(chain_id)
+            )
           ) {
             _decimals = 18;
           }
