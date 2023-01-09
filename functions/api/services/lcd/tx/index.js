@@ -696,9 +696,10 @@ module.exports = async (
             ) > -1
         ) > -1
       ) {
-        await require('./cosmos-send')(
-          lcd_response,
-        );
+        lcd_response =
+          await require('./cosmos-send')(
+            lcd_response,
+          );
       }
       // RouteIBCTransfers
       if (
