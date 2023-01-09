@@ -1696,6 +1696,10 @@ module.exports = {
         ],
         endpoints: {
           lcd: 'https://testnet-rest.osmosis.zone',
+          lcds: [
+            'https://lcd.testnet.osmosis.zone',
+            'https://osmosis-testnet-rpc.allthatnode.com:1317',
+          ],
         },
         overrides: {
           'osmosis-2': {
@@ -1705,6 +1709,9 @@ module.exports = {
 
           },
           'osmosis-4': {
+
+          },
+          'osmosis-5': {
 
           },
         },
