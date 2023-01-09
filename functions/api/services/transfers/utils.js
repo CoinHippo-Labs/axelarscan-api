@@ -820,6 +820,7 @@ const update_source = async (
                 'uusdc',
               ].includes(source.denom) &&
               [
+                1,
                 250,
               ].includes(chain_id)
             )
@@ -1478,6 +1479,7 @@ const _update_send = async (
                 'uusdc',
               ].includes(send.denom) &&
               [
+                1,
                 250,
               ].includes(chain_id)
             )
