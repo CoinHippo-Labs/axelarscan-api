@@ -3523,6 +3523,11 @@ module.exports = {
           is_native: true,
         },
         {
+          ibc_denom: 'ibc/52457B1109B9E64CC855317A66580B4BC5BBF8522EE78E1F571B5BD8AB873B17',
+          chain_id: 'osmosis',
+          decimals: 6,
+        },
+        {
           ibc_denom: 'ibc/4DAB44738E392E8FDEC30F0EF3BED40D6EAA424B2666316B02307300B3A29B15',
           chain_id: 'osmosis',
           decimals: 6,
@@ -3598,6 +3603,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/3DC20E9A12C8F19A92CDEBC37116C26EADF4C65E7498193791A3DAAD0B263556',
           chain_id: 'cosmoshub',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/FF3065989E34457F342D4EFB8692406D49D4E2B5C70F725F127862E22CE6BDCD',
+          chain_id: 'osmosis',
           decimals: 6,
         },
         {
@@ -3792,6 +3802,12 @@ module.exports = {
         },
       ],
       ibc: [
+        {
+          ibc_denom: 'ibc/F64E7E43CAC1AEB502D028893DC4BD62D2CDFC55B7E21F23043DAE602B8A1F3E',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
         {
           ibc_denom: 'ibc/8AE11672A7DF38BF7B484AB642C5C85BA4A94810D57AE8945151818CD6179427',
           chain_id: 'osmosis',
@@ -4057,6 +4073,12 @@ module.exports = {
       ],
       ibc: [
         {
+          ibc_denom: 'ibc/D38FD4C586C397DDAAB715C654DAEE3C3C40462CD410254AC7576208E947605B',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
           ibc_denom: 'ibc/DF2C5FC2C96CFE255FE0B0F8DD2E7C3E91C49D03964D4078EE77C1474ECAF94B',
           chain_id: 'osmosis',
           decimals: 18,
@@ -4209,6 +4231,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/88C2DE3AE63A443385CDFE54A18B0FC48402DDF3FE5AC532A663F9C3A1144462',
           chain_id: 'cosmoshub',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/7186C4B1A0596A1AB34C201E27D659B4A9837B46A328BCE5C0E452CD7146BC8F',
+          chain_id: 'osmosis',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -4369,6 +4397,12 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/16F3EB18413FD15154B02F9929473A3C0A23902BF8044157E9E5E0FBEB24FCEE',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/528CE04E9CA727529411F4E6D1080C59C4ACFEAEECC453E4250639A8F6648496',
           chain_id: 'osmosis',
           decimals: 18,
@@ -4525,6 +4559,12 @@ module.exports = {
           symbol: 'axlWFTM',
         },
         {
+          ibc_denom: 'ibc/F9E624EB89ABEE4CB1EC04D7941F613BD8383EE7DE323589A82066D0345EF6EB',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
           ibc_denom: 'ibc/DBD032174320882A939AD78C20A29F98EBAC9F83C28127A387B2D2657C7EC21F',
           chain_id: 'osmosis',
           decimals: 18,
@@ -4677,6 +4717,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/12B944E03F3E2197589129CB359E1BD5FA3F06841792FFE46852EAFE31EEB20A',
           chain_id: 'cosmoshub',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          ibc_denom: 'ibc/43B0722D9472C65ADD1E1A339FD1472147033F4A6FA30E472732CF6434DBDE93',
+          chain_id: 'osmosis',
           decimals: 18,
           symbol: 'axlWDEV',
         },
