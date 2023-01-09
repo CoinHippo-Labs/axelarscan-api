@@ -1,5 +1,8 @@
+const _ = require('lodash');
 const moment = require('moment');
+const lcd = require('../../lcd');
 const {
+  read,
   write,
 } = require('../../index');
 const {
@@ -45,6 +48,36 @@ module.exports = async (
   params = {},
   collection = 'unwraps',
 ) => {
+  if (
+    !params.tx_hash &&
+    params.tx_hash_msg_update_client
+  ) {
+    const {
+      tx_hash_msg_update_client,
+    } = { ...params };
+    let {
+      tx_hash,
+    } = { ...params };
+
+    const lcd_response =
+      await lcd(
+        `/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`,
+      );
+
+    const {
+      tx_hashes,
+    } = { ...lcd_response };
+
+    tx_hash =
+      _.head(
+        tx_hashes
+      );
+
+    if (tx_hash) {
+      params.tx_hash = tx_hash;
+    }
+  }
+
   if (
     fields
       .findIndex(f => {
@@ -140,6 +173,60 @@ module.exports = async (
     const {
       result,
     } = { ...response };
+
+    if (data.tx_hash) {
+      const _collection = 'cross_chain_transfers';
+
+      const {
+        tx_hash,
+        deposit_address_link,
+      } = { ...data };
+
+      const response =
+        await read(
+          _collection,
+          {
+            bool: {
+              must: [
+                { match: { 'send.txhash': tx_hash } },
+                { match: { 'send.recipient_address': deposit_address_link } },
+                { exists: { field: 'send.source_chain' } },
+              ],
+            },
+          },
+          {
+            size: 1,
+          },
+        );
+
+      const _data =
+        _.head(
+          response?.data
+        );
+
+      if (_data) {
+        const {
+          send,
+        } = { ..._data };
+        const {
+          txhash,
+          source_chain,
+        } = { ...send };
+
+        const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+        await write(
+          _collection,
+          _id,
+          {
+            ..._data,
+            unwrap: data,
+            type: 'unwrap',
+          },
+          true,
+        );
+      }
+    }
 
     return {
       error: false,

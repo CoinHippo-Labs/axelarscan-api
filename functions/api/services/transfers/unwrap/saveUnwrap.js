@@ -1,4 +1,6 @@
+const _ = require('lodash');
 const moment = require('moment');
+const lcd = require('../../lcd');
 const {
   write,
 } = require('../../index');
@@ -41,6 +43,36 @@ module.exports = async (
   params = {},
   collection = 'unwraps',
 ) => {
+  if (
+    !params.tx_hash &&
+    params.tx_hash_msg_update_client
+  ) {
+    const {
+      tx_hash_msg_update_client,
+    } = { ...params };
+    let {
+      tx_hash,
+    } = { ...params };
+
+    const lcd_response =
+      await lcd(
+        `/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`,
+      );
+
+    const {
+      tx_hashes,
+    } = { ...lcd_response };
+
+    tx_hash =
+      _.head(
+        tx_hashes
+      );
+
+    if (tx_hash) {
+      params.tx_hash = tx_hash;
+    }
+  }
+
   if (
     fields
       .findIndex(f => {

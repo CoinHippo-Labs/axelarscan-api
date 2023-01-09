@@ -150,6 +150,8 @@ module.exports = async (
           e.packet_data
         );
 
+    const tx_hashes = [];
+
     for (const record of recv_packets) {
       const {
         height,
@@ -499,6 +501,8 @@ module.exports = async (
                 }
 
                 if (found) {
+                  tx_hashes.push(txhash);
+
                   break;
                 }
               }
@@ -511,5 +515,9 @@ module.exports = async (
         }
       }
     }
+
+    lcd_response.tx_hashes = tx_hashes;
   } catch (error) {}
+
+  return lcd_response;
 };
