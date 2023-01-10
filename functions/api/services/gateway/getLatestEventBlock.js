@@ -27,40 +27,7 @@ module.exports = async (
     };
   }
   else {
-    // transfer
     let _response =
-      await read(
-        'token_sent_events',
-        {
-          bool: {
-            must: [
-              { match_phrase: { 'event.chain': chain } },
-              { exists: { field: 'event.blockNumber' } },
-            ],
-            must_not:
-              get_others_version_chain_ids(chain)
-                .map(id => {
-                  return {
-                    match_phrase: {
-                      'event.chain': id,
-                    },
-                  };
-                }),
-          },
-        },
-        {
-          size: 1,
-          sort: [{ 'event.blockNumber': 'desc' }],
-        },
-      );
-
-    let height =
-      _.head(
-        _response?.data
-      )?.event?.blockNumber;
-
-    // cross-chain transfer
-    /*let _response =
       await read(
         'cross_chain_transfers',
         {
@@ -89,7 +56,7 @@ module.exports = async (
     let height =
       _.head(
         _response?.data
-      )?.send?.height;*/
+      )?.send?.height;
 
     if (height) {
       response = {

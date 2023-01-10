@@ -80,6 +80,7 @@ module.exports = async (
   } = { ...params };
 
   // transfer
+  /*
   if (txHash) {
     const _response =
       await read(
@@ -1032,9 +1033,10 @@ module.exports = async (
       }
     }
   }
+  */
 
   // cross-chain transfer
-  /*if (txHash) {
+  if (txHash) {
     const _response =
       await read(
         'cross_chain_transfers',
@@ -2303,7 +2305,7 @@ module.exports = async (
         }
       }
     }
-  }*/
+  }
 
   return response;
 };
