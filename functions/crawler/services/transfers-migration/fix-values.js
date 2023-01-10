@@ -19,7 +19,7 @@ module.exports = async (
           size: 10,
           sort: [{ 'send.created_at.ms': 'asc' }],
         },
-        '/cross-chain/_transfers',
+        '/cross-chain/transfers',
       );
 
     const {
