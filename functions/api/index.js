@@ -255,7 +255,7 @@ exports.handler = async (
             };
           }
           break;
-        case 'transfers-stats':
+        case '_transfers-stats':
           try {
             response = await transfersStats(params);
           } catch (error) {
@@ -266,7 +266,7 @@ exports.handler = async (
             };
           }
           break;
-        case 'transfers-chart':
+        case '_transfers-chart':
           try {
             response = await transfersStatsChart(params);
           } catch (error) {
@@ -277,7 +277,7 @@ exports.handler = async (
             };
           }
           break;
-        case 'cumulative-volume':
+        case '_cumulative-volume':
           try {
             response = await cumulativeVolume(params);
           } catch (error) {
@@ -321,7 +321,7 @@ exports.handler = async (
             };
           }
           break;
-        case '_transfers-stats':
+        case 'transfers-stats':
           try {
             response = await searchTransfersStats(params);
           } catch (error) {
@@ -332,7 +332,7 @@ exports.handler = async (
             };
           }
           break;
-        case '_transfers-chart':
+        case 'transfers-chart':
           try {
             response = await searchTransfersStatsChart(params);
           } catch (error) {
@@ -343,7 +343,7 @@ exports.handler = async (
             };
           }
           break;
-        case '_cumulative-volume':
+        case 'cumulative-volume':
           try {
             response = await getCumulativeVolume(params);
           } catch (error) {
