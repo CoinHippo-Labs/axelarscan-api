@@ -8,6 +8,7 @@ const {
 } = require('../../index');
 const assets_price = require('../../assets-price');
 const {
+  normalize_link,
   _update_link,
   _update_send,
 } = require('../../transfers/utils');
@@ -359,6 +360,8 @@ module.exports = async (
           'unwrap' :
           type ||
           'deposit_address';
+
+      link = normalize_link(link);
 
       link =
         await _update_link(
