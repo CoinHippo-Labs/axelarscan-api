@@ -1569,7 +1569,7 @@ module.exports = async (
                             'success',
                         type: 'ibc',
                         created_at: get_granularity(created_at),
-                        sender_chain: chain_data?.id,
+                        source_chain: chain_data?.id,
                         sender_address,
                         recipient_address,
                         denom: amount_data.denom,

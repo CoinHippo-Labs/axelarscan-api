@@ -1479,7 +1479,6 @@ const _update_send = async (
                 'uusdc',
               ].includes(send.denom) &&
               [
-                1,
                 250,
               ].includes(chain_id)
             )
@@ -1619,22 +1618,37 @@ const _update_send = async (
       const {
         txhash,
         source_chain,
+        sender_address,
       } = { ...send };
 
-      const _id = `${txhash}_${source_chain}`.toLowerCase();
+      const chain_data = cosmos_chains_data
+        .find(c =>
+          c?.id === source_chain
+        );
 
-      await write(
-        'cross_chain_transfers',
-        _id,
-        {
-          ...data,
-          send,
-          link:
-            link ||
-            undefined,
-        },
-        update_only,
-      );
+      const {
+        prefix_address,
+      } = { ...chain_data };
+
+      if (
+        !prefix_address ||
+        sender_address?.startsWith(prefix_address)
+      ) {
+        const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+        await write(
+          'cross_chain_transfers',
+          _id,
+          {
+            ...data,
+            send,
+            link:
+              link ||
+              undefined,
+          },
+          update_only,
+        )
+      };
     }
   }
 
