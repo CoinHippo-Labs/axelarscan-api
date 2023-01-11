@@ -8,6 +8,10 @@ const {
 } = require('../../index');
 const assets_price = require('../../assets-price');
 const {
+  _update_link,
+  _update_send,
+} = require('../../transfers/utils');
+const {
   equals_ignore_case,
   get_granularity,
   normalize_original_chain,
@@ -295,9 +299,7 @@ module.exports = async (
       }
     }
 
-    await write(
-      'deposit_addresses',
-      id,
+    let link =
       {
         ...record,
         id,
@@ -311,7 +313,70 @@ module.exports = async (
         recipient_address,
         denom,
         price,
-      },
+      };
+
+    await write(
+      'deposit_addresses',
+      id,
+      link,
     );
+
+    const _response =
+      await read(
+        'cross_chain_transfers',
+        {
+          bool: {
+            must: [
+              { match: { 'send.source_chain': sender_chain } },
+              { match: { 'send.recipient_address': deposit_address } },
+            ],
+            must_not: [
+              { exists: { field: 'link' } },
+            ],
+          },
+        },
+        {
+          size: 1,
+        },
+      );
+
+    const _data =
+      _.head(
+        _response?.data
+      );
+
+    if (_data) {
+      const {
+        unwrap,
+      } = { ..._data };
+      let {
+        type,
+        send,
+      } = { ..._data };
+
+      type =
+        unwrap ?
+          'unwrap' :
+          type ||
+          'deposit_address';
+
+      link =
+        await _update_link(
+          link,
+          send,
+        );
+
+      send =
+        await _update_send(
+          send,
+          link,
+          {
+            type,
+            unwrap:
+              unwrap ||
+              undefined,
+          },
+        );
+    }
   } catch (error) {}
 };
