@@ -4,6 +4,8 @@ const config = require('config-yml');
 const getTransfersStatus = require('./getTransfersStatus');
 const {
   get_others_version_chain_ids,
+  normalize_link,
+  _update_link,
   _update_send,
   save_time_spent,
 } = require('./utils');
@@ -262,13 +264,20 @@ module.exports = async (
       case 'to_fix_value':
         must.push({ exists: { field: 'send.txhash' } });
         must.push({ exists: { field: 'send.amount' } });
-        must.push({ exists: { field: 'link.price' } });
         must_not.push({ exists: { field: 'send.value' } });
         break;
       case 'to_fix_confirm':
         must.push({ exists: { field: 'send.txhash' } });
         must.push({ exists: { field: 'send.value' } });
         must_not.push({ exists: { field: 'confirm' } });
+        must_not.push({ match_phrase: { 'send.source_chain': 'terra' } });
+        must_not.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
+        break;
+      case 'to_fix_terra_to_classic':
+        must.push({ exists: { field: 'send.txhash' } });
+        must.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
+        must.push({ range: { 'send.height': { gt: 5500000 } } });
+        must.push({ match: { 'send.created_at.year': 1640995200000 } });
         break;
       default:
         break;
@@ -397,6 +406,16 @@ module.exports = async (
     track_total_hits: true,
   };
 
+  if (txHash) {
+    read_params.sort =
+      _.concat(
+        read_params.sort,
+        [
+          { 'confirm.created_at.ms': 'desc' }
+        ],
+      );
+  }
+
   response =
     await read(
       'cross_chain_transfers',
@@ -451,6 +470,8 @@ module.exports = async (
         );
     }
   }
+
+  let updated;
 
   if (Array.isArray(response?.data)) {
     let {
@@ -545,12 +566,7 @@ module.exports = async (
 
       await sleep(2 * 1000);
 
-      response =
-        await read(
-          'cross_chain_transfers',
-          query,
-          read_params,
-        );
+      updated = true;
     }
   }
 
@@ -608,12 +624,7 @@ module.exports = async (
 
       await sleep(0.5 * 1000);
 
-      response =
-        await read(
-          'cross_chain_transfers',
-          query,
-          read_params,
-        );
+      updated = true;
     }
   }
 
@@ -677,13 +688,86 @@ module.exports = async (
 
       await sleep(0.5 * 1000);
 
-      response =
-        await read(
-          'cross_chain_transfers',
-          query,
-          read_params,
-        );
+      updated = true;
     }
+  }
+
+  if (
+    [
+      'to_fix_value',
+    ].includes(status) &&
+    Array.isArray(response?.data)
+  ) {
+    let {
+      data,
+    } = { ...response };
+
+    data =
+      data
+        .filter(d => {
+          const {
+            send,
+            link,
+          } = { ...d };
+          const {
+            txhash,
+            source_chain
+          } = { ...send };
+          const {
+            price,
+          } = { ...link };
+
+          return (
+            txhash &&
+            source_chain &&
+            typeof price !== 'number'
+          );
+        });
+
+    if (data.length > 0) {
+      data =
+        _.slice(
+          0,
+          10,
+        );
+
+      for (const d of data) {
+        const {
+          send,
+        } = { ...d };
+        let {
+          link,
+        } = { ...d };
+
+        link = normalize_link(link);
+
+        link =
+          await _update_link(
+            link,
+            send,
+          );
+
+        _update_send(
+          send,
+          link,
+          d,
+          true,
+        );
+      }
+
+      await sleep(0.5 * 1000);
+
+      updated = true;
+    }
+  }
+
+  if (updated) {
+    response =
+      await read(
+        'cross_chain_transfers',
+        query,
+        read_params,
+      );
   }
 
   if (Array.isArray(response?.data)) {

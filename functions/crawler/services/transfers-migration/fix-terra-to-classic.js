@@ -15,7 +15,7 @@ module.exports = async (
     const response =
       await getTransfers(
         {
-          status: 'to_fix_value',
+          status: 'to_fix_terra_to_classic',
           size: 10,
           sort: [{ 'send.created_at.ms': 'asc' }],
         },
@@ -32,31 +32,14 @@ module.exports = async (
       for (const d of data) {
         const {
           send,
-          link,
         } = { ...d };
 
         if (
           send?.txhash &&
           send.source_chain
         ) {
-          let {
-            value,
-          } = { ...send };
-
-          value =
-            value ||
-            (
-              typeof send.amount === 'number' &&
-              typeof link?.price === 'number' ?
-                send.amount * link.price :
-                undefined
-            );
-
           const _d = {
-            send: {
-              ...send,
-              value,
-            },
+            ...d,
           };
 
           const fields =
@@ -114,6 +97,24 @@ module.exports = async (
                 path: `/${collection}/_update/${_id}`,
                 update_only: true,
                 ..._d,
+              },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
+
+          await api
+            .post(
+              '',
+              {
+                module: 'index',
+                method: 'remove',
+                collection,
+                id: `${_id}-2`,
               },
             )
             .catch(error => {

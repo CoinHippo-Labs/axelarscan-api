@@ -20,7 +20,6 @@ module.exports = async (
           size: 25,
           sort: [{ 'send.created_at.ms': 'asc' }],
         },
-        '/cross-chain/_transfers',
       );
 
     const {
@@ -51,6 +50,7 @@ module.exports = async (
                 sourceChain: source_chain,
                 size: 1,
               },
+              '/cross-chain/_transfers',
             );
 
           const {
@@ -227,7 +227,49 @@ module.exports = async (
                 undefined,
             };
 
-            const _id = `${source.id}_${source.sender_chain}`.toLowerCase();
+            const fields =
+            [
+              'send',
+              'link',
+            ];
+
+            for (const f of fields) {
+              if (_d[f]) {
+                const {
+                  send,
+                } = { ..._d };
+                const {
+                  height,
+                  created_at,
+                } = { ...send };
+                const {
+                  year,
+                } = { ...created_at };
+
+                if (
+                  height > 5500000 &&
+                  year === 1640995200000
+                ) {
+                  const sub_fields =
+                  [
+                    'original_source_chain',
+                    'source_chain',
+                  ];
+
+                  for (const _f of sub_fields) {
+                    if (
+                      [
+                        'terra-2',
+                      ].includes(_d[f][_f])
+                    ) {
+                      _d[f][_f] = 'terra';
+                    }
+                  }
+                }
+              }
+            }
+
+            const _id = `${_d.send.txhash}_${_d.send.source_chain}`.toLowerCase();
 
             await api
               .post(
