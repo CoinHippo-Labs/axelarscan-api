@@ -698,6 +698,56 @@ module.exports = async (
     }
   }
 
+  if (Array.isArray(response?.data)) {
+    let {
+      data,
+    } = { ...response };
+
+    data =
+      data
+        .filter(d => {
+          const {
+            send,
+          } = { ...d };
+          const {
+            txhash,
+            height,
+            source_chain,
+          } = { ...send };
+
+          return (
+            txhash &&
+            source_chain &&
+            typeof height === 'string'
+          );
+        });
+
+    if (data.length > 0) {
+      for (const d of data) {
+        const {
+          send,
+          link,
+        } = { ...d };
+        const {
+          height,
+        } = { ...send };
+
+        send.height = Number(height);
+
+        _update_send(
+          send,
+          link,
+          d,
+          true,
+        );
+      }
+
+      await sleep(0.5 * 1000);
+
+      updated = true;
+    }
+  }
+
   if (
     [
       'to_fix_value',

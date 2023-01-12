@@ -55,7 +55,7 @@ module.exports = async (
           const _d = {
             send: {
               txhash: source.id,
-              height: source.height,
+              height: Number(source.height),
               status: source.status,
               type:
                 source.type?.replace(

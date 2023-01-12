@@ -307,7 +307,7 @@ module.exports = async (
                     code ?
                       'failed' :
                       'success',
-                  height,
+                  height: Number(height),
                   created_at: get_granularity(created_at),
                   sender_chain: chain_data.id,
                   sender_address,
@@ -450,7 +450,7 @@ module.exports = async (
                   try {
                     let _record = {
                       txhash,
-                      height,
+                      height: Number(height),
                       status:
                         code ?
                           'failed' :
