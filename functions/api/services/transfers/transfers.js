@@ -357,7 +357,7 @@ module.exports = async (
     must.push({
       bool: {
         should: [
-          { match: { 'confirm_deposit.transfer_id': transferId } },
+          { match: { 'confirm.transfer_id': transferId } },
           { match: { 'vote.transfer_id': transferId } },
           { match: { transfer_id: transferId } },
         ],
