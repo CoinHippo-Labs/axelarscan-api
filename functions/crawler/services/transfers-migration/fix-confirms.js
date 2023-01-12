@@ -17,7 +17,7 @@ module.exports = async (
       await getTransfers(
         {
           status: 'to_fix_confirm',
-          size: 25,
+          size: 10,
           sort: [{ 'send.created_at.ms': 'asc' }],
         },
       );

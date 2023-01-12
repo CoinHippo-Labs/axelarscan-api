@@ -436,6 +436,7 @@ module.exports = async (
             txHash: id,
             sourceChain: sender_chain,
           },
+          true,
         );
       }
 

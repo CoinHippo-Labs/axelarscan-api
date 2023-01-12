@@ -255,6 +255,17 @@ exports.handler = async (
             };
           }
           break;
+        case 'transfers-status':
+          try {
+            response = await getTransfersStatus(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case '_transfers-stats':
           try {
             response = await transfersStats(params);
@@ -310,9 +321,12 @@ exports.handler = async (
             };
           }
           break;
-        case 'transfers-status':
+        case '_transfers-status':
           try {
-            response = await getTransfersStatus(params);
+            response = await getTransfersStatus(
+              params,
+              true,
+            );
           } catch (error) {
             response = {
               error: true,
