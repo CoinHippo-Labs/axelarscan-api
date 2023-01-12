@@ -547,6 +547,12 @@ module.exports = async (
         });
 
     if (data.length > 0) {
+      data =
+        _.slice(
+          0,
+          10,
+        );
+
       for (const d of data) {
         const {
           send,
