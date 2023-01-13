@@ -66,6 +66,7 @@ module.exports = async (
 
     const {
       tx_hashes,
+      source_chain,
     } = { ...lcd_response };
 
     tx_hash =
@@ -75,6 +76,10 @@ module.exports = async (
 
     if (tx_hash) {
       params.tx_hash = tx_hash;
+    }
+
+    if (source_chain) {
+      params.source_chain = source_chain;
     }
   }
 

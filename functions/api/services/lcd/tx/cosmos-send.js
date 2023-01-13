@@ -151,6 +151,7 @@ module.exports = async (
         );
 
     const tx_hashes = [];
+    let source_chain;
 
     for (const record of recv_packets) {
       const {
@@ -502,6 +503,7 @@ module.exports = async (
 
                 if (found) {
                   tx_hashes.push(txhash);
+                  source_chain = chain_data?.id;
 
                   break;
                 }
@@ -517,6 +519,7 @@ module.exports = async (
     }
 
     lcd_response.tx_hashes = tx_hashes;
+    lcd_response.source_chain = source_chain;
   } catch (error) {}
 
   return lcd_response;
