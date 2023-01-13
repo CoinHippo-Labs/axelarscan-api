@@ -233,13 +233,13 @@ module.exports = async (
               {
                 bool: {
                   must_not: [
-                    { exists: { field: 'num_migrate_time' } },
+                    { exists: { field: 'num_migrate_times' } },
                   ],
                 },
               },
               {
                 range: {
-                  num_migrate_time: {
+                  num_migrate_times: {
                     lt: 5,
                   },
                 },
@@ -665,23 +665,23 @@ module.exports = async (
           source,
         } = { ...d };
         let {
-          num_migrate_time,
+          num_migrate_times,
         } = { ...d };
         const {
           id,
           recipient_address,
         } = { ...source };
 
-        num_migrate_time =
-          (typeof num_migrate_time === 'number' ?
-            num_migrate_time :
+        num_migrate_times =
+          (typeof num_migrate_times === 'number' ?
+            num_migrate_times :
             -1
           ) +
           1;
 
         const _d = {
           ...d,
-          num_migrate_time,
+          num_migrate_times,
         };
 
         const _id = `${id}_${recipient_address}`.toLowerCase();
