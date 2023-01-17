@@ -87,7 +87,31 @@ module.exports = async (
   }
 
   if (type) {
-    must.push({ match: { type } });
+    switch (type) {
+      case 'deposit_address':
+        must
+          .push(
+            {
+              bool: {
+                should: [
+                  { match: { type } },
+                  {
+                    bool: {
+                      must_not: [
+                        { exists: { field: 'type' } },
+                      ],
+                    },
+                  },
+                ],
+                minimum_should_match: 1,
+              },
+            }
+          );
+        break;
+      default:
+        must.push({ match: { type } });
+        break;
+    }
   }
 
   if (confirmed) {
