@@ -300,8 +300,9 @@ module.exports = async (
       case 'to_fix_terra_to_classic':
         must.push({ exists: { field: 'send.txhash' } });
         must.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
-        must.push({ range: { 'send.height': { gt: 5500000 } } });
+        must.push({ range: { 'send.height': { gt: 1000000 } } });
         must.push({ match: { 'send.created_at.year': 1640995200000 } });
+        must.push({ range: { 'send.created_at.month': { lt: 1661990400000 } } });
         break;
       default:
         break;

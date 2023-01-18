@@ -75,11 +75,13 @@ module.exports = async (
                 created_at,
               } = { ...send };
               const {
+                month,
                 year,
               } = { ...created_at };
 
               if (
-                height > 5500000 &&
+                height > 1000000 &&
+                month < 1661990400000 &&
                 year === 1640995200000
               ) {
                 const sub_fields =
