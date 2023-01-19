@@ -116,7 +116,12 @@ module.exports = async (
                 module: 'index',
                 method: 'remove',
                 collection,
-                id: `${_id}-2`,
+                id:
+                `${_id}${
+                  _d.send.source_chain.includes('-') ?
+                    '' :
+                    '-2'
+                }`,
               },
             )
             .catch(error => {

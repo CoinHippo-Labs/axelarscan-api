@@ -4,6 +4,7 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
+        chain_name: 'Ethereum',
         name: 'Ethereum',
         short_name: 'ETH',
         chain_id: 1,
@@ -46,6 +47,7 @@ module.exports = {
       {
         id: 'binance',
         maintainer_id: 'binance',
+        chain_name: 'binance',
         name: 'BNB Chain',
         short_name: 'BNB',
         chain_id: 56,
@@ -87,6 +89,7 @@ module.exports = {
       {
         id: 'polygon',
         maintainer_id: 'polygon',
+        chain_name: 'Polygon',
         name: 'Polygon',
         short_name: 'MATIC',
         chain_id: 137,
@@ -129,6 +132,7 @@ module.exports = {
       {
         id: 'avalanche',
         maintainer_id: 'avalanche',
+        chain_name: 'Avalanche',
         name: 'Avalanche',
         short_name: 'AVAX',
         chain_id: 43114,
@@ -169,6 +173,7 @@ module.exports = {
       {
         id: 'fantom',
         maintainer_id: 'fantom',
+        chain_name: 'Fantom',
         name: 'Fantom',
         short_name: 'FTM',
         chain_id: 250,
@@ -211,6 +216,7 @@ module.exports = {
       {
         id: 'moonbeam',
         maintainer_id: 'moonbeam',
+        chain_name: 'Moonbeam',
         name: 'Moonbeam',
         short_name: 'MBEAM',
         chain_id: 1284,
@@ -252,6 +258,7 @@ module.exports = {
       {
         id: 'aurora',
         maintainer_id: 'aurora',
+        chain_name: 'aurora',
         name: 'Aurora',
         short_name: 'AURORA',
         chain_id: 1313161554,
@@ -290,6 +297,7 @@ module.exports = {
       {
         id: 'arbitrum',
         maintainer_id: 'arbitrum',
+        chain_name: 'arbitrum',
         name: 'Arbitrum',
         short_name: 'ARB',
         chain_id: 42161,
@@ -331,6 +339,7 @@ module.exports = {
       {
         id: 'optimism',
         maintainer_id: 'optimism',
+        chain_name: 'optimism',
         name: 'Optimism',
         short_name: 'OPT',
         chain_id: 10,
@@ -373,6 +382,7 @@ module.exports = {
       {
         id: 'celo',
         maintainer_id: 'celo',
+        chain_name: 'celo',
         name: 'Celo',
         short_name: 'CELO',
         chain_id: 42220,
@@ -413,6 +423,7 @@ module.exports = {
       {
         id: 'kava',
         maintainer_id: 'kava',
+        chain_name: 'kava',
         name: 'Kava',
         short_name: 'KAVA',
         chain_id: 2222,
@@ -453,6 +464,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
+        chain_name: 'Axelarnet',
         name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
@@ -485,6 +497,7 @@ module.exports = {
       },
       {
         id: 'cosmoshub',
+        chain_name: 'cosmoshub',
         name: 'Cosmos',
         short_name: 'COSMOS',
         explorer: {
@@ -519,6 +532,7 @@ module.exports = {
       },
       {
         id: 'osmosis',
+        chain_name: 'osmosis',
         name: 'Osmosis',
         short_name: 'OSMO',
         explorer: {
@@ -553,6 +567,7 @@ module.exports = {
       },
       {
         id: 'juno',
+        chain_name: 'juno',
         name: 'Juno',
         short_name: 'JUNO',
         explorer: {
@@ -590,6 +605,7 @@ module.exports = {
       },
       {
         id: 'emoney',
+        chain_name: 'e-money',
         name: 'e-Money',
         short_name: 'EMO',
         explorer: {
@@ -626,6 +642,7 @@ module.exports = {
       },
       {
         id: 'injective',
+        chain_name: 'injective',
         name: 'Injective',
         short_name: 'INJ',
         explorer: {
@@ -657,6 +674,7 @@ module.exports = {
       },
       {
         id: 'crescent',
+        chain_name: 'crescent',
         name: 'Crescent',
         short_name: 'CRE',
         explorer: {
@@ -688,6 +706,7 @@ module.exports = {
       },
       {
         id: 'kujira',
+        chain_name: 'kujira',
         name: 'Kujira',
         short_name: 'KUJI',
         explorer: {
@@ -722,6 +741,7 @@ module.exports = {
       },
       {
         id: 'secret',
+        chain_name: 'secret',
         name: 'Secret',
         short_name: 'SCRT',
         explorer: {
@@ -756,6 +776,7 @@ module.exports = {
       },
       {
         id: 'stargaze',
+        chain_name: 'stargaze',
         name: 'Stargaze',
         short_name: 'STARS',
         explorer: {
@@ -787,6 +808,7 @@ module.exports = {
       },
       {
         id: 'assetmantle',
+        chain_name: 'assetmantle',
         name: 'AssetMantle',
         short_name: 'MNTL',
         explorer: {
@@ -820,6 +842,7 @@ module.exports = {
       },
       {
         id: 'fetch',
+        chain_name: 'fetch',
         name: 'Fetch.ai',
         short_name: 'FET',
         explorer: {
@@ -851,6 +874,7 @@ module.exports = {
       },
       {
         id: 'ki',
+        chain_name: 'ki',
         name: 'KI',
         short_name: 'KI',
         explorer: {
@@ -883,6 +907,7 @@ module.exports = {
       },
       {
         id: 'evmos',
+        chain_name: 'evmos',
         name: 'Evmos',
         short_name: 'EVMOS',
         explorer: {
@@ -921,6 +946,7 @@ module.exports = {
       },
       {
         id: 'comdex',
+        chain_name: 'comdex',
         name: 'Comdex',
         short_name: 'CMDX',
         explorer: {
@@ -953,6 +979,7 @@ module.exports = {
       },
       {
         id: 'regen',
+        chain_name: 'regen',
         name: 'Regen',
         short_name: 'REGEN',
         explorer: {
@@ -984,6 +1011,7 @@ module.exports = {
       },
       {
         id: 'umee',
+        chain_name: 'umee',
         name: 'Umee',
         short_name: 'UMEE',
         explorer: {
@@ -1015,6 +1043,7 @@ module.exports = {
       },
       {
         id: 'agoric',
+        chain_name: 'agoric',
         name: 'Agoric',
         short_name: 'BLD',
         explorer: {
@@ -1044,6 +1073,7 @@ module.exports = {
       },
       {
         id: 'terra-2',
+        chain_name: 'terra-2',
         name: 'Terra',
         short_name: 'TERRA',
         explorer: {
@@ -1069,6 +1099,7 @@ module.exports = {
       },
       {
         id: 'terra',
+        chain_name: 'terra',
         name: 'Terra Classic',
         short_name: 'TERRAC',
         explorer: {
@@ -1102,6 +1133,7 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
+        chain_name: 'Ethereum',
         name: 'Ropsten',
         short_name: 'ETH',
         chain_id: 3,
@@ -1143,6 +1175,7 @@ module.exports = {
       {
         id: 'ethereum-2',
         maintainer_id: 'ethereum-2',
+        chain_name: 'ethereum-2',
         name: 'Ethereum',
         short_name: 'ETH',
         chain_id: 5,
@@ -1183,6 +1216,7 @@ module.exports = {
       {
         id: 'binance',
         maintainer_id: 'binance',
+        chain_name: 'binance',
         name: 'BNB Chain',
         short_name: 'BNB',
         chain_id: 97,
@@ -1225,6 +1259,7 @@ module.exports = {
       {
         id: 'polygon',
         maintainer_id: 'polygon',
+        chain_name: 'Polygon',
         name: 'Polygon',
         short_name: 'MATIC',
         chain_id: 80001,
@@ -1266,6 +1301,7 @@ module.exports = {
       {
         id: 'avalanche',
         maintainer_id: 'avalanche',
+        chain_name: 'Avalanche',
         name: 'Avalanche',
         short_name: 'AVAX',
         chain_id: 43113,
@@ -1305,6 +1341,7 @@ module.exports = {
       {
         id: 'fantom',
         maintainer_id: 'fantom',
+        chain_name: 'Fantom',
         name: 'Fantom',
         short_name: 'FTM',
         chain_id: 4002,
@@ -1345,6 +1382,7 @@ module.exports = {
       {
         id: 'moonbeam',
         maintainer_id: 'moonbeam',
+        chain_name: 'Moonbeam',
         name: 'Moonbase',
         short_name: 'MBASE',
         chain_id: 1287,
@@ -1385,6 +1423,7 @@ module.exports = {
       {
         id: 'aurora',
         maintainer_id: 'aurora',
+        chain_name: 'aurora',
         name: 'Aurora',
         short_name: 'AURORA',
         chain_id: 1313161555,
@@ -1423,6 +1462,7 @@ module.exports = {
       {
         id: 'arbitrum',
         maintainer_id: 'arbitrum',
+        chain_name: 'arbitrum',
         name: 'Arbitrum',
         short_name: 'ARB',
         chain_id: 421613,
@@ -1462,6 +1502,7 @@ module.exports = {
       {
         id: 'optimism',
         maintainer_id: 'optimism',
+        chain_name: 'optimism',
         name: 'Optimism',
         short_name: 'OPT',
         chain_id: 420,
@@ -1503,6 +1544,7 @@ module.exports = {
       {
         id: 'celo',
         maintainer_id: 'celo',
+        chain_name: 'celo',
         name: 'Celo',
         short_name: 'CELO',
         chain_id: 44787,
@@ -1541,6 +1583,7 @@ module.exports = {
       {
         id: 'kava',
         maintainer_id: 'kava',
+        chain_name: 'kava',
         name: 'Kava',
         short_name: 'KAVA',
         chain_id: 2221,
@@ -1579,6 +1622,7 @@ module.exports = {
       {
         id: 'hero',
         maintainer_id: 'hero',
+        chain_name: 'hero',
         name: 'Heroes of Nft',
         short_name: 'HERO',
         chain_id: 17771,
@@ -1618,6 +1662,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
+        chain_name: 'Axelarnet',
         name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
@@ -1648,6 +1693,7 @@ module.exports = {
       },
       {
         id: 'cosmoshub',
+        chain_name: 'cosmoshub',
         name: 'Cosmos',
         short_name: 'COSMOS',
         explorer: {
@@ -1673,6 +1719,7 @@ module.exports = {
       },
       {
         id: 'osmosis',
+        chain_name: 'osmosis-5',
         name: 'Osmosis',
         short_name: 'OSMO',
         explorer: {
@@ -1718,6 +1765,7 @@ module.exports = {
       },
       {
         id: 'juno',
+        chain_name: 'juno',
         name: 'Juno',
         short_name: 'JUNO',
         explorer: {
@@ -1748,6 +1796,7 @@ module.exports = {
       },
       {
         id: 'crescent',
+        chain_name: 'crescent',
         name: 'Crescent',
         short_name: 'CRE',
         explorer: {
@@ -1774,6 +1823,7 @@ module.exports = {
       },
       {
         id: 'kujira',
+        chain_name: 'kujira',
         name: 'Kujira',
         short_name: 'KUJI',
         explorer: {
@@ -1802,6 +1852,7 @@ module.exports = {
       },
       {
         id: 'secret',
+        chain_name: 'secret',
         name: 'Secret',
         short_name: 'SCRT',
         explorer: {
@@ -1831,6 +1882,7 @@ module.exports = {
       },
       {
         id: 'sei',
+        chain_name: 'sei',
         name: 'Sei Network',
         short_name: 'SEI',
         explorer: {
@@ -1860,6 +1912,7 @@ module.exports = {
       },
       {
         id: 'fetch',
+        chain_name: 'fetch',
         name: 'Fetch.ai',
         short_name: 'FET',
         explorer: {
@@ -1885,6 +1938,7 @@ module.exports = {
       },
       {
         id: 'evmos',
+        chain_name: 'evmos',
         name: 'Evmos',
         short_name: 'EVMOS',
         explorer: {
@@ -1914,6 +1968,7 @@ module.exports = {
       },
       {
         id: 'aura',
+        chain_name: 'aura',
         name: 'Aura',
         short_name: 'AURA',
         explorer: {
@@ -1939,6 +1994,7 @@ module.exports = {
       },
       {
         id: 'comdex',
+        chain_name: 'comdex-2',
         name: 'Comdex',
         short_name: 'CMDX',
         explorer: {
@@ -1964,6 +2020,7 @@ module.exports = {
       },
       {
         id: 'persistence',
+        chain_name: 'persistence',
         name: 'Persistence',
         short_name: 'XPRT',
         explorer: {
@@ -1993,6 +2050,7 @@ module.exports = {
       },
       {
         id: 'xpla',
+        chain_name: 'xpla',
         name: 'XPLA',
         short_name: 'XPLA',
         explorer: {
@@ -2019,6 +2077,7 @@ module.exports = {
       },
       {
         id: 'burnt',
+        chain_name: 'burnt',
         name: 'Burnt',
         short_name: 'BURNT',
         explorer: {
@@ -2045,6 +2104,7 @@ module.exports = {
       },
       {
         id: 'acre',
+        chain_name: 'acre',
         name: 'Acrechain',
         short_name: 'acre',
         explorer: {
@@ -2074,6 +2134,7 @@ module.exports = {
       },
       {
         id: 'terra-3',
+        chain_name: 'terra-3',
         name: 'Terra',
         short_name: 'TERRA',
         explorer: {
@@ -2099,6 +2160,7 @@ module.exports = {
       },
       {
         id: 'terra-2',
+        chain_name: 'terra-2',
         name: 'Terra',
         short_name: 'TERRA',
         explorer: {
@@ -2124,6 +2186,7 @@ module.exports = {
       },
       {
         id: 'terra',
+        chain_name: 'terra',
         name: 'Terra Classic',
         short_name: 'TERRAC',
         explorer: {
@@ -2154,6 +2217,7 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
+        chain_name: 'Ethereum',
         name: 'Ethereum',
         short_name: 'ETH',
         chain_id: 3,
@@ -2192,6 +2256,7 @@ module.exports = {
       {
         id: 'polygon',
         maintainer_id: 'polygon',
+        chain_name: 'Polygon',
         name: 'Polygon',
         short_name: 'MATIC',
         chain_id: 80001,
@@ -2231,6 +2296,7 @@ module.exports = {
       {
         id: 'avalanche',
         maintainer_id: 'avalanche',
+        chain_name: 'Avalanche',
         name: 'Avalanche',
         short_name: 'AVAX',
         chain_id: 43113,
@@ -2269,6 +2335,7 @@ module.exports = {
       {
         id: 'fantom',
         maintainer_id: 'fantom',
+        chain_name: 'Fantom',
         name: 'Fantom',
         short_name: 'FTM',
         chain_id: 4002,
@@ -2308,6 +2375,7 @@ module.exports = {
       {
         id: 'moonbeam',
         maintainer_id: 'moonbeam',
+        chain_name: 'Moonbeam',
         name: 'Moonbase',
         short_name: 'MBASE',
         chain_id: 1287,
@@ -2347,6 +2415,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
+        chain_name: 'Axelarnet',
         name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
@@ -2378,6 +2447,7 @@ module.exports = {
       {
         id: 'ethereum',
         maintainer_id: 'ethereum',
+        chain_name: 'Ethereum',
         name: 'Ethereum',
         short_name: 'ETH',
         chain_id: 3,
@@ -2416,6 +2486,7 @@ module.exports = {
       {
         id: 'avalanche',
         maintainer_id: 'avalanche',
+        chain_name: 'Avalanche',
         name: 'Avalanche',
         short_name: 'AVAX',
         chain_id: 43113,
@@ -2455,6 +2526,7 @@ module.exports = {
     cosmos: [
       {
         id: 'axelarnet',
+        chain_name: 'Axelarnet',
         name: 'Axelar',
         short_name: 'AXELAR',
         explorer: {
