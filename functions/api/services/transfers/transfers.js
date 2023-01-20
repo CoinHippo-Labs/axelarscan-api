@@ -299,7 +299,20 @@ module.exports = async (
       case 'to_fix_confirm':
         must.push({ exists: { field: 'send.txhash' } });
         must.push({ exists: { field: 'send.value' } });
+        must.push(
+          {
+            bool: {
+              should: [
+                { match: { type: 'deposit_address' } },
+                { match: { type: 'unwrap' } },
+              ],
+              minimum_should_match: 1,
+            },
+          }
+        );
         must_not.push({ exists: { field: 'confirm' } });
+        must_not.push({ match: { 'send.status': 'failed' } });
+        must_not.push({ match: { 'send.insufficient_fee': true } });
         must_not.push({ match_phrase: { 'send.source_chain': 'terra' } });
         must_not.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
         break;
