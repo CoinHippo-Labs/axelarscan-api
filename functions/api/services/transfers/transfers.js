@@ -11,10 +11,15 @@ const {
 } = require('./utils');
 const {
   read,
+  write,
 } = require('../index');
 const {
   sleep,
   equals_ignore_case,
+  get_granularity,
+  getTransaction,
+  getBlockTime,
+  getProvider,
 } = require('../../utils');
 
 const environment =
@@ -40,6 +45,7 @@ const axelarnet =
 
 module.exports = async (
   params = {},
+  collection = 'cross_chain_transfers',
 ) => {
   let response;
 
@@ -444,7 +450,7 @@ module.exports = async (
 
   response =
     await read(
-      'cross_chain_transfers',
+      collection,
       query,
       read_params,
     );
@@ -458,28 +464,154 @@ module.exports = async (
     let updated;
 
     if (data?.length < 1) {
-      const chains_config = {
-        ...config?.[environment]?.gateway?.chains,
-      };
+      if (txHash.startsWith('0x')) {
+        const chains_config = {
+          ...config?.[environment]?.gateway?.chains,
+        };
 
-      const contracts_config = {
-        ...config?.[environment]?.gateway?.contracts,
-      };
+        const contracts_config = {
+          ...config?.[environment]?.gateway?.contracts,
+        };
 
-      const chains = Object.keys({ ...chains_config });
+        const chains = Object.keys({ ...chains_config });
 
-      for (const chain of chains) {
-        const _response =
-          await require('../gateway/recoverEvents')(
-            chains_config,
-            contracts_config,
-            chain,
-            txHash,
-          );
+        for (const chain of chains) {
+          const _response =
+            await require('../gateway/recoverEvents')(
+              chains_config,
+              contracts_config,
+              chain,
+              txHash,
+            );
 
-        if (_response?.code === 200) {
-          updated = true;
-          break;
+          if (_response?.code === 200) {
+            updated = true;
+            break;
+          }
+        }
+      }
+    }
+    else {
+      for (const d of data) {
+        const {
+          type,
+          send,
+        } = { ...d };
+        let {
+          wrap,
+        } = { ...d };
+        const {
+          txhash,
+          source_chain,
+        } = { ...send };
+
+        switch (type) {
+          case 'send_token':
+            try {
+              if (
+                !wrap &&
+                txhash &&
+                source_chain
+              ) {
+                const _response =
+                  await read(
+                    'wraps',
+                    {
+                      bool: {
+                        must: [
+                          { match: { tx_hash_wrap: txhash } },
+                          { match: { source_chain } },
+                        ],
+                      },
+                    },
+                    {
+                      size: 1,
+                    },
+                  );
+
+                wrap =
+                  _.head(
+                    _response?.data
+                  );
+
+                if (wrap) {
+                  const {
+                    tx_hash,
+                  } = { ...wrap };
+
+                  if (tx_hash) {
+                    const chain_data = evm_chains_data
+                      .find(c =>
+                        c?.id === source_chain
+                      );
+
+                    const provider =
+                      getProvider(
+                        chain_data,
+                      );
+
+                    if (provider) {
+                      const _data =
+                        await getTransaction(
+                          provider,
+                          tx_hash,
+                          source_chain,
+                        );
+
+                      const {
+                        blockNumber,
+                        from,
+                      } = { ..._data?.transaction };
+
+                      if (blockNumber) {
+                        const block_timestamp =
+                          await getBlockTime(
+                            provider,
+                            blockNumber,
+                          );
+
+                        wrap = {
+                          ...wrap,
+                          txhash: tx_hash,
+                          height: blockNumber,
+                          type: 'evm',
+                          created_at:
+                            get_granularity(
+                              moment(
+                                block_timestamp * 1000
+                              )
+                              .utc()
+                            ),
+                          sender_address: from,
+                        };
+                      }
+                    }
+                  }
+
+                  const _data = {
+                    type: 'wrap',
+                    wrap,
+                  };
+
+                  const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+                  await write(
+                    collection,
+                    _id,
+                    {
+                      ...d,
+                      ..._data,
+                    },
+                    true,
+                  );
+
+                  updated = true;
+                }
+              }
+            } catch (error) {}
+            break;
+          default:
+            break;
         }
       }
     }
@@ -490,7 +622,7 @@ module.exports = async (
 
       response =
         await read(
-          'cross_chain_transfers',
+          collection,
           query,
           read_params,
         );
@@ -774,6 +906,82 @@ module.exports = async (
     }
   }
 
+  if (Array.isArray(response?.data)) {
+    let {
+      data,
+    } = { ...response };
+
+    data =
+      data
+        .filter(d => {
+          const {
+            type,
+            send,
+            wrap,
+            unwrap,
+          } = { ...d };
+          const {
+            txhash,
+            source_chain,
+          } = { ...send };
+
+          return (
+            txhash &&
+            source_chain &&
+            (
+              (
+                wrap &&
+                type !== 'wrap'
+              ) ||
+              (
+                unwrap &&
+                type !== 'unwrap'
+              )
+            )
+          );
+        });
+
+    if (data.length > 0) {
+      for (const d of data) {
+        const {
+          send,
+          wrap,
+          unwrap,
+        } = { ...d };
+        let {
+          type,
+        } = { ...d };
+        const {
+          txhash,
+          source_chain,
+        } = { ...send };
+
+        type =
+          wrap ?
+            'wrap' :
+            unwrap ?
+              'unwrap' :
+              type;
+
+        const _id = `${txhash}_${source_chain}`.toLowerCase();
+
+        await write(
+          collection,
+          _id,
+          {
+            ...d,
+            type,
+          },
+          true,
+        );
+      }
+
+      await sleep(0.5 * 1000);
+
+      updated = true;
+    }
+  }
+
   if (
     [
       'to_fix_value',
@@ -846,7 +1054,7 @@ module.exports = async (
   if (updated) {
     response =
       await read(
-        'cross_chain_transfers',
+        collection,
         query,
         read_params,
       );
@@ -867,6 +1075,9 @@ module.exports = async (
             wrap,
             unwrap,
           } = { ...d };
+          let {
+            type,
+          } = { ...d };
           const {
             amount,
             value,
@@ -874,6 +1085,13 @@ module.exports = async (
           let {
             price,
           } = { ...link };
+
+          type =
+            wrap ?
+              'wrap' :
+              unwrap ?
+                'unwrap' :
+                type;
 
           if (
             typeof price !== 'number' &&
@@ -932,6 +1150,7 @@ module.exports = async (
 
           return {
             ...d,
+            type,
             link:
               link &&
               {

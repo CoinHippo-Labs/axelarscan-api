@@ -1641,6 +1641,7 @@ module.exports = async (
         let {
           type,
           send,
+          wrap,
         } = { ...data };
         const {
           txhash,
@@ -1729,8 +1730,10 @@ module.exports = async (
         type =
           unwrap ?
             'unwrap' :
-            type ||
-            'deposit_address';
+            wrap ?
+              'wrap' :
+              type ||
+              'deposit_address';
 
         const _data = {
           type,
@@ -1826,8 +1829,10 @@ module.exports = async (
       }
 
       response =
-        [data]
-          .filter(t => t);
+        [
+          data,
+        ]
+        .filter(t => t);
     }
     else if (
       depositAddress ||
@@ -1952,6 +1957,11 @@ module.exports = async (
               command,
               ibc_send,
               axelar_transfer,
+              wrap,
+              unwrap,
+            } = { ...d };
+            let {
+              type,
             } = { ...d };
             const {
               amount,
@@ -1960,6 +1970,13 @@ module.exports = async (
             let {
               price,
             } = { ...link };
+
+            type =
+              wrap ?
+                'wrap' :
+                unwrap ?
+                  'unwrap' :
+                  type;
 
             if (
               typeof price !== 'number' &&
@@ -1974,20 +1991,24 @@ module.exports = async (
                 ibc_send.failed_txhash &&
                 !ibc_send.ack_txhash ?
                   'ibc_failed' :
-                  ibc_send.recv_txhash ?
+                  ibc_send.recv_txhash ||
+                  unwrap ?
                     'executed' :
                     'ibc_sent' :
-                command?.executed ?
+                command?.executed ||
+                unwrap ?
                   'executed' :
                    command ?
                     'batch_signed' :
-                    axelar_transfer ?
+                    axelar_transfer ||
+                    unwrap ?
                       'executed' :
                       vote ?
                         'voted' :
                         confirm ?
                           'deposit_confirmed' :
-                          send?.status === 'failed' ?
+                          send?.status === 'failed' &&
+                          !wrap ?
                             'send_failed' :
                             'asset_sent';
 
@@ -2014,6 +2035,7 @@ module.exports = async (
 
             return {
               ...d,
+              type,
               link:
                 link &&
                 {
