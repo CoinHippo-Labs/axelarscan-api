@@ -58,13 +58,13 @@ module.exports = async (
                 created_at,
               } = { ...send };
               const {
-                month,
+                ms,
                 year,
               } = { ...created_at };
 
               if (
                 height > 1000000 &&
-                month < 1661990400000 &&
+                ms < 1659712921000 &&
                 year === 1640995200000
               ) {
                 const sub_fields =
@@ -117,11 +117,11 @@ module.exports = async (
                 method: 'remove',
                 collection,
                 id:
-                `${_id}${
-                  _d.send.source_chain.includes('-') ?
-                    '' :
-                    '-2'
-                }`,
+                  `${_id}${
+                    _d.send.source_chain.includes('-') ?
+                      '' :
+                      '-2'
+                  }`,
               },
             )
             .catch(error => {

@@ -307,8 +307,8 @@ module.exports = async (
         must.push({ exists: { field: 'send.txhash' } });
         must.push({ match_phrase: { 'send.source_chain': 'terra' } });
         must.push({ range: { 'send.height': { gt: 1000000 } } });
+        must.push({ range: { 'send.created_at.ms': { lt: 1659712921000 } } });
         must.push({ match: { 'send.created_at.year': 1640995200000 } });
-        must.push({ range: { 'send.created_at.month': { lt: 1661990400000 } } });
         must_not.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
         break;
       default:
