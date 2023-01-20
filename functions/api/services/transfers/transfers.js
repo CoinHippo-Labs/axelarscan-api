@@ -303,12 +303,18 @@ module.exports = async (
         must_not.push({ match_phrase: { 'send.source_chain': 'terra' } });
         must_not.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
         break;
-      case 'to_fix_terra_to_classic':
+      case 'to_fix_terra_to_terra_classic':
         must.push({ exists: { field: 'send.txhash' } });
-        must.push({ match_phrase: { 'send.source_chain': 'terra' } });
+        must.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
         must.push({ range: { 'send.height': { gt: 1000000 } } });
         must.push({ range: { 'send.created_at.ms': { lt: 1659712921000 } } });
-        must.push({ match: { 'send.created_at.year': 1640995200000 } });
+        must_not.push({ match: { 'ignore_fix_terra': true } });
+        break;
+      case 'to_fix_terra_classic_to_terra':
+        must.push({ exists: { field: 'send.txhash' } });
+        must.push({ match_phrase: { 'send.source_chain': 'terra' } });
+        must.push({ range: { 'send.height': { lt: 5000000 } } });
+        must.push({ range: { 'send.created_at.ms': { gte: 1634884994000 } } });
         must_not.push({ match_phrase: { 'send.source_chain': 'terra-2' } });
         break;
       default:
@@ -425,12 +431,12 @@ module.exports = async (
 
   const read_params = {
     from:
-      typeof from === 'number' ?
-        from :
+      !isNaN(from) ?
+        Number(from) :
         0,
     size:
-      typeof size === 'number' ?
-        size :
+      !isNaN(size) ?
+        Number(size) :
         100,
     sort:
       sort ||

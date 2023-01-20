@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const {
   API,
   getTransfers,
@@ -15,7 +16,7 @@ module.exports = async (
     const response =
       await getTransfers(
         {
-          status: 'to_fix_terra_to_classic',
+          status: 'to_fix_terra_classic_to_terra',
           size: 10,
           sort: [{ 'send.created_at.ms': 'asc' }],
         },
@@ -54,24 +55,33 @@ module.exports = async (
                 send,
               } = { ..._d };
               const {
-                height,
                 created_at,
+              } = { ...send };
+              let {
+                height,
               } = { ...send };
               const {
                 ms,
-                year,
               } = { ...created_at };
 
               if (
+                f === 'send' &&
+                height &&
+                typeof height !== 'number'
+              ) {
+                height = Number(height);
+                _d[f].height = height;
+              }
+
+              if (
                 height > 1000000 &&
-                ms < 1659712921000 &&
-                year === 1640995200000
+                ms < 1659712921000
               ) {
                 const sub_fields =
-                [
-                  'original_source_chain',
-                  'source_chain',
-                ];
+                  [
+                    'original_source_chain',
+                    'source_chain',
+                  ];
 
                 for (const _f of sub_fields) {
                   if (
@@ -83,10 +93,30 @@ module.exports = async (
                   }
                 }
               }
+              else if (
+                height < 5000000 &&
+                ms >= 1634884994000
+              ) {
+                const sub_fields =
+                  [
+                    'original_source_chain',
+                    'source_chain',
+                  ];
+
+                for (const _f of sub_fields) {
+                  if (
+                    [
+                      'terra',
+                    ].includes(_d[f][_f])
+                  ) {
+                    _d[f][_f] = 'terra-2';
+                  }
+                }
+              }
             }
           }
 
-          const _id = `${_d.send.txhash}_${_d.send.source_chain}`.toLowerCase();
+          let _id = `${_d.send.txhash}_${_d.send.source_chain}`.toLowerCase();
 
           await api
             .post(
@@ -109,6 +139,19 @@ module.exports = async (
               };
             });
 
+          if (_d.send.source_chain.includes('-')) {
+            _id =
+              `${_d.send.txhash}_${
+                _.head(
+                  _d.send.source_chain
+                    .split('-')
+                )
+              }`.toLowerCase();
+          }
+          else {
+            _id = `${_id}-2`;
+          }
+
           await api
             .post(
               '',
@@ -116,12 +159,7 @@ module.exports = async (
                 module: 'index',
                 method: 'remove',
                 collection,
-                id:
-                  `${_id}${
-                    _d.send.source_chain.includes('-') ?
-                      '' :
-                      '-2'
-                  }`,
+                id: _id,
               },
             )
             .catch(error => {

@@ -1,6 +1,7 @@
 const fixValues = require('./fix-values');
 const fixConfirms = require('./fix-confirms');
-const fixTerraToClassic = require('./fix-terra-to-classic');
+const fixTerraToTerraClassic = require('./fix-terra-to-terra-classic');
+const fixTerraClassicToTerra = require('./fix-terra-classic-to-terra');
 const {
   API,
   getTransfers,
@@ -9,6 +10,8 @@ const {
   sleep,
 } = require('../../utils');
 
+const environment = process.env.ENVIRONMENT;
+
 module.exports = async (
   collection = 'cross_chain_transfers',
 ) => {
@@ -16,7 +19,11 @@ module.exports = async (
 
   fixValues();
   fixConfirms();
-  fixTerraToClassic();
+
+  if (environment === 'mainnet') {
+    fixTerraToTerraClassic();
+    fixTerraClassicToTerra();
+  }
 
   while (true) {
     const response =
@@ -220,24 +227,33 @@ module.exports = async (
                 send,
               } = { ..._d };
               const {
-                height,
                 created_at,
+              } = { ...send };
+              let {
+                height,
               } = { ...send };
               const {
                 ms,
-                year,
               } = { ...created_at };
 
               if (
+                f === 'send' &&
+                height &&
+                typeof height !== 'number'
+              ) {
+                height = Number(height);
+                _d[f].height = height;
+              }
+
+              if (
                 height > 1000000 &&
-                ms < 1659712921000 &&
-                year === 1640995200000
+                ms < 1659712921000
               ) {
                 const sub_fields =
-                [
-                  'original_source_chain',
-                  'source_chain',
-                ];
+                  [
+                    'original_source_chain',
+                    'source_chain',
+                  ];
 
                 for (const _f of sub_fields) {
                   if (
@@ -246,6 +262,26 @@ module.exports = async (
                     ].includes(_d[f][_f])
                   ) {
                     _d[f][_f] = 'terra';
+                  }
+                }
+              }
+              else if (
+                height < 5000000 &&
+                ms >= 1634884994000
+              ) {
+                const sub_fields =
+                  [
+                    'original_source_chain',
+                    'source_chain',
+                  ];
+
+                for (const _f of sub_fields) {
+                  if (
+                    [
+                      'terra',
+                    ].includes(_d[f][_f])
+                  ) {
+                    _d[f][_f] = 'terra-2';
                   }
                 }
               }

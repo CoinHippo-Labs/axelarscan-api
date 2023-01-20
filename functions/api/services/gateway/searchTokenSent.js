@@ -131,12 +131,12 @@ module.exports = async (
 
   const read_params = {
     from:
-      typeof from === 'number' ?
-        from :
+      !isNaN(from) ?
+        Number(from) :
         0,
     size:
-      typeof size === 'number' ?
-        size :
+      !isNaN(size) ?
+        Number(size) :
         100,
     sort:
       sort ||

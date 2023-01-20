@@ -239,24 +239,33 @@ module.exports = async (
                   send,
                 } = { ..._d };
                 const {
-                  height,
                   created_at,
+                } = { ...send };
+                let {
+                  height,
                 } = { ...send };
                 const {
                   ms,
-                  year,
                 } = { ...created_at };
 
                 if (
+                  f === 'send' &&
+                  height &&
+                  typeof height !== 'number'
+                ) {
+                  height = Number(height);
+                  _d[f].height = height;
+                }
+
+                if (
                   height > 1000000 &&
-                  ms < 1659712921000 &&
-                  year === 1640995200000
+                  ms < 1659712921000
                 ) {
                   const sub_fields =
-                  [
-                    'original_source_chain',
-                    'source_chain',
-                  ];
+                    [
+                      'original_source_chain',
+                      'source_chain',
+                    ];
 
                   for (const _f of sub_fields) {
                     if (
@@ -265,6 +274,26 @@ module.exports = async (
                       ].includes(_d[f][_f])
                     ) {
                       _d[f][_f] = 'terra';
+                    }
+                  }
+                }
+                else if (
+                  height < 5000000 &&
+                  ms >= 1634884994000
+                ) {
+                  const sub_fields =
+                    [
+                      'original_source_chain',
+                      'source_chain',
+                    ];
+
+                  for (const _f of sub_fields) {
+                    if (
+                      [
+                        'terra',
+                      ].includes(_d[f][_f])
+                    ) {
+                      _d[f][_f] = 'terra-2';
                     }
                   }
                 }

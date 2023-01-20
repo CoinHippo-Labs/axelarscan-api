@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const {
   API,
   getTransfers,
@@ -15,9 +16,9 @@ module.exports = async (
     const response =
       await getTransfers(
         {
-          status: 'to_fix_value',
+          status: 'to_fix_terra_to_terra_classic',
           size: 10,
-          sort: [{ 'send.created_at.ms': 'asc' }],
+          sort: [{ 'send.created_at.ms': 'desc' }],
         },
       );
 
@@ -32,31 +33,14 @@ module.exports = async (
       for (const d of data) {
         const {
           send,
-          link,
         } = { ...d };
 
         if (
           send?.txhash &&
           send.source_chain
         ) {
-          let {
-            value,
-          } = { ...send };
-
-          value =
-            value ||
-            (
-              typeof send.amount === 'number' &&
-              typeof link?.price === 'number' ?
-                send.amount * link.price :
-                undefined
-            );
-
           const _d = {
-            send: {
-              ...send,
-              value,
-            },
+            ...d,
           };
 
           const fields =
@@ -132,7 +116,7 @@ module.exports = async (
             }
           }
 
-          const _id = `${_d.send.txhash}_${_d.send.source_chain}`.toLowerCase();
+          let _id = `${_d.send.txhash}_${_d.send.source_chain}`.toLowerCase();
 
           await api
             .post(
@@ -145,6 +129,41 @@ module.exports = async (
                 path: `/${collection}/_update/${_id}`,
                 update_only: true,
                 ..._d,
+                ignore_fix_terra:
+                  send.source_chain === _d.send.source_chain ?
+                    true :
+                    undefined,
+              },
+            )
+            .catch(error => {
+              return {
+                data: {
+                  error,
+                },
+              };
+            });
+
+          if (_d.send.source_chain.includes('-')) {
+            _id =
+              `${_d.send.txhash}_${
+                _.head(
+                  _d.send.source_chain
+                    .split('-')
+                )
+              }`.toLowerCase();
+          }
+          else {
+            _id = `${_id}-2`;
+          }
+
+          await api
+            .post(
+              '',
+              {
+                module: 'index',
+                method: 'remove',
+                collection,
+                id: _id,
               },
             )
             .catch(error => {
