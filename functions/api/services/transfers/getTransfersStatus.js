@@ -270,6 +270,7 @@ module.exports = async (
                       amount:
                         BigNumber.from(
                           `0x${
+                            _amount ||
                             (transaction.data || '')
                               .substring(
                                 10 + 64,
@@ -278,7 +279,6 @@ module.exports = async (
                               .substring(
                                 10 + 64,
                               ) ||
-                            _amount ||
                             '0'
                           }`
                         )
@@ -1218,6 +1218,7 @@ module.exports = async (
                     const amount =
                       BigNumber.from(
                         `0x${
+                          _amount ||
                           (transaction.data || '')
                             .substring(
                               10 + 64,
@@ -1226,7 +1227,6 @@ module.exports = async (
                             .substring(
                               10 + 64,
                             ) ||
-                          _amount ||
                           '0'
                         }`
                       )

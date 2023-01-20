@@ -56,9 +56,13 @@ module.exports = {
             chainId: '0x38',
             chainName: 'BNB Chain',
             rpcUrls: [
-              'https://bscrpc.com',
+              'https://bsc-dataseed.binance.org',
+              'https://bsc-dataseed1.ninicoin.io',
+              'https://bsc-dataseed1.defibit.io',
+              'https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3',
               'https://bsc-mainnet.public.blastapi.io',
               'https://1rpc.io/bnb',
+              'https://bscrpc.com',
               'https://rpc.ankr.com/bsc',
             ],
             nativeCurrency: {
@@ -98,8 +102,10 @@ module.exports = {
             chainId: '0x89',
             chainName: 'Polygon',
             rpcUrls: [
+              'https://polygon-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://matic-mainnet.chainstacklabs.com',
-              'https://polygon-rpc.com',
+              'https://poly-rpc.gateway.pokt.network',
+              'https://polygon.blockpi.network/v1/rpc/public',
               'https://polygon-mainnet.public.blastapi.io',
               'https://1rpc.io/matic',
               'https://rpc.ankr.com/polygon',
@@ -141,6 +147,7 @@ module.exports = {
             chainId: '0xa86a',
             chainName: 'Avalanche',
             rpcUrls: [
+              'https://avalanche.blockpi.network/v1/rpc/public',
               'https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc',
               'https://1rpc.io/avax/c',
               'https://rpc.ankr.com/avalanche',
@@ -182,8 +189,9 @@ module.exports = {
             chainId: '0xfa',
             chainName: 'Fantom',
             rpcUrls: [
-              'https://rpcapi.fantom.network',
               'https://rpc.ftm.tools',
+              'https://rpc.fantom.network',
+              'https://fantom.blockpi.network/v1/rpc/public',
               'https://fantom-mainnet.public.blastapi.io',
               'https://1rpc.io/ftm',
               'https://rpc.ankr.com/fantom',
@@ -307,6 +315,7 @@ module.exports = {
             chainName: 'Arbitrum',
             rpcUrls: [
               'https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+              'https://arbitrum.blockpi.network/v1/rpc/public',
               'https://arb1.arbitrum.io/rpc',
               'https://1rpc.io/arb',
               'https://rpc.ankr.com/arbitrum',
@@ -348,7 +357,8 @@ module.exports = {
             chainId: '0xa',
             chainName: 'Optimism',
             rpcUrls: [
-              'https://mainnet.optimism.io',
+              'https://optimism-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+              'https://optimism.blockpi.network/v1/rpc/public',
               'https://optimism-mainnet.public.blastapi.io',
               'https://1rpc.io/op',
               'https://rpc.ankr.com/optimism',
@@ -1311,6 +1321,7 @@ module.exports = {
             chainName: 'Avalanche Fuji',
             rpcUrls: [
               'https://ava-testnet.public.blastapi.io/ext/bc/C/rpc',
+              'https://api.avax-test.network/ext/bc/C/rpc',
               'https://rpc.ankr.com/avalanche_fuji',
             ],
             nativeCurrency: {
@@ -1350,8 +1361,8 @@ module.exports = {
             chainId: '0xfa2',
             chainName: 'Fantom Testnet',
             rpcUrls: [
-              // 'https://fantom-testnet.public.blastapi.io',
-              // 'https://rpc.testnet.fantom.network',
+              'https://fantom-testnet.public.blastapi.io',
+              'https://rpc.testnet.fantom.network',
               'https://rpc.ankr.com/fantom_testnet',
             ],
             nativeCurrency: {
@@ -1472,7 +1483,7 @@ module.exports = {
             chainName: 'Arbitrum Goerli',
             rpcUrls: [
               'https://goerli-rollup.arbitrum.io/rpc',
-              'https://arb-goerli.g.alchemy.com/v2/demo',
+              'https://endpoints.omniatech.io/v1/arbitrum/goerli/public',
             ],
             nativeCurrency: {
               name: 'Ethereum',
@@ -1511,8 +1522,7 @@ module.exports = {
             chainId: '0x1a4',
             chainName: 'Optimism Goerli',
             rpcUrls: [
-              'https://goerli.optimism.io',
-              'https://opt-goerli.g.alchemy.com/v2/demo',
+              'https://optimism-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
               'https://rpc.ankr.com/optimism_testnet',
             ],
             nativeCurrency: {
