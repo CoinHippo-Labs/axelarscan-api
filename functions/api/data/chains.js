@@ -190,7 +190,6 @@ module.exports = {
             chainName: 'Fantom',
             rpcUrls: [
               'https://rpc.ftm.tools',
-              'https://rpc.fantom.network',
               'https://fantom.blockpi.network/v1/rpc/public',
               'https://fantom-mainnet.public.blastapi.io',
               'https://1rpc.io/ftm',
@@ -1362,7 +1361,6 @@ module.exports = {
             chainName: 'Fantom Testnet',
             rpcUrls: [
               'https://fantom-testnet.public.blastapi.io',
-              'https://rpc.testnet.fantom.network',
               'https://rpc.ankr.com/fantom_testnet',
             ],
             nativeCurrency: {
@@ -2354,8 +2352,8 @@ module.exports = {
             chainId: '0xfa2',
             chainName: 'Fantom Testnet',
             rpcUrls: [
-              'https://rpc.testnet.fantom.network',
-              'https://xapi.testnet.fantom.network/lachesis',
+              'https://fantom-testnet.public.blastapi.io',
+              'https://rpc.ankr.com/fantom_testnet',
             ],
             nativeCurrency: {
               name: 'Fantom',
