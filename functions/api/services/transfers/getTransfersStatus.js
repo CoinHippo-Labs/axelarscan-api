@@ -1,6 +1,7 @@
 const {
   BigNumber,
   Contract,
+  constants: { AddressZero },
 } = require('ethers');
 const axios = require('axios');
 const _ = require('lodash');
@@ -227,22 +228,56 @@ module.exports = async (
                     const _amount =
                       _.head(
                         (logs || [])
-                          .map(l => l?.data)
-                          .filter(d => d?.length >= 64)
-                          .map(d =>
-                            d
-                              .substring(
-                                d.length - 64,
-                              )
-                              .replace(
-                                '0x',
-                                '',
-                              )
-                              .replace(
-                                /^0+/,
-                                '',
-                              )
+                          .filter(l =>
+                            !denom ||
+                            assets_data
+                              .findIndex(a =>
+                                equals_ignore_case(
+                                  a?.id,
+                                  denom,
+                                ) &&
+                                (a?.contracts || [])
+                                  .findIndex(c =>
+                                    c?.chain_id === chain_id &&
+                                    equals_ignore_case(
+                                      c?.contract_address,
+                                      l?.address,
+                                    )
+                                  ) > -1
+                              ) > -1
                           )
+                          .map(l =>
+                            l?.data
+                          )
+                          .filter(d =>
+                            d?.length >= 64
+                          )
+                          .map(d => {
+                            d =
+                              d
+                                .substring(
+                                  d.length - 64,
+                                )
+                                .replace(
+                                  '0x',
+                                  '',
+                                )
+                                .replace(
+                                  /^0+/,
+                                  '',
+                                );
+
+                            if (!d) {
+                              d =
+                                AddressZero
+                                  .replace(
+                                    '0x',
+                                    '',
+                                  );
+                            }
+
+                            return d;
+                          })
                           .filter(d => {
                             try {
                               d =
@@ -1185,22 +1220,56 @@ module.exports = async (
                     const _amount =
                       _.head(
                         (logs || [])
-                          .map(l => l?.data)
-                          .filter(d => d.length >= 64)
-                          .map(d =>
-                            d
-                              .substring(
-                                d.length - 64,
-                              )
-                              .replace(
-                                '0x',
-                                '',
-                              )
-                              .replace(
-                                /^0+/,
-                                '',
-                              )
+                          .filter(l =>
+                            !denom ||
+                            assets_data
+                              .findIndex(a =>
+                                equals_ignore_case(
+                                  a?.id,
+                                  denom,
+                                ) &&
+                                (a?.contracts || [])
+                                  .findIndex(c =>
+                                    c?.chain_id === chain_id &&
+                                    equals_ignore_case(
+                                      c?.contract_address,
+                                      l?.address,
+                                    )
+                                  ) > -1
+                              ) > -1
                           )
+                          .map(l =>
+                            l?.data
+                          )
+                          .filter(d =>
+                            d?.length >= 64
+                          )
+                          .map(d => {
+                            d =
+                              d
+                                .substring(
+                                  d.length - 64,
+                                )
+                                .replace(
+                                  '0x',
+                                  '',
+                                )
+                                .replace(
+                                  /^0+/,
+                                  '',
+                                );
+
+                            if (!d) {
+                              d =
+                                AddressZero
+                                  .replace(
+                                    '0x',
+                                    '',
+                                  );
+                            }
+
+                            return d;
+                          })
                           .filter(d => {
                             try {
                               d =
