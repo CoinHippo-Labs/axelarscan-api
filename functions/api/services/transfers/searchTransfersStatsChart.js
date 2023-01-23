@@ -92,12 +92,14 @@ module.exports = async (
         ...query,
         bool: {
           ...query.bool,
-          must:
+          should:
             _.concat(
-              query.bool?.must ||
+              query.bool?.should ||
               [],
               { exists: { field: 'confirm_deposit' } },
+              { exists: { field: 'vote' } },
             ),
+          minimum_should_match: 1,
         },
       },
       {

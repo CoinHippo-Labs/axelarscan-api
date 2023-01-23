@@ -56,18 +56,21 @@ module.exports = async (
     must.push({ match_phrase: { 'send.denom': asset } });
   }
 
-  fromTime = fromTime ?
-    Number(fromTime) * 1000 :
-    moment()
-      .subtract(
-        30,
-        'days',
-      )
-      .valueOf();
-  toTime = toTime ?
-    Number(toTime) * 1000 :
-    moment()
-      .valueOf();
+  fromTime =
+    fromTime ?
+      Number(fromTime) * 1000 :
+      moment()
+        .subtract(
+          30,
+          'days',
+        )
+        .valueOf();
+
+  toTime =
+    toTime ?
+      Number(toTime) * 1000 :
+      moment()
+        .valueOf();
 
   must.push({ range: { 'send.created_at.ms': { gte: fromTime, lte: toTime } } });
 
@@ -92,12 +95,14 @@ module.exports = async (
         ...query,
         bool: {
           ...query.bool,
-          must:
+          should:
             _.concat(
-              query.bool?.must ||
+              query.bool?.should ||
               [],
               { exists: { field: 'confirm' } },
+              { exists: { field: 'vote' } },
             ),
+          minimum_should_match: 1,
         },
       },
       {
