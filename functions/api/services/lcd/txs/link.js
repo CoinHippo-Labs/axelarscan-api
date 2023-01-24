@@ -192,12 +192,12 @@ module.exports = async (
       ) {
         const _response =
           await read(
-            'transfers',
+            'cross_chain_transfers',
             {
               bool: {
                 must: [
-                  { match: { 'source.recipient_address': deposit_address } },
-                  { match: { 'source.sender_chain': sender_chain } },
+                  { match: { 'send.source_chain': sender_chain } },
+                  { match: { 'send.recipient_address': deposit_address } },
                 ],
               },
             },
@@ -207,44 +207,18 @@ module.exports = async (
           );
 
         const {
-          source,
+          send,
           link,
-        } = { ..._.head(_response?.data) };
+        } = {
+          ...(
+            _.head(
+              _response?.data
+            )
+          ),
+        };
 
-        if (source?.sender_address) {
-          sender_address = source.sender_address;
-        }
-        else {
-          const _response =
-            await read(
-              'cross_chain_transfers',
-              {
-                bool: {
-                  must: [
-                    { match: { 'send.source_chain': sender_chain } },
-                    { match: { 'send.recipient_address': deposit_address } },
-                  ],
-                },
-              },
-              {
-                size: 1,
-              },
-            );
-
-          const {
-            send,
-            link,
-          } = {
-            ...(
-              _.head(
-                _response?.data
-              )
-            ),
-          };
-
-          if (send?.sender_address) {
-            sender_address = send.sender_address;
-          }
+        if (send?.sender_address) {
+          sender_address = send.sender_address;
         }
       }
 

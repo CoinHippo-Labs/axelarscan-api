@@ -11,12 +11,10 @@ const {
 } = require('../index');
 const assets_price = require('../assets-price');
 const {
-  update_event,
-  _update_link,
-  _update_send,
+  update_link,
+  update_send,
 } = require('../transfers/utils');
 const {
-  sleep,
   equals_ignore_case,
   get_granularity,
   normalize_original_chain,
@@ -285,35 +283,8 @@ module.exports = async (
             }
           }
 
-          // transfer
-          const _response =
-            await write(
-              'token_sent_events',
-              id,
-              {
-                event,
-              },
-              true,
-            );
-
-          response = {
-            response: {
-              ..._response,
-            },
-            data: {
-              event,
-            },
-          };
-
-          await sleep(0.5 * 1000);
-
-          await update_event(
-            event,
-            true,
-          );
-
           try {
-            // cross-chain transfer
+            // cross-chain transfers
             const _response =
               await read(
                 'wraps',
@@ -421,13 +392,13 @@ module.exports = async (
             };
 
             link =
-              await _update_link(
+              await update_link(
                 link,
                 send,
               );
 
             send =
-              await _update_send(
+              await update_send(
                 send,
                 link,
                 data,

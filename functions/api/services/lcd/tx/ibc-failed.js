@@ -4,7 +4,6 @@ const {
   write,
 } = require('../../index');
 const {
-  saveTimeSpent,
   save_time_spent,
 } = require('../../transfers/utils');
 const {
@@ -117,110 +116,7 @@ module.exports = async (
         transfer_id,
       } = { ...record };
 
-      // transfer
-      const _response =
-        await read(
-          'transfers',
-          {
-            bool: {
-              should: [
-                { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                { match: { 'vote.transfer_id': transfer_id } },
-                { match: { transfer_id } },
-              ],
-              minimum_should_match: 1,
-              must_not: [
-                { exists: { field: 'ibc_send.ack_txhash' } },
-              ],
-            },
-          },
-          {
-            size: 1,
-            sort: [{ 'source.created_at.ms': 'desc' }],
-          },
-        );
-
-      const transfer_data = _.head(_response?.data);
-      let token_sent_data;
-
-      if (!transfer_data) {
-        const _response =
-          await read(
-            'token_sent_events',
-            {
-              bool: {
-                should: [
-                  { match: { 'vote.transfer_id': transfer_id } },
-                  { match: { transfer_id } },
-                ],
-                minimum_should_match: 1,
-                must_not: [
-                  { exists: { field: 'ibc_send.ack_txhash' } },
-                ],
-              },
-            },
-            {
-              size: 1,
-              sort: [{ 'event.created_at.ms': 'desc' }],
-            },
-          );
-
-        token_sent_data = _.head(_response?.data);
-      }
-
-      const data =
-        transfer_data ||
-        token_sent_data;
-
-      if (data) {
-        const {
-          source,
-          event,
-          ibc_send,
-        } = { ...data };
-        const {
-          recipient_address,
-        } = { ...source };
-
-        const id =
-          (
-            source ||
-            event
-          )?.id;
-
-        const _id =
-          recipient_address ?
-            `${id}_${recipient_address}`.toLowerCase() :
-            id;
-
-        if (_id) {
-          await write(
-            event ?
-              'token_sent_events' :
-              'transfers',
-            _id,
-            {
-              ibc_send: {
-                ...ibc_send,
-                failed_txhash: txhash,
-              },
-            },
-            true,
-          );
-
-          await saveTimeSpent(
-            _id,
-            null,
-            event ?
-              'token_sent_events' :
-              undefined,
-          );
-
-          updated = true;
-        }
-      }
-
-      // cross-chain transfer
+      // cross-chain transfers
       try {
         const _response =
           await read(

@@ -1142,7 +1142,7 @@ module.exports = async () => {
                 );
               }
             }
-            // transfers
+            // cross-chain transfers
             else if (data.includes('deposit confirmed on chain ')) {
               const attributes =
                 [
@@ -1203,8 +1203,9 @@ module.exports = async () => {
                   command_id,
                 } = { ...obj };
 
-                chain = (chain || '')
-                  .toLowerCase();
+                chain =
+                  (chain || '')
+                    .toLowerCase();
 
                 command_id =
                   command_id ||
@@ -1226,13 +1227,13 @@ module.exports = async () => {
                         '',
                         {
                           module: 'index',
-                          collection: 'transfers',
+                          collection: 'cross_chain_transfers',
                           method: 'search',
                           query: {
                             bool: {
                               must: [
-                                { match: { 'source.id': tx_id } },
-                                { match: { 'source.recipient_address': confirm.deposit_address } },
+                                { match: { 'send.txhash': tx_id } },
+                                { match: { 'send.recipient_address': confirm.deposit_address } },
                               ],
                             },
                           },
@@ -1247,43 +1248,110 @@ module.exports = async () => {
                         };
                       });
 
-                  const transfer_data = _.head(response?.data?.data);
+                  const transfer_data =
+                    _.head(
+                      response?.data?.data
+                    );
 
                   if (transfer_data) {
                     const {
-                      confirm_deposit,
+                      send,
+                      confirm,
                       vote,
                     } = { ...transfer_data };
                     let {
-                      sign_batch,
+                      command,
                     } = { ...transfer_data };
+                    const {
+                      txhash,
+                      source_chain,
+                    } = { ...send };
 
-                    if (confirm_deposit) {
-                      confirm_deposit.transfer_id = transfer_id;
-                    }
+                    if (
+                      txhash &&
+                      source_chain
+                    ) {
+                      if (confirm) {
+                        confirm.transfer_id = transfer_id;
+                      }
 
-                    if (vote) {
-                      vote.transfer_id = transfer_id;
-                    }
+                      if (vote) {
+                        vote.transfer_id = transfer_id;
+                      }
 
-                    response =
+                      response =
+                        await api
+                          .post(
+                            '',
+                            {
+                              module: 'index',
+                              collection: 'batches',
+                              method: 'search',
+                              query: {
+                                bool: {
+                                  must: [
+                                    { match: { chain } },
+                                    { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
+                                    { match: { command_ids: command_id } },
+                                  ],
+                                },
+                              },
+                              size: 1,
+                            },
+                          )
+                          .catch(error => {
+                            return {
+                              data: {
+                                error,
+                              },
+                            };
+                          });
+
+                      const batch_data =
+                        _.head(
+                          response?.data?.data
+                        );
+
+                      const {
+                        batch_id,
+                      } = { ...batch_data };
+
+                      if (batch_id) {
+                        command = {
+                          chain,
+                          batch_id,
+                          transfer_id,
+                          command_id,
+                        };
+                      }
+
+                      log(
+                        'debug',
+                        service_name,
+                        'save transfer',
+                        {
+                          chain,
+                          tx_hash: tx_id,
+                          transfer_id,
+                          command_id,
+                        },
+                      );
+
+                      const _id = `${txhash}_${source_chain}`.toLowerCase();
+
                       await api
                         .post(
                           '',
                           {
                             module: 'index',
-                            collection: 'batches',
-                            method: 'search',
-                            query: {
-                              bool: {
-                                must: [
-                                  { match: { chain } },
-                                  { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNED' } },
-                                  { match: { command_ids: command_id } },
-                                ],
-                              },
-                            },
-                            size: 1,
+                            collection: 'cross_chain_transfers',
+                            method: 'update',
+                            path: `/cross_chain_transfers/_update/${_id}`,
+                            id: _id,
+                            ...transfer_data,
+                            confirm,
+                            vote,
+                            command,
                           },
                         )
                         .catch(error => {
@@ -1293,54 +1361,7 @@ module.exports = async () => {
                             },
                           };
                         });
-
-                    const batch_data = _.head(response?.data?.data);
-
-                    const {
-                      batch_id,
-                    } = { ...batch_data };
-
-                    if (batch_id) {
-                      sign_batch = {
-                        chain,
-                        batch_id,
-                        transfer_id,
-                        command_id,
-                      };
                     }
-
-                    log(
-                      'debug',
-                      service_name,
-                      'save transfer',
-                      {
-                        chain,
-                        tx_hash: tx_id,
-                        transfer_id,
-                        command_id,
-                      },
-                    );
-
-                    await api
-                      .post(
-                        '',
-                        {
-                          module: 'index',
-                          collection: 'transfers',
-                          method: 'update',
-                          path: `/transfers/_update/${tx_id}`,
-                          id: tx_id,
-                          ...transfer_data,
-                          sign_batch,
-                        },
-                      )
-                      .catch(error => {
-                        return {
-                          data: {
-                            error,
-                          },
-                        };
-                      });
                   }
                 }
               }
@@ -1390,8 +1411,7 @@ module.exports = async () => {
                   batch_id &&
                   chain
                 ) {
-                  chain = chain
-                    .toLowerCase();
+                  chain = chain.toLowerCase();
 
                   if (
                     last_batch &&
