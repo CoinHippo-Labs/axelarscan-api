@@ -37,6 +37,7 @@ module.exports = async (
 ) => {
   const {
     pollId,
+    event,
     chain,
     status,
     transactionId,
@@ -62,6 +63,10 @@ module.exports = async (
 
   if (pollId) {
     must.push({ match: { _id: pollId } });
+  }
+
+  if (event) {
+    must.push({ match: { event } });
   }
 
   if (chain) {
@@ -115,7 +120,7 @@ module.exports = async (
               {
                 range: {
                   num_recover_time: {
-                    lt: 5,
+                    lt: 7,
                   },
                 },
               },
@@ -139,6 +144,13 @@ module.exports = async (
                 bool: {
                   must_not: [
                     { exists: { field: 'participants' } },
+                  ],
+                },
+              },
+              {
+                bool: {
+                  must_not: [
+                    { exists: { field: 'event' } },
                   ],
                 },
               },
