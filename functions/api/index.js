@@ -17,10 +17,6 @@ exports.handler = async (
     transfersStats,
     transfersStatsChart,
     cumulativeVolume,
-    searchTransfers,
-    searchTransfersStats,
-    searchTransfersStatsChart,
-    getCumulativeVolume,
     getTransfersStatus,
     saveDepositForWrap,
     saveWrap,
@@ -31,7 +27,6 @@ exports.handler = async (
   const {
     saveEvent,
     getLatestEventBlock,
-    searchTokenSent,
     recoverEvents,
   } = require('./services/gateway');
   const {
@@ -266,7 +261,7 @@ exports.handler = async (
             };
           }
           break;
-        case '_transfers-stats':
+        case 'transfers-stats':
           try {
             response = await transfersStats(params);
           } catch (error) {
@@ -277,7 +272,7 @@ exports.handler = async (
             };
           }
           break;
-        case '_transfers-chart':
+        case 'transfers-chart':
           try {
             response = await transfersStatsChart(params);
           } catch (error) {
@@ -288,78 +283,9 @@ exports.handler = async (
             };
           }
           break;
-        case '_cumulative-volume':
-          try {
-            response = await cumulativeVolume(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case '_transfers':
-          try {
-            response = await searchTransfers(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'token-sent':
-          try {
-            response = await searchTokenSent(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case '_transfers-status':
-          try {
-            response = await getTransfersStatus(
-              params,
-              true,
-            );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'transfers-stats':
-          try {
-            response = await searchTransfersStats(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'transfers-chart':
-          try {
-            response = await searchTransfersStatsChart(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
         case 'cumulative-volume':
           try {
-            response = await getCumulativeVolume(params);
+            response = await cumulativeVolume(params);
           } catch (error) {
             response = {
               error: true,
@@ -621,17 +547,6 @@ exports.handler = async (
         case 'latest-event-block':
           try {
             response = await getLatestEventBlock(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'token-sent':
-          try {
-            response = await searchTokenSent(params);
           } catch (error) {
             response = {
               error: true,

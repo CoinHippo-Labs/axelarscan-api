@@ -10,7 +10,6 @@ const {
   write,
 } = require('../../index');
 const {
-  saveTimeSpent,
   save_time_spent,
 } = require('../../transfers/utils');
 const {
@@ -176,115 +175,7 @@ module.exports = async (
           );
       }
 
-      // transfer
-      const _response =
-        await read(
-          'transfers',
-          {
-            bool: {
-              should: [
-                { match: { 'confirm_deposit.transfer_id': transfer_id } },
-                { match: { 'vote.transfer_id': transfer_id } },
-                { match: { transfer_id } },
-              ],
-              minimum_should_match: 1,
-            },
-          },
-          {
-            size: 1,
-            sort: [{ 'source.created_at.ms': 'desc' }],
-          },
-        );
-
-      const transfer_data = _.head(_response?.data);
-      let token_sent_data;
-
-      if (!transfer_data) {
-        const _response =
-          await read(
-            'token_sent_events',
-            {
-              bool: {
-                should: [
-                  { match: { 'vote.transfer_id': transfer_id } },
-                  { match: { transfer_id } },
-                ],
-                minimum_should_match: 1,
-              },
-            },
-            {
-              size: 1,
-              sort: [{ 'event.created_at.ms': 'desc' }],
-            },
-          );
-
-        token_sent_data = _.head(_response?.data);
-      }
-
-      const data =
-        transfer_data ||
-        token_sent_data;
-
-      if (data) {
-        const {
-          source,
-          event,
-        } = { ...data };
-        const {
-          recipient_address,
-        } = { ...source };
-
-        const id =
-          (
-            source ||
-            event
-          )?.id;
-
-        const _id =
-          recipient_address ?
-            `${id}_${recipient_address}`.toLowerCase() :
-            id;
-
-        if (_id) {
-          await write(
-            event ?
-              'token_sent_events' :
-              'transfers',
-            _id,
-            {
-              axelar_transfer: {
-                id: txhash,
-                type: 'axelar_transfer',
-                status_code: code,
-                status:
-                  code ?
-                    'failed' :
-                    'success',
-                height,
-                created_at: get_granularity(created_at),
-                recipient_chain: axelarnet.id,
-                recipient_address: recipient,
-                denom,
-                amount,
-                transfer_id,
-              },
-            },
-            true,
-          );
-
-          await saveTimeSpent(
-            _id,
-            null,
-            event ?
-              'token_sent_events' :
-              undefined,
-          );
-
-          updated = true;
-        }
-      }
-
-      // cross-chain transfer
+      // cross-chain transfers
       try {
         const _response =
           await read(

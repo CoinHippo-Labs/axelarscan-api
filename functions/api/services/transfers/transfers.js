@@ -5,8 +5,8 @@ const getTransfersStatus = require('./getTransfersStatus');
 const {
   get_others_version_chain_ids,
   normalize_link,
-  _update_link,
-  _update_send,
+  update_link,
+  update_send,
   save_time_spent,
 } = require('./utils');
 const {
@@ -861,7 +861,7 @@ module.exports = async (
           link,
         } = { ...d };
 
-        _update_send(
+        update_send(
           send,
           link,
           d,
@@ -911,7 +911,7 @@ module.exports = async (
 
         send.height = Number(height);
 
-        _update_send(
+        update_send(
           send,
           link,
           d,
@@ -1051,12 +1051,12 @@ module.exports = async (
         link = normalize_link(link);
 
         link =
-          await _update_link(
+          await update_link(
             link,
             send,
           );
 
-        _update_send(
+        update_send(
           send,
           link,
           d,

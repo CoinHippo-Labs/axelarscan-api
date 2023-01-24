@@ -9,8 +9,8 @@ const {
 const assets_price = require('../../assets-price');
 const {
   normalize_link,
-  _update_link,
-  _update_send,
+  update_link,
+  update_send,
 } = require('../../transfers/utils');
 const {
   equals_ignore_case,
@@ -177,12 +177,12 @@ module.exports = async (
     ) {
       const _response =
         await read(
-          'transfers',
+          'cross_chain_transfers',
           {
             bool: {
               must: [
-                { match: { 'source.recipient_address': deposit_address } },
-                { match: { 'source.sender_chain': sender_chain } },
+                { match: { 'send.source_chain': sender_chain } },
+                { match: { 'send.recipient_address': deposit_address } },
               ],
             },
           },
@@ -192,44 +192,18 @@ module.exports = async (
         );
 
       const {
-        source,
+        send,
         link,
-      } = { ..._.head(_response?.data) };
+      } = {
+        ...(
+          _.head(
+            _response?.data
+          )
+        ),
+      };
 
-      if (source?.sender_address) {
-        sender_address = source.sender_address;
-      }
-      else {
-        const _response =
-          await read(
-            'cross_chain_transfers',
-            {
-              bool: {
-                must: [
-                  { match: { 'send.source_chain': sender_chain } },
-                  { match: { 'send.recipient_address': deposit_address } },
-                ],
-              },
-            },
-            {
-              size: 1,
-            },
-          );
-
-        const {
-          send,
-          link,
-        } = {
-          ...(
-            _.head(
-              _response?.data
-            )
-          ),
-        };
-
-        if (send?.sender_address) {
-          sender_address = send.sender_address;
-        }
+      if (send?.sender_address) {
+        sender_address = send.sender_address;
       }
     }
 
@@ -364,13 +338,13 @@ module.exports = async (
       link = normalize_link(link);
 
       link =
-        await _update_link(
+        await update_link(
           link,
           send,
         );
 
       send =
-        await _update_send(
+        await update_send(
           send,
           link,
           {

@@ -23,13 +23,13 @@ const transfer_collections =
     'deposit_addresses',
     'wraps',
     'unwraps',
-    'transfers',
     'batches',
     'command_events',
-    'token_sent_events',
     'ibc_channels',
     'tvls',
     'assets',
+    'transfers',
+    'token_sent_events',
   ];
 
 module.exports = {

@@ -5,11 +5,9 @@ const {
   read,
 } = require('../../index');
 const {
-  update_link,
-  update_source,
   normalize_link,
-  _update_link,
-  _update_send,
+  update_link,
+  update_send,
 } = require('../../transfers/utils');
 const {
   get_granularity,
@@ -83,56 +81,7 @@ module.exports = async (
           )?.amount
       );
 
-    // transfers
-    let record = {
-      id: txhash,
-      type: 'axelar_transfer',
-      status_code: code,
-      status:
-        code ?
-          'failed' :
-          'success',
-      height,
-      created_at: get_granularity(created_at),
-      sender_chain: axelarnet.id,
-      sender_address,
-      recipient_address,
-      amount: amount_data?.amount,
-      denom: amount_data?.denom,
-    };
-
-    if (
-      recipient_address?.length >= 65 &&
-      txhash &&
-      amount_data?.amount
-    ) {
-      const _response =
-        await read(
-          'deposit_addresses',
-          {
-            match: { deposit_address: recipient_address },
-          },
-          {
-            size: 1,
-          },
-        );
-
-      let link = _.head(_response?.data);
-
-      link =
-        await update_link(
-          link,
-          record,
-        );
-
-      record =
-        await update_source(
-          record,
-          link,
-        );
-    }
-
-    // cross-chain transfer
+    // cross-chain transfers
     if (
       txhash &&
       !code &&
@@ -265,13 +214,13 @@ module.exports = async (
           );
 
         link =
-          await _update_link(
+          await update_link(
             link,
             record,
           );
 
         record =
-          await _update_send(
+          await update_send(
             record,
             link,
             data,
