@@ -49,7 +49,7 @@ resource "aws_opensearch_domain" "domain" {
   domain_name     = "${var.package_name}-general-${var.environment}"
   engine_version  = "OpenSearch_2.3"
   cluster_config {
-    instance_type            = "m6g.4xlarge.search"
+    instance_type            = "m6g.2xlarge.search"
     instance_count           = 1
     dedicated_master_enabled = false
     zone_awareness_enabled   = false
