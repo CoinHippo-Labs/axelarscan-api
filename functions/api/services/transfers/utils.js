@@ -288,7 +288,6 @@ const update_link = async (
         original_source_chain =
           Object.values({ ...overrides })
             .find(o =>
-              o?.endpoints?.lcd === _lcd ||
               o?.endpoints?.lcds?.includes(_lcd)
             )?.id ||
             _.last(Object.keys({ ...overrides })) ||

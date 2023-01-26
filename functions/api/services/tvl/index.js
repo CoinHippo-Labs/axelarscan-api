@@ -504,17 +504,14 @@ module.exports = async (
             endpoints,
           } = { ...c };
           const {
-            lcd,
             lcds,
           } = { ...endpoints };
 
           const _lcds =
             _.concat(
-              lcd ||
-              [],
-              lcds ||
-              [],
-            );
+              lcds,
+            )
+            .filter(l => l);
 
           return [
             id,
@@ -653,6 +650,7 @@ module.exports = async (
                 async resolve => {
                   const {
                     id,
+                    endpoints,
                     overrides,
                   } = { ...c };
                   let {
@@ -662,15 +660,16 @@ module.exports = async (
 
                   let lcd_urls =
                     _.concat(
-                      c?.endpoints?.lcd ||
-                      [],
-                      c?.endpoints?.lcds ||
-                      [],
-                    );
+                      endpoints?.lcds,
+                    )
+                    .filter(l => l);
 
-                  let lcd_url = lcd_urls[
-                    _.random(lcd_urls.length - 1)
-                  ];
+                  let lcd_url =
+                    lcd_urls[
+                      _.random(
+                        lcd_urls.length - 1
+                      )
+                    ];
 
                   let _lcds = lcds[id];
 
@@ -705,15 +704,15 @@ module.exports = async (
 
                     lcd_urls =
                       _.concat(
-                        override?.endpoints?.lcd ||
-                        [],
-                        override?.endpoints?.lcds ||
-                        [],
-                      );
+                        override?.endpoints?.lcds,
+                      )
+                      .filter(l => l);
 
                     lcd_url =
                       lcd_urls[
-                        _.random(lcd_urls.length - 1)
+                        _.random(
+                          lcd_urls.length - 1
+                        )
                       ] ||
                       lcd_url;
                   }
@@ -1023,8 +1022,8 @@ module.exports = async (
                                 )
                             }`,
                             denom_data.base_denom &&
-                            `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom_data.base_denom)}`,
-                            `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${a}`,
+                            `${_.head(axelarnet.endpoints?.lcds)}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom_data.base_denom)}`,
+                            `${_.head(axelarnet.endpoints?.lcds)}/cosmos/bank/v1beta1/balances/${a}`,
                           ]
                           .filter(l => l)
                         ),
@@ -1248,7 +1247,7 @@ module.exports = async (
               evm_escrow_address,
             )
         }`,
-        `${axelarnet.endpoints?.lcd}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`,
+        `${_.head(axelarnet.endpoints?.lcds)}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`,
       ]
       .filter(l => l);
 
