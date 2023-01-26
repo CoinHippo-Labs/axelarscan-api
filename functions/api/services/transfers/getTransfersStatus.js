@@ -455,14 +455,17 @@ module.exports = async (
             )
           ) {
             const {
+              endpoints,
+            } = { ...chain_data };
+            const {
               cosmostation,
-            } = { ...chain_data?.endpoints };
+              lcds,
+            } = { ...endpoints };
 
             const _lcds =
               _.concat(
                 cosmostation,
-                chain_data?.endpoints?.lcd,
-                chain_data?.endpoints?.lcds,
+                lcds,
               )
               .filter(l => l);
 

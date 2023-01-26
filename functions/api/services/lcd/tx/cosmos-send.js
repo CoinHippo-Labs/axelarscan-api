@@ -162,15 +162,18 @@ module.exports = async (
       for (const chain_data of cosmos_chains_data) {
         const {
           prefix_address,
+          endpoints,
         } = { ...chain_data };
+        const {
+          lcds,
+        } = { ...endpoints };
 
         if (packet_data.sender?.startsWith(prefix_address)) {
           let found = false;
 
           const _lcds =
             _.concat(
-              chain_data?.endpoints?.lcd,
-              chain_data?.endpoints?.lcds,
+              lcds,
             )
             .filter(l => l);
 

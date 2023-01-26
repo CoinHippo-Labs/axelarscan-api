@@ -311,10 +311,16 @@ module.exports = async (
                   )
                 );
 
+              const {
+                endpoints,
+              } = { ...chain_data };
+              const {
+                lcds,
+              } = { ...endpoints };
+
               const _lcds =
                 _.concat(
-                  chain_data?.endpoints?.lcd,
-                  chain_data?.endpoints?.lcds,
+                  lcds,
                 )
                 .filter(l => l);
 
