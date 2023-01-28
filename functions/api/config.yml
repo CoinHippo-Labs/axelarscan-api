@@ -17,6 +17,7 @@ mainnet:
     lcd: "https://lcd.axelarscan.io"
     cli: "https://cli.axelarscan.io"
     api: "https://api.axelarscan.io"
+    gmp_api: "https://api.gmp.axelarscan.io"
     app: "https://axelarscan.io"
     cosmostation: "https://api-axelar.cosmostation.io/v1"
     mintscan:
@@ -184,6 +185,7 @@ testnet:
     lcd: "https://testnet.lcd.axelarscan.io"
     cli: "https://testnet.cli.axelarscan.io"
     api: "https://testnet.api.axelarscan.io"
+    gmp_api: "https://testnet.api.gmp.axelarscan.io"
     app: "https://testnet.axelarscan.io"
     cosmostation: "https://api-axelar-testnet.cosmostation.io/v1"
     mintscan:

@@ -8,6 +8,9 @@ const {
 } = require('../../index');
 const rpc = require('../../rpc');
 const {
+  saveGMP,
+} = require('../../gmp');
+const {
   equals_ignore_case,
   to_json,
   to_hex,
@@ -1076,6 +1079,44 @@ module.exports = async (
           data,
           true,
         );
+      }
+
+      if (
+        txhash &&
+        transaction_id &&
+        vote &&
+        (
+          confirmation ||
+          !unconfirmed ||
+          success
+        ) &&
+        !late &&
+        !failed
+      ) {
+        switch (event) {
+          case 'contract_call':
+          case 'contract_call_with_token':
+            try {
+              await saveGMP(
+                {
+                  event: 'confirm',
+                  sourceTransactionHash: transaction_id,
+                  poll_id,
+                  blockNumber: height,
+                  block_timestamp: ms / 1000,
+                  source_chain: sender_chain,
+                  destination_chain: recipient_chain,
+                  transactionHash: transaction_id,
+                  confirmation_txhash: txhash,
+                  transfer_id,
+                },
+                sender_chain,
+              );
+            } catch (error) {}
+            break;
+          default:
+            break;
+        }
       }
     }
   } catch (error) {}
