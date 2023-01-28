@@ -46,15 +46,13 @@ const saveGMP = async (
   ) {
     const params = {
       method: 'saveGMP',
-      {
-        ...(
-          typeof event === 'object' ?
-            event :
-            {
-              event,
-            }
-        ),
-      },
+      ...(
+        typeof event === 'object' ?
+          event :
+          {
+            event,
+          }
+      ),
       chain,
     };
 

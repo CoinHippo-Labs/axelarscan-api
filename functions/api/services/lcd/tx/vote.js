@@ -944,21 +944,23 @@ module.exports = async (
                   case 'contract_call':
                   case 'contract_call_with_token':
                     try {
-                      await saveGMP(
-                        {
-                          event: 'confirm',
-                          sourceTransactionHash: transaction_id,
-                          poll_id,
-                          blockNumber: height,
-                          block_timestamp: created_at / 1000,
-                          source_chain: sender_chain,
-                          destination_chain: recipient_chain,
-                          transactionHash: transaction_id,
-                          confirmation_txhash: txhash,
-                          transfer_id,
-                        },
-                        sender_chain,
-                      );
+                      if (confirmation) {
+                        await saveGMP(
+                          {
+                            event: 'confirm',
+                            sourceTransactionHash: transaction_id,
+                            poll_id,
+                            blockNumber: height,
+                            block_timestamp: created_at / 1000,
+                            source_chain: sender_chain,
+                            destination_chain: recipient_chain,
+                            transactionHash: transaction_id,
+                            confirmation_txhash: txhash,
+                            transfer_id,
+                          },
+                          sender_chain,
+                        );
+                      }
                     } catch (error) {}
                     break;
                   default:
