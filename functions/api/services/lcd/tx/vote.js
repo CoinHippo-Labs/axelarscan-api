@@ -10,12 +10,15 @@ const {
   read,
   write,
 } = require('../../index');
+const rpc = require('../../rpc');
 const {
   normalize_link,
   update_link,
   update_send,
 } = require('../../transfers/utils');
-const rpc = require('../../rpc');
+const {
+  saveGMP,
+} = require('../../gmp');
 const {
   sleep,
   equals_ignore_case,
@@ -936,6 +939,26 @@ module.exports = async (
                           true,
                         );
                       }
+                    } catch (error) {}
+                    break;
+                  case 'contract_call':
+                  case 'contract_call_with_token':
+                    try {
+                      await saveGMP(
+                        {
+                          event: 'confirm',
+                          sourceTransactionHash: transaction_id,
+                          poll_id,
+                          blockNumber: height,
+                          block_timestamp: created_at / 1000,
+                          source_chain: sender_chain,
+                          destination_chain: recipient_chain,
+                          transactionHash: transaction_id,
+                          confirmation_txhash: txhash,
+                          transfer_id,
+                        },
+                        sender_chain,
+                      );
                     } catch (error) {}
                     break;
                   default:

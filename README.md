@@ -34,6 +34,7 @@ npm i
 ### Deploy services
 ```bash
 cd terraform/testnet
+cp variables.tf.example variables.tf
 terraform init
 terraform apply
 ```
