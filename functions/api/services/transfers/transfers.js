@@ -84,6 +84,7 @@ module.exports = async (
             should: [
               { match: { 'send.txhash': txHash } },
               { match: { 'wrap.txhash': txHash } },
+              { match: { 'command.transactionHash': txHash } },
               { match: { 'unwrap.txhash': txHash } },
             ],
             minimum_should_match: 1,
@@ -462,7 +463,7 @@ module.exports = async (
       _.concat(
         read_params.sort,
         [
-          { 'confirm.created_at.ms': 'desc' }
+          { 'confirm.created_at.ms': 'desc' },
         ],
       );
   }
@@ -664,12 +665,15 @@ module.exports = async (
             vote,
             command,
             ibc_send,
+            axelar_transfer,
+            unwrap,
           } = { ...d };
           const {
             txhash,
             destination_chain,
             amount,
             value,
+            fee,
             insufficient_fee,
           } = { ...send };
 
@@ -679,26 +683,8 @@ module.exports = async (
               !(
                 destination_chain &&
                 typeof amount === 'number' &&
-                typeof value === 'number'
-              ) ||
-              (
-                cosmos_chains_data
-                  .findIndex(c =>
-                    equals_ignore_case(
-                      c?.id,
-                      destination_chain,
-                    )
-                  ) > -1 &&
-                !insufficient_fee &&
-                (
-                  vote ||
-                  confirm
-                ) &&
-                !(
-                  ibc_send?.failed_txhash ||
-                  ibc_send?.ack_txhash ||
-                  ibc_send?.recv_txhash
-                )
+                typeof value === 'number' &&
+                typeof fee === 'number'
               ) ||
               (
                 evm_chains_data
@@ -715,9 +701,44 @@ module.exports = async (
                 ) &&
                 !command?.executed
               ) ||
+              (
+                cosmos_chains_data
+                  .findIndex(c =>
+                    equals_ignore_case(
+                      c?.id,
+                      destination_chain,
+                    )
+                  ) > -1 &&
+                ![
+                  'axelarnet',
+                ]
+                .includes(destination_chain) &&
+                !insufficient_fee &&
+                (
+                  vote ||
+                  confirm
+                ) &&
+                !(
+                  ibc_send?.failed_txhash ||
+                  ibc_send?.ack_txhash ||
+                  ibc_send?.recv_txhash
+                )
+              ) ||
+              (
+                [
+                  'axelarnet',
+                ]
+                .includes(destination_chain) &&
+                !insufficient_fee &&
+                !axelar_transfer
+              ) ||
               !(
                 vote?.transfer_id ||
                 confirm?.transfer_id
+              ) ||
+              (
+                unwrap &&
+                !unwrap.tx_hash_unwrap
               )
             )
           );
