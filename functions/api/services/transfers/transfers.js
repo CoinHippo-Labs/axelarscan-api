@@ -86,6 +86,7 @@ module.exports = async (
               { match: { 'wrap.txhash': txHash } },
               { match: { 'command.transactionHash': txHash } },
               { match: { 'unwrap.txhash': txHash } },
+              { match: { 'unwrap.tx_hash_unwrap': txHash } },
             ],
             minimum_should_match: 1,
           },
