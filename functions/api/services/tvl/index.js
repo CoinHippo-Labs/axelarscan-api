@@ -1,4 +1,5 @@
 const {
+  constants: { AddressZero },
   providers: { FallbackProvider },
 } = require('ethers');
 const axios = require('axios');
@@ -608,13 +609,23 @@ module.exports = async (
                       url:
                         explorer?.url &&
                         `${explorer.url}${
-                          (explorer.contract_path || '')
-                            .replace(
-                              '{address}',
+                          (
+                            (
+                              contract_address === AddressZero ?
+                                explorer.address_path :
+                                explorer.contract_path
+                            ) ||
+                            ''
+                          )
+                          .replace(
+                            '{address}',
+                            contract_address === AddressZero ?
+                              gateway_address :
                               contract_address,
-                            )
+                          )
                         }${
                           is_native &&
+                          contract_address !== AddressZero &&
                           gateway_address ?
                             `?a=${gateway_address}` :
                             ''
