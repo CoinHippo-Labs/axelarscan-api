@@ -545,7 +545,11 @@ const update_send = async (
                     send.amount
                   )
                   .toString(),
-                  _decimals,
+                  _decimals === 18 ?
+                    _decimals :
+                    send.amount.length > 18 ?
+                      18 :
+                      _decimals,
                 )
               );
           }

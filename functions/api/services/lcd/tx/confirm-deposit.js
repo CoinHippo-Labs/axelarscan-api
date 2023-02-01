@@ -819,7 +819,7 @@ module.exports = async (
                           _.head(
                             (logs || [])
                               .filter(l =>
-                                !denom ||
+                                // !denom ||
                                 assets_data
                                   .findIndex(a =>
                                     equals_ignore_case(
