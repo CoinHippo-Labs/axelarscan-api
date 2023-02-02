@@ -779,15 +779,32 @@ module.exports = async (
           source_chain,
         } = { ...send };
 
-        getTransfersStatus(
-          {
-            txHash: txhash,
-            sourceChain: source_chain,
-          },
-        );
+        if (data.length === 1) {
+          await getTransfersStatus(
+            {
+              txHash: txhash,
+              sourceChain: source_chain,
+            },
+          );
+        }
+        else {
+          getTransfersStatus(
+            {
+              txHash: txhash,
+              sourceChain: source_chain,
+            },
+          );
+        }
       }
 
-      await sleep(2 * 1000);
+      await sleep(
+        (
+          data.length > 1 ?
+            4 :
+            0
+        ) *
+        1000
+      );
 
       updated = true;
     }
