@@ -1313,7 +1313,7 @@ module.exports = async (
               );
             }
 
-            await sleep(1 * 1000);
+            await sleep(3 * 1000);
           }
         }
         else if (
