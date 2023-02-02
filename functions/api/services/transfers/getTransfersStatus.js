@@ -719,6 +719,10 @@ module.exports = async (
       let {
         type,
         send,
+        vote,
+        command,
+        ibc_send,
+        axelar_transfer,
         wrap,
       } = { ...data };
       const {
@@ -727,6 +731,7 @@ module.exports = async (
         recipient_address,
       } = { ...send };
 
+      // resolve unwrap
       const _response =
         await read(
           'unwraps',
@@ -820,6 +825,106 @@ module.exports = async (
           undefined,
       };
 
+      // resolve vote
+      try {
+        if (
+          txhash &&
+          evm_chains_data
+            .findIndex(c =>
+              equals_ignore_case(
+                c?.id,
+                source_chain,
+              )
+            ) > -1 &&
+          !vote &&
+          (
+            command ||
+            ibc_send ||
+            axelar_transfer
+          )
+        ) {
+          const _response =
+            await read(
+              'evm_polls',
+              {
+                bool: {
+                  must: [
+                    { match: { transaction_id: txhash } },
+                    { match: { sender_chain: source_chain } },
+                  ],
+                  should: [
+                    { match: { confirmation: true } },
+                    { match: { success: true } },
+                  ],
+                  minimum_should_match: 1,
+                },
+              },
+              {
+                size: 1,
+              },
+            );
+
+          const poll_data =
+            _.head(
+              _response?.data
+            );
+
+          if (poll_data) {
+            const vote_confirmation =
+              _.head(
+                Object.values(poll_data)
+                  .filter(v =>
+                    v?.confirmed
+                  )
+              );
+
+            if (vote_confirmation) {
+              const {
+                id,
+                height,
+                created_at,
+                sender_chain,
+                recipient_chain,
+                transaction_id,
+                deposit_address,
+                transfer_id,
+                event,
+                confirmation,
+                success,
+                failed,
+                unconfirmed,
+                late,
+              } = { ...poll_data };
+              const {
+                type,
+              } = { ...vote_confirmation };
+
+              _data.vote =
+                {
+                  txhash: vote_confirmation?.id,
+                  height,
+                  status: 'success',
+                  type,
+                  created_at,
+                  source_chain: sender_chain,
+                  destination_chain: recipient_chain,
+                  poll_id: id,
+                  transaction_id,
+                  deposit_address,
+                  transfer_id,
+                  event,
+                  confirmation,
+                  success,
+                  failed,
+                  unconfirmed,
+                  late,
+                };
+            }
+          }
+        }
+      } catch (error) {}
+
+      // remove link & send
       try {
         let _response =
           await read(

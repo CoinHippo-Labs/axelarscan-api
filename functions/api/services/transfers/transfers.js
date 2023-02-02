@@ -671,6 +671,7 @@ module.exports = async (
           } = { ...d };
           const {
             txhash,
+            source_chain,
             destination_chain,
             amount,
             value,
@@ -682,6 +683,7 @@ module.exports = async (
             txhash &&
             (
               !(
+                source_chain &&
                 destination_chain &&
                 typeof amount === 'number' &&
                 typeof value === 'number' &&
@@ -740,6 +742,22 @@ module.exports = async (
               (
                 unwrap &&
                 !unwrap.tx_hash_unwrap
+              ) ||
+              (
+                evm_chains_data
+                  .findIndex(c =>
+                    equals_ignore_case(
+                      c?.id,
+                      source_chain,
+                    )
+                  ) > -1 &&
+                !insufficient_fee &&
+                !vote &&
+                (
+                  command ||
+                  ibc_send ||
+                  axelar_transfer
+                )
               )
             )
           );
@@ -1026,7 +1044,8 @@ module.exports = async (
   if (
     [
       'to_fix_value',
-    ].includes(status) &&
+    ]
+    .includes(status) &&
     Array.isArray(response?.data)
   ) {
     let {
