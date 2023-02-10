@@ -1201,6 +1201,9 @@ module.exports = async (
             value,
           } = { ...send };
           let {
+            insufficient_fee,
+          } = { ...send };
+          let {
             price,
           } = { ...link };
 
@@ -1263,6 +1266,19 @@ module.exports = async (
               break;
             default:
               simplified_status = 'sent';
+              break;
+          }
+
+          switch (simplified_status) {
+            case 'failed':
+            case 'received':
+            case 'approved':
+              if (insufficient_fee) {
+                insufficient_fee = false;
+                d.send.insufficient_fee = insufficient_fee;
+              }
+              break;
+            default:
               break;
           }
 
