@@ -32,11 +32,16 @@ const evm_chains_data =
 const cosmos_chains_data =
   require('../../data')?.chains?.[environment]?.cosmos ||
   [];
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
+  [];
+
 const chains_data =
   _.concat(
     evm_chains_data,
     cosmos_chains_data,
   );
+
 const axelarnet =
   chains_data
     .find(c =>
@@ -356,7 +361,43 @@ module.exports = async (
   }
 
   if (asset) {
-    must.push({ match_phrase: { 'send.denom': asset } });
+    if (
+      asset.endsWith('-wei') &&
+      assets_data
+        .findIndex(a =>
+          a?.id === `w${asset}`
+        ) > -1
+    ) {
+      must
+        .push(
+          {
+            bool: {
+              should:
+                [
+                  { match_phrase: { 'send.denom': asset } },
+                  {
+                    bool: {
+                      must:
+                        [
+                          { match_phrase: { 'send.denom': `w${asset}` } },
+                        ],
+                      should:
+                        [
+                          { match: { type: 'wrap' } },
+                          { match: { type: 'unwrap' } },
+                        ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                ],
+              minimum_should_match: 1,
+            },
+          }
+        );
+    }
+    else {
+      must.push({ match_phrase: { 'send.denom': asset } });
+    }
   }
 
   if (depositAddress) {

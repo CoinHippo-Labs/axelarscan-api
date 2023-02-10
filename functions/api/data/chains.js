@@ -1713,6 +1713,7 @@ module.exports = {
         color: '#d085f6',
         website: 'https://heroesofnft.com',
         gateway_address: '',
+        deprecated: true,
       },
     ],
     cosmos: [
