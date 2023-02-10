@@ -650,12 +650,26 @@ const update_send = async (
         typeof send.amount === 'number' &&
         typeof send.fee === 'number'
       ) {
-        if (send.amount < send.fee) {
+        if (send.amount <= send.fee) {
           send.insufficient_fee = true;
         }
         else {
           send.insufficient_fee = false;
           send.amount_received = send.amount - send.fee;
+        }
+
+        if (
+          send.insufficient_fee &&
+          data &&
+          (
+            data.ibc_send ||
+            data.command ||
+            data.axelar_transfer ||
+            data.unwrap?.tx_hash_unwrap ||
+            data.vote
+          )
+        ) {
+          send.insufficient_fee = false;
         }
       }
     }

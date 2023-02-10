@@ -1,11 +1,20 @@
 const _ = require('lodash');
 const moment = require('moment');
+const config = require('config-yml');
 const {
   get_others_version_chain_ids,
 } = require('./utils');
 const {
   read,
 } = require('../index');
+
+const environment =
+  process.env.ENVIRONMENT ||
+  config?.environment;
+
+const assets_data =
+  require('../../data')?.assets?.[environment] ||
+  [];
 
 module.exports = async (
   params = {},
@@ -53,7 +62,43 @@ module.exports = async (
   }
 
   if (asset) {
-    must.push({ match_phrase: { 'send.denom': asset } });
+    if (
+      asset.endsWith('-wei') &&
+      assets_data
+        .findIndex(a =>
+          a?.id === `w${asset}`
+        ) > -1
+    ) {
+      must
+        .push(
+          {
+            bool: {
+              should:
+                [
+                  { match_phrase: { 'send.denom': asset } },
+                  {
+                    bool: {
+                      must:
+                        [
+                          { match_phrase: { 'send.denom': `w${asset}` } },
+                        ],
+                      should:
+                        [
+                          { match: { type: 'wrap' } },
+                          { match: { type: 'unwrap' } },
+                        ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                ],
+              minimum_should_match: 1,
+            },
+          }
+        );
+    }
+    else {
+      must.push({ match_phrase: { 'send.denom': asset } });
+    }
   }
 
   fromTime =

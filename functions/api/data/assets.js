@@ -281,7 +281,7 @@ module.exports = {
     },
     {
       id: 'polygon-uusdc',
-      symbol: 'USDC',
+      symbol: 'PolygonUSDC',
       name: 'Polygon USDC',
       image: '/logos/assets/polygon-usdc.svg',
       decimals: 6,
@@ -311,7 +311,7 @@ module.exports = {
     },
     {
       id: 'avalanche-uusdc',
-      symbol: 'USDC',
+      symbol: 'AvalancheUSDC',
       name: 'Avalanche USDC',
       image: '/logos/assets/avalanche-usdc.svg',
       decimals: 6,
