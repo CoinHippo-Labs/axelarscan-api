@@ -454,6 +454,34 @@ module.exports = async (
     }
     /* end convert byte array to hex */
 
+    // convert some fields before insert to indexer
+    if (transaction_data.tx?.body) {
+      const {
+        messages,
+      } = { ...transaction_data.tx.body };
+
+      if (messages) {
+        for (let i = 0; i < messages.length; i++) {
+          const message = messages[i];
+
+          const {
+            limit,
+          } = { ...message };
+
+          if (
+            limit &&
+            typeof limit === 'object'
+          ) {
+            message.limit = limit.toString();
+          }
+
+          messages[i] = message;
+        }
+
+        transaction_data.tx.body.messages = messages;
+      }
+    }
+
     tx_response.tx = tx;
     lcd_response.tx_response = tx_response;
     lcd_response.tx = tx;
