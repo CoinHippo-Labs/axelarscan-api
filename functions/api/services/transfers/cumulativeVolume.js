@@ -53,7 +53,7 @@ module.exports = async (
   }
 
   if (destinationChain) {
-    must.push({ match_phrase: { 'send.original_recipient_chain': destinationChain } });
+    must.push({ match_phrase: { 'send.original_destination_chain': destinationChain } });
 
     for (const id of get_others_version_chain_ids(destinationChain)) {
       must_not.push({ match_phrase: { 'send.original_destination_chain': id } });
