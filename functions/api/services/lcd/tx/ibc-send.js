@@ -451,7 +451,7 @@ module.exports = async (
                           gte:
                             moment(ms)
                               .subtract(
-                                4,
+                                24 * 3,
                                 'hours',
                               )
                               .valueOf(),
