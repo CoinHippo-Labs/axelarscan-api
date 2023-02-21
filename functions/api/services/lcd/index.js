@@ -138,6 +138,9 @@ module.exports = async (
           {
             baseURL: endpoints.lcd,
             timeout: 3000,
+            headers: {
+              'Accept-Encoding': 'gzip',
+            },
           },
         );
 
@@ -148,9 +151,13 @@ module.exports = async (
             { params },
           )
           .catch(error => {
+            const {
+              data,
+            } = { ...error?.response };
+
             return {
               data: {
-                error,
+                error: data,
               },
             };
           });

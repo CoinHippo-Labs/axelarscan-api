@@ -50,6 +50,9 @@ module.exports = async (
         {
           baseURL: endpoints.lcd,
           timeout: 3000,
+          headers: {
+            'Accept-Encoding': 'gzip',
+          },
         },
       );
 
