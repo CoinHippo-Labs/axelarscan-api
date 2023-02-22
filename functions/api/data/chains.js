@@ -2201,6 +2201,34 @@ module.exports = {
         },
       },
       {
+        id: 'odin',
+        chain_name: 'odin',
+        name: 'Odin',
+        short_name: 'odin',
+        explorer: {
+          name: 'Acrechain',
+          url: 'https://testnet.odinprotocol.io',
+          icon: '/logos/explorers/odin.png',
+          block_path: '/blocks/{block}',
+          address_path: '/accounts/{address}',
+          contract_path: '/accounts/{address}',
+          contract_0_path: '/accounts/{address}',
+          transaction_path: '/transactions/{tx}',
+        },
+        image: '/logos/chains/odin.svg',
+        color: '#58bd81',
+        website: 'https://odinprotocol.io',
+        prefix_address: 'odin',
+        prefix_chain_ids: [
+          'odin-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://node.odin-freya-website.odinprotocol.io/a/api',
+          ],
+        },
+      },
+      {
         id: 'terra-3',
         chain_name: 'terra-3',
         name: 'Terra',

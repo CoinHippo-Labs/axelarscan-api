@@ -4608,6 +4608,12 @@ module.exports = {
         },
         {
           contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 420,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
           chain_id: 44787,
           decimals: 6,
           symbol: 'wAXL',
@@ -4694,6 +4700,11 @@ module.exports = {
         },
         {
           contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
+          chain_id: 420,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
           chain_id: 44787,
           decimals: 6,
         },
@@ -4767,6 +4778,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/4BDF2D63B8FFE3454AF30E9BC10D2D7979BD3A938D989889ABC94FC5B86F1E2D',
           chain_id: 'burnt',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/035BDC396AA81E38271D2FA5E4799AE159044B90BCF02CCA218EB364829C869E',
+          chain_id: 'odin',
           decimals: 6,
         },
         {
@@ -4973,6 +4989,12 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
+          ibc_denom: 'ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
           ibc_denom: 'ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F',
           chain_id: 'terra-3',
           decimals: 18,
@@ -5093,6 +5115,12 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
+          ibc_denom: 'ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
           ibc_denom: 'ibc/C567713C9D0904098C14BA0FBEB9192C5B68B590757EE6913DC292710C8926E6',
           chain_id: 'terra-3',
           decimals: 18,
@@ -5159,6 +5187,12 @@ module.exports = {
         {
           contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
           chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
+          chain_id: 420,
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -5243,6 +5277,12 @@ module.exports = {
           symbol: 'axlWBNB',
         },
         {
+          ibc_denom: 'ibc/A0D7A4D3545AAF4C23FE0C432503D3EFB13A796B852AEF9B1B92D39AD80BD471',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
           ibc_denom: 'ibc/8291F71592AEE7C593D5DC05C1B66CD190B2EEA74DF09D2B8BF57BF6C4E8BCAA',
           chain_id: 'terra-3',
           decimals: 18,
@@ -5309,6 +5349,12 @@ module.exports = {
         {
           contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
           chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 420,
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -5405,6 +5451,12 @@ module.exports = {
           symbol: 'axlWAVAX',
         },
         {
+          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
           ibc_denom: 'ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597',
           chain_id: 'terra-3',
           decimals: 18,
@@ -5471,6 +5523,12 @@ module.exports = {
         {
           contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
           chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
+          chain_id: 420,
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -5567,6 +5625,12 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/E97CB9081D7EB7CAEAE022E448FDEF6D1D0781B63DA4112CAE50285594B2B32C',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/8DE781194A674B7129D9EFA838F3E50B5F50212995AA825634BF702E0D037AC3',
           chain_id: 'terra-3',
           decimals: 18,
@@ -5633,6 +5697,12 @@ module.exports = {
         {
           contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
           chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
+          chain_id: 420,
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -5729,6 +5799,12 @@ module.exports = {
           symbol: 'axlWFTM',
         },
         {
+          ibc_denom: 'ibc/BB68A322BA69ED1661EA38363B6A6D06D27AD205896875E78EA225AAF3A65CA6',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
           ibc_denom: 'ibc/F2D6753B652120212D09EE59075F0D820FCF580620DA8D3DE0349B614ED69A2B',
           chain_id: 'terra-3',
           decimals: 18,
@@ -5795,6 +5871,12 @@ module.exports = {
         {
           contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
           chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
+          chain_id: 420,
           decimals: 18,
           symbol: 'axlWDEV',
         },
@@ -5887,6 +5969,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/6A4043BCBD3FB6E9D86A14F6A018C33CD4E05990E977729CC1946395B2972B11',
           chain_id: 'burnt',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          ibc_denom: 'ibc/CF03353110E55C2E4D952D0DF4542AE8443CF5FA7023EB572B4A863DFB61EBA2',
+          chain_id: 'odin',
           decimals: 18,
           symbol: 'axlWDEV',
         },
