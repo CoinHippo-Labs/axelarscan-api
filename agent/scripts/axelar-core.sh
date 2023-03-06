@@ -71,7 +71,7 @@ sudo chmod 666 /var/run/docker.sock
 
 cd ~/axelarate-community
 
-CORE_VERSION=$(curl -s "https://raw.githubusercontent.com/axelarnetwork/axelar-docs/main/pages/resources/${environment}.md" | grep axelar-core | cut -d \` -f 4)
+CORE_VERSION=$(curl -s "https://raw.githubusercontent.com/axelarnetwork/axelar-docs/main/pages/resources/${environment}.mdx" | grep axelar-core | cut -d \` -f 4)
 echo ${CORE_VERSION}
 
 KEYRING_PASSWORD=password ./scripts/node.sh -a ${CORE_VERSION} -n ${environment} -e host ${flags}
