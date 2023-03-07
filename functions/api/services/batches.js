@@ -1,4 +1,5 @@
 const moment = require('moment');
+
 const {
   read,
 } = require('./index');
@@ -12,6 +13,8 @@ module.exports = async (
     commandId,
     keyId,
     type,
+    transactionHash,
+    sourceTransactionHash,
     status,
     from,
     size,
@@ -23,9 +26,9 @@ module.exports = async (
     toTime,
   } = { ...params };
 
-  const must = [],
-    should = [],
-    must_not = [];
+  const must = [];
+  const should = [];
+  const must_not = [];
 
   if (chain) {
     must.push({ match: { chain } });
@@ -45,6 +48,14 @@ module.exports = async (
 
   if (type) {
     must.push({ match: { 'commands.type': type } });
+  }
+
+  if (transactionHash) {
+    must.push({ match: { 'commands.transactionHash': transactionHash } });
+  }
+
+  if (sourceTransactionHash) {
+    must.push({ match: { 'commands.params.sourceTxHash': sourceTransactionHash } });
   }
 
   if (status) {
@@ -87,11 +98,7 @@ module.exports = async (
 
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime =
-      toTime ?
-        Number(toTime) * 1000 :
-        moment()
-          .valueOf();
+    toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
 
     must.push({ range: { 'created_at.ms': { gte: fromTime, lte: toTime } } });
   }
@@ -102,10 +109,7 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match:
-          should.length > 0 ?
-            1 :
-            0,
+        minimum_should_match: should.length > 0 ? 1 : 0,
       },
     };
   }
@@ -115,17 +119,9 @@ module.exports = async (
       'batches',
       query,
       {
-        from:
-          typeof from === 'number' ?
-            from :
-            0,
-        size:
-          typeof size === 'number' ?
-            size :
-            25,
-        sort:
-          sort ||
-          [{ 'created_at.ms': 'desc' }],
+        from: typeof from === 'number' ? from : 0,
+        size: typeof size === 'number' ? size : 25,
+        sort: sort || [{ 'created_at.ms': 'desc' }],
         track_total_hits: true,
       },
     )
