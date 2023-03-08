@@ -4777,7 +4777,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/4BDF2D63B8FFE3454AF30E9BC10D2D7979BD3A938D989889ABC94FC5B86F1E2D',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 6,
         },
         {
@@ -4984,7 +4984,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/13F73121EEA6CAA0DF51B06F64C39FD55EF394C64223881569DFA5628FA1288D',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -5272,7 +5272,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/52F7DAC8D338E4D7388D02EBD6E522B86EBB62A48C6732C2651423A9E79377DE',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -5446,7 +5446,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/78D5DAB545549A930F5DB22CFA7C821ACE8EF55DCF787BED93A56D04CC7477F5',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -5620,7 +5620,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/7BFC5893BCCC6C9A4B173BC1183D2706141CBF71679EA6BDCE15E679CEC05183',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -5794,7 +5794,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/301A96A9BB897EF914BA74534EE1D75417753A0E113F2F766838274057290B79',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -5968,7 +5968,7 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/6A4043BCBD3FB6E9D86A14F6A018C33CD4E05990E977729CC1946395B2972B11',
-          chain_id: 'burnt',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWDEV',
         },
