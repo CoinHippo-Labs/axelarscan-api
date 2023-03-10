@@ -150,7 +150,7 @@ const crud = async (
             .catch(error => {
               return {
                 data: {
-                  error,
+                  error: error?.response?.data,
                 },
               };
             });
@@ -188,7 +188,7 @@ const crud = async (
                 .catch(error => {
                   return {
                     data: {
-                      error,
+                      error: error?.response?.data,
                     },
                   };
                 });
@@ -214,7 +214,7 @@ const crud = async (
             .catch(error => {
               return {
                 data: {
-                  error,
+                  error: error?.response?.data,
                 },
               };
             });
@@ -249,7 +249,7 @@ const crud = async (
                   .catch(error => {
                     return {
                       data: {
-                        error,
+                        error: error?.response?.data,
                       },
                     };
                   });
@@ -288,7 +288,7 @@ const crud = async (
               .catch(error => {
                 return {
                   data: {
-                    error,
+                    error: error?.response?.data,
                   },
                 };
               });
@@ -369,7 +369,7 @@ const crud = async (
             .catch(error => {
               return {
                 data: {
-                  error,
+                  error: error?.response?.data,
                 },
               };
             });
@@ -423,7 +423,7 @@ const crud = async (
             .catch(error => {
               return {
                 data: {
-                  error,
+                  error: error?.response?.data,
                 },
               };
             });

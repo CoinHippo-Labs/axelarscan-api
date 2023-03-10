@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const {
   get,
   write,
@@ -14,29 +15,13 @@ const {
   vote_types,
 } = require('../../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const evm_chains_data =
-  require('../../../data')?.chains?.[environment]?.evm ||
-  [];
-const cosmos_chains_data =
-  require('../../../data')?.chains?.[environment]?.cosmos ||
-  [];
-const chains_data =
-  _.concat(
-    evm_chains_data,
-    cosmos_chains_data,
-  );
-const axelarnet =
-  chains_data
-    .find(c =>
-      c?.id === 'axelarnet'
-    );
-const assets_data =
-  require('../../../data')?.assets?.[environment] ||
-  [];
+const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm || [];
+const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos || [];
+const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
+const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const assets_data = require('../../../data')?.assets?.[environment] || [];
 
 module.exports = async (
   lcd_response = {},
@@ -78,7 +63,8 @@ module.exports = async (
             [
               'depositConfirmation',
               'eventConfirmation',
-            ].findIndex(s =>
+            ]
+            .findIndex(s =>
               equals_ignore_case(
                 e?.type,
                 s,
@@ -99,11 +85,9 @@ module.exports = async (
           [
             'depositConfirmation',
             'eventConfirmation',
-          ].findIndex(s =>
-            equals_ignore_case(
-              e?.type,
-              s,
-            )
+          ]
+          .findIndex(s =>
+            equals_ignore_case(e?.type, s)
           ) > -1
         );
 
@@ -113,27 +97,11 @@ module.exports = async (
         attributes,
       } = { ...event };
 
-      const chain = (attributes || [])
-        .find(a =>
-          a?.key === 'chain'
-        )?.value;
+      const chain = (attributes || []).find(a => a?.key === 'chain')?.value;
+      const token_address = (attributes || []).find(a => a?.key === 'tokenAddress')?.value;
 
-      const token_address = (attributes || [])
-        .find(a =>
-          a?.key === 'tokenAddress'
-        )?.value;
-
-      if (
-        chain &&
-        token_address
-      ) {
-        const chain_data = evm_chains_data
-          .find(c =>
-            equals_ignore_case(
-              c?.id,
-              chain,
-            )
-          );
+      if (chain && token_address) {
+        const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
 
         const {
           chain_id,
@@ -160,10 +128,7 @@ module.exports = async (
         }
       }
 
-      const amount_index = (attributes || [])
-        .findIndex(a =>
-          a?.key === 'amount'
-        );
+      const amount_index = (attributes || []).findIndex(a => a?.key === 'amount');
 
       if (amount_index > -1) {
         const attribute = attributes[amount_index];
@@ -172,9 +137,7 @@ module.exports = async (
           value,
         } = { ...attribute };
 
-        const _value =
-          value
-            .split('');
+        const _value = value.split('');
 
         let amount = '';
 
@@ -205,17 +168,15 @@ module.exports = async (
     delete transaction_data.raw_log;
     delete transaction_data.events;
 
-    transaction_data.timestamp =
-      moment(timestamp)
-        .utc()
-        .valueOf();
+    transaction_data.timestamp = moment(timestamp).utc().valueOf();
 
     /* start convert byte array to hex */
     if (messages) {
       if (
         [
           'LinkRequest',
-        ].findIndex(s =>
+        ]
+        .findIndex(s =>
           messages
             .findIndex(m =>
               m?.['@type']?.includes(s)
@@ -238,20 +199,20 @@ module.exports = async (
           'ConfirmTransferKeyRequest',
           'ConfirmTokenRequest',
           'CreateDeployTokenRequest',
-        ].findIndex(s =>
+        ]
+        .findIndex(s =>
           messages
             .findIndex(m =>
               m?.['@type']?.includes(s)
             ) > -1
         ) > -1
       ) {
-        const fields =
-          [
-            'tx_id',
-            'burner_address',
-            'burn_address',
-            'address',
-          ];
+        const fields = [
+          'tx_id',
+          'burner_address',
+          'burn_address',
+          'address',
+        ];
 
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i];
@@ -266,12 +227,9 @@ module.exports = async (
                         [
                           'depositConfirmation',
                           'eventConfirmation',
-                        ].findIndex(s =>
-                          equals_ignore_case(
-                            e?.type,
-                            s,
-                          ) ||
-                          e?.type?.includes(s)
+                        ]
+                        .findIndex(s =>
+                          equals_ignore_case(e?.type, s) || e?.type?.includes(s)
                         ) > -1
                       )
                   )
@@ -281,22 +239,10 @@ module.exports = async (
               attributes,
             } = { ...event };
 
-            const amount = (attributes || [])
-              .find(a =>
-                a?.key === 'amount'
-              )?.value;
+            const amount = (attributes || []).find(a => a?.key === 'amount')?.value;
+            const denom = transaction_data.denom || message.denom;
 
-            const denom =
-              transaction_data.denom ||
-              message.denom;
-
-            message.amount =
-              [
-                {
-                  amount,
-                  denom,
-                },
-              ];
+            message.amount = [{ amount, denom }];
           }
 
           for (const field of fields) {
@@ -311,24 +257,23 @@ module.exports = async (
       else if (
         [
           'VoteRequest',
-        ].findIndex(s =>
+        ]
+        .findIndex(s =>
           messages
             .findIndex(m =>
-              m?.['@type']?.includes(s) ||
-              m?.inner_message?.['@type']?.includes(s)
+              m?.['@type']?.includes(s) || m?.inner_message?.['@type']?.includes(s)
             ) > -1
         ) > -1
       ) {
-        const fields =
-          [
-            'tx_id',
-            'to',
-            'sender',
-            'payload_hash',
-            'pre_operators',
-            'new_operators',
-            'token_address',
-          ];
+        const fields = [
+          'tx_id',
+          'to',
+          'sender',
+          'payload_hash',
+          'pre_operators',
+          'new_operators',
+          'token_address',
+        ];
 
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i];
@@ -464,18 +409,20 @@ module.exports = async (
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i];
 
-          const {
-            limit,
-          } = { ...message };
+          if (message) {
+            const fields = [
+              'limit',
+              'chain',
+            ];
 
-          if (
-            limit &&
-            typeof limit === 'object'
-          ) {
-            message.limit = limit.toString();
+            for (const field of fields) {
+              if (message[field] && typeof message[field] === 'object') {
+                message[field] = message[field].toString();   
+              }
+            }
+
+            messages[i] = message;
           }
-
-          messages[i] = message;
         }
 
         transaction_data.tx.body.messages = messages;
@@ -489,17 +436,16 @@ module.exports = async (
     /* start add addresses field */
     let addresses = [];
 
-    const address_fields =
-      [
-        'voter',
-        'delegator_address',
-        'signer',
-        'sender',
-        'recipient',
-        'spender',
-        'receiver',
-        'depositAddress',
-      ];
+    const address_fields = [
+      'voter',
+      'delegator_address',
+      'signer',
+      'sender',
+      'recipient',
+      'spender',
+      'receiver',
+      'depositAddress',
+    ];
 
     if (logs) {
       addresses =
@@ -519,18 +465,10 @@ module.exports = async (
               ),
           )
           .map(a =>
-            to_json(a) ||
-            to_hex(
-              typeof a === 'string' ?
-                a
-                  .split('"')
-                  .join('') :
-                a
-            )
+            to_json(a) || to_hex(typeof a === 'string' ? a.split('"').join('') : a)
           )
           .filter(a =>
-            typeof a === 'string' &&
-            a.startsWith(axelarnet.prefix_address)
+            typeof a === 'string' && a.startsWith(axelarnet.prefix_address)
           )
         );
     }
@@ -542,23 +480,11 @@ module.exports = async (
             addresses,
             messages
               .flatMap(m =>
-                _.concat(
-                  address_fields
-                    .map(f => m[f]),
-                  address_fields
-                    .map(f => m.inner_message?.[f]),
-                )
+                _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f]))
               ),
           )
           .map(a =>
-            to_json(a) ||
-            to_hex(
-              typeof a === 'string' ?
-                a
-                  .split('"')
-                  .join('') :
-                a
-            )
+            to_json(a) || to_hex(typeof a === 'string' ? a.split('"').join('') : a)
           )
           .filter(a =>
             typeof a === 'string' &&
@@ -579,10 +505,7 @@ module.exports = async (
         _.uniq(
           _.concat(
             types,
-            messages
-              .flatMap(m =>
-                m?.inner_message?.['@type']
-              ),
+            messages.flatMap(m => m?.inner_message?.['@type']),
           )
           .filter(t => t)
         );
@@ -598,10 +521,7 @@ module.exports = async (
               .flatMap(l =>
                 (l?.events || [])
                   .filter(e =>
-                    equals_ignore_case(
-                      e?.type,
-                      'message',
-                    )
+                    equals_ignore_case(e?.type, 'message')
                   )
                   .flatMap(e =>
                     (e.attributes || [])
@@ -622,265 +542,162 @@ module.exports = async (
         _.uniq(
           _.concat(
             types,
-            messages
-              .flatMap(m => m?.['@type']),
+            messages.flatMap(m => m?.['@type']),
           )
           .filter(t => t)
         );
     }
 
-    types =
-      _.uniq(
-        types
-          .map(t =>
-            capitalize(
-              _.last(
-                t.split('.')
-              )
-            )
-          )
-      );
-
-    types = types
-      .filter(t =>
-        !types.includes(`${t}Request`)
-      );
+    types = _.uniq(types.map(t => capitalize(_.last(t.split('.')))));
+    types = types.filter(t => !types.includes(`${t}Request`));
 
     transaction_data.types = types;
     /* end add message types field */
 
     if (queue_index_count < 0) {
-      await write(
-        'txs',
-        txhash,
-        transaction_data,
-      );
+      await write('txs', txhash, transaction_data);
     }
     /*************************
      * end index transaction *
      *************************/
 
     /* start index validator metrics & transfers */
-    if (
-      !code &&
-      tx_response &&
-      messages
-    ) {
+    if (!code && tx_response && messages) {
       let updated;
 
       // Heartbeat
       if (
         [
           'HeartBeatRequest',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.inner_message?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.inner_message?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        await require('./heartbeat')(
-          lcd_response,
-        );
+        await require('./heartbeat')(lcd_response);
       }
       // Link
       if (
         [
           'LinkRequest',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        await require('./link')(
-          lcd_response,
-        );
+        await require('./link')(lcd_response);
       }
       // MsgSend
       if (
         [
           'MsgSend',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        await require('./axelar-send')(
-          lcd_response,
-        );
+        await require('./axelar-send')(lcd_response);
       }
       // MsgRecvPacket
       if (
         [
           'MsgRecvPacket',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        lcd_response =
-          await require('./cosmos-send')(
-            lcd_response,
-          );
+        lcd_response = await require('./cosmos-send')(lcd_response);
       }
       // RouteIBCTransfers
       if (
         [
           'RouteIBCTransfersRequest',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        const _response =
-          await require('./ibc-send')(
-            lcd_response,
-          );
+        const _response = await require('./ibc-send')(lcd_response);
 
-        logs =
-          _response?.logs ||
-          logs;
-
+        logs = _response?.logs || logs;
         updated = _response?.updated;
       }
       // MsgAcknowledgement
       if (
         [
           'MsgAcknowledgement',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        updated =
-          await require('./ibc-acknowledgement')(
-            lcd_response,
-          );
+        updated = await require('./ibc-acknowledgement')(lcd_response);
       }
       // MsgTimeout
       if (
         [
           'MsgTimeout',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        updated =
-          await require('./ibc-failed')(
-            lcd_response,
-          );
+        updated = await require('./ibc-failed')(lcd_response);
       }
       // ExecutePendingTransfers
       if (
         [
           'ExecutePendingTransfersRequest',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        updated =
-          await require('./axelar-transfer')(
-            lcd_response,
-          );
+        updated = await require('./axelar-transfer')(lcd_response);
       }   
       // ConfirmTransferKey & ConfirmGatewayTx
       if (
         [
           'ConfirmTransferKey',
           'ConfirmGatewayTx',
-        ].findIndex(s =>
-          messages
-            .findIndex(m =>
-              m?.['@type']?.includes(s)
-            ) > -1
+        ]
+        .findIndex(s =>
+          messages.findIndex(m => m?.['@type']?.includes(s)) > -1
         ) > -1
       ) {
-        updated =
-          await require('./confirm')(
-            lcd_response,
-          );
+        updated = await require('./confirm')(lcd_response);
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (
         transfer_actions
           .findIndex(s =>
-            messages
-              .findIndex(m =>
-                _.last(
-                  (m?.['@type'] || '')
-                    .split('.')
-                )
-                .replace(
-                  'Request',
-                  '',
-                )
-                .includes(s)
-              ) > -1
+            messages.findIndex(m => _.last((m?.['@type'] || '').split('.')).replace('Request', '').includes(s)) > -1
           ) > -1
       ) {
-        await require('./confirm-deposit')(
-          lcd_response,
-        );
+        await require('./confirm-deposit')(lcd_response);
       }
       // VoteConfirmDeposit & Vote
       if (
         vote_types
           .findIndex(s =>
-            messages
-              .findIndex(m =>
-                _.last(
-                  (m?.inner_message?.['@type'] || '')
-                    .split('.')
-                )
-                .replace(
-                  'Request',
-                  '',
-                )
-                .includes(s)
-              ) > -1
+            messages.findIndex(m => _.last((m?.inner_message?.['@type'] || '').split('.')).replace('Request', '').includes(s)) > -1
           ) > -1
       ) {
-        updated =
-          await require('./vote')(
-            lcd_response,
-          );
+        updated = await require('./vote')(lcd_response);
       }
 
       lcd_response.tx_response.raw_log = JSON.stringify(logs);
 
       // update index queue
-      if (
-        updated &&
-        txhash
-      ) {
+      if (updated && txhash) {
         let count;
 
         if (queue_index_count > -1) {
           count = queue_index_count;
         }
         else {
-          const queue_data =
-            await get(
-              'txs_index_queue',
-              txhash,
-            );
-
+          const queue_data = await get('txs_index_queue', txhash);
           count = queue_data?.count;
         }
 
@@ -889,14 +706,8 @@ module.exports = async (
           txhash,
           {
             txhash,
-            updated_at:
-              moment()
-                .valueOf(),
-            count:
-              (
-                count ||
-                0
-              ) + 1,
+            updated_at: moment().valueOf(),
+            count: (count || 0) + 1,
           },
           typeof count === 'number',
         );
