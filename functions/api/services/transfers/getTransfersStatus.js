@@ -782,7 +782,7 @@ module.exports = async (
             price,
           } = { ...link };
 
-          type = wrap ? 'wrap' : unwrap ? 'unwrap' : ype;
+          type = wrap ? 'wrap' : unwrap ? 'unwrap' : type;
 
           if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
             price = value / amount;
