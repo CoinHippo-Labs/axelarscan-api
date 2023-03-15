@@ -85,6 +85,11 @@ module.exports = {
           chain_id: 'kujira',
           decimals: 6,
         },
+        {
+          ibc_denom: 'ibc/062588846168EDFECF20F7681F2A0A131A53B9A3C8535BCA8F7D1A268246974B',
+          chain_id: 'carbon',
+          decimals: 6,
+        },
       ],
     },
     {
@@ -268,6 +273,18 @@ module.exports = {
         {
           ibc_denom: 'ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65',
           chain_id: 'acre',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
+          ibc_denom: 'ibc/5FA12AB6B23F7FC00BFBA3B26E320C91226BF88CC17DA5E088013252C91AEAD1',
+          chain_id: 'stride',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
+          ibc_denom: 'ibc/7C0807A56073C4A27B0DE1C21BA3EB75DF75FD763F4AD37BC159917FC01145F0',
+          chain_id: 'carbon',
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -518,6 +535,12 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
+          ibc_denom: 'ibc/812FE3017D74992A23CF4D65DCEBC5688B2F9D5595CBA7E7447522C6F2152778',
+          chain_id: 'carbon',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
           ibc_denom: 'ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF',
           chain_id: 'terra-2',
           decimals: 6,
@@ -705,6 +728,12 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
+          ibc_denom: 'ibc/7E8C893B624C33274D18279546DE9353BCABF22B423D7D5E78B298144B23C6B2',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
           ibc_denom: 'ibc/E46EF5449878F6B81219163F211E7329CC0729AA99DA8A589A865F82F754ADE8',
           chain_id: 'terra-2',
           decimals: 18,
@@ -833,6 +862,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E0DAFC08CE018EB12427A35044AA3F375B30A2D31D528837FE7773F9DF0D2AEF',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlBUSD',
+        },
+        {
+          ibc_denom: 'ibc/AD706B02DD4D8468C287D2F22E4BA2FB80338DF5C1F4035086411074B755A485',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlBUSD',
         },
@@ -969,6 +1004,12 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
+          ibc_denom: 'ibc/9CCCFA44CA6F74517C3E3416971EF2B7EC8506F2A00C62C660935DD9CB5E1C63',
+          chain_id: 'carbon',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD',
           chain_id: 'terra-2',
           decimals: 8,
@@ -1097,6 +1138,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E3AB0DFDE9E782262B770C32DF94AC2A92B93DC4825376D6F6C874D3C877864E',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/DC44871FDB10B6FB4D4089247AA918B0F30428C8911AFB6192D98AE8E38E31CB',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -1239,6 +1286,12 @@ module.exports = {
           symbol: 'axlETH',
         },
         {
+          ibc_denom: 'ibc/DC44871FDB10B6FB4D4089247AA918B0F30428C8911AFB6192D98AE8E38E31CB',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
           ibc_denom: 'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674',
           chain_id: 'terra-2',
           decimals: 18,
@@ -1367,6 +1420,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A0D7A4D3545AAF4C23FE0C432503D3EFB13A796B852AEF9B1B92D39AD80BD471',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/DF9C9A15AB22971A4F65FB8F471459A757745F9709905A599D5011E69FE3C375',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -1509,6 +1568,12 @@ module.exports = {
           symbol: 'axlBNB',
         },
         {
+          ibc_denom: 'ibc/DF9C9A15AB22971A4F65FB8F471459A757745F9709905A599D5011E69FE3C375',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlBNB',
+        },
+        {
           ibc_denom: 'ibc/1319C6B38CA613C89D78C2D1461B305038B1085F6855E8CD276FE3F7C9600B4C',
           chain_id: 'terra-2',
           decimals: 18,
@@ -1637,6 +1702,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E97CB9081D7EB7CAEAE022E448FDEF6D1D0781B63DA4112CAE50285594B2B32C',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/E74941AEE93FA5FBC9195082758763917D56E2E05A48AE094AD142AA2DD10B7A',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -1779,6 +1850,12 @@ module.exports = {
           symbol: 'axlMATIC',
         },
         {
+          ibc_denom: 'ibc/E74941AEE93FA5FBC9195082758763917D56E2E05A48AE094AD142AA2DD10B7A',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlMATIC',
+        },
+        {
           ibc_denom: 'ibc/14E4FD1AB72DE9BF1D6725CBA18373C406CB9A7DA17955299F3F4DC5C6131A4E',
           chain_id: 'terra-2',
           decimals: 18,
@@ -1907,6 +1984,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/608FB6C36692B78844D22BC125F59CF46011B27B053DA40F730A15BCB248C3A8',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -2049,6 +2132,12 @@ module.exports = {
           symbol: 'axlAVAX',
         },
         {
+          ibc_denom: 'ibc/608FB6C36692B78844D22BC125F59CF46011B27B053DA40F730A15BCB248C3A8',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlAVAX',
+        },
+        {
           ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2177,6 +2266,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/BB68A322BA69ED1661EA38363B6A6D06D27AD205896875E78EA225AAF3A65CA6',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/2D4399D27A3988E41C1FA4CF3F0CCCDEA4094646A5C3B483D7508069489F860C',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -2319,6 +2414,12 @@ module.exports = {
           symbol: 'axlFTM',
         },
         {
+          ibc_denom: 'ibc/2D4399D27A3988E41C1FA4CF3F0CCCDEA4094646A5C3B483D7508069489F860C',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlFTM',
+        },
+        {
           ibc_denom: 'ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2447,6 +2548,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/F1E05BAE0613BE43D98BD89DDA6937F04B1D34178668BA7800FC70F2FFB42BDD',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
+          ibc_denom: 'ibc/DA5F22C49C88D4B0AAB0E2275D320078EE98610EEB10AEC847929CCF2137144C',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -2589,6 +2696,12 @@ module.exports = {
           symbol: 'axlGLMR',
         },
         {
+          ibc_denom: 'ibc/DA5F22C49C88D4B0AAB0E2275D320078EE98610EEB10AEC847929CCF2137144C',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlGLMR',
+        },
+        {
           ibc_denom: 'ibc/D54CE4CD2927F744CDCA844DD0E1A5DF88762274C55CD9AAB13E504A29BE8933',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2718,6 +2831,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/3D0D786201EA9704AE0957981B41B92EFA8F32E56318DAFE4B42DE5DE5B5E3FE',
           chain_id: 'acre',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
+          ibc_denom: 'ibc/14EEA1138E7AF7E8F531DA1F94C4D2BCA0354621AD84A6FC5FF7843901F77DA6',
+          chain_id: 'carbon',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -2904,6 +3023,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/CA9DE7EFBE31CEEDDF4E11564C19612FFE1DCB0758069627A619510F1C5AE56A',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/F3146333E033F2F20125A2F9879F0DEED990B1005FFAF77873CC4E405FBDE8C4',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -3203,6 +3328,150 @@ module.exports = {
         },
       ],
     },
+    {
+      id: 'stuatom',
+      symbol: 'stATOM',
+      name: 'Stride ATOM',
+      image: '/logos/assets/statom.svg',
+      decimals: 6,
+      coingecko_id: 'stride-staked-atom',
+      contracts: [
+        {
+          contract_address: '0x2924894E7886C6B9018179946EE389bb06534021',
+          chain_id: 1,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x4Bd3231E7eFc193F13a89b23ED6970776a91CF63',
+          chain_id: 56,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x9132ab3B9EcA438184588b8887CeD9dE0FCA19AE',
+          chain_id: 137,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x2fFFE7f113FDB41fc8Ffd3B67E7b7eFA2b3a030d',
+          chain_id: 43114,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x4Bd3231E7eFc193F13a89b23ED6970776a91CF63',
+          chain_id: 250,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x2924894E7886C6B9018179946EE389bb06534021',
+          chain_id: 1284,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x7ba861c07d40e3341B901Fd6F418e96E0132E25b',
+          chain_id: 42161,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x7ba861c07d40e3341B901Fd6F418e96E0132E25b',
+          chain_id: 42220,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/CFB9D610B7BB02E8E6FDB0AF87FCADDF97687A3F13E76AC624C500E54335ADAA',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          ibc_denom: 'stuatom',
+          chain_id: 'stride',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
+    },
+    {
+      id: 'ustrd',
+      symbol: 'STRD',
+      name: 'Stride',
+      image: '/logos/assets/strd.svg',
+      decimals: 6,
+      coingecko_id: 'stride',
+      contracts: [
+        {
+          contract_address: '0x85eBBf7253295d37C5FC98bE5Aac87CA4378c2e2',
+          chain_id: 1,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x922946A8A2FAE7a8b4506bd54Ea361482Eff95dD',
+          chain_id: 56,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x1D9b7C028e5018c7057c6F57366a1350c9CeADE5',
+          chain_id: 137,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x24562dd9D02f7ECE43B947e61E313778273F140b',
+          chain_id: 43114,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x922946A8A2FAE7a8b4506bd54Ea361482Eff95dD',
+          chain_id: 250,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x85eBBf7253295d37C5FC98bE5Aac87CA4378c2e2',
+          chain_id: 1284,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F',
+          chain_id: 42161,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F',
+          chain_id: 42220,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/F42AC6E51C46D30F7F39ADCA1A38E29374745771F23AB3250444F09EBBB4A107',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          ibc_denom: 'ustrd',
+          chain_id: 'stride',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
+    },
     /*{
       id: 'uxki',
       symbol: 'XKI',
@@ -3344,6 +3613,12 @@ module.exports = {
           symbol: 'axlRAI',
         },
         {
+          ibc_denom: 'ibc/0FDA701E39D7B52F00B75B692E3BD6B3AB7841EE396517EE3DBC3D31AE42A5D2',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
           ibc_denom: 'ibc/88C5B3E62FD8ECC8825107D86C4AC8CDECDC7B44135DD757D1D83E27203B6C9D',
           chain_id: 'terra-2',
           decimals: 18,
@@ -3472,6 +3747,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/5F01D08D8E63C951DDAD6111FBD235D459C95F89A57EA1BB2025430C3DD96719',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
+          ibc_denom: 'ibc/8B40CD07C94E82E3AD214FF8EB5230040E9440AC1F77B6880CFF893C6F62E13D',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -3920,6 +4201,12 @@ module.exports = {
           symbol: 'axlUNI',
         },
         {
+          ibc_denom: 'ibc/133B6981CB7857696D1CEEBB1D3A953B507D602241C3DE90EAAC1F7C92067BAD',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
           ibc_denom: 'ibc/6EFF21F9E65C9101370C38AA53049E4D1FF2B206A7C350B45F0ED3660E57AC75',
           chain_id: 'terra-2',
           decimals: 18,
@@ -4048,6 +4335,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/1BA9487241B5F9F9CFBC1EF0B099E668D953F6757185255225BB84A8B678AF8E',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
+          ibc_denom: 'ibc/D8006E3E5D69B1B3A167E79E87A2A56999EE1EF060CCA62C4D15C1046F586C39',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlSHIB',
         },
@@ -4420,6 +4713,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A201638824F62E8C8D9F6A93E7B2F242B912153008943C7DAE01F76C0C7A3430',
           chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
+          ibc_denom: 'ibc/D1506C95F0BDB40B370C7AE12FAC073B350DB11CF00A9B7251EB6CEF7D9F73DF',
+          chain_id: 'carbon',
           decimals: 18,
           symbol: 'axlMKR',
         },
@@ -6147,159 +6446,6 @@ module.exports = {
           chain_id: 1313161555,
           decimals: 6,
           symbol: 'axlUSDC',
-        },
-      ],
-    },
-    {
-      id: 'uusd',
-      symbol: 'UST',
-      name: 'TerraUSD',
-      image: '/logos/assets/ust.png',
-      decimals: 6,
-      coingecko_id: 'terrausd',
-      contracts: [
-        {
-          contract_address: '0x1487f3faefe78792cdc48d87ff32aac6650fd85f',
-          chain_id: 3,
-          decimals: 6,
-        },
-        {
-          contract_address: '0x43f4600b552089655645f8c16d86a5a9fa296bc3',
-          chain_id: 43113,
-          decimals: 6,
-        },
-        {
-          contract_address: '0xa32575f477fdebfa02513880d47f6515da42fb90',
-          chain_id: 80001,
-          decimals: 6,
-        },
-        {
-          contract_address: '0x89a1d86901d25effe5d022bdd1132827e4d7f010',
-          chain_id: 4002,
-          decimals: 6,
-        },
-        {
-          contract_address: '0xd34007bb8a54b2fbb1d6647c5aba04d507abd21d',
-          chain_id: 1287,
-          decimals: 6,
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/6F4968A73F90CF7DE6394BF937D6DF7C7D162D74D839C13F53B41157D315E05F',
-          chain_id: 'axelarnet',
-          decimals: 6,
-        },
-        {
-          ibc_denom: 'uusd',
-          chain_id: 'terra',
-          decimals: 6,
-          is_native: true,
-        },
-      ],
-    },
-    {
-      id: 'uluna',
-      symbol: 'LUNA',
-      name: 'Terra Classic',
-      image: '/logos/assets/lunc.png',
-      decimals: 6,
-      coingecko_id: 'terra-luna',
-      contracts: [
-        {
-          contract_address: '0x7aa125543b9d4a361f58ac1ff3bea86eaf6d948b',
-          chain_id: 3,
-          decimals: 6,
-          symbol: 'LUNC',
-        },
-        {
-          contract_address: '0x50a70abb7bd6ebbcc46df7c0d033c568f563ca27',
-          chain_id: 43113,
-          decimals: 6,
-          symbol: 'LUNC',
-        },
-        {
-          contract_address: '0x6ad38dd216dc344c6b3cedc34612e1014e2aa469',
-          chain_id: 80001,
-          decimals: 6,
-          symbol: 'LUNC',
-        },
-        {
-          contract_address: '0x121286bedd58d58558a30ed2db2f4a7c6eb646a3',
-          chain_id: 4002,
-          decimals: 6,
-          symbol: 'LUNC',
-        },
-        {
-          contract_address: '0xa1cf442e73045f1ea9960499fc8771454a01019d',
-          chain_id: 1287,
-          decimals: 6,
-          symbol: 'LUNC',
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8',
-          chain_id: 'axelarnet',
-          decimals: 6,
-          symbol: 'LUNC',
-        },
-        {
-          ibc_denom: 'uluna',
-          chain_id: 'terra',
-          decimals: 6,
-          symbol: 'LUNC',
-          is_native: true,
-        },
-      ],
-    },
-  ],
-  devnet: [
-    {
-      id: 'uaxl',
-      symbol: 'AXL',
-      name: 'Axelar',
-      image: '/logos/assets/axl.svg',
-      decimals: 6,
-      coingecko_id: 'axelar',
-      contracts: [
-        {
-          contract_address: '0x321c017c08b681b1a34909eb159ed128772a5bbe',
-          chain_id: 3,
-          decimals: 6,
-          symbol: 'wAXL',
-        },
-        {
-          contract_address: '0x46cc87ea84586c03bb2109ed9b33f998d40b7623',
-          chain_id: 43113,
-          decimals: 6,
-          symbol: 'wAXL',
-        },
-        {
-          contract_address: '0x6ff1fa8cfb26551aa13e3d5dbf077f0a98ecd232',
-          chain_id: 80001,
-          decimals: 6,
-          symbol: 'wAXL',
-        },
-        {
-          contract_address: '0xc1ff1364f7a263a535e3caf60d424b78bb5b7c19',
-          chain_id: 4002,
-          decimals: 6,
-          symbol: 'wAXL',
-        },
-        {
-          contract_address: '0x8a6614f33ec72fb70084b22b2effb643424e9cc9',
-          chain_id: 1287,
-          decimals: 6,
-          symbol: 'wAXL',
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'uaxl',
-          chain_id: 'axelarnet',
-          decimals: 6,
-          is_native: true,
         },
       ],
     },

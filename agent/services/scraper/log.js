@@ -426,7 +426,6 @@ module.exports = async () => {
       `/home/axelard/.axelar${
         [
           'testnet',
-          'devnet',
           'testnet-2',
         ].includes(environment) ?
           `_${environment}` :
