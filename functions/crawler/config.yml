@@ -87,6 +87,11 @@ mainnet:
           - "https://optimism-mainnet.public.blastapi.io"
           - "https://1rpc.io/op"
           - "https://rpc.ankr.com/optimism"
+    base:
+      chain_id: 8453
+      endpoints:
+        rpc:
+          - ""
     celo:
       chain_id: 42220
       endpoints:
@@ -100,11 +105,6 @@ mainnet:
         rpc:
           - "https://evm.kava.io"
           - "https://evm2.kava.io"
-    base:
-      chain_id: 8453
-      endpoints:
-        rpc:
-          - ""
   gateway_contracts:
     ethereum:
       address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
@@ -124,12 +124,12 @@ mainnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism:
       address: ""
+    base:
+      address: ""
     celo:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
-    base:
-      address: ""
 
 
 
@@ -199,6 +199,11 @@ testnet:
         rpc:
           - "https://optimism-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://rpc.ankr.com/optimism_testnet"
+    base:
+      chain_id: 84531
+      endpoints:
+        rpc:
+          - "https://goerli.base.org"
     celo:
       chain_id: 44787
       endpoints:
@@ -209,11 +214,6 @@ testnet:
       endpoints:
         rpc:
           - "https://evm.testnet.kava.io"
-    base:
-      chain_id: 84531
-      endpoints:
-        rpc:
-          - "https://goerli.base.org"
   gateway_contracts:
     ethereum-2:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
@@ -233,9 +233,9 @@ testnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    base:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     celo:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
       address: "0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c"
-    base:
-      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
