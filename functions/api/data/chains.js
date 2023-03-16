@@ -1814,8 +1814,7 @@ module.exports = {
         image: '/logos/chains/base.svg',
         color: '#0052fe',
         website: 'https://base.org',
-        gateway_address: '',
-        no_inflation: true,
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       {
         id: 'hero',
