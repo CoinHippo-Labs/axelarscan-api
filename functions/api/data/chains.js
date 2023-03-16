@@ -468,6 +468,46 @@ module.exports = {
         website: 'https://kava.io',
         gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
+      {
+        id: 'base',
+        maintainer_id: 'base',
+        chain_name: 'base',
+        name: 'Base',
+        short_name: 'BASE',
+        chain_id: 8453,
+        provider_params: [
+          {
+            chainId: '0x2105',
+            chainName: 'Base',
+            rpcUrls: [
+              '',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              '',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Basescan',
+          url: 'https://basescan.org',
+          icon: '/logos/explorers/basescan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/base.svg',
+        color: '#0052fe',
+        website: 'https://base.org',
+        gateway_address: '',
+        no_inflation: true,
+      },
     ],
     cosmos: [
       {
@@ -1736,6 +1776,46 @@ module.exports = {
         color: '#ff433e',
         website: 'https://kava.io',
         gateway_address: '0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c',
+      },
+      {
+        id: 'base',
+        maintainer_id: 'base',
+        chain_name: 'base',
+        name: 'Base',
+        short_name: 'BASE',
+        chain_id: 84531,
+        provider_params: [
+          {
+            chainId: '0x14a33',
+            chainName: 'Base Goerli',
+            rpcUrls: [
+              'https://goerli.base.org',
+            ],
+            nativeCurrency: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://goerli.basescan.org',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Basescan',
+          url: 'https://goerli.basescan.org',
+          icon: '/logos/explorers/basescan.png',
+          block_path: '/block/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/token/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/tx/{tx}',
+        },
+        image: '/logos/chains/base.svg',
+        color: '#0052fe',
+        website: 'https://base.org',
+        gateway_address: '',
+        no_inflation: true,
       },
       {
         id: 'hero',
