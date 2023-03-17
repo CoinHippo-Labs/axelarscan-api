@@ -1816,6 +1816,7 @@ module.exports = {
         website: 'https://kava.io',
         gateway_address: '0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c',
       },
+      /*
       {
         id: 'hero',
         maintainer_id: 'hero',
@@ -1856,6 +1857,7 @@ module.exports = {
         gateway_address: '',
         deprecated: true,
       },
+      */
     ],
     cosmos: [
       {
