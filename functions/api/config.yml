@@ -139,6 +139,11 @@ mainnet:
             - "https://optimism-mainnet.public.blastapi.io"
             - "https://1rpc.io/op"
             - "https://rpc.ankr.com/optimism"
+      base:
+        chain_id: 8453
+        endpoints:
+          rpc:
+            - ""
       celo:
         chain_id: 42220
         endpoints:
@@ -170,6 +175,8 @@ mainnet:
       arbitrum:
         address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
       optimism:
+        address: ""
+      base:
         address: ""
       celo:
         address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
@@ -298,6 +305,11 @@ testnet:
             - "https://goerli.optimism.io"
             - "https://opt-goerli.g.alchemy.com/v2/demo"
             - "https://rpc.ankr.com/optimism_testnet"
+      base:
+        chain_id: 84531
+        endpoints:
+          rpc:
+            - "https://goerli.base.org"
       celo:
         chain_id: 44787
         endpoints:
@@ -326,7 +338,9 @@ testnet:
       arbitrum:
         address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
       optimism:
-        address: ""
+        address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+      base:
+        address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
       celo:
         address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
       kava:
