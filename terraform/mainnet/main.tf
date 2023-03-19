@@ -47,7 +47,7 @@ resource "aws_iam_policy_attachment" "attachment" {
 
 resource "aws_opensearch_domain" "domain" {
   domain_name     = "${var.package_name}-general-${var.environment}"
-  engine_version  = "OpenSearch_2.3"
+  engine_version  = "OpenSearch_2.5"
   cluster_config {
     instance_type            = "m6g.4xlarge.search"
     instance_count           = 1
@@ -58,7 +58,7 @@ resource "aws_opensearch_domain" "domain" {
   ebs_options {
     ebs_enabled = true
     volume_type = "gp2"
-    volume_size = 256
+    volume_size = 320
   }
   encrypt_at_rest {
     enabled = true
@@ -101,7 +101,7 @@ POLICIES
 
 resource "aws_opensearch_domain" "domain_transfers" {
   domain_name     = "${var.package_name}-transfers-${var.environment}"
-  engine_version  = "OpenSearch_2.3"
+  engine_version  = "OpenSearch_2.5"
   cluster_config {
     instance_type            = "m6g.2xlarge.search"
     instance_count           = 1
