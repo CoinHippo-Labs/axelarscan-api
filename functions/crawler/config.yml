@@ -105,6 +105,11 @@ mainnet:
         rpc:
           - "https://evm.kava.io"
           - "https://evm2.kava.io"
+    filecoin:
+      chain_id: 314
+      endpoints:
+        rpc:
+          - "https://rpc.ankr.com/filecoin"
   gateway_contracts:
     ethereum:
       address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
@@ -130,6 +135,8 @@ mainnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    filecoin:
+      address: ""
 
 
 
@@ -214,6 +221,12 @@ testnet:
       endpoints:
         rpc:
           - "https://evm.testnet.kava.io"
+    filecoin:
+      chain_id: 3141
+      endpoints:
+        rpc:
+          - "https://rpc.ankr.com/filecoin_testnet"
+          - "https://api.hyperspace.node.glif.io/rpc/v1"
   gateway_contracts:
     ethereum-2:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
@@ -239,3 +252,5 @@ testnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
       address: "0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c"
+    filecoin:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"

@@ -508,6 +508,46 @@ module.exports = {
         website: 'https://kava.io',
         gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
+      {
+        id: 'filecoin',
+        maintainer_id: 'filecoin',
+        chain_name: 'filecoin',
+        name: 'Filecoin',
+        short_name: 'FIL',
+        chain_id: 314,
+        provider_params: [
+          {
+            chainId: '0x13a',
+            chainName: 'Filecoin',
+            rpcUrls: [
+              'https://rpc.ankr.com/filecoin',
+            ],
+            nativeCurrency: {
+              name: 'Filecoin',
+              symbol: 'FIL',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://filfox.info',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Filecoin',
+          url: 'https://filfox.info',
+          icon: '/logos/explorers/filecoin.png',
+          block_path: '/tipset/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/message/{tx}',
+        },
+        image: '/logos/chains/filecoin.svg',
+        color: '#0090ff',
+        website: 'https://filecoin.io',
+        gateway_address: '',
+        no_inflation: true,
+      },
     ],
     cosmos: [
       {
@@ -1013,6 +1053,39 @@ module.exports = {
             'https://rest.comdex.one',
           ],
           cosmostation: 'https://api-comdex.cosmostation.io/v1',
+        },
+      },
+      {
+        id: 'persistence',
+        chain_name: 'persistence',
+        name: 'Persistence',
+        short_name: 'XPRT',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/persistence',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/persistence.svg',
+        color: '#e50813',
+        website: 'https://persistence.one',
+        prefix_address: 'persistence',
+        prefix_chain_ids: [
+          'core-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://rest.core.persistence.one',
+            'https://api-persistent-ia.cosmosia.notional.ventures',
+            'https://api-persistence.starsquid.io',
+            'https://persistence-api.polkachu.com',
+            'https://persistence-api.kleomedes.network',
+          ],
         },
       },
       {
@@ -1815,6 +1888,46 @@ module.exports = {
         color: '#ff433e',
         website: 'https://kava.io',
         gateway_address: '0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c',
+      },
+      {
+        id: 'filecoin',
+        maintainer_id: 'filecoin',
+        chain_name: 'filecoin',
+        name: 'Filecoin',
+        short_name: 'FIL',
+        chain_id: 3141,
+        provider_params: [
+          {
+            chainId: '0xc45',
+            chainName: 'Filecoin Testnet',
+            rpcUrls: [
+              'https://rpc.ankr.com/filecoin_testnet',
+              'https://api.hyperspace.node.glif.io/rpc/v1',
+            ],
+            nativeCurrency: {
+              name: 'Filecoin',
+              symbol: 'FIL',
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              'https://hyperspace.filfox.info',
+            ],
+          },
+        ],
+        explorer: {
+          name: 'Filecoin',
+          url: 'https://hyperspace.filfox.info',
+          icon: '/logos/explorers/filecoin.png',
+          block_path: '/tipset/{block}',
+          address_path: '/address/{address}',
+          contract_path: '/address/{address}',
+          contract_0_path: '/address/{address}',
+          transaction_path: '/message/{tx}',
+        },
+        image: '/logos/chains/filecoin.svg',
+        color: '#0090ff',
+        website: 'https://filecoin.io',
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
       /*
       {
