@@ -6636,7 +6636,7 @@ module.exports = {
     },
     {
       id: 'wfil-wei',
-      symbol: 'FIL',
+      symbol: 'WFIL',
       name: 'Wrapped Filecoin',
       image: '/logos/assets/wfil.svg',
       decimals: 18,
