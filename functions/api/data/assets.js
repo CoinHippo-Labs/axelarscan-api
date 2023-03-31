@@ -247,6 +247,12 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/34C83B3566255FBE18D4D6B6D1716DBC8993CC3FB2E6110A6BB47DFACA4B0A7A',
+          chain_id: 'persistence',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/334740505537E9894A64E8561030695016481830D7B36E6A9B6D13C608B55653',
           chain_id: 'regen',
           decimals: 6,
@@ -505,6 +511,12 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
+          ibc_denom: 'ibc/B56D6A6284B153D6F054485A9B78AD1FCE5699D751DA511262268105983B147C',
+          chain_id: 'persistence',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
           ibc_denom: 'ibc/E2CAC8B785E3E496891ABC7AAB1659F239B5023C1072BA21196AAA443F0F5F23',
           chain_id: 'regen',
           decimals: 6,
@@ -698,6 +710,12 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
+          ibc_denom: 'ibc/89404A5E31BD61F409C7AA26B7E1FD164B997A0671E949DA2253E365816D1964',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
           ibc_denom: 'ibc/3C147E71BD9FEC5AAAED09BF022F1C06F52D360580D602F79A5389DA471E7BA3',
           chain_id: 'regen',
           decimals: 18,
@@ -832,6 +850,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/F960753B47A20B18DF578FFDD51FB8B32AF5BF77FF8718580421333F7458E690',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlBUSD',
+        },
+        {
+          ibc_denom: 'ibc/D93E39C5F90A03FCB8265B18410A64198928BA77CCFAB907C4D61072E801F021',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlBUSD',
         },
@@ -974,6 +998,12 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
+          ibc_denom: 'ibc/F581E33B07FA339E0C5ED441119582EF51A49A326131473F7003D4511D5AE6BE',
+          chain_id: 'persistence',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/9D7B59A9F02B0D2F45FD1AA4441AB283E91F6B963F5E45883B1287C6FEBA9575',
           chain_id: 'regen',
           decimals: 8,
@@ -1108,6 +1138,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/81C3A46287D7664A8FD19843AC8D0CFD6C284EF1F750C661C48B3544277B1B29',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/43494E635D14726AEA1203EE63F4C3B27642345C3D9AF6091585CB7FDAB349D7',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -1256,6 +1292,12 @@ module.exports = {
           symbol: 'axlETH',
         },
         {
+          ibc_denom: 'ibc/43494E635D14726AEA1203EE63F4C3B27642345C3D9AF6091585CB7FDAB349D7',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
           ibc_denom: 'ibc/62B27C470C859CBCB57DC12FCBBD357DD44CAD673362B47503FAA77523ABA028',
           chain_id: 'regen',
           decimals: 18,
@@ -1390,6 +1432,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/EC7576E3F8D254787264F0972E6518E42CFFB5305EC9D0BC7DD7B7FFEFACB28A',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/EB2462F292F42B402923F7C3808BB7295A2420C4691B35D43EBF018DDF7CB917',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -1538,6 +1586,12 @@ module.exports = {
           symbol: 'axlBNB',
         },
         {
+          ibc_denom: 'ibc/EB2462F292F42B402923F7C3808BB7295A2420C4691B35D43EBF018DDF7CB917',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlBNB',
+        },
+        {
           ibc_denom: 'ibc/E83EB9C4EC33A836E4E9B0F3216A85BF54996A8891F366F2F677EE0E012AADC2',
           chain_id: 'regen',
           decimals: 18,
@@ -1672,6 +1726,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E8F0355CBC21AFD4C758E93383D28404D19AEB81E8251A63FAA0C250672ADBEF',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/B441047FD82738C278ADFB246EF75FF4F002B2671F9064719F7BDDD38FBFE35E',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -1820,6 +1880,12 @@ module.exports = {
           symbol: 'axlMATIC',
         },
         {
+          ibc_denom: 'ibc/B441047FD82738C278ADFB246EF75FF4F002B2671F9064719F7BDDD38FBFE35E',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlMATIC',
+        },
+        {
           ibc_denom: 'ibc/08F89698ED1AEB855854C63901306D16E98186756A842828733252405675AF13',
           chain_id: 'regen',
           decimals: 18,
@@ -1954,6 +2020,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/1D5738BD39B3189714B7A5C7CE8A206861ECAE79F7E29C45DA98151571F017E7',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/C77BFEFE5DCE9A10CBA3DE2A33DCBA5FEF6A171E0275F79E1BFCB8C28673A12B',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -2102,6 +2174,12 @@ module.exports = {
           symbol: 'axlAVAX',
         },
         {
+          ibc_denom: 'ibc/C77BFEFE5DCE9A10CBA3DE2A33DCBA5FEF6A171E0275F79E1BFCB8C28673A12B',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlAVAX',
+        },
+        {
           ibc_denom: 'ibc/47E16DE770374BE6ABE72A5264231DCEC92FD2711ACEB29B86574DBCCC228052',
           chain_id: 'regen',
           decimals: 18,
@@ -2236,6 +2314,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/78A0828C273648513517BC6C10D9F7F2768472DD5C0F88B27CB54E346CB57D59',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/3C3FFB6CB792D1A6336EEB8F20617C05B70ADC7C3D6AFD3FEDC5AACDA6E0EC45',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -2384,6 +2468,12 @@ module.exports = {
           symbol: 'axlFTM',
         },
         {
+          ibc_denom: 'ibc/3C3FFB6CB792D1A6336EEB8F20617C05B70ADC7C3D6AFD3FEDC5AACDA6E0EC45',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlFTM',
+        },
+        {
           ibc_denom: 'ibc/E8FF33FF39F5AD98A45CBE679B02ADB861D477B418896002243B32DCD042FF26',
           chain_id: 'regen',
           decimals: 18,
@@ -2518,6 +2608,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/14308B897F7966AD643E337853EC613200E9A123D159984DE7B59FE151BCE867',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
+          ibc_denom: 'ibc/BBBEA20BF5A4663B0ECBB76C652E8BC84D71B164DA900B0BDC86C440910396D2',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -2666,6 +2762,12 @@ module.exports = {
           symbol: 'axlGLMR',
         },
         {
+          ibc_denom: 'ibc/BBBEA20BF5A4663B0ECBB76C652E8BC84D71B164DA900B0BDC86C440910396D2',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlGLMR',
+        },
+        {
           ibc_denom: 'ibc/417455B944F2C3A47811DB1C6AFA740911198939A97A987F0DEF94326D38E4D5',
           chain_id: 'regen',
           decimals: 18,
@@ -2801,6 +2903,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/212040AC44BB9576E4E1B4DF0584C9D1C2D96C17D7ADC765927265D5D06ACF9D',
           chain_id: 'comdex',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
+          ibc_denom: 'ibc/AF51552CCBACC37A6B39B2DF2A25BB8E5A98F92BDDB67422D3383A66650C0C82',
+          chain_id: 'persistence',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -2993,6 +3101,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/B0C60517B4B854164D87224AFF2D7633959BACD2402EB0BA460B64E95ED8D1ED',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/4760C346F88AF297467F2E5CA0A26184F479CAD2A69E2062E2270F668089A609',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -3583,6 +3697,12 @@ module.exports = {
           symbol: 'axlRAI',
         },
         {
+          ibc_denom: 'ibc/873216FB52952C680DA7F16880DCEC551B438009F954CB10161612955401582C',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
           ibc_denom: 'ibc/ADDE7057E983259BF6148327FE812BBC70BC0F62FBD4DA2B36653774D2C7534F',
           chain_id: 'regen',
           decimals: 18,
@@ -3717,6 +3837,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E37C113A206A0E27EC76453E66C045B1FB926F4A96E345D1C07455367BC4BE70',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
+          ibc_denom: 'ibc/1226F5992220125F0F273047D4B5B44FCA386AA7E7994D4768F9B8CEA55A63C1',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -4171,6 +4297,12 @@ module.exports = {
           symbol: 'axlUNI',
         },
         {
+          ibc_denom: 'ibc/C5C067424F5467D2C600A2AEE5E37936C86F9553506A4FB1B26915A2E8C8267D',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
           ibc_denom: 'ibc/2DEDFDB05F9D851F5376CBAEA59A1D914AD24F53616C979813FBC62A76A1AE8C',
           chain_id: 'regen',
           decimals: 18,
@@ -4305,6 +4437,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/1F18934D62FFDA25C75ED7974EE34DB018BA004B58C42D46EB49AF41BB01AF01',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
+          ibc_denom: 'ibc/5DA50C9E4A8F363ABFC29FD4EA144E764E66C71735D9B84D3BBD39B71A42611C',
+          chain_id: 'persistence',
           decimals: 18,
           symbol: 'axlSHIB',
         },
@@ -4687,6 +4825,12 @@ module.exports = {
           symbol: 'axlMKR',
         },
         {
+          ibc_denom: 'ibc/91F17C58A8BED8E5A20E13659E18638250BE46995CF6B7E805AFD251D980534C',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
           ibc_denom: 'ibc/02B81671F02BFC81BC660D948B935195867294CB2A5CB98D21FA256433B19EE7',
           chain_id: 'regen',
           decimals: 18,
@@ -4913,6 +5057,12 @@ module.exports = {
         },
         {
           contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 84531,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
           chain_id: 44787,
           decimals: 6,
           symbol: 'wAXL',
@@ -4920,6 +5070,12 @@ module.exports = {
         {
           contract_address: '0xA3A2b6F3b34F513BA0084D504E8a6162bd7C7EE6',
           chain_id: 2221,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 3141,
           decimals: 6,
           symbol: 'wAXL',
         },
@@ -4939,6 +5095,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/4DAB44738E392E8FDEC30F0EF3BED40D6EAA424B2666316B02307300B3A29B15',
           chain_id: 'osmosis',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/FEC76B28827F8CAF61E087F67222A409EAFABB2CA82F4ACCC25DA1162C330616',
+          chain_id: 'secret',
           decimals: 6,
         },
       ],
@@ -5004,12 +5165,22 @@ module.exports = {
         },
         {
           contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
+          chain_id: 84531,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
           chain_id: 44787,
           decimals: 6,
         },
         {
           contract_address: '0xAa03872057AD496Bd6f3eE85b85e1e4DABdb1a5d',
           chain_id: 2221,
+          decimals: 6,
+        },
+        {
+          contract_address: '0x254d06f33bDc5b8ee05b2ea472107E300226659A',
+          chain_id: 3141,
           decimals: 6,
         },
       ],
@@ -5037,6 +5208,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/F91EA2C0A23697A1048E08C2F787E3A58AC6F706A1CD2257A504925158CFC0F3',
           chain_id: 'kujira',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/0AD0C1581926E0AC3DE07EDC421C94B2AB82B7B8E2C79054B287D2B2134D76CC',
+          chain_id: 'secret',
           decimals: 6,
         },
         {
@@ -5072,6 +5248,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/5BDD47E9E73BF91C14497E254F0A751F1A7D3A6084343F66EA7CEE834A384651',
           chain_id: 'xpla',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/5BDD47E9E73BF91C14497E254F0A751F1A7D3A6084343F66EA7CEE834A384651',
+          chain_id: 'acre',
           decimals: 6,
         },
         {
@@ -5219,6 +5400,12 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWETH',
         },
+        {
+          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
+          chain_id: 3141,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
       ],
       ibc: [
         {
@@ -5236,6 +5423,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/CC8B40E3F3536D003C6ED7C65421067215453AECE1517A6F0935470C634A036B',
           chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/A5C1AF7D76E7AC3E86386746C09503828030BF75CE39751C1CE224864601784C',
+          chain_id: 'secret',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -5278,6 +5471,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
           chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
+          chain_id: 'acre',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -5351,6 +5550,24 @@ module.exports = {
           decimals: 18,
           symbol: 'axlWETH',
         },
+        {
+          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
+          chain_id: 44787,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0x3F8a312113ED10833F27bbC1ee08A8cDB4df16B4',
+          chain_id: 2221,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
+          chain_id: 3141,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
       ],
       ibc: [
         {
@@ -5384,6 +5601,12 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
+          ibc_denom: 'ibc/A5C1AF7D76E7AC3E86386746C09503828030BF75CE39751C1CE224864601784C',
+          chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
           ibc_denom: 'ibc/C2A89D98873BB55B62CE86700DFACA646EC80352E8D03CC6CF34DD44E46DC75D',
           chain_id: 'sei',
           decimals: 18,
@@ -5410,6 +5633,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A99459944FD67B5711735B4B4D3FE30BA45328E94D437C78E47CA8DEFA781E49',
           chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
+          chain_id: 'acre',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -5497,6 +5726,12 @@ module.exports = {
         },
         {
           contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
+          chain_id: 84531,
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
           chain_id: 44787,
           decimals: 18,
           symbol: 'axlWBNB',
@@ -5504,6 +5739,12 @@ module.exports = {
         {
           contract_address: '0x500c333DC86813F930299a68B990F57D1ca6e243',
           chain_id: 2221,
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          contract_address: '0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A',
+          chain_id: 3141,
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -5524,6 +5765,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E09D271B56568F9C4E4B6A32D877F4E904C35FF3B8A4503AD8547A95F6D9925C',
           chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/60B8539CE0122281C58904378D81C28D6E8A01CB248C1F11E8D1FE562CFED468',
+          chain_id: 'secret',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -5570,6 +5817,12 @@ module.exports = {
           symbol: 'axlWBNB',
         },
         {
+          ibc_denom: 'ibc/FEC1C247382FE8A2E67AC699D8AADC01AD1DE04A860D85A2C68BF5BFCB7D8468',
+          chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
           ibc_denom: 'ibc/52F7DAC8D338E4D7388D02EBD6E522B86EBB62A48C6732C2651423A9E79377DE',
           chain_id: 'carbon',
           decimals: 18,
@@ -5586,180 +5839,6 @@ module.exports = {
           chain_id: 'terra-3',
           decimals: 18,
           symbol: 'axlWBNB',
-        },
-      ],
-    },
-    {
-      id: 'wavax-wei',
-      symbol: 'WAVAX',
-      name: 'Wrapped AVAX',
-      image: '/logos/assets/wavax.svg',
-      decimals: 18,
-      coingecko_id: 'wrapped-avax',
-      contracts: [
-        {
-          contract_address: '0x72af7e1e7e0d38bcf033c541598f5a0301d051a5',
-          chain_id: 3,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
-          chain_id: 5,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x1B29EC62efC689c462b4E0512457175793cEc9e6',
-          chain_id: 97,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x6DD60c05FdA1255A44Ffaa9A8200b5b179A578D6',
-          chain_id: 80001,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0xd00ae08403b9bbb9124bb305c09058e32c39a48c',
-          chain_id: 43113,
-          decimals: 18,
-          is_native: true,
-        },
-        {
-          contract_address: '0x8776add48553518641a589c39792cc409d4c8b84',
-          chain_id: 4002,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x64aae6319934995bf30e67ebbba9750256e07283',
-          chain_id: 1287,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0xb47BAb33cAE8FCa71FA28516ADCE3AF0B3e040e3',
-          chain_id: 1313161555,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
-          chain_id: 421613,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
-          chain_id: 420,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
-          chain_id: 44787,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          contract_address: '0xf3280d7a127Bb743918040fB99108728388e3c9e',
-          chain_id: 2221,
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/4786D3D8B8AC06B085F0C017742861F121F67501347149A054CAB77D24ECA49D',
-          chain_id: 'axelarnet',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/88C2DE3AE63A443385CDFE54A18B0FC48402DDF3FE5AC532A663F9C3A1144462',
-          chain_id: 'cosmoshub',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/7186C4B1A0596A1AB34C201E27D659B4A9837B46A328BCE5C0E452CD7146BC8F',
-          chain_id: 'osmosis',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/AC114FA5B91B5696ACD80CE7D740E3DEF2C6E76817A9F57754E9423325321220',
-          chain_id: 'osmosis',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/C74D5A562B2D54AF03198E5BC6693D16EF978EBA0BD3BA22A7098511B43249CA',
-          chain_id: 'kujira',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/2B1862B1CBE5ABC2E9457A21F2289024853AF12AEF8BC5EF8E4C3FB8B754BE2A',
-          chain_id: 'sei',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
-          chain_id: 'fetch',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597',
-          chain_id: 'evmos',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
-          chain_id: 'aura',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/2A468AFEDF2B694B46BBE10E9C3631815DF57B3D936462CA031345922A76CD36',
-          chain_id: 'comdex',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/09C3249B2D55421228D10E5C75BA4C06E5255C3CE4E773EF72AA128D404EACD4',
-          chain_id: 'persistence',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/6771714762A6F8F541DE7C461F09C68F310621315FA70C70799F66A0DE6B95D2',
-          chain_id: 'xpla',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/78D5DAB545549A930F5DB22CFA7C821ACE8EF55DCF787BED93A56D04CC7477F5',
-          chain_id: 'carbon',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
-          chain_id: 'odin',
-          decimals: 18,
-          symbol: 'axlWAVAX',
-        },
-        {
-          ibc_denom: 'ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597',
-          chain_id: 'terra-3',
-          decimals: 18,
-          symbol: 'axlWAVAX',
         },
       ],
     },
@@ -5833,6 +5912,12 @@ module.exports = {
         },
         {
           contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
+          chain_id: 84531,
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
           chain_id: 44787,
           decimals: 18,
           symbol: 'axlWMATIC',
@@ -5840,6 +5925,12 @@ module.exports = {
         {
           contract_address: '0x5e372F445C6afc91Aaca0d6C0Fa170d5f8F30f49',
           chain_id: 2221,
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          contract_address: '0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380',
+          chain_id: 3141,
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -5872,6 +5963,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/91C6798C23EE6AD5B8336C247371546FFA0026854162612EA4EBC80C62A2841C',
           chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/02046E35F7EA4D12F9E0ECB0D9323FC63BB587B218F034EF67537129708F3C60',
+          chain_id: 'secret',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -5918,6 +6015,12 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/8BCD6BB5E8AD820584B798724B16398C413D7B7C475E1B676DEC223FCD32F7E5',
+          chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/7BFC5893BCCC6C9A4B173BC1183D2706141CBF71679EA6BDCE15E679CEC05183',
           chain_id: 'carbon',
           decimals: 18,
@@ -5934,6 +6037,204 @@ module.exports = {
           chain_id: 'terra-3',
           decimals: 18,
           symbol: 'axlWMATIC',
+        },
+      ],
+    },
+    {
+      id: 'wavax-wei',
+      symbol: 'WAVAX',
+      name: 'Wrapped AVAX',
+      image: '/logos/assets/wavax.svg',
+      decimals: 18,
+      coingecko_id: 'wrapped-avax',
+      contracts: [
+        {
+          contract_address: '0x72af7e1e7e0d38bcf033c541598f5a0301d051a5',
+          chain_id: 3,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 5,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x1B29EC62efC689c462b4E0512457175793cEc9e6',
+          chain_id: 97,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x6DD60c05FdA1255A44Ffaa9A8200b5b179A578D6',
+          chain_id: 80001,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0xd00ae08403b9bbb9124bb305c09058e32c39a48c',
+          chain_id: 43113,
+          decimals: 18,
+          is_native: true,
+        },
+        {
+          contract_address: '0x8776add48553518641a589c39792cc409d4c8b84',
+          chain_id: 4002,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x64aae6319934995bf30e67ebbba9750256e07283',
+          chain_id: 1287,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0xb47BAb33cAE8FCa71FA28516ADCE3AF0B3e040e3',
+          chain_id: 1313161555,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 421613,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 420,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 84531,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 44787,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0xf3280d7a127Bb743918040fB99108728388e3c9e',
+          chain_id: 2221,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          contract_address: '0x2a87806561C550ba2dA9677c5323413E6e539740',
+          chain_id: 3141,
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/4786D3D8B8AC06B085F0C017742861F121F67501347149A054CAB77D24ECA49D',
+          chain_id: 'axelarnet',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/88C2DE3AE63A443385CDFE54A18B0FC48402DDF3FE5AC532A663F9C3A1144462',
+          chain_id: 'cosmoshub',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/7186C4B1A0596A1AB34C201E27D659B4A9837B46A328BCE5C0E452CD7146BC8F',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/AC114FA5B91B5696ACD80CE7D740E3DEF2C6E76817A9F57754E9423325321220',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/C74D5A562B2D54AF03198E5BC6693D16EF978EBA0BD3BA22A7098511B43249CA',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/4F781AEBBB83BA4C10891E087B67A2137961F21DB9057BE283862AB2A4B68CB5',
+          chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2B1862B1CBE5ABC2E9457A21F2289024853AF12AEF8BC5EF8E4C3FB8B754BE2A',
+          chain_id: 'sei',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
+          chain_id: 'fetch',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597',
+          chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2A468AFEDF2B694B46BBE10E9C3631815DF57B3D936462CA031345922A76CD36',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/09C3249B2D55421228D10E5C75BA4C06E5255C3CE4E773EF72AA128D404EACD4',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/6771714762A6F8F541DE7C461F09C68F310621315FA70C70799F66A0DE6B95D2',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/6771714762A6F8F541DE7C461F09C68F310621315FA70C70799F66A0DE6B95D2',
+          chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/78D5DAB545549A930F5DB22CFA7C821ACE8EF55DCF787BED93A56D04CC7477F5',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597',
+          chain_id: 'terra-3',
+          decimals: 18,
+          symbol: 'axlWAVAX',
         },
       ],
     },
@@ -6007,6 +6308,12 @@ module.exports = {
         },
         {
           contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
+          chain_id: 84531,
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
           chain_id: 44787,
           decimals: 18,
           symbol: 'axlWFTM',
@@ -6014,6 +6321,12 @@ module.exports = {
         {
           contract_address: '0xd7ba4DE2d9cDF1D34D0aE608F3725Aed1A32821E',
           chain_id: 2221,
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          contract_address: '0x594D8b81eC765410536ab59E98091700b99508D8',
+          chain_id: 3141,
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -6046,6 +6359,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/C2BA0743260DDCD9B2E5464860584E2F0826E7C021E19B16A9F5CEF29D225CD3',
           chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/3757151B36A16AA8AE40FF57694BF5B6EA283FDF7D0C30AC4C27AC97CC0D9415',
+          chain_id: 'secret',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -6088,6 +6407,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/9B50579E4AE3CF7B1705F04A4C715EE4E859F03620F0DE560C67CBB9B9A239A2',
           chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/9B50579E4AE3CF7B1705F04A4C715EE4E859F03620F0DE560C67CBB9B9A239A2',
+          chain_id: 'acre',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -6181,6 +6506,12 @@ module.exports = {
         },
         {
           contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
+          chain_id: 84531,
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
           chain_id: 44787,
           decimals: 18,
           symbol: 'axlDEV',
@@ -6190,6 +6521,12 @@ module.exports = {
           chain_id: 2221,
           decimals: 18,
           symbol: 'axlDEV',
+        },
+        {
+          contract_address: '0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9',
+          chain_id: 3141,
+          decimals: 18,
+          symbol: 'axlWDEV',
         },
       ],
       ibc: [
@@ -6220,6 +6557,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/25C4852211900E04B162241362DB1F1D9B7939875A038913E56C9FEF66EA9AD6',
           chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
+          ibc_denom: 'ibc/CA8D01D20AD43043508CCEDD7CC061080952E024B9CE4ECEBE663465DA04F46E',
+          chain_id: 'secret',
           decimals: 18,
           symbol: 'axlWDEV',
         },
@@ -6266,6 +6609,12 @@ module.exports = {
           symbol: 'axlWDEV',
         },
         {
+          ibc_denom: 'ibc/9790D25467E96C073CC3701C5BF9B74009955604859C7A31C6EE2F673EF67A3C',
+          chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWDEV',
+        },
+        {
           ibc_denom: 'ibc/6A4043BCBD3FB6E9D86A14F6A018C33CD4E05990E977729CC1946395B2972B11',
           chain_id: 'carbon',
           decimals: 18,
@@ -6287,86 +6636,80 @@ module.exports = {
     },
     {
       id: 'wfil-wei',
-      symbol: 'WFIL',
+      symbol: 'FIL',
       name: 'Wrapped Filecoin',
       image: '/logos/assets/wfil.svg',
       decimals: 18,
       coingecko_id: 'filecoin',
       contracts: [
         {
-          contract_address: '',
-          chain_id: 3,
-          decimals: 18,
-          symbol: 'axlWFIL',
-        },
-        {
-          contract_address: '',
+          contract_address: '0x6Bf48cac8a850fA48b893f754AeD54A19a505A6F',
           chain_id: 5,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x1E66eE00AD4B230bC24Ec303F1e342F4568237E9',
           chain_id: 97,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x50bd8f2a19E23e2d27d7C7f3016De4668AF63d9d',
           chain_id: 80001,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0xf925964646CFaB2d8e8Df572158b5277a398C954',
           chain_id: 43113,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x5d68f6DeA308211f1Fd16166Dfd530f323538A1D',
           chain_id: 4002,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0xc1D15Ac584AAC606813D404be35e66c36bc6F7a8',
           chain_id: 1287,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
-          chain_id: 1313161555,
-          decimals: 18,
-          symbol: 'axlWFIL',
-        },
-        {
-          contract_address: '',
+          contract_address: '0x6Bf48cac8a850fA48b893f754AeD54A19a505A6F',
           chain_id: 421613,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x6Bf48cac8a850fA48b893f754AeD54A19a505A6F',
           chain_id: 420,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x6Bf48cac8a850fA48b893f754AeD54A19a505A6F',
+          chain_id: 84531,
+          decimals: 18,
+          symbol: 'WFIL',
+        },
+        {
+          contract_address: '0x6Bf48cac8a850fA48b893f754AeD54A19a505A6F',
           chain_id: 44787,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x13B83b6D03A23BCB2A24f09a9D311fF3b6078bBE',
           chain_id: 2221,
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          contract_address: '',
+          contract_address: '0x6C297AeD654816dc5d211c956DE816Ba923475D2',
           chain_id: 3141,
           decimals: 18,
           is_native: true,
@@ -6374,88 +6717,94 @@ module.exports = {
       ],
       ibc: [
         {
-          ibc_denom: '',
+          ibc_denom: 'wfil-wei',
           chain_id: 'axelarnet',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
-          chain_id: 'cosmoshub',
-          decimals: 18,
-          symbol: 'axlWFIL',
-        },
-        {
-          ibc_denom: '',
+          ibc_denom: 'ibc/2CF44FF9C8283605A27820F1F8BA812D7B3ED654FD81D76A437E5D72AD46E0CC',
           chain_id: 'osmosis',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/608009CB6074AE2E0A14A7867BDC97447453D913F1B9B3A3422C9F0E8CC9576A',
           chain_id: 'kujira',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/114F21C4F6E18FFB95AAD3C21699E1708890EC7D30B3B93D3A89B0528226A841',
+          chain_id: 'secret',
+          decimals: 18,
+          symbol: 'WFIL',
+        },
+        {
+          ibc_denom: 'ibc/7A9CFD4E88DCDD2E472ED419C9348A5D2DD3A009A7F2BAB58E790FD9171A36C4',
           chain_id: 'sei',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/A203631DE58D5033FFC37676C7F6E715707E9A37B49757EC63B1F6DC3A9A1C10',
           chain_id: 'fetch',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/ECB83640D0E55A8A7E9A7C1515559BA1D1B8685575E609144C9F7BD5C9F301F9',
           chain_id: 'evmos',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/11238441686A79C76DF0FE654527021E74DC7113CF84FADA03882FD53FFB5998',
           chain_id: 'aura',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/761BB661E5B5C11E35CF61CF5A3D0C683C0F1E24CCB7EFD507D42EEFA811B8CE',
           chain_id: 'comdex',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/71C4C2209A0868411FCB6A91CFBCF8EC8B4C9AE432FE3879B0038CD45324E847',
           chain_id: 'persistence',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/42A6CC4488E8E9A41C8EA5F05916639F8DD369688225A676CDD0C82F357CCEE9',
           chain_id: 'xpla',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/42A6CC4488E8E9A41C8EA5F05916639F8DD369688225A676CDD0C82F357CCEE9',
+          chain_id: 'acre',
+          decimals: 18,
+          symbol: 'WFIL',
+        },
+        {
+          ibc_denom: 'ibc/64F437CA650406EC32948093BD96FDE7BE7ECB389D28D9426D04857E520A1D1D',
           chain_id: 'carbon',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/11238441686A79C76DF0FE654527021E74DC7113CF84FADA03882FD53FFB5998',
           chain_id: 'odin',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
         {
-          ibc_denom: '',
+          ibc_denom: 'ibc/ECB83640D0E55A8A7E9A7C1515559BA1D1B8685575E609144C9F7BD5C9F301F9',
           chain_id: 'terra-3',
           decimals: 18,
-          symbol: 'axlWFIL',
+          symbol: 'WFIL',
         },
       ],
     },
