@@ -39,6 +39,10 @@ module.exports = async (
   }
 
   if (commandId) {
+    if (commandId.startsWith('0x')) {
+      commandId = commandId.substring(2);
+    }
+
     must.push({ match: { command_ids: commandId } });
   }
 
