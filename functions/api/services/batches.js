@@ -10,7 +10,6 @@ module.exports = async (
   const {
     chain,
     batchId,
-    commandId,
     keyId,
     type,
     transactionHash,
@@ -22,6 +21,7 @@ module.exports = async (
   } = { ...params };
   let {
     query,
+    commandId,
     fromTime,
     toTime,
   } = { ...params };
