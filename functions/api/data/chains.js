@@ -521,6 +521,7 @@ module.exports = {
             chainName: 'Filecoin',
             rpcUrls: [
               'https://rpc.ankr.com/filecoin',
+              'https://api.node.glif.io',
             ],
             nativeCurrency: {
               name: 'Filecoin',
@@ -545,8 +546,7 @@ module.exports = {
         image: '/logos/chains/filecoin.svg',
         color: '#0090ff',
         website: 'https://filecoin.io',
-        gateway_address: '',
-        no_inflation: true,
+        gateway_address: '0xe432150cce91c13a887f7D836923d5597adD8E31',
       },
     ],
     cosmos: [

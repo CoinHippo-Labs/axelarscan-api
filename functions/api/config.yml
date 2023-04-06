@@ -162,6 +162,7 @@ mainnet:
         endpoints:
           rpc:
             - "https://rpc.ankr.com/filecoin"
+            - "https://api.node.glif.io"
     contracts:
       ethereum:
         address: "0x4F4495243837681061C4743b74B3eEdf548D56A5"
@@ -188,7 +189,7 @@ mainnet:
       kava:
         address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
       filecoin:
-        address: ""
+        address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
 
 
 
