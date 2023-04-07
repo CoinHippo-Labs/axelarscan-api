@@ -855,6 +855,37 @@ module.exports = {
         },
       },
       {
+        id: 'secret-snip',
+        chain_name: 'secret-snip',
+        name: 'Secret-SNIP',
+        short_name: 'SCRT-SNIP',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/secret',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/secret.svg',
+        color: '#000000',
+        website: 'https://scrt.network',
+        prefix_address: 'secret',
+        prefix_chain_ids: [
+          'secret-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://secret-api.lavenderfive.com',
+            'https://secretnetwork-lcd.stakely.io',
+          ],
+          cosmostation: 'https://api-secret.cosmostation.io/v1',
+        },
+      },
+      {
         id: 'stargaze',
         chain_name: 'stargaze',
         name: 'Stargaze',

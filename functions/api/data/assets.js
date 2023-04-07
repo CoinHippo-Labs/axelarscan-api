@@ -211,6 +211,12 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/25BEA899D29934A185A2492310B1FF00FB3204C9BC93585EC84A3A30CD92279B',
+          chain_id: 'secret-snip',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/96274E25174EE93314D8B5636D2D2F70963E207C22F643EC41949A3CBEDA4C72',
           chain_id: 'stargaze',
           decimals: 6,
@@ -475,6 +481,12 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
+          ibc_denom: 'ibc/EC0C01200C242487466875F8FFE145751F77F64B92E373086288F5247D0D8190',
+          chain_id: 'secret-snip',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
           ibc_denom: 'ibc/68C6D7F60534941CDE1F276A70AB85ED1E826EA096272054FE93828D2343184F',
           chain_id: 'stargaze',
           decimals: 6,
@@ -670,6 +682,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/8161CB553A9AF7494CA20237CD7A52027409AA1A3B55A37F968CCE99C7C5BDF2',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          ibc_denom: 'ibc/2AED702BADDD946658DB10674DA6E72C55B4A83D6CFEF90E5A1619F5F754B501',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -962,6 +980,12 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
+          ibc_denom: 'ibc/2F77C3C70B60DE12DBC8C89230888C4575A7B5831FC201BC0A5FA15A590DE682',
+          chain_id: 'secret-snip',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/DE68EAF973E2FFCFB42931B578A4E719DC61A93C5C6F921504BCA4DD5A0E494D',
           chain_id: 'stargaze',
           decimals: 8,
@@ -1102,6 +1126,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/3665ACBA97B115133C35F060DB67E9671035E9ED48B2FC9140260C122D0C4E03',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/ED182F6ABD428EFCE49C2985E2B65DD194E0DEFEAFAE60D99F790701046EDA23',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -1256,6 +1286,12 @@ module.exports = {
           symbol: 'axlETH',
         },
         {
+          ibc_denom: 'ibc/ED182F6ABD428EFCE49C2985E2B65DD194E0DEFEAFAE60D99F790701046EDA23',
+          chain_id: 'secret-snip',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
           ibc_denom: 'ibc/08CF01F857C36D3C91C3427AA2EACFAFC07971E7AC40B6C433A9982B333F2567',
           chain_id: 'stargaze',
           decimals: 18,
@@ -1396,6 +1432,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/4870D3BE3BD3C44C7069588BEC579928D399D983E9D02F0113A4878DAF135F0A',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/31FE8A2E9407F61D7675675ACC73C0D088C8885B93B2495BDEBFBF0BF07B93E1',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -1546,6 +1588,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/4870D3BE3BD3C44C7069588BEC579928D399D983E9D02F0113A4878DAF135F0A',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlBNB',
+        },
+        {
+          ibc_denom: 'ibc/31FE8A2E9407F61D7675675ACC73C0D088C8885B93B2495BDEBFBF0BF07B93E1',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlBNB',
         },
@@ -3065,6 +3113,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/C22245B8F7F154020A352A2721421218CD251B013B21954FBB6A5D7B655D88F6',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/CCF1B6F8A77AACE16BB5A85091CD244E8F9DA1CBC1B264A68691DD4F21EF5A11',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlFRAX',
         },
