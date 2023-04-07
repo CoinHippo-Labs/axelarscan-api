@@ -2,7 +2,7 @@
 # Services Configuration #
 ##########################
 
-environment: testnet # [testnet|mainnet|testnet-2]
+environment: testnet # [testnet|mainnet]
 log_level: debug # [debug|info]
 
 external_api:
@@ -13,9 +13,9 @@ external_api:
 mainnet:
   agent: "axelarscan"
   endpoints:
-    rpc: "https://rpc.axelarscan.io"
-    lcd: "https://lcd.axelarscan.io"
-    cli: "https://cli.axelarscan.io"
+    rpc: "http://18.218.242.252:26657"
+    lcd: "http://18.218.242.252:1317"
+    cli: "http://18.218.242.252:3333"
     api: "https://api.axelarscan.io"
     gmp_api: "https://api.gmp.axelarscan.io"
     app: "https://axelarscan.io"
@@ -196,9 +196,9 @@ mainnet:
 testnet:
   agent: "axelarscan"
   endpoints:
-    rpc: "https://testnet.rpc.axelarscan.io"
-    lcd: "https://testnet.lcd.axelarscan.io"
-    cli: "https://testnet.cli.axelarscan.io"
+    rpc: "http://18.188.23.105:26657"
+    lcd: "http://18.188.23.105:1317"
+    cli: "http://18.188.23.105:3333"
     api: "https://testnet.api.axelarscan.io"
     gmp_api: "https://testnet.api.gmp.axelarscan.io"
     app: "https://testnet.axelarscan.io"
@@ -361,52 +361,3 @@ testnet:
         address: "0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c"
       filecoin:
         address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
-
-
-
-testnet-2:
-  endpoints:
-    rpc: "https://testnet-2.rpc.axelarscan.io"
-    lcd: "https://testnet-2.lcd.axelarscan.io"
-    cli: "https://testnet-2.cli.axelarscan.io"
-    api: "https://testnet-2.api.axelarscan.io"
-    app: "https://testnet-2.axelarscan.io"
-  num_blocks_avg_block_time: 100
-  num_blocks_per_heartbeat: 50
-  fraction_heartbeat_block: 1
-  store_blocks: 100000
-  cache_timeout_seconds: 300
-  index_queue:
-    min_index_round_count: 1
-    max_index_round_count: 3
-    concurrent_index_records: 10
-    delay_ms_per_batch: 2000
-    max_records_synchronous: 300
-  supply:
-    max_supply: 1000000000
-    initial_unlocked_percent: 0
-    community_sale:
-      total_unlock_percent: 0
-      vesting_period: "month"
-      vesting_start: "2022-09-27"
-      vesting_until: "2023-01-27"
-    community_programs:
-      total_unlock_percent: 0
-      vesting_period: "day"
-      vesting_start: "2022-09-27"
-      vesting_until: "2026-09-27"
-    company_operations:
-      total_unlock_percent: 0
-      vesting_period: "day"
-      vesting_start: "2022-09-27"
-      vesting_until: "2026-09-27"
-    backers:
-      total_unlock_percent: 0
-      vesting_period: "day"
-      vesting_start: "2022-12-27"
-      vesting_until: "2024-12-27"
-    team:
-      total_unlock_percent: 0
-      vesting_period: "day"
-      vesting_start: "2022-12-27"
-      vesting_until: "2026-12-27"

@@ -423,14 +423,7 @@ module.exports = async () => {
 
     // setup log stream
     const tail = new TailFile(
-      `/home/axelard/.axelar${
-        [
-          'testnet',
-          'testnet-2',
-        ].includes(environment) ?
-          `_${environment}` :
-          ''
-      }/logs/axelard.log`,
+      `/home/axelard/.axelar${['testnet'].includes(environment) ? `_${environment}` : ''}/logs/axelard.log`,
       {
         encoding: 'utf8',
         startPos: 0,

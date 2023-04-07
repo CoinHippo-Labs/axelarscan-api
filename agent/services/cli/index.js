@@ -43,15 +43,7 @@ module.exports.exec = async params => {
       'snapshot',
     ].includes(cmd.split(' ')[2])
   ) {
-    cmd =
-      `/home/axelard/.axelar${
-        [
-          'testnet',
-          'testnet-2',
-        ].includes(environment) ?
-          `_${environment}` :
-          ''
-      }/bin/${cmd}`;
+    cmd = `/home/axelard/.axelar${['testnet'].includes(environment) ? `_${environment}` : ''}/bin/${cmd}`;
 
     log(
       'debug',

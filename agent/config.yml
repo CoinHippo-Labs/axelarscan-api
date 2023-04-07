@@ -2,7 +2,7 @@
 # Services Configuration #
 ##########################
 
-environment: testnet # [testnet|mainnet|testnet-2]
+environment: testnet # [testnet|mainnet]
 port:
   cli: 3333
 log_level: debug # [debug|info]
@@ -24,15 +24,5 @@ testnet:
   num_prev_blocks_fetch_tx: 2
   num_reindex_processes: 2
   start_reindex_block: 690489
-  end_reindex_block: 5000000
-  reindex: false
-
-testnet-2:
-  endpoints:
-    ws: "ws://testnet-2.ws.axelarscan.io"
-    api: "https://testnet-2.api.axelarscan.io"
-  num_prev_blocks_fetch_tx: 1
-  num_reindex_processes: 2
-  start_reindex_block: 1
   end_reindex_block: 5000000
   reindex: false
