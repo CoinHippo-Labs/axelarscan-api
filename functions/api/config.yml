@@ -15,6 +15,7 @@ mainnet:
   endpoints:
     rpc: "http://18.218.242.252:26657"
     lcd: "http://18.218.242.252:1317"
+    cli: "http://18.218.242.252:3333"
     api: "https://api.axelarscan.io"
     gmp_api: "https://api.gmp.axelarscan.io"
     app: "https://axelarscan.io"
@@ -191,6 +192,7 @@ testnet:
   endpoints:
     rpc: "http://18.188.23.105:26657"
     lcd: "http://18.188.23.105:1317"
+    cli: "http://18.218.23.105:3333"
     api: "https://testnet.api.axelarscan.io"
     gmp_api: "https://testnet.api.gmp.axelarscan.io"
     app: "https://testnet.axelarscan.io"

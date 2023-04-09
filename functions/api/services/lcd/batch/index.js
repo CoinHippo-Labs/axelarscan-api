@@ -1,9 +1,11 @@
 const {
   Contract,
 } = require('ethers');
+const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const {
   read,
   write,
@@ -29,6 +31,10 @@ const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
 const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
 const cosmos_non_axelarnet_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet.id);
 const assets_data = require('../../../data')?.assets?.[environment] || [];
+
+const {
+  endpoints,
+} = { ...config?.[environment] };
 
 module.exports = async (
   path = '',
@@ -87,6 +93,26 @@ module.exports = async (
       if (command_id) {
         const index = commands.findIndex(c => equals_ignore_case(c?.id, command_id));
         const command = commands[index];
+
+        if (!command && endpoints?.cli) {
+          const cli = axios.create({ baseURL: endpoints.cli, timeout: 15000 });
+
+          const _response =
+            await cli
+              .get(
+                '',
+                {
+                  params: {
+                    cmd: `axelard q evm command ${chain} ${command_id} -oj`,
+                    cache: true,
+                    cache_timeout: 30,
+                  },
+                },
+              )
+              .catch(error => { return { data: { error } }; });
+
+          command = to_json(_response?.data?.stdout);
+        }
 
         if (command) {
           let {
