@@ -92,7 +92,7 @@ module.exports = async (
     for (const command_id of command_ids) {
       if (command_id) {
         const index = commands.findIndex(c => equals_ignore_case(c?.id, command_id));
-        const command = commands[index];
+        let command = commands[index];
 
         if (!command && endpoints?.cli) {
           const cli = axios.create({ baseURL: endpoints.cli, timeout: 15000 });

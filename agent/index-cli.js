@@ -12,7 +12,20 @@ const axelard = async params => {
   const exec = promisify(require('child_process').exec);
   const config = require('config-yml');
 
+  const {
+    log,
+  } = require('./utils');
+
   const environment = process.env.ENVIRONMENT || config?.environment;
+
+  log(
+    'info',
+    'cli',
+    'command received',
+    {
+      ...params,
+    },
+  );
 
   let data;
 
@@ -36,6 +49,16 @@ const axelard = async params => {
       data = error;
     }
   }
+
+  log(
+    'info',
+    'cli',
+    'send output',
+    {
+      ...data,
+    },
+  );
+
 
   return data;
 };
