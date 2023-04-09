@@ -15,7 +15,6 @@ mainnet:
   endpoints:
     rpc: "http://18.218.242.252:26657"
     lcd: "http://18.218.242.252:1317"
-    cli: "http://18.218.242.252:3333"
     api: "https://api.axelarscan.io"
     gmp_api: "https://api.gmp.axelarscan.io"
     app: "https://axelarscan.io"
@@ -28,12 +27,6 @@ mainnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
-  index_queue:
-    min_index_round_count: 2
-    max_index_round_count: 5
-    concurrent_index_records: 10
-    delay_ms_per_batch: 500
-    max_records_synchronous: 200
   supply:
     max_supply: 1000000000
     initial_unlocked_percent: 2.5
@@ -198,7 +191,6 @@ testnet:
   endpoints:
     rpc: "http://18.188.23.105:26657"
     lcd: "http://18.188.23.105:1317"
-    cli: "http://18.188.23.105:3333"
     api: "https://testnet.api.axelarscan.io"
     gmp_api: "https://testnet.api.gmp.axelarscan.io"
     app: "https://testnet.axelarscan.io"
@@ -211,12 +203,6 @@ testnet:
   fraction_heartbeat_block: 1
   store_blocks: 100000
   cache_timeout_seconds: 300
-  index_queue:
-    min_index_round_count: 2
-    max_index_round_count: 5
-    concurrent_index_records: 10
-    delay_ms_per_batch: 500
-    max_records_synchronous: 200
   supply:
     max_supply: 1000000000
     initial_unlocked_percent: 0

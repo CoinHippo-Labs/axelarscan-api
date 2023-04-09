@@ -1,5 +1,6 @@
 const moment = require('moment');
 const config = require('config-yml');
+
 const rpc = require('./rpc');
 const {
   delete_by_query,
@@ -8,43 +9,20 @@ const {
   log,
 } = require('../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
 const service_name = 'archiver';
 
 const {
-  index_queue,
-} = { ...config?.[environment] };
-
-let {
   store_blocks,
   cache_timeout_seconds,
-  min_index_round_count,
-} = { ...index_queue };
-
-store_blocks =
-  store_blocks ||
-  100000;
-cache_timeout_seconds =
-  cache_timeout_seconds ||
-  300;
-min_index_round_count =
-  min_index_round_count ||
-  2;
+} = { ...config?.[environment] };
 
 module.exports = async () => {
-  const collections =
-    [
-      'blocks',
-    ];
+  const collections = ['blocks'];
 
   if (collections.length > 0) {
-    const response =
-      await rpc(
-        '/status',
-      );
+    const response = await rpc('/status');
 
     const {
       latest_block_height,
@@ -64,17 +42,7 @@ module.exports = async () => {
           },
         );
 
-        const output =
-          await delete_by_query(
-            collection,
-            {
-              range: {
-                height: {
-                  lt: latest_block - store_blocks,
-                },
-              },
-            },
-          );
+        const output = await delete_by_query(collection, { range: { height: { lt: latest_block - store_blocks } } });
 
         log(
           'debug',
@@ -86,12 +54,7 @@ module.exports = async () => {
     }
   }
 
-  const cache_collections =
-    [
-      'axelard',
-      'cosmos',
-      'rpc',
-    ];
+  const cache_collections = ['axelard', 'cosmos', 'rpc'];
 
   for (const collection of cache_collections) {
     log(
@@ -110,19 +73,7 @@ module.exports = async () => {
         {
           bool: {
             must: [
-              {
-                range: {
-                  updated_at: {
-                    lt:
-                      moment()
-                        .subtract(
-                          cache_timeout_seconds,
-                          'seconds',
-                        )
-                        .unix(),
-                  },
-                },
-              },
+              { range: { updated_at: { lt: moment().subtract(cache_timeout_seconds, 'seconds').unix() } } },
             ],
             must_not:
               collection === 'axelard' ?
@@ -138,69 +89,6 @@ module.exports = async () => {
                   },
                 ] :
                 [],
-          },
-        },
-      );
-
-    log(
-      'debug',
-      service_name,
-      'archive output',
-      output,
-    );
-  }
-
-  const queue_collections =
-    [
-      'txs_index_queue',
-    ];
-
-  for (const collection of queue_collections) {
-    log(
-      'info',
-      service_name,
-      'archive',
-      {
-        collection,
-        min_index_round_count,
-      },
-    );
-
-    const output =
-      await delete_by_query(
-        collection,
-        {
-          bool: {
-            should: [
-              {
-                range: {
-                  count: {
-                    gt: min_index_round_count,
-                  },
-                },
-              },
-              {
-                range: {
-                  updated_at: {
-                    lt:
-                      moment()
-                        .subtract(
-                          4,
-                          'hours',
-                        )
-                        .valueOf(),
-                  },
-                },
-              },
-              {
-                bool: {
-                  must_not: [
-                    { exists: { field: 'txhash' } },
-                  ],
-                },
-              },
-            ],
-            minimum_should_match: 1,
           },
         },
       );

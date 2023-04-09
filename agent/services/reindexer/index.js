@@ -1,13 +1,12 @@
 const axios = require('axios');
 const _ = require('lodash');
 const config = require('config-yml');
+
 const {
   log,
 } = require('../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
 const service_name = 'reindexer';
 
@@ -20,14 +19,7 @@ const {
 
 module.exports = () => {
   if (endpoints?.api) {
-    // initial api
-    const api =
-      axios.create(
-        {
-          baseURL: endpoints.api,
-          timeout: 10000,
-        },
-      );
+    const api = axios.create({ baseURL: endpoints.api, timeout: 10000 });
 
     // initial function to index block & tx
     const index = async (
@@ -49,23 +41,7 @@ module.exports = () => {
             },
           );
 
-          api
-            .get(
-              '',
-              {
-                params: {
-                  module: 'lcd',
-                  path: `/cosmos/base/tendermint/v1beta1/blocks/${height}`,
-                },
-              },
-            )
-            .catch(error => {
-              return {
-                data: {
-                  error,
-                },
-              };
-            });
+          api.get('', { params: { module: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } }).catch(error => { return { data: { error } }; });
 
           // get transactions of each block
           let next_page_key = true;
@@ -80,21 +56,10 @@ module.exports = () => {
                       module: 'lcd',
                       path: '/cosmos/tx/v1beta1/txs',
                       events: `tx.height=${height}`,
-                      'pagination.key':
-                        typeof next_page_key === 'string' &&
-                        next_page_key ?
-                          next_page_key :
-                          undefined,
-                      no_index: true,
+                      'pagination.key': typeof next_page_key === 'string' && next_page_key ? next_page_key : undefined,
                     },
                   },
-                ).catch(error => {
-                  return {
-                    data: {
-                      error,
-                    },
-                  };
-                });
+                ).catch(error => { return { data: { error } }; });
 
             const {
               pagination,
@@ -103,6 +68,7 @@ module.exports = () => {
             let {
               tx_responses,
             } = { ...response?.data };
+
             const {
               next_key,
             } = { ...pagination };
@@ -110,30 +76,16 @@ module.exports = () => {
             next_page_key = next_key;
 
             if (tx_responses) {
-              if (
-                tx_responses.length < 1 &&
-                url
-              ) {
-                const _response =
-                  await axios
-                    .get(
-                      url,
-                    )
-                    .catch(error => {
-                      return {
-                        data: {
-                          error,
-                        },
-                      };
-                    });
+              if (tx_responses.length < 1 && url) {
+                const _response = await axios.get(url).catch(error => { return { data: { error } }; });
 
                 const {
                   txs,
                 } = { ..._.head(_response?.data) };
 
                 if (txs) {
-                  tx_responses = txs
-                    .map(d => {
+                  tx_responses =
+                    txs.map(d => {
                       const {
                         data,
                       } = { ...d };
@@ -167,36 +119,10 @@ module.exports = () => {
                   };
 
                   if (tx_responses.length < 25) {
-                    api
-                      .get(
-                        '',
-                        {
-                          params,
-                        },
-                      )
-                      .catch(error => {
-                        return {
-                          data: {
-                            error,
-                          },
-                        };
-                      });
+                    api.get('', { params }).catch(error => { return { data: { error } }; });
                   }
                   else {
-                    await api
-                      .get(
-                        '',
-                        {
-                          params,
-                        },
-                      )
-                      .catch(error => {
-                        return {
-                          data: {
-                            error,
-                          },
-                        };
-                      });
+                    await api.get('', { params }).catch(error => { return { data: { error  } }; });
                   }
                 }
               }
@@ -207,13 +133,6 @@ module.exports = () => {
     };
 
     // start index n processes
-    [...Array(num_reindex_processes).keys()]
-      .forEach(i =>
-        index(
-          start_reindex_block,
-          end_reindex_block,
-          i,
-        )
-      );
+    [...Array(num_reindex_processes).keys()].forEach(i => index(start_reindex_block, end_reindex_block, i));
   }
 };

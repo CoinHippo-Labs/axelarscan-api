@@ -4,7 +4,8 @@ const {
   constants: { AddressZero },
   utils: { formatUnits },
 } = require('ethers');
-const cli = require('../cli');
+
+const lcd = require('../lcd');
 const {
   equals_ignore_case,
   to_json,
@@ -21,39 +22,14 @@ const getContractSupply = async (
     decimals,
   } = { ...contract_data };
 
-  if (
-    contract_address &&
-    provider
-  ) {
+  if (contract_address && provider) {
     try {
-      const contract =
-        new Contract(
-          contract_address,
-          [
-            'function totalSupply() view returns (uint256)',
-          ],
-          provider,
-        );
-
-      supply =
-        await contract
-          .totalSupply();
+      const contract = new Contract(contract_address, ['function totalSupply() view returns (uint256)'], provider);
+      supply = await contract.totalSupply();
     } catch (error) {}
   }
 
-  return (
-    supply &&
-    Number(
-      formatUnits(
-        BigNumber.from(
-          supply
-            .toString()
-        ),
-        decimals ||
-        18,
-      )
-    )
-  );
+  return supply && Number(formatUnits(BigNumber.from(supply.toString()), decimals || 18));
 };
 
 const getEVMBalance = async (
@@ -68,50 +44,19 @@ const getEVMBalance = async (
     decimals,
   } = { ...contract_data };
 
-  if (
-    address &&
-    contract_address &&
-    provider) {
+  if (address && contract_address && provider) {
     try {
       if (contract_address === AddressZero) {
-        balance =
-          await provider
-            .getBalance(
-              address,
-            );
+        balance = await provider.getBalance(address);
       }
       else {
-        const contract =
-          new Contract(
-            contract_address,
-            [
-              'function balanceOf(address owner) view returns (uint256)',
-            ],
-            provider,
-          );
-
-        balance =
-          await contract
-            .balanceOf(
-              address,
-            );
+        const contract = new Contract(contract_address, ['function balanceOf(address owner) view returns (uint256)'], provider);
+        balance = await contract.balanceOf(address);
       }
     } catch (error) {}
   }
 
-  return (
-    balance &&
-    Number(
-      formatUnits(
-        BigNumber.from(
-          balance
-            .toString()
-        ),
-        decimals ||
-        18,
-      )
-    )
-  );
+  return balance && Number(formatUnits(BigNumber.from(balance.toString()), decimals || 18));
 };
 
 const getCosmosBalance = async (
@@ -127,60 +72,20 @@ const getCosmosBalance = async (
     decimals,
   } = { ...denom_data };
 
-  const denoms =
-    [
-      base_denom,
-      denom,
-    ]
-    .filter(d => d);
+  const denoms = [base_denom, denom].filter(d => d);
 
-  lcds =
-    typeof lcds === 'string' ?
-      [lcds] :
-      lcds;
+  lcds = typeof lcds === 'string' ? [lcds] : lcds;
 
-  if (
-    address &&
-    denoms.length > 0 &&
-    lcds
-  ) {
+  if (address && denoms.length > 0 && lcds) {
     try {
-      const paths =
-        [
-          '/cosmos/bank/v1beta1/balances/{address}/by_denom',
-          '/cosmos/bank/v1beta1/balances/{address}/{denom}',
-        ];
+      const paths = ['/cosmos/bank/v1beta1/balances/{address}/by_denom', '/cosmos/bank/v1beta1/balances/{address}/{denom}'];
 
       let valid = false;
 
       for (const lcd of lcds) {
         for (const denom of denoms) {
           for (const path of paths) {
-            const response =
-              await lcd
-                .get(
-                  path
-                    .replace(
-                      '{address}',
-                      address,
-                    )
-                    .replace(
-                      '{denom}',
-                      encodeURIComponent(denom),
-                    ),
-                  {
-                    params: {
-                      denom,
-                    },
-                  },
-                )
-                .catch(error => {
-                  return {
-                    data: {
-                      error,
-                    },
-                  };
-                });
+            const response = await lcd.get(path.replace('{address}', address).replace('{denom}', encodeURIComponent(denom)), { params: { denom } }).catch(error => { return { data: { error } }; });
 
             const {
               amount,
@@ -188,10 +93,7 @@ const getCosmosBalance = async (
 
             balance = amount;
 
-            if (
-              balance &&
-              balance !== '0'
-            ) {
+            if (balance && balance !== '0') {
               valid = true;
               break;
             }
@@ -209,19 +111,7 @@ const getCosmosBalance = async (
     } catch (error) {}
   }
 
-  return (
-    balance &&
-    Number(
-      formatUnits(
-        BigNumber.from(
-          balance
-            .toString()
-        ),
-        decimals ||
-        6,
-      )
-    )
-  );
+  return balance && Number(formatUnits(BigNumber.from(balance.toString()), decimals || 6));
 };
 
 const getCosmosSupply = async (
@@ -236,38 +126,17 @@ const getCosmosSupply = async (
     decimals,
   } = { ...denom_data };
 
-  const denoms =
-    [
-      denom,
-    ]
-    .filter(d => d);
+  const denoms = [denom].filter(d => d);
 
-  lcds =
-    typeof lcds === 'string' ?
-      [lcds] :
-      lcds;
+  lcds = typeof lcds === 'string' ? [lcds] : lcds;
 
-  if (
-    denoms.length > 0 &&
-    lcds
-  ) {
+  if (denoms.length > 0 && lcds) {
     try {
       let valid = false;
 
       for (const lcd of lcds) {
         for (const denom of denoms) {
-          const response =
-            await lcd
-              .get(
-                `/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`,
-              )
-              .catch(error => {
-                return {
-                  data: {
-                    error,
-                  },
-                };
-              });
+          const response = await lcd.get(`/cosmos/bank/v1beta1/supply/${encodeURIComponent(denom)}`).catch(error => { return { data: { error } }; });
 
           const {
             amount,
@@ -275,46 +144,18 @@ const getCosmosSupply = async (
 
           supply = amount;
 
-          if (
-            supply &&
-            supply !== '0'
-          ) {
+          if (supply && supply !== '0') {
             valid = true;
             break;
           }
         }
 
         if (!valid) {
-          const response =
-            await lcd
-              .get(
-                '/cosmos/bank/v1beta1/supply',
-                {
-                  params: {
-                    'pagination.limit': 2000,
-                  },
-                },
-              )
-              .catch(error => {
-                return {
-                  data: {
-                    error,
-                  },
-                };
-              });
+          const response = await lcd.get('/cosmos/bank/v1beta1/supply', { params: { 'pagination.limit': 2000 } }).catch(error => { return { data: { error } }; });
 
-          supply = (response?.data?.supply || [])
-            .find(s =>
-              equals_ignore_case(
-                s?.denom,
-                denom,
-              )
-            )?.amount;
+          supply = (response?.data?.supply || []).find(s => equals_ignore_case(s?.denom, denom))?.amount;
 
-          if (
-            supply &&
-            supply !== '0'
-          ) {
+          if (supply && supply !== '0') {
             valid = true;
           }
           else if (response?.data?.supply) {
@@ -330,24 +171,10 @@ const getCosmosSupply = async (
     } catch (error) {}
   }
 
-  return (
-    supply &&
-    Number(
-      formatUnits(
-        BigNumber.from(
-          supply
-            .toString()
-        ),
-        decimals ||
-        6,
-      )
-    )
-  );
+  return Number(formatUnits(BigNumber.from(supply.toString()), decimals || 6));
 };
 
-const getAxelarnetSupply = async (
-  denom_data,
-) => {
+const getAxelarnetSupply = async denom_data => {
   let supply;
 
   const {
@@ -356,62 +183,27 @@ const getAxelarnetSupply = async (
     decimals,
   } = { ...denom_data };
 
-  const denoms =
-    [
-      base_denom,
-      denom,
-    ]
-    .filter(d => d);
+  const denoms = [base_denom, denom].filter(d => d);
 
-  if (
-    denoms.length > 0 &&
-    cli
-  ) {
-    try {
-      for (const denom of denoms) {
-        const response =
-          await cli(
-            '',
-            {
-              cmd: `axelard q bank total --denom ${denom} -oj`,
-            },
-          );
-
-        const {
-          stdout,
-        } = { ...response };
-
-        const output = to_json(stdout);
+  if (denoms.length > 0) {
+    for (const denom of denoms) {
+      try {
+        const response = await lcd(`/cosmos/bank/v1beta1/supply/${denom}`);
 
         const {
           amount,
-        } = { ...output };
+        } = { ...response?.amount };
 
         supply = amount;
 
-        if (
-          supply &&
-          supply !== '0'
-        ) {
+        if (supply && supply !== '0') {
           break;
         }
-      }
-    } catch (error) {}
+      } catch (error) {}
+    }
   }
 
-  return (
-    supply &&
-    Number(
-      formatUnits(
-        BigNumber.from(
-          supply
-            .toString()
-        ),
-        decimals ||
-        6,
-      )
-    )
-  );
+  return supply && Number(formatUnits(BigNumber.from(supply.toString()), decimals || 6));
 };
 
 module.exports = {

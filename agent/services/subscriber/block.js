@@ -1,14 +1,13 @@
 const WebSocket = require('ws');
 const axios = require('axios');
 const config = require('config-yml');
+
 const {
   log,
   sleep,
 } = require('../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
 const service_name = 'block-subscriber';
 
@@ -18,18 +17,8 @@ const {
 } = { ...config?.[environment] };
 
 module.exports = () => {
-  if (
-    endpoints?.ws &&
-    endpoints.api
-  ) {
-    // initial api
-    const api =
-      axios.create(
-        {
-          baseURL: endpoints.api,
-          timeout: 10000,
-        },
-      );
+  if (endpoints?.ws && endpoints.api) {
+    const api = axios.create({ baseURL: endpoints.api, timeout: 10000 });
 
     // initial function to subscribe web socket
     const subscribe = () => {
@@ -90,10 +79,7 @@ module.exports = () => {
         'message',
           async data => {
           try {
-            data =
-              JSON.parse(
-                data.toString()
-              );
+            data = JSON.parse(data.toString());
 
             const {
               height,
@@ -117,24 +103,12 @@ module.exports = () => {
                       {
                         params: {
                           module: 'lcd',
-                          path:
-                            i === 0 ?
-                              `/cosmos/base/tendermint/v1beta1/blocks/${_height}` :
-                              '/cosmos/tx/v1beta1/txs',
-                          events:
-                            i === 0 ?
-                              undefined :
-                              `tx.height=${_height}`,
+                          path: i === 0 ? `/cosmos/base/tendermint/v1beta1/blocks/${_height}` : '/cosmos/tx/v1beta1/txs',
+                          events: i === 0 ? undefined : `tx.height=${_height}`,
                         },
                       },
                     )
-                    .catch(error => {
-                      return {
-                        data: {
-                          error,
-                        },
-                      };
-                    });
+                    .catch(error => { return { data: { error } }; });
                 }
               }
             }

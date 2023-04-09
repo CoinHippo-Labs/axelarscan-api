@@ -1,16 +1,9 @@
 const config = require('config-yml');
-const cli = require('./cli');
-const {
-  to_json,
-} = require('../utils');
+const lcd = require('./lcd');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const evm_chains_data =
-  require('../data')?.chains?.[environment]?.evm ||
-  [];
+const evm_chains_data = require('../data')?.chains?.[environment]?.evm || [];
 
 module.exports = async (
   params = {},
@@ -22,29 +15,14 @@ module.exports = async (
     height,
   } = { ...params };
 
-  if (
-    evm_chains_data
-      .findIndex(c =>
-        c?.maintainer_id === chain
-      ) > -1
-  ) {
-    const valid_height =
-      Number.isInteger(height) &&
-      height > 0;
+  if (evm_chains_data.findIndex(c => c?.maintainer_id === chain) > -1) {
+    const valid_height = Number.isInteger(height) && height > 0;
 
-    const _response =
-      await cli(
-        undefined,
-        {
-          cmd: `axelard q nexus chain-maintainers ${chain} ${valid_height ? `--height ${height} ` : ''}-oj`,
-        },
-        true,
-        30,
-      );
+    const _response = await lcd(`/axelar/nexus/v1beta1/chain_maintainers/${chain}`);
 
     const {
       maintainers,
-    } = { ...to_json(_response?.stdout) };
+    } = { ..._response };
 
     if (maintainers) {
       response = {

@@ -3,8 +3,6 @@
 ##########################
 
 environment: testnet # [testnet|mainnet]
-port:
-  cli: 3333
 log_level: debug # [debug|info]
 
 mainnet:

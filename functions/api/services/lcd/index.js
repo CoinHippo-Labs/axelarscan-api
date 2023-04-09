@@ -2,6 +2,7 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const index_tx = require('./tx');
 const index_txs = require('./txs');
 const index_block = require('./block');
@@ -15,9 +16,7 @@ const {
   to_json,
 } = require('../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
 const {
   endpoints,
@@ -28,11 +27,9 @@ module.exports = async (
   params = {},
   cache = false,
   cache_timeout = 60,
-  no_index = false,
-  queue_index_count = -1,
 ) => {
-  let response,
-    cache_hit = false;
+  let response;
+  let cache_hit = false;
 
   if (endpoints?.lcd) {
     const {
@@ -42,12 +39,7 @@ module.exports = async (
       created_at,
     } = { ...params };
 
-    const cache_id =
-      path
-        .split('/')
-        .filter(p => p)
-        .join('_')
-        .toLowerCase();
+    const cache_id = path.split('/').filter(p => p).join('_').toLowerCase();
 
     let response_cache;
 
@@ -64,33 +56,26 @@ module.exports = async (
         '/cosmos/base/tendermint/v1beta1/blocks',
         '/axelar/evm/v1beta1/batched_commands',
       ]
-      .findIndex(p =>
-        path.startsWith(p)
-      ) > -1
+      .findIndex(p => path.startsWith(p)) > -1
     ) {
       cache = false;
     }
 
     // always cache with minimum timeout
     if (
-      cache_id &&
-      !cache &&
+      cache_id && !cache &&
       Object.keys({ ...params })
         .findIndex(k =>
           [
             'pagination',
             'events',
             'subspace',
-          ].findIndex(s =>
-            k?.includes(s)
-          ) > -1
+          ]
+          .findIndex(s => k?.includes(s)) > -1
         ) < 0
     ) {
       cache = true;
-      cache_timeout =
-        queue_index_count > -1 ?
-          60 :
-          5;
+      cache_timeout = 5;
     }
 
     // set min / max cache timeout
@@ -103,11 +88,7 @@ module.exports = async (
 
     // get from cache
     if (cache) {
-      response_cache =
-        await get(
-          'cosmos',
-          cache_id,
-        );
+      response_cache = await get('cosmos', cache_id);
 
       const {
         updated_at,
@@ -115,17 +96,7 @@ module.exports = async (
 
       response_cache = to_json(response_cache?.response);
 
-      if (
-        response_cache &&
-        moment()
-          .diff(
-            moment(
-              updated_at * 1000
-            ),
-            'seconds',
-            true,
-          ) <= cache_timeout
-      ) {
+      if (response_cache && moment().diff(moment(updated_at * 1000), 'seconds', true) <= cache_timeout) {
         response = response_cache;
         cache_hit = true;
       }
@@ -133,38 +104,13 @@ module.exports = async (
 
     // cache miss
     if (!response) {
-      const lcd =
-        axios.create(
-          {
-            baseURL: endpoints.lcd,
-            timeout: 3000,
-            headers: {
-              'Accept-Encoding': 'gzip',
-            },
-          },
-        );
-
-      const _response =
-        await lcd
-          .get(
-            path,
-            { params },
-          )
-          .catch(error => {
-            const {
-              data,
-            } = { ...error?.response };
-
-            return {
-              data: {
-                error: data,
-              },
-            };
-          });
+      const lcd = axios.create({ baseURL: endpoints.lcd, timeout: 3000, headers: { 'Accept-Encoding': 'gzip' } });
+      const _response = await lcd.get(path, { params }).catch(error => { return { data: { error: error?.response?.data } }; });
 
       let {
         data,
       } = { ..._response };
+
       const {
         error,
       } = { ...data };
@@ -175,52 +121,15 @@ module.exports = async (
             events,
           } = { ...params };
 
-          const hash =
-            _.last(
-              path
-                .split('/')
-                .filter(s => s)
-            );
+          const hash = _.last(path.split('/').filter(s => s));
+          const height = typeof events === 'string' && events.startsWith('tx.height=') && Number(_.last(events.split('=')));
 
-          const height =
-            typeof events === 'string' &&
-            events.startsWith('tx.height=') &&
-            Number(
-              _.last(
-                events
-                  .split('=')
-              )
-            );
-
-          if (
-            hash &&
-            hash !== 'txs' &&
-            endpoints.cosmostation
-          ) {
+          if (hash && hash !== 'txs' && endpoints.cosmostation) {
             const api = endpoints.cosmostation;
-
-            const cosmostation =
-              axios.create(
-                {
-                  baseURL: api,
-                  timeout: 3000,
-                },
-              );
+            const cosmostation = axios.create({ baseURL: api, timeout: 3000 });
 
             const _path = `/tx/hash/${hash}`;
-
-            const _response =
-              await cosmostation
-                .get(
-                  _path,
-                )
-                .catch(error => {
-                  return {
-                    data: {
-                      error,
-                    },
-                  };
-                });
+            const _response = await cosmostation.get(_path).catch(error => { return { data: { error } }; });
 
             const {
               tx,
@@ -234,37 +143,16 @@ module.exports = async (
               };
             }
           }
-          else if (
-            !isNaN(height) &&
-            endpoints.mintscan?.api
-          ) {
+          else if (!isNaN(height) && endpoints.mintscan?.api) {
             const {
               api,
               chain_id,
             } = { ...endpoints.mintscan };
 
-            const mintscan =
-              axios.create(
-                {
-                  baseURL: api,
-                  timeout: 3000,
-                },
-              );
+            const mintscan = axios.create({ baseURL: api, timeout: 3000 });
 
             const _path = `/block/${chain_id}/${height}`;
-
-            const _response =
-              await mintscan
-                .get(
-                  _path,
-                )
-                .catch(error => {
-                  return {
-                    data: {
-                      error,
-                    },
-                  };
-                });
+            const _response = await mintscan.get(_path).catch(error => { return { data: { error } }; });
 
             const {
               txs,
@@ -273,28 +161,8 @@ module.exports = async (
             if (txs) {
               data = {
                 url: `${api}${_path}`,
-                tx_responses:
-                  txs
-                    .map(d => {
-                      const {
-                        data,
-                      } = { ...d };
-
-                      return {
-                        ...data,
-                      };
-                    }),
-                txs:
-                  txs
-                    .map(d => {
-                      const {
-                        tx,
-                      } = { ...d?.data };
-
-                      return {
-                        ...tx,
-                      };
-                    }),
+                tx_responses: txs.map(d => { return { ...d?.data }; }),
+                txs: txs.map(d => { return { ...d?.data?.tx }; }),
               };
             }
           }
@@ -306,18 +174,13 @@ module.exports = async (
 
     if (response) {
       // save cache
-      if (
-        cache &&
-        !cache_hit
-      ) {
+      if (cache && !cache_hit) {
         await write(
           'cosmos',
           cache_id,
           {
             response: JSON.stringify(response),
-            updated_at:
-              moment()
-                .unix(),
+            updated_at: moment().unix(),
           },
         );
       }
@@ -334,57 +197,20 @@ module.exports = async (
       command_ids,
     } = { ...response };
 
-    if (
-      path.startsWith('/cosmos/tx/v1beta1/txs/') &&
-      !path.endsWith('/') &&
-      tx_response?.txhash
-    ) {
-      response =
-        await index_tx(
-          response,
-          queue_index_count,
-        );
+    if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && tx_response?.txhash) {
+      response = await index_tx(response);
     }
-    else if (
-      path.startsWith('/cosmos/tx/v1beta1/txs') &&
-      !path.endsWith('/') &&
-      tx_responses?.length > 0
-    ) {
-      if (
-        true || // ok to index every time
-        !no_index
-      ) {
-        response = await index_txs(response);
-      }
+    else if (path.startsWith('/cosmos/tx/v1beta1/txs') && !path.endsWith('/') && tx_responses?.length > 0) {
+      response = await index_txs(response);
     }
-    else if (
-      path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') &&
-      !path.endsWith('/') &&
-      block?.header?.height
-    ) {
+    else if (path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') && !path.endsWith('/') && block?.header?.height) {
       response = await index_block(response);
     }
-    else if (
-      path === '/ibc/core/channel/v1/channels' &&
-      channels
-    ) {
-      response =
-        await index_ibc_channels(
-          path,
-          response,
-        );
+    else if (path === '/ibc/core/channel/v1/channels' && channels) {
+      response = await index_ibc_channels(path, response);
     }
-    else if (
-      path.startsWith('/axelar/evm/v1beta1/batched_commands/') &&
-      !path.endsWith('/') &&
-      command_ids
-    ) {
-      response =
-        await index_batch(
-          path,
-          response,
-          created_at,
-        );
+    else if (path.startsWith('/axelar/evm/v1beta1/batched_commands/') && !path.endsWith('/') && command_ids) {
+      response = await index_batch(path, response, created_at);
     }
 
     response = {

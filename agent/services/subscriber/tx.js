@@ -1,14 +1,13 @@
 const WebSocket = require('ws');
 const axios = require('axios');
 const config = require('config-yml');
+
 const {
   log,
   sleep,
 } = require('../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
 const service_name = 'tx-subscriber';
 
@@ -17,18 +16,8 @@ const {
 } = { ...config?.[environment] };
 
 module.exports = () => {
-  if (
-    endpoints?.ws &&
-    endpoints.api
-  ) {
-    // initial api
-    const api =
-      axios.create(
-        {
-          baseURL: endpoints.api,
-          timeout: 10000,
-        },
-      );
+  if (endpoints?.ws && endpoints.api) {
+    const api = axios.create({ baseURL: endpoints.api, timeout: 10000 });
 
     // initial function to subscribe web socket
     const subscribe = () => {
@@ -89,18 +78,13 @@ module.exports = () => {
         'message',
         async data => {
           try {
-            data =
-              JSON.parse(
-                data.toString()
-              );
+            data = JSON.parse(data.toString());
 
             const {
               events,
             } = { ...data?.result };
 
-            const txHashes =
-              events?.['tx.hash'] ||
-              [];
+            const txHashes = events?.['tx.hash'] || [];
 
             for (const txhash of txHashes) {
               log(
@@ -112,23 +96,7 @@ module.exports = () => {
                 },
               );
 
-              await api
-                .get(
-                  '',
-                  {
-                    params: {
-                      module: 'lcd',
-                      path: `/cosmos/tx/v1beta1/txs/${txhash}`,
-                    },
-                  },
-                )
-                .catch(error => {
-                  return {
-                    data: {
-                      error,
-                    },
-                  };
-                });
+              await api.get('', { params: { module: 'lcd', path: `/cosmos/tx/v1beta1/txs/${txhash}` } }).catch(error => { return { data: { error } }; });
             }
           } catch (error) {}
         },

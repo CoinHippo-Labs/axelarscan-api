@@ -27,10 +27,7 @@ const log = (
 
     // generate log message
     const log_message =
-      `${GRAY}${
-        moment()
-          .format('YYYY-MM-DDTHH:mm:ssZ')
-      }${NO_COLOR} ${
+      `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${
         level === 'error' ?
           `${RED}ERR` :
           level === 'warn' ?
@@ -46,11 +43,7 @@ const log = (
               .map(([k, v]) =>
                 `${CYAN}${k}=${NO_COLOR}${
                   typeof v === 'object' ?
-                    JSON.stringify(
-                      v,
-                      null,
-                      2,
-                    ) :
+                    JSON.stringify(v, null, 2) :
                     v
                 }`
               )
@@ -77,13 +70,7 @@ const log = (
   } catch (error) {}
 };
 
-const sleep = ms =>
-  new Promise(resolve =>
-    setTimeout(
-      resolve,
-      ms,
-    )
-  );
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 module.exports = {
   log,

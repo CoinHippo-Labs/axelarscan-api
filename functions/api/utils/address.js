@@ -10,15 +10,7 @@ const to_hash = (
   length,
 ) => {
   try {
-    return (
-      tmhash(string)
-        .slice(
-          0,
-          length,
-        )
-        .toString('hex')
-        .toUpperCase()
-    );
+    return tmhash(string).slice(0, length).toString('hex').toUpperCase();
   } catch (error) {}
 
   return null;
@@ -29,17 +21,7 @@ const hex_to_bech32 = (
   prefix,
 ) => {
   try {
-    return (
-      bech32.encode(
-        prefix,
-        bech32.toWords(
-          Buffer.from(
-            address,
-            'hex',
-          ),
-        ),
-      )
-    );
+    return bech32.encode(prefix, bech32.toWords(Buffer.from(address, 'hex')));
   } catch (error) {}
 
   return null;
@@ -50,28 +32,14 @@ const get_address = (
   prefix,
   length = 20,
 ) =>
-  hex_to_bech32(
-    to_hash(
-      string,
-      length,
-    ),
-    prefix,
-  );
+  hex_to_bech32(to_hash(string, length), prefix);
 
-const is_operator_address = (
-  address,
-) => {
+const is_operator_address = address => {
   const prefix = 'axelarvaloper1';
 
   try {
-    if (
-      typeof address === 'string' &&
-      address.startsWith(prefix)
-    ) {
-      bech32.decode(
-        address,
-      );
-
+    if (typeof address === 'string' && address.startsWith(prefix)) {
+      bech32.decode(address);
       return true;
     }
   } catch (error) {}

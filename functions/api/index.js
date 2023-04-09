@@ -89,7 +89,6 @@ exports.handler = async (
         path,
         cache,
         cache_timeout,
-        no_index,
       } = { ...params };
 
       const _module =
@@ -115,21 +114,10 @@ exports.handler = async (
           Number(cache_timeout) :
           undefined;
 
-      no_index =
-        typeof no_index === 'boolean' ?
-          no_index :
-          typeof no_index === 'string' ?
-            equals_ignore_case(
-              no_index,
-              'true',
-            ) :
-            undefined;
-
       delete params.module;
       delete params.path;
       delete params.cache;
       delete params.cache_timeout;
-      delete params.no_index;
 
       switch (_module) {
         case 'rpc':
@@ -155,7 +143,6 @@ exports.handler = async (
                 params,
                 cache,
                 cache_timeout,
-                no_index,
               );
           } catch (error) {
             response = {
@@ -438,17 +425,6 @@ exports.handler = async (
             };
           }
           break;
-        case 'proxy-address':
-          try {
-            response = await require('./services/proxy-address')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
         case 'wraps':
           try {
             response = await require('./services/wraps')(params);
@@ -610,12 +586,6 @@ exports.handler = async (
 
         // archive data from indexer
         require('./services/archiver')();
-
-        // index transactions in queue
-        require('./services/index-queue')(
-          context,
-          remain_ms_to_exit,
-        );
 
         // update tvl cache
         response = await require('./services/tvl/updater')(context);

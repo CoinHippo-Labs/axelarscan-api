@@ -4,7 +4,6 @@ const {
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
-const cli = require('../../cli');
 const {
   read,
   write,
@@ -22,34 +21,14 @@ const {
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 const IBurnableMintableCappedERC20 = require('../../../data/contracts/interfaces/IBurnableMintableCappedERC20.json');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const evm_chains_data =
-  require('../../../data')?.chains?.[environment]?.evm ||
-  [];
-const cosmos_chains_data =
-  require('../../../data')?.chains?.[environment]?.cosmos ||
-  [];
-const chains_data =
-  _.concat(
-    evm_chains_data,
-    cosmos_chains_data,
-  );
-const axelarnet =
-  chains_data
-    .find(c =>
-      c?.id === 'axelarnet'
-    );
-const cosmos_non_axelarnet_chains_data =
-  cosmos_chains_data
-    .filter(c =>
-      c?.id !== axelarnet.id
-    );
-const assets_data =
-  require('../../../data')?.assets?.[environment] ||
-  [];
+const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm || [];
+const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos || [];
+const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
+const axelarnet = chains_data.find(c => c?.id === 'axelarnet');
+const cosmos_non_axelarnet_chains_data = cosmos_chains_data.filter(c => c?.id !== axelarnet.id);
+const assets_data = require('../../../data')?.assets?.[environment] || [];
 
 module.exports = async (
   path = '',
@@ -69,22 +48,9 @@ module.exports = async (
 
   batch_id = id;
 
-  let chain =
-    _.head(
-      _.slice(
-        path
-          .split('/'),
-        -2,
-      )
-    );
+  let chain = _.head(_.slice(path.split('/'), -2));
 
-  const chain_data = evm_chains_data
-    .find(c =>
-      equals_ignore_case(
-        c?.id,
-        chain,
-      )
-    );
+  const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
 
   const {
     chain_id,
@@ -93,17 +59,9 @@ module.exports = async (
 
   const provider = getProvider(chain_data);
 
-  const gateway_contract =
-    gateway_address &&
-    new Contract(
-      gateway_address,
-      IAxelarGateway.abi,
-      provider,
-    );
+  const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
 
-  chain =
-    chain_data?.id ||
-    chain;
+  chain = chain_data?.id || chain;
 
   const _response =
     await read(
@@ -118,122 +76,62 @@ module.exports = async (
 
   let {
     commands,
-  } = {
-    ...(
-      _.head(
-        _response?.data
-      )
-    ),
-  };
+  } = { ..._.head(_response?.data) };
 
-  commands =
-    commands ||
-    [];
+  commands = commands || [];
 
   if (command_ids) {
     const _commands = _.cloneDeep(commands);
 
     for (const command_id of command_ids) {
       if (command_id) {
-        const index = commands
-          .findIndex(c =>
-            equals_ignore_case(
-              c?.id,
-              command_id,
-            )
-          );
-
-        let command = commands[index];
-
-        if (!command) {
-          const _response =
-            await cli(
-              '',
-              {
-                cmd: `axelard q evm command ${chain} ${command_id} -oj`,
-              },
-            );
-
-          command =
-            to_json(
-              _response?.stdout
-            );
-        }
+        const index = commands.findIndex(c => equals_ignore_case(c?.id, command_id));
+        const command = commands[index];
 
         if (command) {
           let {
             executed,
             deposit_address,
+            params,
           } = { ...command };
+
           const {
             salt,
-          } = { ...command.params };
+          } = { ...params };
 
           if (!executed) {
             try {
-              if (gateway_contract) {
-                executed =
-                  await gateway_contract
-                    .isCommandExecuted(
-                      `0x${command_id}`,
-                    );
+              if (gateway) {
+                executed = await gateway.isCommandExecuted(`0x${command_id}`);
               }
             } catch (error) {}
           }
 
           if (
-            !deposit_address &&
-            salt &&
+            !deposit_address && salt &&
             (
               command_ids.length < 15 ||
-              _commands
-                .filter(c =>
-                  c?.salt &&
-                  !c.deposit_address
-                ).length < 15 ||
-              Math.random(
-                0,
-                1,
-              ) < 0.3
+              _commands.filter(c => c?.salt && !c.deposit_address).length < 15 ||
+              Math.random(0, 1) < 0.3
             )
           ) {
             try {
-              const asset_data = assets_data
-                .find(a =>
-                  (a?.contracts || [])
-                    .findIndex(c =>
-                      c?.chain_id === chain_id &&
-                      !c.is_native
-                    ) > -1
-                );
+              const asset_data = assets_data.find(a => (a?.contracts || []).findIndex(c => c?.chain_id === chain_id && !c.is_native) > -1);
 
               const {
                 contracts,
               } = { ...asset_data };
 
-              const contract_data = (contracts || [])
-                .find(c =>
-                  c?.chain_id === chain_id
-                );
+              const contract_data = (contracts || []).find(c => c?.chain_id === chain_id);
 
               const {
                 contract_address,
               } = { ...contract_data };
 
-              const erc20_contract =
-                contract_address &&
-                new Contract(
-                  contract_address,
-                  IBurnableMintableCappedERC20.abi,
-                  provider,
-                );
+              const erc20 = contract_address && new Contract(contract_address, IBurnableMintableCappedERC20.abi, provider);
 
-              if (erc20_contract) {
-                deposit_address =
-                  await erc20_contract
-                    .depositAddress(
-                      salt,
-                    );
+              if (erc20) {
+                deposit_address = await erc20.depositAddress(salt);
               }
             } catch (error) {}
           }
@@ -255,16 +153,9 @@ module.exports = async (
     }
   }
 
-  commands =
-    commands
-      .filter(c => c);
+  commands = commands.filter(c => c);
 
-  if (
-    commands
-      .findIndex(c =>
-        !c.transactionHash
-      ) > -1
-  ) {
+  if (commands.findIndex(c => !c.transactionHash) > -1) {
     const _response =
       await read(
         'command_events',
@@ -300,41 +191,31 @@ module.exports = async (
 
     if (Array.isArray(command_events)) {
       commands =
-        commands
-          .map(c => {
-            if (
-              c.id &&
-              !c.transactionHash
-            ) {
-              const command_event = command_events
-                .find(_c =>
-                  equals_ignore_case(
-                    _c?.command_id,
-                    c.id,
-                  )
-                );
+        commands.map(c => {
+          if (c.id && !c.transactionHash) {
+            const command_event = command_events.find(_c => equals_ignore_case(_c?.command_id, c.id));
 
-              if (command_event) {
-                const {
-                  transactionHash,
-                  transactionIndex,
-                  logIndex,
-                  block_timestamp,
-                } = { ...command_event };
+            if (command_event) {
+              const {
+                transactionHash,
+                transactionIndex,
+                logIndex,
+                block_timestamp,
+              } = { ...command_event };
 
-                c.transactionHash = transactionHash;
-                c.transactionIndex = transactionIndex;
-                c.logIndex = logIndex;
-                c.block_timestamp = block_timestamp;
+              c.transactionHash = transactionHash;
+              c.transactionIndex = transactionIndex;
+              c.logIndex = logIndex;
+              c.block_timestamp = block_timestamp;
 
-                if (transactionHash) {
-                  c.executed = true;
-                }
+              if (transactionHash) {
+                c.executed = true;
               }
             }
+          }
 
-            return c;
-          });
+          return c;
+        });
     }
   }
 
@@ -346,12 +227,7 @@ module.exports = async (
   };
 
   if (created_at) {
-    created_at =
-      moment(
-        Number(created_at) * 1000
-      )
-      .utc()
-      .valueOf();
+    created_at = moment(Number(created_at) * 1000).utc().valueOf();
   }
   else {
     const _response =
@@ -367,20 +243,9 @@ module.exports = async (
 
     const {
       ms,
-    } = {
-      ...(
-        _.head(
-          _response?.data
-        )?.created_at
-      ),
-    };
+    } = { ..._.head(_response?.data)?.created_at };
 
-    created_at =
-      (ms ?
-        moment(ms) :
-        moment()
-      )
-      .valueOf();
+    created_at = moment(ms).valueOf();
   }
 
   lcd_response = {
@@ -388,34 +253,13 @@ module.exports = async (
     created_at: get_granularity(created_at),
   };
 
-  if (
-    ![
-      'BATCHED_COMMANDS_STATUS_SIGNED',
-    ].includes(status) &&
-    commands.length ===
-    commands
-      .filter(c => c.executed)
-      .length
-  ) {
+  if (!['BATCHED_COMMANDS_STATUS_SIGNED'].includes(status) && commands.length === commands.filter(c => c.executed).length) {
     status = 'BATCHED_COMMANDS_STATUS_SIGNED';
     lcd_response.status = status;
   }
 
-  if (
-    [
-      'BATCHED_COMMANDS_STATUS_SIGNED',
-    ].includes(status) &&
-    command_ids &&
-    gateway_contract
-  ) {
-    const _command_ids =
-      command_ids
-        .filter(c =>
-          parseInt(
-            c,
-            16,
-          ) >= 1
-        );
+  if (['BATCHED_COMMANDS_STATUS_SIGNED'].includes(status) && command_ids && gateway) {
+    const _command_ids = command_ids.filter(c => parseInt(c, 16) >= 1);
 
     // cross-chain transfers
     try {
@@ -426,11 +270,7 @@ module.exports = async (
       };
 
       for (const command_id of _command_ids) {
-        const transfer_id =
-          parseInt(
-            command_id,
-            16,
-          );
+        const transfer_id = parseInt(command_id, 16);
 
         command = {
           ...command,
@@ -463,10 +303,7 @@ module.exports = async (
           data,
         } = { ..._response };
 
-        const _data =
-          _.head(
-            data
-          );
+        const _data = _.head(data);
 
         if (_data) {
           let {
@@ -477,27 +314,14 @@ module.exports = async (
             block_timestamp,
           } = { ..._data.command };
 
-          executed =
-            !!executed ||
-            !!transactionHash ||
-            commands
-              .find(c =>
-                c.id === command_id
-              )?.executed;
+          executed = !!(executed || transactionHash || commands.find(c => c.id === command_id)?.executed);
 
           if (!executed) {
             try {
-              executed =
-                await gateway_contract
-                  .isCommandExecuted(
-                    `0x${command_id}`,
-                  );
+              executed = await gateway.isCommandExecuted(`0x${command_id}`);
 
               if (executed) {
-                const index = commands
-                  .findIndex(c =>
-                    c.id === command_id
-                  );
+                const index = commands.findIndex(c => c.id === command_id);
 
                 if (index > -1) {
                   commands[index].executed = executed;
@@ -523,10 +347,7 @@ module.exports = async (
                 },
               );
 
-            const command_event =
-              _.head(
-                _response?.data
-              );
+            const command_event = _.head(_response?.data);
 
             if (command_event) {
               transactionHash = command_event.transactionHash;
@@ -553,6 +374,7 @@ module.exports = async (
             const {
               send,
             } = { ...d };
+
             const {
               txhash,
               sender_address,
@@ -561,19 +383,9 @@ module.exports = async (
               source_chain,
             } = { ...send };
 
-            source_chain =
-              normalize_chain(
-                cosmos_non_axelarnet_chains_data
-                  .find(c =>
-                    sender_address?.startsWith(c?.prefix_address)
-                  )?.id ||
-                source_chain
-              );
+            source_chain = normalize_chain(cosmos_non_axelarnet_chains_data.find(c => sender_address?.startsWith(c?.prefix_address))?.id || source_chain);
 
-            if (
-              txhash &&
-              source_chain
-            ) {
+            if (txhash && source_chain) {
               const _id = `${txhash}_${source_chain}`.toLowerCase();
 
               await write(
@@ -590,9 +402,7 @@ module.exports = async (
                 true,
               );
 
-              await save_time_spent(
-                _id,
-              );
+              await save_time_spent(_id);
             }
           }
         }
@@ -600,24 +410,12 @@ module.exports = async (
     } catch (error) {}
   }
 
-  if (
-    ![
-      'BATCHED_COMMANDS_STATUS_SIGNED',
-    ].includes(status) &&
-    commands.length ===
-    commands
-      .filter(c => c.executed)
-      .length
-  ) {
+  if (!['BATCHED_COMMANDS_STATUS_SIGNED'].includes(status) && commands.length === commands.filter(c => c.executed).length) {
     status = 'BATCHED_COMMANDS_STATUS_SIGNED';
     lcd_response.status = status;
   }
 
-  await write(
-    'batches',
-    id,
-    lcd_response,
-  );
+  await write('batches', id, lcd_response);
 
   response = lcd_response;
 
