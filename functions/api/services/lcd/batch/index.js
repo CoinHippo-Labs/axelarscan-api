@@ -6,7 +6,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
 
-const lcd = require('../');
 const {
   read,
   write,
@@ -96,13 +95,18 @@ module.exports = async (
         let command = commands[index];
 
         if (!command) {
-          const _response = await lcd('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } });
+          const lcd = axios.create({ baseURL: endpoints?.lcd, timeout: 15000 });
+          const _response = await lcd.get('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } });
 
-          if (_response && !_response.code) {
-            command = _response;
+          const {
+            data,
+          } = { ..._response };
+
+          if (data && !data.code) {
+            command = data;
           }
           else {
-            const cli = axios.create({ baseURL: endpoints?.cli, timeout: 20000 });
+            const cli = axios.create({ baseURL: endpoints?.cli, timeout: 15000 });
             const _response = await cli.get('/', { params: { cmd: `axelard q evm command ${chain} ${command_id} -oj` } }).catch(error => { return { data: { error } }; });
 
             command = to_json(_response?.data?.stdout);
