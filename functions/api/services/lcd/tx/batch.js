@@ -1,3 +1,4 @@
+const moment = require('moment');
 const lcd = require('../');
 
 module.exports = async (
@@ -30,7 +31,7 @@ module.exports = async (
       const batch_id = (attributes || []).find(a => a.key === 'batchedCommandID')?.value;
 
       if (chain && batch_id) {
-        await lcd(`/axelar/evm/v1beta1/batched_commands/${chain}/${batch_id}`);
+        await lcd(`/axelar/evm/v1beta1/batched_commands/${chain}/${batch_id}`, { created_at: moment(timestamp).utc().unix() });
       }
     }
   } catch (error) {}
