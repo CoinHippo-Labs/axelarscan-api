@@ -17,12 +17,8 @@ module.exports = async (
             'MsgAcknowledgement',
             'MsgTimeout',
             'ExecutePendingTransfersRequest',
-          ].findIndex(s =>
-            (t?.tx?.body?.messages || [])
-              .findIndex(m =>
-                m?.['@type']?.includes(s)
-              ) > -1
-          ) > -1
+          ]
+          .findIndex(s => (t?.tx?.body?.messages || []).findIndex(m => m?.['@type']?.includes(s)) > -1) > -1
         )
         .map(t => t.txhash);
 
@@ -32,18 +28,11 @@ module.exports = async (
 
         const path = `/cosmos/tx/v1beta1/txs/${txhash}`;
 
-        if (
-          i === 0 ||
-          i === hashes.length - 1
-        ) {
-          await lcd(
-            path,
-          );
+        if (i === 0 || i === hashes.length - 1) {
+          await lcd(path);
         }
         else {
-          lcd(
-            path,
-          );
+          lcd(path);
         }
       }
     }

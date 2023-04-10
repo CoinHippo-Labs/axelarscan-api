@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
+
 const lcd = require('../../lcd');
 const {
   read,
@@ -9,49 +10,45 @@ const {
   normalize_chain,
 } = require('../../../utils');
 
-const fields =
-  [
-    {
-      id: 'deposit_address',
-      type: 'string',
-      required: true,
-      is_key: true,
-    },
-    {
-      id: 'tx_hash',
-      type: 'string',
-      required: true,
-      is_key: true,
-    },
-    {
-      id: 'deposit_address_link',
-      type: 'string',
-      required: true,
-    },
-    {
-      id: 'source_chain',
-      type: 'string',
-      normalize: s => normalize_chain(s),
-    },
-    {
-      id: 'destination_chain',
-      type: 'string',
-      normalize: s => normalize_chain(s),
-    },
-    {
-      id: 'recipient_address',
-      type: 'string',
-    },
-  ];
+const fields = [
+  {
+    id: 'deposit_address',
+    type: 'string',
+    required: true,
+    is_key: true,
+  },
+  {
+    id: 'tx_hash',
+    type: 'string',
+    required: true,
+    is_key: true,
+  },
+  {
+    id: 'deposit_address_link',
+    type: 'string',
+    required: true,
+  },
+  {
+    id: 'source_chain',
+    type: 'string',
+    normalize: s => normalize_chain(s),
+  },
+  {
+    id: 'destination_chain',
+    type: 'string',
+    normalize: s => normalize_chain(s),
+  },
+  {
+    id: 'recipient_address',
+    type: 'string',
+  },
+];
 
 module.exports = async (
   params = {},
   collection = 'unwraps',
 ) => {
-  if (
-    !params.tx_hash &&
-    params.tx_hash_msg_update_client
-  ) {
+  if (!params.tx_hash && params.tx_hash_msg_update_client) {
     const {
       tx_hash_msg_update_client,
     } = { ...params };
@@ -59,20 +56,14 @@ module.exports = async (
       tx_hash,
     } = { ...params };
 
-    const lcd_response =
-      await lcd(
-        `/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`,
-      );
+    const lcd_response = await lcd(`/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`);
 
     const {
       tx_hashes,
       source_chain,
     } = { ...lcd_response };
 
-    tx_hash =
-      _.head(
-        tx_hashes
-      );
+    tx_hash = _.head(tx_hashes);
 
     if (tx_hash) {
       params.tx_hash = tx_hash;
@@ -84,32 +75,17 @@ module.exports = async (
   }
 
   if (
-    fields
-      .findIndex(f => {
-        const {
-          id,
-          type,
-          required,
-        } = { ...f };
+    fields.findIndex(f => {
+      const {
+        id,
+        type,
+        required,
+      } = { ...f };
 
-        const value = params[id];
+      const value = params[id];
 
-        return (
-          !(
-            required ?
-              value &&
-              (
-                !type ||
-                typeof value === type
-              ) :
-              value === undefined ||
-              (
-                !type ||
-                typeof value === type
-              )
-          )
-        );
-      }) > -1
+      return !(required ? value && (!type || typeof value === type) : value === undefined || (!type || typeof value === type));
+    }) > -1
   ) {
     return {
       error: true,
@@ -117,12 +93,7 @@ module.exports = async (
       message: 'parameters not valid',
     };
   }
-  else if (
-    fields
-      .findIndex(f =>
-        f?.is_key
-      ) < 0
-  ) {
+  else if (fields.findIndex(f => f?.is_key) < 0) {
     return {
       error: true,
       code: 500,
@@ -132,36 +103,19 @@ module.exports = async (
   else {
     const data =
       Object.fromEntries(
-        fields
-          .map(f => {
-            const {
-              id,
-              normalize,
-            } = { ...f };
+        fields.map(f => {
+          const {
+            id,
+            normalize,
+          } = { ...f };
 
-            const value =
-              typeof normalize === 'function' ?
-                normalize(params[id]) :
-                params[id];
+          const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
 
-            return [
-              id,
-              value,
-            ];
-          })
+          return [id, value];
+        })
       );
 
-    const _id =
-      fields
-        .filter(f =>
-          f?.is_key &&
-          params[f.id]
-        )
-        .map(f =>
-          params[f.id]
-            .toLowerCase()
-        )
-        .join('_');
+    const _id = fields.filter(f => f?.is_key && params[f.id]).map(f => params[f.id].toLowerCase()).join('_');
 
     const response =
       await write(
@@ -169,9 +123,7 @@ module.exports = async (
         _id,
         {
           ...data,
-          updated_at:
-            moment()
-              .valueOf(),
+          updated_at: moment().valueOf(),
         },
       );
 
@@ -204,15 +156,13 @@ module.exports = async (
           },
         );
 
-      const _data =
-        _.head(
-          response?.data
-        );
+      const _data = _.head(response?.data);
 
       if (_data) {
         const {
           send,
         } = { ..._data };
+
         const {
           txhash,
           source_chain,

@@ -7,6 +7,7 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const {
   normalize_link,
   update_link,
@@ -120,12 +121,8 @@ module.exports = async (
 
                 const topics =
                   _.reverse(_.cloneDeep(logs || []).flatMap(l => l?.topics || []))
-                    .filter(t =>
-                      t?.startsWith('0x000000000000000000000000')
-                    )
-                    .map(t =>
-                      t.replace('0x000000000000000000000000', '0x')
-                    );
+                    .filter(t => t?.startsWith('0x000000000000000000000000'))
+                    .map(t => t.replace('0x000000000000000000000000', '0x'));
 
                 let found = false;
 
@@ -162,30 +159,12 @@ module.exports = async (
                 }
 
                 if (depositAddress) {
-                  const asset_data = assets_data
-                    .find(a =>
-                      (a?.contracts || [])
-                        .findIndex(c =>
-                          c?.chain_id === chain_id &&
-                          equals_ignore_case(c?.contract_address, to)
-                        ) > -1
-                    );
+                  const asset_data = assets_data.find(a => (a?.contracts || []).findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.contract_address, to)) > -1);
 
                   const _amount =
                     _.head(
                       (logs || [])
-                        .filter(l =>
-                          // !denom ||
-                          assets_data
-                            .findIndex(a =>
-                              equals_ignore_case(a?.id, denom) &&
-                              (a?.contracts || [])
-                                .findIndex(c =>
-                                  c?.chain_id === chain_id &&
-                                  equals_ignore_case(c?.contract_address, l?.address)
-                                ) > -1
-                            ) > -1
-                        )
+                        .filter(l => /* !denom || */assets_data.findIndex(a => equals_ignore_case(a?.id, denom) && (a?.contracts || []).findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.contract_address, l?.address)) > -1) > -1)
                         .map(l => l?.data)
                         .filter(d => d?.length >= 64)
                         .map(d => {
@@ -315,17 +294,7 @@ module.exports = async (
             let found = false;
 
             for (const _lcd of _lcds) {
-              const lcd =
-                axios.create(
-                  {
-                    baseURL: _lcd,
-                    timeout: 3000,
-                    headers: {
-                      agent,
-                      'Accept-Encoding': 'gzip',
-                    },
-                  },
-                );
+              const lcd = axios.create({ baseURL: _lcd, timeout: 3000, headers: { agent, 'Accept-Encoding': 'gzip' } });
 
               const is_cosmostation = _lcd === cosmostation;
 
@@ -541,12 +510,7 @@ module.exports = async (
 
       // resolve vote
       try {
-        if (
-          txhash &&
-          evm_chains_data.findIndex(c => equals_ignore_case(c?.id, source_chain)) > -1 &&
-          !vote &&
-          (command || ibc_send || axelar_transfer)
-        ) {
+        if (txhash && evm_chains_data.findIndex(c => equals_ignore_case(c?.id, source_chain)) > -1 && !vote && (command || ibc_send || axelar_transfer)) {
           const _response =
             await read(
               'evm_polls',
@@ -756,93 +720,87 @@ module.exports = async (
 
   if (Array.isArray(response)) {
     response =
-      response
-        .map(d => {
-          const {
-            send,
-            link,
-            confirm,
-            vote,
-            command,
-            ibc_send,
-            axelar_transfer,
-            wrap,
-            unwrap,
-          } = { ...d };
-          let {
-            type,
-          } = { ...d };
+      response.map(d => {
+        const {
+          send,
+          link,
+          confirm,
+          vote,
+          command,
+          ibc_send,
+          axelar_transfer,
+          wrap,
+          unwrap,
+        } = { ...d };
+        let {
+          type,
+        } = { ...d };
 
-          const {
-            amount,
-            value,
-          } = { ...send };
+        const {
+          amount,
+          value,
+        } = { ...send };
 
-          let {
-            price,
-          } = { ...link };
+        let {
+          price,
+        } = { ...link };
 
-          type = wrap ? 'wrap' : unwrap ? 'unwrap' : type;
+        type = wrap ? 'wrap' : unwrap ? 'unwrap' : type;
 
-          if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
-            price = value / amount;
-          }
+        if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
+          price = value / amount;
+        }
 
-          const status =
-            ibc_send ?
-              ibc_send.failed_txhash && !ibc_send.ack_txhash ?
-                'ibc_failed' :
-                ibc_send.recv_txhash || unwrap ?
-                  'executed' :
-                  'ibc_sent' :
-              command?.executed || unwrap ?
+        const status =
+          ibc_send ?
+            ibc_send.failed_txhash && !ibc_send.ack_txhash ?
+              'ibc_failed' :
+              ibc_send.recv_txhash || unwrap ?
                 'executed' :
-                 command ?
-                  'batch_signed' :
-                  axelar_transfer || unwrap ?
-                    'executed' :
-                    vote ?
-                      'voted' :
-                      confirm ?
-                        'deposit_confirmed' :
-                        send?.status === 'failed' && !wrap ?
-                          'send_failed' :
-                          'asset_sent';
+                'ibc_sent' :
+            command?.executed || unwrap ?
+              'executed' :
+               command ?
+                'batch_signed' :
+                axelar_transfer || unwrap ?
+                  'executed' :
+                  vote ?
+                    'voted' :
+                    confirm ?
+                      'deposit_confirmed' :
+                      send?.status === 'failed' && !wrap ?
+                        'send_failed' :
+                        'asset_sent';
 
-          let simplified_status;
+        let simplified_status;
 
-          switch (status) {
-            case 'ibc_failed':
-            case 'send_failed':
-              simplified_status = 'failed';
-              break;
-            case 'executed':
-              simplified_status = 'received';
-              break;
-            case 'ibc_sent':
-            case 'batch_signed':
-            case 'voted':
-            case 'deposit_confirmed':
-              simplified_status = 'approved';
-              break;
-            default:
-              simplified_status = 'sent';
-              break;
-          }
+        switch (status) {
+          case 'ibc_failed':
+          case 'send_failed':
+            simplified_status = 'failed';
+            break;
+          case 'executed':
+            simplified_status = 'received';
+            break;
+          case 'ibc_sent':
+          case 'batch_signed':
+          case 'voted':
+          case 'deposit_confirmed':
+            simplified_status = 'approved';
+            break;
+          default:
+            simplified_status = 'sent';
+            break;
+        }
 
-          return {
-            ...d,
-            type,
-            link:
-              link &&
-              {
-                ...link,
-                price,
-              },
-            status,
-            simplified_status,
-          };
-        });
+        return {
+          ...d,
+          type,
+          link: link && { ...link, price },
+          status,
+          simplified_status,
+        };
+      });
 
     if (response.length > 0) {
       for (const d of response) {
@@ -870,29 +828,14 @@ module.exports = async (
 
         height = ibc_send?.height || height || confirm?.height;
 
-        if (
-          [
-            'ibc_sent',
-            'batch_signed',
-            'voted',
-          ]
-          .includes(status) &&
-          !insufficient_fee && vote?.txhash &&
-          !(vote.transfer_id || confirm?.transfer_id)
-        ) {
+        if (['ibc_sent', 'batch_signed', 'voted'].includes(status) && !insufficient_fee && vote?.txhash && !(vote.transfer_id || confirm?.transfer_id)) {
           await lcd(`/cosmos/tx/v1beta1/txs/${vote.txhash}`);
           await sleep(0.5 * 1000);
         }
 
         if (
           cosmos_chains_data.findIndex(c => equals_ignore_case(c?.id, destination_chain)) > -1 &&
-          height &&
-          [
-            'ibc_sent',
-            'voted',
-            'deposit_confirmed',
-          ]
-          .includes(status)
+          height && ['ibc_sent', 'voted', 'deposit_confirmed'].includes(status)
         ) {
           if (confirm?.txhash && !confirm.transfer_id) {
             await lcd(`/cosmos/tx/v1beta1/txs/${confirm.txhash}`);
@@ -901,12 +844,7 @@ module.exports = async (
 
           if (!insufficient_fee) {
             for (let i = 1; i <= 7; i++) {
-              lcd(
-                '/cosmos/tx/v1beta1/txs',
-                {
-                  events: `tx.height=${height + i}`,
-                },
-              );
+              lcd('/cosmos/tx/v1beta1/txs', { events: `tx.height=${height + i}` });
             }
 
             await sleep(3 * 1000);
@@ -914,12 +852,7 @@ module.exports = async (
         }
         else if (
           evm_chains_data.findIndex(c => equals_ignore_case(c?.id, destination_chain)) > -1 &&
-          [
-            'batch_signed',
-            'voted',
-          ]
-          .includes(status) &&
-          !insufficient_fee
+          ['batch_signed', 'voted'].includes(status) && !insufficient_fee
         ) {
           const transfer_id = vote?.transfer_id || confirm?.transfer_id || d.transfer_id;
 

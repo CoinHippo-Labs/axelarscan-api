@@ -25,9 +25,7 @@ module.exports = async (
     } = { ..._response };
 
     if (maintainers) {
-      response = {
-        maintainers,
-      };
+      response = { maintainers };
     }
   }
 

@@ -1,25 +1,18 @@
 const config = require('config-yml');
 const _ = require('lodash');
+
 const lcd = require('./lcd');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const evm_chains_data =
-  require('../data')?.chains?.[environment]?.evm ||
-  [];
+const evm_chains_data = require('../data')?.chains?.[environment]?.evm || [];
 
 module.exports = async (
   params = {},
 ) => {
   let response;
 
-  const _evm_chains_data =
-    evm_chains_data
-      .filter(c =>
-        !c?.no_inflation
-      );
+  const _evm_chains_data = evm_chains_data.filter(c => !c?.no_inflation);
 
   let {
     uptimeRate,
@@ -28,111 +21,39 @@ module.exports = async (
     unsubmittedVoteRates,
   } = { ...params };
 
-  uptimeRate =
-    uptimeRate ||
-    1;
+  uptimeRate = uptimeRate || 1;
+  heartbeatRate = heartbeatRate || 1;
+  numEVMChains = numEVMChains || _evm_chains_data.length;
+  unsubmittedVoteRates = unsubmittedVoteRates || Object.fromEntries(_evm_chains_data.map(c => [c?.id, 0]));
 
-  heartbeatRate =
-    heartbeatRate ||
-    1;
+  response = await lcd('/cosmos/mint/v1beta1/inflation');
 
-  numEVMChains =
-    numEVMChains ||
-    _evm_chains_data.length;
+  const tendermintInflationRate = response ? Number(response.inflation) : null;
 
-  unsubmittedVoteRates =
-    unsubmittedVoteRates ||
-    Object.fromEntries(
-      _evm_chains_data
-        .map(c =>
-          [
-            c?.id,
-            0,
-          ]
-        )
-    );
+  response = await lcd('/cosmos/distribution/v1beta1/params');
 
-  response =
-    await lcd(
-      '/cosmos/mint/v1beta1/inflation',
-    );
+  const communityTax = response ? Number(response.params?.community_tax) : null;
 
-  const tendermintInflationRate =
-    response ?
-      Number(response.inflation) :
-      null;
+  response = await lcd('/cosmos/params/v1beta1/params', { subspace: 'reward', key: 'KeyMgmtRelativeInflationRate' });
 
-  response =
-    await lcd(
-      '/cosmos/distribution/v1beta1/params',
-    );
+  const keyMgmtRelativeInflationRate = Number((response?.param?.value || '').split('"').join(''));
 
-  const communityTax =
-    response ?
-      Number(response.params?.community_tax) :
-      null;
+  response = await lcd('/cosmos/params/v1beta1/params', { subspace: 'reward', key: 'ExternalChainVotingInflationRate' });
 
-  response =
-    await lcd(
-      '/cosmos/params/v1beta1/params',
-      {
-        subspace: 'reward',
-        key: 'KeyMgmtRelativeInflationRate',
-      },
-    );
-
-  const keyMgmtRelativeInflationRate =
-    Number(
-      (
-        response?.param?.value ||
-        ''
-      )
-      .split('"')
-      .join('')
-    );
-
-  response =
-    await lcd(
-      '/cosmos/params/v1beta1/params',
-      {
-        subspace: 'reward',
-        key: 'ExternalChainVotingInflationRate',
-      },
-    );
-
-  const externalChainVotingInflationRate =
-    Number(
-      (
-        response?.param?.value ||
-        ''
-      )
-      .split('"')
-      .join('')
-    );
+  const externalChainVotingInflationRate = Number((response?.param?.value || '').split('"').join(''));
 
   const inflation =
     parseFloat(
       (
         (uptimeRate * (tendermintInflationRate || 0)) +
         (heartbeatRate * (keyMgmtRelativeInflationRate || 0) * (tendermintInflationRate || 0)) +
-        (
-          externalChainVotingInflationRate *
-          _.sum(
-            Object.values({ ...unsubmittedVoteRates })
-              .map(v => 1 - v)
-          )
-        )
+        (externalChainVotingInflationRate * _.sum(Object.values({ ...unsubmittedVoteRates }).map(v => 1 - v)))
       )
       .toFixed(6)
     );
 
   return {
-    equation:
-      `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${
-        _evm_chains_data
-          .map(c => `(1 - ${c?.id}UnsubmittedVoteRate)`)
-          .join(' + ')
-      }))`,
+    equation: `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${_evm_chains_data.map(c => `(1 - ${c?.id}UnsubmittedVoteRate)`).join(' + ')}))`,
     tendermintInflationRate,
     communityTax,
     keyMgmtRelativeInflationRate,
