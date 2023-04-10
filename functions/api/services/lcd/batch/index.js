@@ -428,7 +428,7 @@ module.exports = async (
     lcd_response.status = status;
   }
 
-  // await write('batches', id, lcd_response);
+  await write('batches', id, lcd_response);
 
   response = lcd_response;
 
