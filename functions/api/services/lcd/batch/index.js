@@ -94,22 +94,9 @@ module.exports = async (
         const index = commands.findIndex(c => equals_ignore_case(c?.id, command_id));
         let command = commands[index];
 
-        if (!command && endpoints?.cli) {
-          const cli = axios.create({ baseURL: endpoints.cli, timeout: 15000 });
-
-          const _response =
-            await cli
-              .get(
-                '',
-                {
-                  params: {
-                    cmd: `axelard q evm command ${chain} ${command_id} -oj`,
-                    cache: true,
-                    cache_timeout: 30,
-                  },
-                },
-              )
-              .catch(error => { return { data: { error } }; });
+        if (!command) {
+          const cli = axios.create({ baseURL: endpoints?.cli, timeout: 20000 });
+          const _response = await cli.get('/', { params: { cmd: `axelard q evm command ${chain} ${command_id} -oj` } }).catch(error => { return { data: { error } }; });
 
           command = to_json(_response?.data?.stdout);
         }
@@ -441,7 +428,7 @@ module.exports = async (
     lcd_response.status = status;
   }
 
-  await write('batches', id, lcd_response);
+  // await write('batches', id, lcd_response);
 
   response = lcd_response;
 

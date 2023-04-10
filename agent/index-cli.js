@@ -59,7 +59,6 @@ const axelard = async params => {
     },
   );
 
-
   return data;
 };
 
