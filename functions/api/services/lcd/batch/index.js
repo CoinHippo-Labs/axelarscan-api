@@ -96,13 +96,13 @@ module.exports = async (
 
         if (!command) {
           const lcd = axios.create({ baseURL: endpoints?.lcd, timeout: 15000 });
-          const _response = await lcd.get('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } });
+          const _response = await lcd.get('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } }).catch(error => { return { data: { error: error?.response?.data } }; });
 
           const {
             data,
           } = { ..._response };
 
-          if (data && !data.code) {
+          if (data && !data.error && !data.code) {
             command = data;
           }
         }
