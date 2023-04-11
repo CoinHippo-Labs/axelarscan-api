@@ -15,7 +15,6 @@ const {
 } = require('../../transfers/utils');
 const {
   equals_ignore_case,
-  to_json,
   get_granularity,
   normalize_chain,
   getProvider,
