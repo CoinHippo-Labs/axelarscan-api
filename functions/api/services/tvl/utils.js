@@ -171,7 +171,7 @@ const getCosmosSupply = async (
     } catch (error) {}
   }
 
-  return Number(formatUnits(BigNumber.from(supply.toString()), decimals || 6));
+  return supply && Number(formatUnits(BigNumber.from(supply.toString()), decimals || 6));
 };
 
 const getAxelarnetSupply = async denom_data => {
