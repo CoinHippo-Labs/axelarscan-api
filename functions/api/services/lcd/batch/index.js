@@ -105,12 +105,6 @@ module.exports = async (
           if (data && !data.code) {
             command = data;
           }
-          else {
-            const cli = axios.create({ baseURL: endpoints?.cli, timeout: 15000 });
-            const _response = await cli.get('/', { params: { cmd: `axelard q evm command ${chain} ${command_id} -oj` } }).catch(error => { return { data: { error } }; });
-
-            command = to_json(_response?.data?.stdout);
-          }
         }
 
         if (command) {

@@ -2,6 +2,7 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const {
   read,
   write,
@@ -10,18 +11,10 @@ const {
   get_address,
 } = require('../../../utils/address');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const cosmos_chains_data =
-  require('../../../data')?.chains?.[environment]?.cosmos ||
-  [];
-const axelarnet =
-  cosmos_chains_data
-    .find(c =>
-      c?.id === 'axelarnet'
-    );
+const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos || [];
+const axelarnet = cosmos_chains_data.find(c => c?.id === 'axelarnet');
 
 const {
   endpoints,
@@ -37,45 +30,18 @@ module.exports = async (
     channels,
     pagination,
   } = { ...lcd_response };
+
   let {
     next_key,
   } = { ...pagination };
 
-  if (
-    channels &&
-    endpoints?.lcd
-  ) {
-    const lcd =
-      axios.create(
-        {
-          baseURL: endpoints.lcd,
-          timeout: 3000,
-          headers: {
-            'Accept-Encoding': 'gzip',
-          },
-        },
-      );
+  if (channels && endpoints?.lcd) {
+    const lcd = axios.create({ baseURL: endpoints.lcd, timeout: 3000, headers: { 'Accept-Encoding': 'gzip' } });
 
     let all_channels = channels;
 
     while (next_key) {
-      const _response =
-        await lcd
-          .get(
-            path,
-            {
-              params: {
-                'pagination.key': next_key,
-              },
-            },
-          )
-          .catch(error => {
-            return {
-              data: {
-                error,
-              },
-            };
-          });
+      const _response = await lcd.get(path, { params: { 'pagination.key': next_key } }).catch(error => { return { data: { error } }; });
 
       const {
         data,
@@ -86,14 +52,7 @@ module.exports = async (
       next_key = pagination?.next_key;
 
       if (channels) {
-        all_channels =
-          _.uniqBy(
-            _.concat(
-              all_channels,
-              channels,
-            ),
-            'channel_id',
-          );
+        all_channels = _.uniqBy(_.concat(all_channels, channels), 'channel_id');
       }
     }
 
@@ -112,19 +71,14 @@ module.exports = async (
       data,
     } = { ..._response };
 
-    all_channels = all_channels
-      .map(c => {
+    all_channels =
+      all_channels.map(c => {
         const {
           channel_id,
         } = { ...c };
 
         return {
-          ...(
-            (data || [])
-              .find(_c =>
-                _c?.channel_id === channel_id
-              )
-          ),
+          ...(data || []).find(_c => _c?.channel_id === channel_id),
           ...c,
         };
       });
@@ -142,81 +96,27 @@ module.exports = async (
         escrow_address,
       } = { ...channel };
 
-      if (
-        !chain_id ||
-        !escrow_address ||
-        (
-          counterparty &&
-          !counterparty.escrow_address
-        ) ||
-        moment()
-          .diff(
-            moment(
-              (
-                updated_at ||
-                0
-              ) *
-              1000
-            ),
-            'minutes',
-            true,
-          ) > 240
-      ) {
-        const _response =
-          await lcd
-            .get(
-              `/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`,
-            )
-            .catch(error => {
-              return {
-                data: {
-                  error,
-                },
-              };
-            });
+      if (!chain_id || !escrow_address || (counterparty && !counterparty.escrow_address) || moment().diff(moment((updated_at || 0) * 1000), 'minutes', true) > 240) {
+        const _response = await lcd.get(`/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`).catch(error => { return { data: { error } }; });
 
         const {
           client_state,
         } = { ..._response?.data?.identified_client_state };
 
-        chain_id =
-          client_state?.chain_id ||
-          chain_id;
+        chain_id = client_state?.chain_id || chain_id;
 
         if (chain_id) {
-          escrow_address =
-            get_address(
-              `${version}\x00${port_id}/${channel_id}`,
-              axelarnet?.prefix_address,
-            ) ||
-            escrow_address;
+          escrow_address = get_address(`${version}\x00${port_id}/${channel_id}`, axelarnet?.prefix_address) || escrow_address;
 
           if (counterparty) {
-            const chain_data = cosmos_chains_data
-              .find(c =>
-                (c?.prefix_chain_ids || [])
-                  .findIndex(p =>
-                    chain_id.startsWith(p)
-                  ) > -1 ||
-                Object.values({ ...c?.overrides })
-                  .findIndex(o =>
-                    (o?.prefix_chain_ids || [])
-                      .findIndex(p =>
-                        chain_id.startsWith(p)
-                      ) > -1
-                  ) > -1
-              );
+            const chain_data = cosmos_chains_data.find(c => (c?.prefix_chain_ids || []).findIndex(p => chain_id.startsWith(p)) > -1 || Object.values({ ...c?.overrides }).findIndex(o => (o?.prefix_chain_ids || []).findIndex(p => chain_id.startsWith(p)) > -1) > -1);
 
             const {
               prefix_address,
             } = { ...chain_data };
 
             if (prefix_address) {
-              counterparty.escrow_address =
-                get_address(
-                  `${version}\x00${counterparty.port_id}/${counterparty.channel_id}`,
-                  prefix_address,
-                );
+              counterparty.escrow_address = get_address(`${version}\x00${counterparty.port_id}/${counterparty.channel_id}`, prefix_address);
             }
           }
 
@@ -228,9 +128,7 @@ module.exports = async (
               chain_id,
               counterparty,
               escrow_address,
-              updated_at:
-                moment()
-                  .unix(),
+              updated_at: moment().unix(),
             },
           );
         }

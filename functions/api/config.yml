@@ -15,7 +15,6 @@ mainnet:
   endpoints:
     rpc: "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
     lcd: "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
-    cli: "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:3333"
     api: "https://api.axelarscan.io"
     gmp_api: "https://api.gmp.axelarscan.io"
     app: "https://axelarscan.io"
@@ -192,7 +191,6 @@ testnet:
   endpoints:
     rpc: "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
     lcd: "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:1317"
-    cli: "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:3333"
     api: "https://testnet.api.axelarscan.io"
     gmp_api: "https://testnet.api.gmp.axelarscan.io"
     app: "https://testnet.axelarscan.io"
