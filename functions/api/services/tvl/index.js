@@ -546,6 +546,7 @@ module.exports = async (
                         ...denom_data,
                         denom: (ibc || []).find(i => i?.chain_id === axelarnet.id)?.ibc_denom,
                       },
+                      lcds[axelarnet.id],
                     ) :
                     0;
 
@@ -558,7 +559,7 @@ module.exports = async (
                       Math.abs(escrow_balance - supply) * 100 / escrow_balance :
                       null;
 
-                const total = id === axelarnet.id && !is_native ? await getAxelarnetSupply(denom_data) : 0;
+                const total = id === axelarnet.id && !is_native ? await getAxelarnetSupply(denom_data, lcds[axelarnet.id]) : 0;
 
                 result = {
                   denom_data,
