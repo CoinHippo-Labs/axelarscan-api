@@ -612,7 +612,6 @@ module.exports = {
             'https://cosmos-api.polkachu.com',
             'https://cosmos-api.cyphercore.io',
             'https://lcd-cosmoshub.blockapsis.com',
-            'https://api.cosmos.silknodes.io',
             'https://lcd.cosmos.dragonstake.io',
           ],
           cosmostation: 'https://api.cosmostation.io/v1',
@@ -720,9 +719,7 @@ module.exports = {
           cosmostation: 'https://api-emoney.cosmostation.io/v1',
         },
         overrides: {
-          'e-money': {
-
-          },
+          'e-money': {},
         },
       },
       {
@@ -784,7 +781,6 @@ module.exports = {
           lcds: [
             'https://crescent-api.polkachu.com',
             'https://mainnet.crescent.network:1317',
-            'https://crescent.mainnet.lcd.autostake.net',
           ],
           cosmostation: 'https://api-crescent.cosmostation.io/v1',
         },
@@ -823,37 +819,6 @@ module.exports = {
         },
       },
       {
-        id: 'secret',
-        chain_name: 'secret',
-        name: 'Secret',
-        short_name: 'SCRT',
-        explorer: {
-          name: 'Mintscan',
-          url: 'https://www.mintscan.io/secret',
-          icon: '/logos/explorers/mintscan.png',
-          block_path: '/blocks/{block}',
-          address_path: '/account/{address}',
-          contract_path: '/account/{address}',
-          contract_0_path: '/account/{address}',
-          asset_path: '/assets/{ibc_denom}?type=ibc',
-          transaction_path: '/txs/{tx}',
-        },
-        image: '/logos/chains/secret.svg',
-        color: '#000000',
-        website: 'https://scrt.network',
-        prefix_address: 'secret',
-        prefix_chain_ids: [
-          'secret-',
-        ],
-        endpoints: {
-          lcds: [
-            'https://secret-api.lavenderfive.com',
-            'https://secretnetwork-lcd.stakely.io',
-          ],
-          cosmostation: 'https://api-secret.cosmostation.io/v1',
-        },
-      },
-      {
         id: 'secret-snip',
         chain_name: 'secret-snip',
         name: 'Secret-SNIP',
@@ -878,7 +843,38 @@ module.exports = {
         ],
         endpoints: {
           lcds: [
-            'https://secret-api.lavenderfive.com',
+            'https://lcd.secret.express',
+            'https://secretnetwork-lcd.stakely.io',
+          ],
+          cosmostation: 'https://api-secret.cosmostation.io/v1',
+        },
+      },
+      {
+        id: 'secret',
+        chain_name: 'secret',
+        name: 'Secret',
+        short_name: 'SCRT',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/secret',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/secret.svg',
+        color: '#000000',
+        website: 'https://scrt.network',
+        prefix_address: 'secret',
+        prefix_chain_ids: [
+          'secret-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://lcd.secret.express',
             'https://secretnetwork-lcd.stakely.io',
           ],
           cosmostation: 'https://api-secret.cosmostation.io/v1',
@@ -1043,8 +1039,6 @@ module.exports = {
             'https://api-evmos-ia.cosmosia.notional.ventures',
             'https://evmos-api.polkachu.com',
             'https://evmos-api.lavenderfive.com',
-            'https://rest.bd.evmos.org:1317',
-            'https://api.evmos.interbloc.org',
             'https://lcd.evmos.bh.rocks',
             'https://api.evmos.nodestake.top',
           ],
@@ -1175,7 +1169,7 @@ module.exports = {
           lcds: [
             'https://api-umee-ia.cosmosia.notional.ventures',
             'https://umee-api.polkachu.com',
-            'https://umee.mainnet.lcd.autostake.net',
+            'https://umee-lcd.quantnode.tech',
           ],
           cosmostation: 'https://api-regen.cosmostation.io/v1',
         },
@@ -1236,6 +1230,7 @@ module.exports = {
         ],
         endpoints: {
           lcds: [
+            'https://dimension-lcd.xpla.io',
             'https://dimension-lcd.xpla.dev',
           ],
         },
@@ -1266,8 +1261,8 @@ module.exports = {
           lcds: [
             'https://api-acre.d-stake.xyz',
             'https://lcd-acre.synergynodes.com',
-            'https://api-acrechain.nodeist.net',
             'https://acre-rest.agoranodes.com',
+            'https://rest.acre.tcnetwork.io',
           ],
         },
       },
@@ -1298,7 +1293,6 @@ module.exports = {
           lcds: [
             'https://stride-api.polkachu.com',
             'https://stride.api.chandrastation.com',
-            'http://api-stride.nodeist.net',
             'https://stride-api.lavenderfive.com',
             'https://api.stride.silentvalidator.com',
             'https://stride.api.kjnodes.com',
@@ -1331,6 +1325,7 @@ module.exports = {
         endpoints: {
           lcds: [
             'https://api.carbon.network',
+            'https://rest.carbon.blockhunters.org',
           ],
         },
       },
@@ -1386,6 +1381,7 @@ module.exports = {
         ],
         endpoints: {
           lcds: [
+            'https://terra-classic-lcd.publicnode.com',
             'https://columbus-lcd.terra.dev',
             'https://lcd.terra.dev',
           ],
