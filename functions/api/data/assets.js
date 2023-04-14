@@ -1264,6 +1264,7 @@ module.exports = {
       image: '/logos/assets/eth.svg',
       decimals: 18,
       coingecko_id: 'ethereum',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x0000000000000000000000000000000000000000',
@@ -1576,6 +1577,7 @@ module.exports = {
       image: '/logos/assets/bnb.png',
       decimals: 18,
       coingecko_id: 'binancecoin',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x0000000000000000000000000000000000000000',
@@ -1876,6 +1878,7 @@ module.exports = {
       image: '/logos/assets/matic.svg',
       decimals: 18,
       coingecko_id: 'matic-network',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x0000000000000000000000000000000000000000',
@@ -2170,6 +2173,7 @@ module.exports = {
       image: '/logos/assets/avax.svg',
       decimals: 18,
       coingecko_id: 'avalanche-2',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x0000000000000000000000000000000000000000',
@@ -2464,6 +2468,7 @@ module.exports = {
       image: '/logos/assets/ftm.svg',
       decimals: 18,
       coingecko_id: 'fantom',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x0000000000000000000000000000000000000000',
@@ -2758,6 +2763,7 @@ module.exports = {
       image: '/logos/assets/glmr.svg',
       decimals: 18,
       coingecko_id: 'moonbeam',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x0000000000000000000000000000000000000000',
@@ -3112,6 +3118,7 @@ module.exports = {
       image: '/logos/assets/fil.svg',
       decimals: 18,
       coingecko_id: 'filecoin',
+      no_tvl: true,
       contracts: [
         {
           contract_address: '0x6A7b717aE5Ed65F85BA25403D5063D368239828e',
@@ -5855,168 +5862,6 @@ module.exports = {
       ],
     },
     {
-      id: 'eth-wei',
-      symbol: 'WETH',
-      name: 'Wrapped Ether',
-      image: '/logos/assets/weth.svg',
-      decimals: 18,
-      coingecko_id: 'weth',
-      contracts: [
-        {
-          contract_address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-          chain_id: 5,
-          decimals: 18,
-          is_native: true,
-        },
-        {
-          contract_address: '0x409A57A5Ee1F37FB58b3A3eB9717398F328da1eD',
-          chain_id: 97,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0x786D82A436EA836A8669919D605FfeaEFa51744e',
-          chain_id: 80001,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0xe840BE8D9aB1ACD5AfC7168b05EC350B7FD18709',
-          chain_id: 43113,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0xB17053aE763aCfD65A58e265aa9A4a59b25A7a87',
-          chain_id: 4002,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0x4faB8Ad67eF3173501c512B9367f0B0f62287fE7',
-          chain_id: 1287,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0xcfF68Bea15e24aec8ECfdb82862ff776C3e972d1',
-          chain_id: 1313161555,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
-          chain_id: 44787,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0x3F8a312113ED10833F27bbC1ee08A8cDB4df16B4',
-          chain_id: 2221,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
-          chain_id: 3141,
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-      ],
-      ibc: [
-        {
-          ibc_denom: 'ibc/F64E7E43CAC1AEB502D028893DC4BD62D2CDFC55B7E21F23043DAE602B8A1F3E',
-          chain_id: 'osmosis',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/8AE11672A7DF38BF7B484AB642C5C85BA4A94810D57AE8945151818CD6179427',
-          chain_id: 'osmosis',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/CC8B40E3F3536D003C6ED7C65421067215453AECE1517A6F0935470C634A036B',
-          chain_id: 'kujira',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/A5C1AF7D76E7AC3E86386746C09503828030BF75CE39751C1CE224864601784C',
-          chain_id: 'secret',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/03F1844A967E55DD784154643232F0123E855301267C1C4E06A402F581825BFD',
-          chain_id: 'sei',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/0C9F12E54EEC1B60E247635ED3BBCC1BDDD39DCE3E94072A5D79DAA1293FC81B',
-          chain_id: 'fetch',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F',
-          chain_id: 'evmos',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A',
-          chain_id: 'aura',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/2FD7ECDE485E2B8A87B2D17338DE88492EED9413148902F6CB4BFB500D5A2679',
-          chain_id: 'comdex',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/6D2941E457157854297D7DB338E754E3359581D70CD16A37911A1BAD82CFD1BD',
-          chain_id: 'persistence',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
-          chain_id: 'xpla',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
-          chain_id: 'acre',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/13F73121EEA6CAA0DF51B06F64C39FD55EF394C64223881569DFA5628FA1288D',
-          chain_id: 'carbon',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A',
-          chain_id: 'odin',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-        {
-          ibc_denom: 'ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F',
-          chain_id: 'terra-3',
-          decimals: 18,
-          symbol: 'axlWETH',
-        },
-      ],
-    },
-    {
       id: 'weth-wei',
       symbol: 'WETH',
       name: 'Wrapped Ether',
@@ -6166,6 +6011,169 @@ module.exports = {
         },
         {
           ibc_denom: 'ibc/C567713C9D0904098C14BA0FBEB9192C5B68B590757EE6913DC292710C8926E6',
+          chain_id: 'terra-3',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+      ],
+    },
+    {
+      id: 'eth-wei',
+      symbol: 'WETH',
+      name: 'Wrapped Ether',
+      image: '/logos/assets/weth.svg',
+      decimals: 18,
+      coingecko_id: 'weth',
+      no_tvl: true,
+      contracts: [
+        {
+          contract_address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+          chain_id: 5,
+          decimals: 18,
+          is_native: true,
+        },
+        {
+          contract_address: '0x409A57A5Ee1F37FB58b3A3eB9717398F328da1eD',
+          chain_id: 97,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0x786D82A436EA836A8669919D605FfeaEFa51744e',
+          chain_id: 80001,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xe840BE8D9aB1ACD5AfC7168b05EC350B7FD18709',
+          chain_id: 43113,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xB17053aE763aCfD65A58e265aa9A4a59b25A7a87',
+          chain_id: 4002,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0x4faB8Ad67eF3173501c512B9367f0B0f62287fE7',
+          chain_id: 1287,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xcfF68Bea15e24aec8ECfdb82862ff776C3e972d1',
+          chain_id: 1313161555,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
+          chain_id: 44787,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0x3F8a312113ED10833F27bbC1ee08A8cDB4df16B4',
+          chain_id: 2221,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          contract_address: '0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64',
+          chain_id: 3141,
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/F64E7E43CAC1AEB502D028893DC4BD62D2CDFC55B7E21F23043DAE602B8A1F3E',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/8AE11672A7DF38BF7B484AB642C5C85BA4A94810D57AE8945151818CD6179427',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/CC8B40E3F3536D003C6ED7C65421067215453AECE1517A6F0935470C634A036B',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/A5C1AF7D76E7AC3E86386746C09503828030BF75CE39751C1CE224864601784C',
+          chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/03F1844A967E55DD784154643232F0123E855301267C1C4E06A402F581825BFD',
+          chain_id: 'sei',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/0C9F12E54EEC1B60E247635ED3BBCC1BDDD39DCE3E94072A5D79DAA1293FC81B',
+          chain_id: 'fetch',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F',
+          chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/2FD7ECDE485E2B8A87B2D17338DE88492EED9413148902F6CB4BFB500D5A2679',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/6D2941E457157854297D7DB338E754E3359581D70CD16A37911A1BAD82CFD1BD',
+          chain_id: 'persistence',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
+          chain_id: 'xpla',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/B8FEE8FE30746C96641E48F94053D5D0BE99CCB5B98C58A0239B70F082E713EA',
+          chain_id: 'acre',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/13F73121EEA6CAA0DF51B06F64C39FD55EF394C64223881569DFA5628FA1288D',
+          chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A',
+          chain_id: 'odin',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F',
           chain_id: 'terra-3',
           decimals: 18,
           symbol: 'axlWETH',
