@@ -4,6 +4,7 @@ exports.handler = async (
   callback,
 ) => {
   const config = require('config-yml');
+
   const rpc = require('./services/rpc');
   const lcd = require('./services/lcd');
   const {
@@ -17,6 +18,7 @@ exports.handler = async (
     transfersStats,
     transfersStatsChart,
     cumulativeVolume,
+    totalVolume,
     getTransfersStatus,
     saveDepositForWrap,
     saveWrap,
@@ -35,19 +37,11 @@ exports.handler = async (
     get_params,
   } = require('./utils');
 
-  const environment =
-    process.env.ENVIRONMENT ||
-    config?.environment;
+  const environment = process.env.ENVIRONMENT || config?.environment;
 
-  const evm_chains_data =
-    require('./data')?.chains?.[environment]?.evm ||
-    [];
-  const cosmos_chains_data =
-    require('./data')?.chains?.[environment]?.cosmos ||
-    [];
-  const assets_data =
-    require('./data')?.assets?.[environment] ||
-    [];
+  const evm_chains_data = require('./data')?.chains?.[environment]?.evm || [];
+  const cosmos_chains_data = require('./data')?.chains?.[environment]?.cosmos || [];
+  const assets_data = require('./data')?.assets?.[environment] || [];
 
   // parse function event to req
   const req = {
@@ -273,6 +267,17 @@ exports.handler = async (
         case 'cumulative-volume':
           try {
             response = await cumulativeVolume(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'total-volume':
+          try {
+            response = await totalVolume(params);
           } catch (error) {
             response = {
               error: true,
