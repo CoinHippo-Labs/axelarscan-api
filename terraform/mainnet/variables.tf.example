@@ -5,11 +5,11 @@ variable "aws_region" {
 
 variable "aws_profile" {
   description = "AWS profile"
-  default     = "axelarscan.io"
+  default     = "default"
 }
 
-variable "package_name" {
-  description = "Package name"
+variable "project_name" {
+  description = "Project name"
   default     = "axelarscan"
 }
 
@@ -18,13 +18,23 @@ variable "environment" {
   default     = "mainnet"
 }
 
-variable "indexer_username" {
-  description = "Indexer username"
+variable "general_indexer_url" {
+  description = "General indexer url"
   default     = ""
 }
 
-variable "indexer_password" {
-  description = "Indexer password"
+variable "general_indexer_username" {
+  description = "General indexer username"
+  default     = ""
+}
+
+variable "general_indexer_password" {
+  description = "General indexer password"
+  default     = ""
+}
+
+variable "transfers_indexer_url" {
+  description = "Transfers indexer url"
   default     = ""
 }
 

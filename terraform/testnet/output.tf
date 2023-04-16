@@ -1,27 +1,23 @@
-output "lambda" {
-  value = aws_lambda_function.function.arn
-}
-
-output "opensearch" {
-  value = aws_opensearch_domain.domain.endpoint
-}
-
-output "opensearch_transfers" {
-  value = aws_opensearch_domain.domain_transfers.endpoint
+output "lambda_api" {
+  value = aws_lambda_function.api.arn
 }
 
 output "api_gateway" {
   value = aws_apigatewayv2_api.api.api_endpoint
 }
 
-output "event_rule" {
-  value = aws_cloudwatch_event_rule.schedule.arn
+output "lambda_axelar_crawler" {
+  value = aws_lambda_function.axelar_crawler.arn
 }
 
-output "lambda_crawler" {
-  value = aws_lambda_function.crawler.arn
+output "event_rule_axelar_crawler" {
+  value = aws_cloudwatch_event_rule.schedule_axelar_crawler.arn
 }
 
-output "event_rule_crawler" {
-  value = aws_cloudwatch_event_rule.schedule_crawler.arn
+output "lambda_evm_crawler" {
+  value = aws_lambda_function.evm_crawler.arn
+}
+
+output "event_rule_evm_crawler" {
+  value = aws_cloudwatch_event_rule.schedule_evm_crawler.arn
 }

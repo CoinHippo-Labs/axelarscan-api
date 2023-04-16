@@ -13,8 +13,9 @@ const environment =
 
 const {
   endpoints,
-  num_blocks_avg_block_time,
 } = { ...config?.[environment] };
+
+const num_blocks_avg_block_time = 100;
 
 module.exports = async (
   path = '',

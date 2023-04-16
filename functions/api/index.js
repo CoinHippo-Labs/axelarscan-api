@@ -12,7 +12,6 @@ exports.handler = async (
   } = require('./services/index');
   const assets_price = require('./services/assets-price');
   const coingecko = require('./services/coingecko');
-  const ens = require('./services/ens');
   const {
     transfers,
     transfersStats,
@@ -172,21 +171,6 @@ exports.handler = async (
           try {
             response =
               await coingecko(
-                path,
-                params,
-              );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'ens':
-          try {
-            response =
-              await ens(
                 path,
                 params,
               );

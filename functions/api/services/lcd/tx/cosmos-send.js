@@ -22,10 +22,6 @@ const {
 
 const environment = process.env.ENVIRONMENT || config?.environment;
 
-const {
-  agent,
-} = { ...config?.[environment] };
-
 const evm_chains_data = require('../../../data')?.chains?.[environment]?.evm || [];
 const cosmos_chains_data = require('../../../data')?.chains?.[environment]?.cosmos || [];
 const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
@@ -112,7 +108,7 @@ module.exports = async (
           const _lcds = _.concat(lcds).filter(l => l);
 
           for (const _lcd of _lcds) {
-            const lcd = axios.create({ baseURL: _lcd, timeout: 3000, headers: { agent, 'Accept-Encoding': 'gzip' } });
+            const lcd = axios.create({ baseURL: _lcd, timeout: 3000, headers: { agent: 'axelarscan', 'Accept-Encoding': 'gzip' } });
 
             let _response = await lcd.get(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`).catch(error => { return { data: { error } }; });
 

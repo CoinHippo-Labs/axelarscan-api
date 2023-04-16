@@ -1,18 +1,11 @@
 const _ = require('lodash');
 const moment = require('moment');
-const config = require('config-yml');
+
 const {
   write,
 } = require('../../index');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
-
-const {
-  num_blocks_per_heartbeat,
-  fraction_heartbeat_block,
-} = { ...config?.[environment] };
+const num_blocks_per_heartbeat = 50;
 
 module.exports = async (
   lcd_response = {},
@@ -61,8 +54,7 @@ module.exports = async (
               (
                 (height % num_blocks_per_heartbeat) ||
                 num_blocks_per_heartbeat
-              ) +
-              fraction_heartbeat_block,
+              ) + 1,
             timestamp:
               moment(timestamp)
                 .utc()

@@ -1,0 +1,27 @@
+###########################
+# Endpoints Configuration #
+###########################
+
+mainnet:
+  rpc: "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
+  lcd: "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
+  api: "https://api.axelarscan.io"
+  gmp_api: "https://api.gmp.axelarscan.io"
+  app: "https://axelarscan.io"
+  cosmostation: "https://api-axelar.cosmostation.io/v1"
+  mintscan:
+    api: "https://api.mintscan.io/v1/axelar"
+    chain_id: "axelar-dojo-1"
+
+
+
+testnet:
+  rpc: "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
+  lcd: "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:1317"
+  api: "https://testnet.api.axelarscan.io"
+  gmp_api: "https://testnet.api.gmp.axelarscan.io"
+  app: "https://testnet.axelarscan.io"
+  cosmostation: "https://api-axelar-testnet.cosmostation.io/v1"
+  mintscan:
+    api: "https://api.mintscan.io/v1/axelar-testnet"
+    chain_id: "axelar-testnet-lisbon-3"

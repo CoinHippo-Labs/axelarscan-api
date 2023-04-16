@@ -1,5 +1,4 @@
 const moment = require('moment');
-const config = require('config-yml');
 
 const rpc = require('./rpc');
 const {
@@ -9,14 +8,10 @@ const {
   log,
 } = require('../utils');
 
-const environment = process.env.ENVIRONMENT || config?.environment;
-
 const service_name = 'archiver';
 
-const {
-  store_blocks,
-  cache_timeout_seconds,
-} = { ...config?.[environment] };
+const store_blocks = 100000;
+const cache_timeout_seconds = 300;
 
 module.exports = async () => {
   const collections = ['blocks'];

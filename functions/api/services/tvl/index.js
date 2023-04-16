@@ -32,12 +32,6 @@ const {
 
 const environment = process.env.ENVIRONMENT || config?.environment;
 
-const private_rpcs_avalanche = process.env.PRIVATE_RPCS_AVALANCHE;
-
-const {
-  agent,
-} = { ...config?.[environment] };
-
 const evm_chains_data = require('../../data')?.chains?.[environment]?.evm || [];
 const cosmos_chains_data = require('../../data')?.chains?.[environment]?.cosmos || [];
 const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
@@ -278,23 +272,7 @@ module.exports = async (
           rpcUrls,
         } = { ..._.head(provider_params) };
 
-        let rpcs;
-
-        switch (id) {
-          case 'avalanche':
-            if (private_rpcs_avalanche) {
-              rpcs = _.concat(private_rpcs_avalanche.split(','), rpcUrls);
-            }
-            break;
-          default:
-            rpcs = rpcUrls;
-            break;
-        }
-
-        if (!(rpcs?.length > 0)) {
-          rpcs = rpcUrls || [];
-        }
-
+        const rpcs = rpcUrls || [];
         rpcs = _.uniq(rpcs).filter(url => url);
 
         const provider =
@@ -335,7 +313,7 @@ module.exports = async (
 
         return [
           id,
-          _lcds.map(url => axios.create({ baseURL: url, timeout: 5000, headers: { agent, 'Accept-Encoding': 'gzip' } })),
+          _lcds.map(url => axios.create({ baseURL: url, timeout: 5000, headers: { agent: 'axelarscan', 'Accept-Encoding': 'gzip' } })),
         ];
       })
     );
@@ -447,7 +425,7 @@ module.exports = async (
                 }
 
                 if (equals_ignore_case(id, original_chain_id)) {
-                  _lcds = lcd_urls.map(url => axios.create({ baseURL: url, timeout: 5000, headers: { agent, 'Accept-Encoding': 'gzip' } } ));
+                  _lcds = lcd_urls.map(url => axios.create({ baseURL: url, timeout: 5000, headers: { agent: 'axelarscan', 'Accept-Encoding': 'gzip' } } ));
                 }
 
                 let result;
