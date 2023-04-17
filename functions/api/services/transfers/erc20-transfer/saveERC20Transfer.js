@@ -21,7 +21,7 @@ const fields = [
     is_key: true,
   },
   {
-    id: 'tx_hash_wrap',
+    id: 'tx_hash_transfer',
     type: 'string',
     required: true,
   },
@@ -34,7 +34,7 @@ const fields = [
 
 module.exports = async (
   params = {},
-  collection = 'wraps',
+  collection = 'erc20_transfers',
 ) => {
   if (
     fields.findIndex(f => {
@@ -97,7 +97,7 @@ module.exports = async (
     return {
       error: false,
       code: 200,
-      method: 'saveWrap',
+      method: 'saveERC20Transfer',
       _id,
       data,
       result,

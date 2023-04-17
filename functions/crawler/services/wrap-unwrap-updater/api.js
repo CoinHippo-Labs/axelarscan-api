@@ -1,5 +1,6 @@
 const axios = require('axios');
 const config = require('config-yml');
+
 const {
   log,
 } = require('../../utils');
@@ -14,14 +15,7 @@ const API = (env = environment) => {
     api,
   } = { ...config?.[env] };
 
-  return (
-    api &&
-    axios.create(
-      {
-        baseURL: api,
-      },
-    )
-  );
+  return api && axios.create({ baseURL: api });
 };
 
 const getWraps = async params => {
@@ -39,19 +33,7 @@ const getWraps = async params => {
       },
     );
 
-    const response =
-      await api
-        .get(
-          '/wraps',
-          { params },
-        )
-        .catch(error => {
-          return {
-            data: {
-              error,
-            },
-          };
-        });
+    const response = await api.get('/wraps', { params }).catch(error => { return { data: { error } }; });
 
     output = response?.data;
 
@@ -84,19 +66,7 @@ const getUnwraps = async params => {
       },
     );
 
-    const response =
-      await api
-        .get(
-          '/unwraps',
-          { params },
-        )
-        .catch(error => {
-          return {
-            data: {
-              error,
-            },
-          };
-        });
+    const response = await api.get('/unwraps', { params }).catch(error => { return { data: { error } }; });
 
     output = response?.data;
 
@@ -114,8 +84,42 @@ const getUnwraps = async params => {
   return output;
 };
 
+const getERC20Transfers = async params => {
+  let output;
+
+  const api = API();
+
+  if (api) {
+    log(
+      'info',
+      service_name,
+      'get erc20 transfers',
+      {
+        ...params,
+      },
+    );
+
+    const response = await api.get('/erc20-transfers', { params }).catch(error => { return { data: { error } }; });
+
+    output = response?.data;
+
+    log(
+      'debug',
+      service_name,
+      'erc20 transfers',
+      {
+        output,
+        ...params,
+      },
+    );
+  }
+
+  return output;
+};
+
 module.exports = {
   API,
   getWraps,
   getUnwraps,
+  getERC20Transfers,
 };

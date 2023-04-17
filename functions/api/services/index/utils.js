@@ -17,20 +17,20 @@ const normalize_obj = object =>
         )
     );
 
-const transfer_collections =
-  [
-    'cross_chain_transfers',
-    'deposit_addresses',
-    'wraps',
-    'unwraps',
-    'batches',
-    'command_events',
-    'ibc_channels',
-    'tvls',
-    'assets',
-    'transfers',
-    'token_sent_events',
-  ];
+const transfer_collections = [
+  'cross_chain_transfers',
+  'deposit_addresses',
+  'wraps',
+  'unwraps',
+  'erc20_transfers',
+  'batches',
+  'command_events',
+  'ibc_channels',
+  'tvls',
+  'assets',
+  'transfers',
+  'token_sent_events',
+];
 
 module.exports = {
   normalize_obj,

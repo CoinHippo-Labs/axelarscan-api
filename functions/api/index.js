@@ -24,6 +24,8 @@ exports.handler = async (
     saveWrap,
     saveDepositForUnwrap,
     saveUnwrap,
+    saveDepositForERC20Transfer,
+    saveERC20Transfer,
   } = require('./services/transfers');
   const tvl = require('./services/tvl');
   const {
@@ -45,12 +47,7 @@ exports.handler = async (
 
   // parse function event to req
   const req = {
-    url:
-      (event.routeKey || '')
-        .replace(
-          'ANY ',
-          '',
-        ),
+    url: (event.routeKey || '').replace('ANY ', ''),
     method: event.requestContext?.http?.method,
     headers: event.headers,
     params: {
@@ -60,12 +57,7 @@ exports.handler = async (
       ...event.queryStringParameters,
     },
     body: {
-      ...(
-        event.body &&
-        JSON.parse(
-          event.body
-        )
-      ),
+      ...(event.body && JSON.parse(event.body)),
     },
   };
 
@@ -330,6 +322,28 @@ exports.handler = async (
             };
           }
           break;
+        case 'save-deposit-for-erc20-transfer':
+          try {
+            response = await saveDepositForERC20Transfer(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'save-erc20-transfer':
+          try {
+            response = await saveERC20Transfer(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
         case 'chains':
           response = {
             ...require('./data')?.chains?.[environment],
@@ -337,15 +351,14 @@ exports.handler = async (
           break;
         case 'assets':
           response =
-            assets_data
-              .map(a =>
-                Object.fromEntries(
-                  Object.entries({ ...a })
-                    .filter(([k, v]) =>
-                      !['coingecko_id'].includes(k)
-                    )
-                )
-              );
+            assets_data.map(a =>
+              Object.fromEntries(
+                Object.entries({ ...a })
+                  .filter(([k, v]) =>
+                    !['coingecko_id'].includes(k)
+                  )
+              )
+            );
           break;
         case 'tvl':
           try {
@@ -444,6 +457,17 @@ exports.handler = async (
         case 'unwraps':
           try {
             response = await require('./services/unwraps')(params);
+          } catch (error) {
+            response = {
+              error: true,
+              code: 400,
+              message: error?.message,
+            };
+          }
+          break;
+        case 'erc20-transfers':
+          try {
+            response = await require('./services/erc20Transfers')(params);
           } catch (error) {
             response = {
               error: true,
@@ -576,18 +600,7 @@ exports.handler = async (
       break;
     default:
       if (!req.url) {
-        const remain_ms_to_exit =
-          (
-            (
-              [
-                'mainnet',
-              ].includes(environment) ?
-                60 :
-                0
-            ) +
-            2
-          ) *
-          1000;
+        const remain_ms_to_exit = ((['mainnet'].includes(environment) ? 60 : 0) + 2) * 1000;
 
         // archive data from indexer
         require('./services/archiver')();

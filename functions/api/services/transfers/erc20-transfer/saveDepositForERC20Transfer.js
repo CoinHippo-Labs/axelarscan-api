@@ -21,20 +21,28 @@ const fields = [
     is_key: true,
   },
   {
-    id: 'tx_hash_wrap',
+    id: 'source_chain',
     type: 'string',
-    required: true,
+    normalize: s => normalize_chain(s),
   },
   {
     id: 'destination_chain',
     type: 'string',
     normalize: s => normalize_chain(s),
   },
+  {
+    id: 'recipient_address',
+    type: 'string',
+  },
+  {
+    id: 'token_symbol',
+    type: 'string',
+  },
 ];
 
 module.exports = async (
   params = {},
-  collection = 'wraps',
+  collection = 'erc20_transfers',
 ) => {
   if (
     fields.findIndex(f => {
@@ -87,7 +95,6 @@ module.exports = async (
           ...data,
           updated_at: moment().valueOf(),
         },
-        true,
       );
 
     const {
@@ -97,7 +104,7 @@ module.exports = async (
     return {
       error: false,
       code: 200,
-      method: 'saveWrap',
+      method: 'saveDepositForERC20Transfer',
       _id,
       data,
       result,

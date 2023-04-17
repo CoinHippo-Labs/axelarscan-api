@@ -68,9 +68,12 @@ module.exports = async (
             should: [
               { match: { 'send.txhash': txHash } },
               { match: { 'wrap.txhash': txHash } },
+              { match: { 'wrap.tx_hash_wrap': txHash } },
               { match: { 'command.transactionHash': txHash } },
               { match: { 'unwrap.txhash': txHash } },
               { match: { 'unwrap.tx_hash_unwrap': txHash } },
+              { match: { 'erc20_transfer.txhash': txHash } },
+              { match: { 'erc20_transfer.tx_hash_transfer': txHash } },
             ],
             minimum_should_match: 1,
           },
@@ -441,6 +444,7 @@ module.exports = async (
         ibc_send,
         axelar_transfer,
         wrap,
+        erc20_transfer,
       } = { ...data };
 
       const {
@@ -501,7 +505,7 @@ module.exports = async (
         }
       }
 
-      type = unwrap ? 'unwrap' : wrap ? 'wrap' : type || 'deposit_address';
+      type = unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : type || 'deposit_address';
 
       const _data = {
         type,
@@ -731,6 +735,7 @@ module.exports = async (
           axelar_transfer,
           wrap,
           unwrap,
+          erc20_transfer,
         } = { ...d };
         let {
           type,
@@ -745,7 +750,7 @@ module.exports = async (
           price,
         } = { ...link };
 
-        type = wrap ? 'wrap' : unwrap ? 'unwrap' : type;
+        type = wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : unwrap ? 'unwrap' : type;
 
         if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number') {
           price = value / amount;
@@ -768,7 +773,7 @@ module.exports = async (
                     'voted' :
                     confirm ?
                       'deposit_confirmed' :
-                      send?.status === 'failed' && !wrap ?
+                      send?.status === 'failed' && !wrap && !erc20_transfer ?
                         'send_failed' :
                         'asset_sent';
 

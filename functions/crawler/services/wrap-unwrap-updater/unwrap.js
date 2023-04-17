@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
+
 const {
   API,
   getUnwraps,
@@ -20,21 +21,13 @@ module.exports = async (
   const api = API();
 
   while (true) {
-    const response =
-      await getUnwraps(
-        {
-          status: 'to_update',
-        },
-      );
+    const response = await getUnwraps({ status: 'to_update' });
 
     const {
       data,
     } = { ...response };
 
-    if (
-      Array.isArray(data) &&
-      data.length > 0
-    ) {
+    if (Array.isArray(data) && data.length > 0) {
       for (const d of data) {
         const {
           deposit_address_link,
@@ -43,12 +36,7 @@ module.exports = async (
           destination_chain,
         } = { ...d };
 
-        if (
-          deposit_address_link &&
-          tx_hash_unwrap &&
-          source_chain &&
-          destination_chain
-        ) {
+        if (deposit_address_link && tx_hash_unwrap && source_chain && destination_chain) {
           const provider = getProvider(destination_chain);
 
           if (provider) {
@@ -85,46 +73,28 @@ module.exports = async (
                   };
                 });
 
-            const _d =
-              _.head(
-                _response?.data?.data
-              );
+            const _d = _.head(_response?.data?.data);
 
             if (_d) {
               const {
                 txhash,
               } = { ..._d.send };
 
-              const _data =
-                await getTransaction(
-                  provider,
-                  tx_hash_unwrap,
-                  destination_chain,
-                );
+              const _data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
 
               const {
                 blockNumber,
               } = { ..._data?.transaction };
 
               if (blockNumber) {
-                const block_timestamp =
-                  await getBlockTime(
-                    provider,
-                    blockNumber,
-                  );
+                const block_timestamp = await getBlockTime(provider, blockNumber);
 
                 const unwrap = {
                   ...d,
                   txhash: tx_hash_unwrap,
                   height: blockNumber,
                   type: 'evm',
-                  created_at:
-                    get_granularity(
-                      moment(
-                        block_timestamp * 1000
-                      )
-                      .utc()
-                    ),
+                  created_at: get_granularity(moment(block_timestamp * 1000).utc()),
                 };
 
                 const _id = `${txhash}_${source_chain}`.toLowerCase();

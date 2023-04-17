@@ -5,6 +5,7 @@ const {
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const {
   read,
   write,
@@ -24,16 +25,10 @@ const {
   getProvider,
 } = require('../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const evm_chains_data =
-  require('../../data')?.chains?.[environment]?.evm ||
-  [];
-const assets_data =
-  require('../../data')?.assets?.[environment] ||
-  [];
+const evm_chains_data = require('../../data')?.chains?.[environment]?.evm || [];
+const assets_data = require('../../data')?.assets?.[environment] || [];
 
 const {
   gateway,
@@ -64,13 +59,7 @@ module.exports = async (
     endpoints,
   } = { ...chains?.[chain] };
 
-  if (
-    !(
-      event &&
-      chain &&
-      contractAddress
-    )
-  ) {
+  if (!(event && chain && contractAddress)) {
     response = {
       error: true,
       code: 400,
@@ -84,15 +73,7 @@ module.exports = async (
       message: 'chain not valid',
     };
   }
-  else if (
-    !(
-      endpoints?.rpc &&
-      equals_ignore_case(
-        contracts?.[chain]?.address,
-        contractAddress,
-      )
-    )
-  ) {
+  else if (!(endpoints?.rpc && equals_ignore_case(contracts?.[chain]?.address, contractAddress))) {
     response = {
       error: true,
       code: 500,
@@ -100,19 +81,8 @@ module.exports = async (
     };
   }
   else {
-    const chain_data = evm_chains_data
-      .find(c =>
-        equals_ignore_case(
-          c?.id,
-          chain,
-        )
-      );
-
-    // setup provider
-    const provider =
-      getProvider(
-        chain_data,
-      );
+    const chain_data = evm_chains_data.find(c => equals_ignore_case(c?.id, chain));
+    const provider = getProvider(chain_data);
 
     const {
       _id,
@@ -125,9 +95,7 @@ module.exports = async (
     const event_name = event.event;
 
     // initial variables
-    let id =
-      _id ||
-      `${transactionHash}_${transactionIndex}_${logIndex}`;
+    let id = id || `${transactionHash}_${transactionIndex}_${logIndex}`;
 
     event.id = id;
     event.chain = chain;
@@ -138,18 +106,8 @@ module.exports = async (
       case 'TokenSent':
         try {
           event = {
-            ...(
-              await getTransaction(
-                provider,
-                transactionHash,
-                chain,
-              )
-            ),
-            block_timestamp:
-              await getBlockTime(
-                provider,
-                blockNumber,
-              ),
+            ...await getTransaction(provider, transactionHash, chain),
+            block_timestamp: await getBlockTime(provider, blockNumber),
             ...event,
           };
 
@@ -157,6 +115,7 @@ module.exports = async (
             block_timestamp,
             returnValues,
           } = { ...event };
+
           const {
             sender,
             destinationChain,
@@ -170,13 +129,7 @@ module.exports = async (
           if (block_timestamp) {
             event = {
               ...event,
-              created_at:
-                get_granularity(
-                  moment(
-                    block_timestamp * 1000
-                  )
-                  .utc()
-                ),
+              created_at: get_granularity(moment(block_timestamp * 1000).utc()),
             };
           }
 
@@ -186,18 +139,8 @@ module.exports = async (
 
           const asset_data = assets_data
             .find(a =>
-              equals_ignore_case(
-                a?.symbol,
-                symbol,
-              ) ||
-              (a?.contracts || [])
-                .findIndex(c =>
-                  c?.chain_id === chain_id &&
-                  equals_ignore_case(
-                    c?.symbol,
-                    symbol,
-                  )
-                ) > -1
+              equals_ignore_case(a?.symbol, symbol) ||
+              (a?.contracts || []).findIndex(c => c?.chain_id === chain_id && equals_ignore_case(c?.symbol, symbol)) > -1
             );
 
           if (asset_data) {
@@ -209,83 +152,42 @@ module.exports = async (
               decimals,
             } = { ...asset_data };
 
-            const contract_data = (contracts || [])
-              .find(c =>
-                c.chain_id === chain_id
-              );
+            const contract_data = (contracts || []).find(c => c.chain_id === chain_id);
 
             if (contract_data) {
-              decimals =
-                contract_data.decimals ||
-                decimals ||
-                (
-                  [
-                    id,
-                  ].findIndex(s =>
-                    s?.includes('-wei')
-                  ) > -1 ?
-                    18 :
-                    6
-                );
-
-              amount =
-                Number(
-                  formatUnits(
-                    BigNumber.from(
-                      amount ||
-                      '0'
-                    )
-                    .toString(),
-                    decimals,
-                  )
-                );
+              decimals = contract_data.decimals || decimals || ([id].findIndex(s => s?.includes('-wei')) > -1 ? 18 : 6);
+              amount = Number(formatUnits(BigNumber.from(amount || '0').toString(), decimals));
 
               const _response =
                 await assets_price(
                   {
                     denom: id,
-                    timestamp:
-                      (block_timestamp ?
-                        moment(
-                          block_timestamp * 1000
-                        ) :
-                        moment()
-                      )
-                      .valueOf(),
+                    timestamp: (block_timestamp ? moment(block_timestamp * 1000) : moment()).valueOf(),
                   },
                 );
 
               let {
                 price,
-              } = {
-                ...(
-                  _.head(
-                    _response
-                  )
-                ),
-              };
+              } = { ..._.head(_response) };
 
-              price =
-                typeof price === 'number' ?
-                  price :
-                  undefined;
+              price = typeof price === 'number' ? price : undefined;
 
               event = {
                 ...event,
                 denom: id,
                 amount,
                 price,
-                value:
-                  typeof price === 'number' ?
-                    amount * price:
-                    undefined,
+                value: typeof price === 'number' ? amount * price: undefined,
               };
             }
           }
 
           try {
             // cross-chain transfers
-            const _response =
+            let wrap;
+            let erc20_transfer;
+
+            let _response =
               await read(
                 'wraps',
                 {
@@ -301,10 +203,7 @@ module.exports = async (
                 },
               );
 
-            let wrap =
-              _.head(
-                _response?.data
-              );
+            wrap = _.head(_response?.data);
 
             if (wrap) {
               const {
@@ -312,12 +211,7 @@ module.exports = async (
               } = { ...wrap };
 
               if (tx_hash) {
-                const data =
-                  await getTransaction(
-                    provider,
-                    tx_hash,
-                    chain,
-                  );
+                const data = await getTransaction(provider, tx_hash, chain);
 
                 const {
                   blockNumber,
@@ -325,40 +219,73 @@ module.exports = async (
                 } = { ...data?.transaction };
 
                 if (blockNumber) {
-                  const block_timestamp =
-                    await getBlockTime(
-                      provider,
-                      blockNumber,
-                    );
+                  const block_timestamp = await getBlockTime(provider, blockNumber);
 
                   wrap = {
                     ...wrap,
                     txhash: tx_hash,
                     height: blockNumber,
                     type: 'evm',
-                    created_at:
-                      get_granularity(
-                        moment(
-                          block_timestamp * 1000
-                        )
-                        .utc()
-                      ),
+                    created_at: get_granularity(moment(block_timestamp * 1000).utc()),
                     sender_address: from,
                   };
                 }
               }
             }
+            else {
+              _response =
+                await read(
+                  'erc20_transfers',
+                  {
+                    bool: {
+                      must: [
+                        { match: { tx_hash_transfer: transactionHash } },
+                        { match: { source_chain: chain } },
+                      ],
+                    },
+                  },
+                  {
+                    size: 1,
+                  },
+                );
 
-            const type =
-              wrap ?
-                'wrap' :
-                'send_token';
+              erc20_transfer = _.head(_response?.data);
+
+              if (erc20_transfer) {
+                const {
+                  tx_hash,
+                } = { ...erc20_transfer };
+
+                if (tx_hash) {
+                  const data = await getTransaction(provider, tx_hash, chain);
+
+                  const {
+                    blockNumber,
+                    from,
+                  } = { ...data?.transaction };
+
+                  if (blockNumber) {
+                    const block_timestamp = await getBlockTime(provider, blockNumber);
+
+                    erc20_transfer = {
+                      ...erc20_transfer,
+                      txhash: tx_hash,
+                      height: blockNumber,
+                      type: 'evm',
+                      created_at: get_granularity(moment(block_timestamp * 1000).utc()),
+                      sender_address: from,
+                    };
+                  }
+                }
+              }
+            }
+
+            const type = wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : 'send_token';
 
             const data = {
               type,
-              wrap:
-                wrap ||
-                undefined,
+              wrap: wrap || undefined,
+              erc20_transfer: erc20_transfer || undefined,
             };
 
             let send = {
@@ -391,18 +318,8 @@ module.exports = async (
               price: event.price,
             };
 
-            link =
-              await update_link(
-                link,
-                send,
-              );
-
-            send =
-              await update_send(
-                send,
-                link,
-                data,
-              );
+            link = await update_link(link, send);
+            send = await update_send(send, link, data);
 
             response = {
               send,
@@ -415,18 +332,8 @@ module.exports = async (
       case 'Executed':
         try {
           event = {
-            ...(
-              await getTransaction(
-                provider,
-                transactionHash,
-                chain,
-              )
-            ),
-            block_timestamp:
-              await getBlockTime(
-                provider,
-                blockNumber,
-              ),
+            ...await getTransaction(provider, transactionHash, chain),
+            block_timestamp: await getBlockTime(provider, blockNumber),
             ...event,
           };
 
@@ -434,17 +341,14 @@ module.exports = async (
             block_timestamp,
             returnValues,
           } = { ...event };
+
           let {
             commandId,
           } = { ...returnValues };
 
           if (commandId) {
             if (commandId.startsWith('0x')) {
-              commandId =
-                commandId
-                  .substring(
-                    2,
-                  );
+              commandId = commandId.substring(2);
             }
 
             const _response =
@@ -458,10 +362,7 @@ module.exports = async (
                 },
               );
 
-            const batch =
-              _.head(
-                _response?.data
-              );
+            const batch = _.head(_response?.data);
 
             const {
               batch_id,
@@ -491,13 +392,7 @@ module.exports = async (
             );
 
             if (batch_id) {
-              const index = (commands || [])
-                .findIndex(c =>
-                  equals_ignore_case(
-                    c?.id,
-                    commandId,
-                  )
-                );
+              const index = (commands || []).findIndex(c => equals_ignore_case(c?.id, commandId));
 
               if (index > -1) {
                 commands[index] = {
@@ -508,12 +403,7 @@ module.exports = async (
 
                 let command_events
 
-                if (
-                  commands
-                    .findIndex(c =>
-                      !c?.transactionHash
-                    ) > -1
-                ) {
+                if (commands.findIndex(c => !c?.transactionHash) > -1) {
                   const _response =
                     await read(
                       'command_events',
@@ -547,52 +437,34 @@ module.exports = async (
 
                 if (Array.isArray(command_events)) {
                   commands =
-                    commands
-                      .map(c => {
-                        if (
-                          c?.id &&
-                          !c.transactionHash
-                        ) {
-                          const command_event = command_events
-                            .find(_c =>
-                              equals_ignore_case(
-                                _c?.command_id,
-                                c.id,
-                              )
-                            );
+                    commands.map(c => {
+                      if (c?.id && !c.transactionHash) {
+                        const command_event = command_events.find(_c => equals_ignore_case(_c?.command_id, c.id));
 
-                          if (command_event) {
-                            const {
-                              transactionHash,
-                              transactionIndex,
-                              logIndex,
-                              block_timestamp,
-                            } = { ...command_event };
+                        if (command_event) {
+                          const {
+                            transactionHash,
+                            transactionIndex,
+                            logIndex,
+                            block_timestamp,
+                          } = { ...command_event };
 
-                            c.transactionHash = transactionHash;
-                            c.transactionIndex = transactionIndex;
-                            c.logIndex = logIndex;
-                            c.block_timestamp = block_timestamp;
+                          c.transactionHash = transactionHash;
+                          c.transactionIndex = transactionIndex;
+                          c.logIndex = logIndex;
+                          c.block_timestamp = block_timestamp;
 
-                            if (transactionHash) {
-                              c.executed = true;
-                            }
+                          if (transactionHash) {
+                            c.executed = true;
                           }
                         }
+                      }
 
-                        return c;
-                      });
+                      return c;
+                    });
                 }
 
-                if (
-                  ![
-                    'BATCHED_COMMANDS_STATUS_SIGNED',
-                  ].includes(status) &&
-                  commands.length ===
-                  commands
-                    .filter(c => c?.executed)
-                    .length
-                ) {
+                if (!['BATCHED_COMMANDS_STATUS_SIGNED'].includes(status) && commands.length === commands.filter(c => c?.executed).length) {
                   status = 'BATCHED_COMMANDS_STATUS_SIGNED';
                 }
 

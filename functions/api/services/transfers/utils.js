@@ -728,22 +728,12 @@ const save_time_spent = async (
 ) => {
   let time_spent;
 
-  if (
-    !data &&
-    id
-  ) {
+  if (!data && id) {
     await sleep(0.5 * 1000);
 
-    data =
-      await get(
-        collection,
-        id,
-      );
+    data = await get(collection, id);
   }
-  else if (
-    !id &&
-    data
-  ) {
+  else if (!id && data) {
     id = data.id;
   }
 
@@ -756,312 +746,206 @@ const save_time_spent = async (
     axelar_transfer,
     wrap,
     unwrap,
+    erc20_transfer,
   } = { ...data };
   const {
     source_chain,
     destination_chain,
   } = { ...send };
 
-  const chain_types =
-    [
-      evm_chains_data
-        .findIndex(c =>
-          equals_ignore_case(
-            c?.id,
-            source_chain,
-          )
-        ) > -1 ?
-        'evm' :
-        cosmos_non_axelarnet_chains_data
-          .findIndex(c =>
-            equals_ignore_case(
-              c?.id,
-              source_chain,
-            )
-          ) > -1 ?
-          'cosmos' :
-          equals_ignore_case(
-            axelarnet.id,
-            source_chain,
-          ) ?
-            'axelarnet' :
-            null,
-      evm_chains_data
-        .findIndex(c =>
-          equals_ignore_case(
-            c?.id,
-            destination_chain,
-          )
-        ) > -1 ?
-        'evm' :
-        cosmos_non_axelarnet_chains_data
-          .findIndex(c =>
-            equals_ignore_case(
-              c?.id,
-              destination_chain,
-            )
-          ) > -1 ?
-          'cosmos' :
-          equals_ignore_case(
-            axelarnet.id,
-            destination_chain,
-          ) ?
-            'axelarnet' :
-            null,
-    ]
-    .filter(t => t);
+  const chain_types = [
+    evm_chains_data.findIndex(c => equals_ignore_case(c?.id, source_chain)) > -1 ?
+      'evm' :
+      cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, source_chain)) > -1 ?
+        'cosmos' :
+        equals_ignore_case(axelarnet.id, source_chain) ?
+          'axelarnet' :
+          null,
+    evm_chains_data.findIndex(c => equals_ignore_case(c?.id, destination_chain)) > -1 ?
+      'evm' :
+      cosmos_non_axelarnet_chains_data.findIndex(c => equals_ignore_case(c?.id, destination_chain)) > -1 ?
+        'cosmos' :
+        equals_ignore_case(axelarnet.id, destination_chain) ?
+          'axelarnet' :
+          null,
+  ]
+  .filter(t => t);
 
-  const type =
-    chain_types.length === 2 ?
-      chain_types
-        .join('_') :
-      undefined;
+  const type = chain_types.length === 2 ? chain_types.join('_') : undefined;
 
-  if (
-    send?.created_at?.ms &&
-    wrap?.created_at?.ms
-  ) {
+  if (send?.created_at?.ms && wrap?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      wrap_send:
-        send.created_at.ms / 1000 -
-        wrap.created_at.ms / 1000,
+      wrap_send: send.created_at.ms / 1000 - wrap.created_at.ms / 1000,
     };
   }
 
-  if (
-    confirm?.created_at?.ms &&
-    send?.created_at?.ms
-  ) {
+  if (send?.created_at?.ms && erc20_transfer?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      send_confirm:
-        confirm.created_at.ms / 1000 -
-        send.created_at.ms / 1000,
+      erc20_transfer_send: send.created_at.ms / 1000 - erc20_transfer.created_at.ms / 1000,
     };
   }
 
-  if (
-    vote?.created_at?.ms &&
-    confirm?.created_at?.ms
-  ) {
+  if (confirm?.created_at?.ms && send?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      confirm_vote:
-        vote.created_at.ms / 1000 -
-        confirm.created_at.ms / 1000,
+      send_confirm: confirm.created_at.ms / 1000 - send.created_at.ms / 1000,
     };
   }
 
-  if (
-    command?.block_timestamp &&
-    confirm?.created_at?.ms
-  ) {
+  if (vote?.created_at?.ms && confirm?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      confirm_execute:
-        command.block_timestamp -
-        confirm.created_at.ms / 1000,
+      confirm_vote: vote.created_at.ms / 1000 - confirm.created_at.ms / 1000,
     };
   }
 
-  if (
-    ibc_send?.received_at?.ms &&
-    confirm?.created_at?.ms
-  ) {
+  if (command?.block_timestamp && confirm?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      confirm_ibc:
-        ibc_send.received_at.ms / 1000 -
-        confirm.created_at.ms / 1000,
+      confirm_execute: command.block_timestamp - confirm.created_at.ms / 1000,
     };
   }
 
-  if (
-    axelar_transfer?.created_at?.ms &&
-    confirm?.created_at?.ms
-  ) {
+  if (ibc_send?.received_at?.ms && confirm?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      confirm_axelar_transfer:
-        axelar_transfer.created_at.ms / 1000 -
-        confirm.created_at.ms / 1000,
+      confirm_ibc: ibc_send.received_at.ms / 1000 - confirm.created_at.ms / 1000,
     };
   }
 
-  if (
-    command?.block_timestamp &&
-    vote?.created_at?.ms
-  ) {
+  if (axelar_transfer?.created_at?.ms && confirm?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      vote_execute:
-        command.block_timestamp -
-        vote.created_at.ms / 1000,
+      confirm_axelar_transfer: axelar_transfer.created_at.ms / 1000 - confirm.created_at.ms / 1000,
     };
   }
 
-  if (
-    ibc_send?.received_at?.ms &&
-    vote?.created_at?.ms
-  ) {
+  if (command?.block_timestamp && vote?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      vote_ibc:
-        ibc_send.received_at.ms / 1000 -
-        vote.created_at.ms / 1000,
+      vote_execute: command.block_timestamp - vote.created_at.ms / 1000,
     };
   }
 
-  if (
-    axelar_transfer?.created_at?.ms &&
-    vote?.created_at?.ms
-  ) {
+  if (ibc_send?.received_at?.ms && vote?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      vote_axelar_transfer:
-        axelar_transfer.created_at.ms / 1000 -
-        vote.created_at.ms / 1000,
+      vote_ibc: ibc_send.received_at.ms / 1000 - vote.created_at.ms / 1000,
     };
   }
 
-  if (
-    unwrap?.created_at?.ms &&
-    command?.block_timestamp
-  ) {
+  if (axelar_transfer?.created_at?.ms && vote?.created_at?.ms) {
     time_spent = {
       ...time_spent,
-      execute_unwrap:
-        unwrap.created_at.ms / 1000 -
-        command.block_timestamp,
+      vote_axelar_transfer: axelar_transfer.created_at.ms / 1000 - vote.created_at.ms / 1000,
     };
   }
 
-  if (
-    type &&
-    time_spent
-  ) {
-    const source_chain_type = chain_types[0],
-      destination_chain_type = chain_types[1];
+  if (unwrap?.created_at?.ms && command?.block_timestamp) {
+    time_spent = {
+      ...time_spent,
+      execute_unwrap: unwrap.created_at.ms / 1000 - command.block_timestamp,
+    };
+  }
+
+  if (type && time_spent) {
+    const source_chain_type = chain_types[0];
+    const destination_chain_type = chain_types[1];
 
     switch (destination_chain_type) {
       case 'evm':
-        if (
-          command?.block_timestamp &&
-          wrap?.created_at?.ms
-        ) {
+        if (command?.block_timestamp && wrap?.created_at?.ms) {
           time_spent = {
             ...time_spent,
-            total:
-              command.block_timestamp -
-              wrap.created_at.ms / 1000,
+            total: command.block_timestamp - wrap.created_at.ms / 1000,
           };
         }
-        else if (
-          unwrap?.created_at?.ms &&
-          send?.created_at?.ms
-        ) {
+        else if (command?.block_timestamp && erc20_transfer?.created_at?.ms) {
           time_spent = {
             ...time_spent,
-            total:
-              unwrap.created_at.ms / 1000 -
-              send.created_at.ms / 1000,
+            total: command.block_timestamp - erc20_transfer.created_at.ms / 1000,
           };
         }
-        else if (
-          command?.block_timestamp &&
-          send?.created_at?.ms
-        ) {
+        else if (unwrap?.created_at?.ms && send?.created_at?.ms) {
           time_spent = {
             ...time_spent,
-            total:
-              command.block_timestamp -
-              send.created_at.ms / 1000,
+            total: unwrap.created_at.ms / 1000 - send.created_at.ms / 1000,
+          };
+        }
+        else if (command?.block_timestamp && send?.created_at?.ms) {
+          time_spent = {
+            ...time_spent,
+            total: command.block_timestamp - send.created_at.ms / 1000,
           };
         }
         break;
       case 'cosmos':
-        if (
-          ibc_send?.received_at?.ms &&
-          wrap?.created_at?.ms
-        ) {
+        if (ibc_send?.received_at?.ms && wrap?.created_at?.ms) {
           time_spent = {
             ...time_spent,
-            total:
-              ibc_send.received_at.ms / 1000 -
-              wrap.created_at.ms / 1000,
+            total: ibc_send.received_at.ms / 1000 - wrap.created_at.ms / 1000,
           };
         }
-        else if (
-          ibc_send?.received_at?.ms &&
-          send?.created_at?.ms
-        ) {
+        else if (ibc_send?.received_at?.ms && erc20_transfer?.created_at?.ms) {
           time_spent = {
             ...time_spent,
-            total:
-              ibc_send.received_at.ms / 1000 -
-              send.created_at.ms / 1000,
+            total: ibc_send.received_at.ms / 1000 - erc20_transfer.created_at.ms / 1000,
+          };
+        }
+        else if (ibc_send?.received_at?.ms && send?.created_at?.ms) {
+          time_spent = {
+            ...time_spent,
+            total: ibc_send.received_at.ms / 1000 - send.created_at.ms / 1000,
           };
         }
         break;
       case 'axelarnet':
         switch (source_chain_type) {
           case 'evm':
-            if (
-              axelar_transfer?.created_at?.ms &&
-              wrap?.created_at?.ms
-            ) {
+            if (axelar_transfer?.created_at?.ms && wrap?.created_at?.ms) {
               time_spent = {
                 ...time_spent,
-                total:
-                  axelar_transfer.created_at.ms / 1000 -
-                  wrap.created_at.ms / 1000,
+                total: axelar_transfer.created_at.ms / 1000 - wrap.created_at.ms / 1000,
               };
             }
-            else if (
-              axelar_transfer?.created_at?.ms &&
-              send?.created_at?.ms
-            ) {
+            else if (axelar_transfer?.created_at?.ms && erc20_transfer?.created_at?.ms) {
               time_spent = {
                 ...time_spent,
-                total:
-                  axelar_transfer.created_at.ms / 1000 -
-                  send.created_at.ms / 1000,
+                total: axelar_transfer.created_at.ms / 1000 - erc20_transfer.created_at.ms / 1000,
               };
             }
-            else if (
-              vote?.created_at?.ms &&
-              wrap?.created_at?.ms
-            ) {
+            else if (axelar_transfer?.created_at?.ms && send?.created_at?.ms) {
               time_spent = {
                 ...time_spent,
-                total:
-                  vote.created_at.ms / 1000 -
-                  wrap.created_at.ms / 1000,
+                total: axelar_transfer.created_at.ms / 1000 - send.created_at.ms / 1000,
               };
             }
-            else if (
-              vote?.created_at?.ms &&
-              send?.created_at?.ms
-            ) {
+            else if (vote?.created_at?.ms && wrap?.created_at?.ms) {
               time_spent = {
                 ...time_spent,
-                total:
-                  vote.created_at.ms / 1000 -
-                  send.created_at.ms / 1000,
+                total: vote.created_at.ms / 1000 - wrap.created_at.ms / 1000,
+              };
+            }
+            else if (vote?.created_at?.ms && erc20_transfer?.created_at?.ms) {
+              time_spent = {
+                ...time_spent,
+                total: vote.created_at.ms / 1000 - erc20_transfer.created_at.ms / 1000,
+              };
+            }
+            else if (vote?.created_at?.ms && send?.created_at?.ms) {
+              time_spent = {
+                ...time_spent,
+                total: vote.created_at.ms / 1000 - send.created_at.ms / 1000,
               };
             }
             break;
           default:
-            if (
-              axelar_transfer?.created_at?.ms &&
-              send?.created_at?.ms
-            ) {
+            if (axelar_transfer?.created_at?.ms && send?.created_at?.ms) {
               time_spent = {
                 ...time_spent,
-                total:
-                  axelar_transfer.created_at.ms / 1000 -
-                  send.created_at.ms / 1000,
+                total: axelar_transfer.created_at.ms / 1000 - send.created_at.ms / 1000,
               };
             }
             else {
@@ -1078,15 +962,10 @@ const save_time_spent = async (
                 };
               }
 
-              if (
-                time_spent.vote_axelar_transfer ||
-                time_spent.confirm_axelar_transfer
-              ) {
+              if (time_spent.vote_axelar_transfer || time_spent.confirm_axelar_transfer) {
                 time_spent = {
                   ...time_spent,
-                  total:
-                    time_spent.vote_axelar_transfer ||
-                    time_spent.confirm_axelar_transfer,
+                  total: time_spent.vote_axelar_transfer || time_spent.confirm_axelar_transfer,
                 };
               }
             }
@@ -1107,14 +986,7 @@ const save_time_spent = async (
 
   // save time spent data
   if (time_spent) {
-    await write(
-      collection,
-      id,
-      {
-        time_spent,
-      },
-      true,
-    );
+    await write(collection, id, { time_spent }, true);
   }
 };
 

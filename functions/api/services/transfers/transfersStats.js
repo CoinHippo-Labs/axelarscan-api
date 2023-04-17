@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
+
 const {
   get_distinguish_chain_id,
   get_others_version_chain_ids,
@@ -12,25 +13,13 @@ const {
   equals_ignore_case,
 } = require('../../utils');
 
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
+const environment = process.env.ENVIRONMENT || config?.environment;
 
-const evm_chains_data =
-  require('../../data')?.chains?.[environment]?.evm ||
-  [];
-const cosmos_chains_data =
-  require('../../data')?.chains?.[environment]?.cosmos ||
-  [];
-const assets_data =
-  require('../../data')?.assets?.[environment] ||
-  [];
+const evm_chains_data = require('../../data')?.chains?.[environment]?.evm || [];
+const cosmos_chains_data = require('../../data')?.chains?.[environment]?.cosmos || [];
+const assets_data = require('../../data')?.assets?.[environment] || [];
 
-const chains_data =
-  _.concat(
-    evm_chains_data,
-    cosmos_chains_data,
-  );
+const chains_data = _.concat(evm_chains_data, cosmos_chains_data);
 
 module.exports = async (
   params = {},
@@ -50,9 +39,9 @@ module.exports = async (
 
   const _query = _.cloneDeep(query);
 
-  let must = [],
-    should = [],
-    must_not = [];
+  let must = [];
+  let should = [];
+  let must_not = [];
 
   if (sourceChain) {
     must.push({ match_phrase: { 'send.original_source_chain': sourceChain } });
@@ -73,39 +62,30 @@ module.exports = async (
   }
 
   if (asset) {
-    if (
-      asset.endsWith('-wei') &&
-      assets_data
-        .findIndex(a =>
-          a?.id === `w${asset}`
-        ) > -1
-    ) {
-      must
-        .push(
-          {
-            bool: {
-              should:
-                [
-                  { match_phrase: { 'send.denom': asset } },
-                  {
-                    bool: {
-                      must:
-                        [
-                          { match_phrase: { 'send.denom': `w${asset}` } },
-                        ],
-                      should:
-                        [
-                          { match: { type: 'wrap' } },
-                          { match: { type: 'unwrap' } },
-                        ],
-                      minimum_should_match: 1,
-                    },
-                  },
-                ],
-              minimum_should_match: 1,
-            },
-          }
-        );
+    if (asset.endsWith('-wei') && assets_data.findIndex(a => a?.id === `w${asset}`) > -1) {
+      must.push(
+        {
+          bool: {
+            should: [
+              { match_phrase: { 'send.denom': asset } },
+              {
+                bool: {
+                  must: [
+                    { match_phrase: { 'send.denom': `w${asset}` } },
+                  ],
+                  should: [
+                    { match: { type: 'wrap' } },
+                    { match: { type: 'unwrap' } },
+                    { match: { type: 'erc20_transfer' } },
+                  ],
+                  minimum_should_match: 1,
+                },
+              },
+            ],
+            minimum_should_match: 1,
+          },
+        }
+      );
     }
     else {
       must.push({ match_phrase: { 'send.denom': asset } });
@@ -114,11 +94,7 @@ module.exports = async (
 
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime =
-      toTime ?
-        Number(toTime) * 1000 :
-        moment()
-          .valueOf();
+    toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
 
     must.push({ range: { 'send.created_at.ms': { gte: fromTime, lte: toTime } } });
   }
@@ -129,10 +105,7 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match:
-          should.length > 0 ?
-            1 :
-            0,
+        minimum_should_match: should.length > 0 ? 1 : 0,
       },
     };
   }
@@ -146,8 +119,7 @@ module.exports = async (
           ...query.bool,
           should:
             _.concat(
-              query.bool?.should ||
-              [],
+              query.bool?.should || [],
               { exists: { field: 'confirm' } },
               { exists: { field: 'vote' } },
             ),
@@ -187,52 +159,51 @@ module.exports = async (
     response = {
       data:
         _.orderBy(
-          source_chains.buckets
-            .flatMap(s => {
-              const {
-                destination_chains,
-              } = { ...s };
+          source_chains.buckets.flatMap(s => {
+            const {
+              destination_chains,
+            } = { ...s };
 
-              s.key = get_distinguish_chain_id(s.key);
+            s.key = get_distinguish_chain_id(s.key);
 
-              return (
-                (destination_chains?.buckets || [])
-                  .flatMap(d => {
-                    const {
-                      assets,
-                    } = { ...d };
+            return (
+              (destination_chains?.buckets || [])
+                .flatMap(d => {
+                  const {
+                    assets,
+                  } = { ...d };
 
-                    d.key = get_distinguish_chain_id(d.key);
+                  d.key = get_distinguish_chain_id(d.key);
 
-                    return (
-                      (assets?.buckets || [])
-                        .map(a => {
-                          return {
-                            id: `${s.key}_${d.key}_${a.key}`,
-                            source_chain: s.key,
-                            destination_chain: d.key,
-                            asset: a.key,
-                            num_txs: a.doc_count,
-                            volume: a.volume?.value,
-                          };
-                        }) ||
-                      [{
-                        id: `${s.key}_${d.key}`,
-                        source_chain: s.key,
-                        destination_chain: d.key,
-                        num_txs: d.doc_count,
-                        volume: d.volume?.value,
-                      }]
-                    );
-                  }) ||
-                [{
-                  id: `${s.key}`,
-                  source_chain: s.key,
-                  num_txs: s.doc_count,
-                  volume: s.volume?.value,
-                }]
-              );
-            }),
+                  return (
+                    (assets?.buckets || [])
+                      .map(a => {
+                        return {
+                          id: `${s.key}_${d.key}_${a.key}`,
+                          source_chain: s.key,
+                          destination_chain: d.key,
+                          asset: a.key,
+                          num_txs: a.doc_count,
+                          volume: a.volume?.value,
+                        };
+                      }) ||
+                    [{
+                      id: `${s.key}_${d.key}`,
+                      source_chain: s.key,
+                      destination_chain: d.key,
+                      num_txs: d.doc_count,
+                      volume: d.volume?.value,
+                    }]
+                  );
+                }) ||
+              [{
+                id: `${s.key}`,
+                source_chain: s.key,
+                num_txs: s.doc_count,
+                volume: s.volume?.value,
+              }]
+            );
+          }),
           [
             'volume',
             'num_txs',

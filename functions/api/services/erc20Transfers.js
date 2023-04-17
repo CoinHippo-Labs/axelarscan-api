@@ -14,8 +14,7 @@ module.exports = async (
   const {
     depositAddress,
     txHash,
-    depositAddressLink,
-    txHashUnwrap,
+    txHashTransfer,
     sourceChain,
     destinationChain,
     recipientAddress,
@@ -42,12 +41,8 @@ module.exports = async (
     must.push({ match: { tx_hash: txHash } });
   }
 
-  if (depositAddressLink) {
-    must.push({ match: { deposit_address_link: depositAddressLink } });
-  }
-
-  if (txHashUnwrap) {
-    must.push({ match: { tx_hash_unwrap: txHashUnwrap } });
+  if (txHashTransfer) {
+    must.push({ match: { tx_hash_transfer: txHashTransfer } });
   }
 
   if (sourceChain) {
@@ -66,8 +61,7 @@ module.exports = async (
     switch (status) {
       case 'to_update':
         must.push({ exists: { field: 'tx_hash' } });
-        must.push({ exists: { field: 'deposit_address_link' } });
-        must.push({ exists: { field: 'tx_hash_unwrap' } });
+        must.push({ exists: { field: 'tx_hash_transfer' } });
         must.push({ exists: { field: 'source_chain' } });
         must.push({ exists: { field: 'destination_chain' } });
         must.push({
@@ -111,7 +105,7 @@ module.exports = async (
 
   const response =
     await read(
-      'unwraps',
+      'erc20_transfers',
       query,
       {
         from: typeof from === 'number' ? from : 0,
@@ -142,7 +136,7 @@ module.exports = async (
           num_update_time,
         };
 
-        await write('unwraps', id, _d, true);
+        await write('erc20_transfers', id, _d, true);
 
         const index = data.findIndex(_d => equals_ignore_case(_d?.id, id));
 

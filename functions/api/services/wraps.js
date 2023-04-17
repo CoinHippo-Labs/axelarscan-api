@@ -1,4 +1,5 @@
 const moment = require('moment');
+
 const {
   read,
   write,
@@ -13,7 +14,7 @@ module.exports = async (
   const {
     depositAddress,
     txHash,
-    txHashWrap
+    txHashWrap,
     sourceChain,
     destinationChain,
     recipientAddress,
@@ -28,9 +29,9 @@ module.exports = async (
     toTime,
   } = { ...params };
 
-  const must = [],
-    should = [],
-    must_not = [];
+  const must = [];
+  const should = [];
+  const must_not = [];
 
   if (depositAddress) {
     must.push({ match: { deposit_address: depositAddress } });
@@ -73,13 +74,7 @@ module.exports = async (
                   ],
                 },
               },
-              {
-                range: {
-                  num_update_time: {
-                    lt: 2,
-                  },
-                },
-              },
+              { range: { num_update_time: { lt: 2 } } },
             ],
             minimum_should_match: 1,
           },
@@ -92,11 +87,7 @@ module.exports = async (
 
   if (fromTime) {
     fromTime = Number(fromTime) * 1000;
-    toTime =
-      toTime ?
-        Number(toTime) * 1000 :
-        moment()
-          .valueOf();
+    toTime = toTime ? Number(toTime) * 1000 : moment().valueOf();
 
     must.push({ range: { 'updated_at': { gte: fromTime, lte: toTime } } });
   }
@@ -107,10 +98,7 @@ module.exports = async (
         must,
         should,
         must_not,
-        minimum_should_match:
-          should.length > 0 ?
-            1 :
-            0,
+        minimum_should_match: should.length > 0 ? 1 : 0,
       },
     };
   }
@@ -120,17 +108,9 @@ module.exports = async (
       'wraps',
       query,
       {
-        from:
-          typeof from === 'number' ?
-            from :
-            0,
-        size:
-          typeof size === 'number' ?
-            size :
-            25,
-        sort:
-          sort ||
-          [{ 'updated_at': 'desc' }],
+        from: typeof from === 'number' ? from : 0,
+        size: typeof size === 'number' ? size : 25,
+        sort: sort || [{ 'updated_at': 'desc' }],
         track_total_hits: true,
       },
     );
@@ -149,32 +129,16 @@ module.exports = async (
           num_update_time,
         } = { ...d };
 
-        num_update_time =
-          (typeof num_update_time === 'number' ?
-            num_update_time :
-            -1
-          ) +
-          1;
+        num_update_time = (typeof num_update_time === 'number' ? num_update_time : -1) + 1;
 
         const _d = {
           ...d,
           num_update_time,
         };
 
-        await write(
-          'wraps',
-          id,
-          _d,
-          true,
-        );
+        await write('wraps', id, _d, true);
 
-        const index = data
-          .findIndex(_d =>
-            equals_ignore_case(
-              _d?.id,
-              id,
-            )
-          );
+        const index = data.findIndex(_d => equals_ignore_case(_d?.id, id));
 
         if (index > -1) {
           data[index] = _d;

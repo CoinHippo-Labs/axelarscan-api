@@ -2,7 +2,7 @@ const moment = require('moment');
 
 const {
   API,
-  getWraps,
+  getERC20Transfers,
 } = require('./api');
 const {
   getTransaction,
@@ -20,7 +20,7 @@ module.exports = async (
   const api = API();
 
   while (true) {
-    const response = await getWraps({ status: 'to_update' });
+    const response = await getERC20Transfers({ status: 'to_update' });
 
     const {
       data,
@@ -30,11 +30,11 @@ module.exports = async (
       for (const d of data) {
         const {
           tx_hash,
-          tx_hash_wrap,
+          tx_hash_transfer,
           source_chain,
         } = { ...d };
 
-        if (tx_hash && tx_hash_wrap && source_chain) {
+        if (tx_hash && tx_hash_transfer && source_chain) {
           const provider = getProvider(source_chain);
 
           if (provider) {
@@ -47,7 +47,7 @@ module.exports = async (
             if (blockNumber) {
               const block_timestamp = await getBlockTime(provider, blockNumber);
 
-              const wrap = {
+              const erc20_transfer = {
                 ...d,
                 txhash: tx_hash,
                 height: blockNumber,
@@ -55,7 +55,7 @@ module.exports = async (
                 created_at: get_granularity(moment(block_timestamp * 1000).utc()),
               };
 
-              const _id = `${tx_hash_wrap}_${source_chain}`.toLowerCase();
+              const _id = `${tx_hash_transfer}_${source_chain}`.toLowerCase();
 
               await api
                 .post(
@@ -67,8 +67,8 @@ module.exports = async (
                     id: _id,
                     path: `/${collection}/_update/${_id}`,
                     update_only: true,
-                    type: 'wrap',
-                    wrap,
+                    type: 'erc20_transfer',
+                    erc20_transfer,
                   },
                 )
                 .catch(error => {

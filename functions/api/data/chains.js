@@ -1171,7 +1171,7 @@ module.exports = {
             'https://umee-api.polkachu.com',
             'https://umee-lcd.quantnode.tech',
           ],
-          cosmostation: 'https://api-regen.cosmostation.io/v1',
+          cosmostation: 'https://api-umee.cosmostation.io/v1',
         },
       },
       {
@@ -2258,7 +2258,7 @@ module.exports = {
         short_name: 'FET',
         explorer: {
           name: 'Fetch',
-          url: ' https://explore-dorado.fetch.ai',
+          url: 'https://explore-dorado.fetch.ai',
           icon: '/logos/explorers/fetch.png',
           block_path: '/blocks/{block}',
           address_path: '/account/{address}',
@@ -2485,9 +2485,9 @@ module.exports = {
         id: 'odin',
         chain_name: 'odin',
         name: 'Odin',
-        short_name: 'odin',
+        short_name: 'ODIN',
         explorer: {
-          name: 'Acrechain',
+          name: 'Odin',
           url: 'https://testnet.odinprotocol.io',
           icon: '/logos/explorers/odin.png',
           block_path: '/blocks/{block}',

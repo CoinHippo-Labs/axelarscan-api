@@ -66,6 +66,7 @@ module.exports = async (
                   should: [
                     { match: { type: 'wrap' } },
                     { match: { type: 'unwrap' } },
+                    { match: { type: 'erc20_transfer' } },
                   ],
                   minimum_should_match: 1,
                 },
