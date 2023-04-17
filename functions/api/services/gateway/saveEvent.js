@@ -95,7 +95,7 @@ module.exports = async (
     const event_name = event.event;
 
     // initial variables
-    let id = id || `${transactionHash}_${transactionIndex}_${logIndex}`;
+    let id = _id || `${transactionHash}_${transactionIndex}_${logIndex}`;
 
     event.id = id;
     event.chain = chain;
