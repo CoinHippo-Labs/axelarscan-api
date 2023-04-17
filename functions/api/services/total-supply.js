@@ -33,7 +33,7 @@ module.exports = async (
 
   let {
     decimals,
-  } = { ..(ibc || []).find(i => i?.chain_id === axelarnet.id) };
+  } = { ...(ibc || []).find(i => i?.chain_id === axelarnet.id) };
 
   decimals = decimals || asset_data?.decimals || 6;
 
