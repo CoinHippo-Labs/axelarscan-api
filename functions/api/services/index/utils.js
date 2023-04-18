@@ -1,3 +1,16 @@
+const {
+  TRANSFER_COLLECTION,
+  DEPOSIT_ADDRESS_COLLECTION,
+  WRAP_COLLECTION,
+  UNWRAP_COLLECTION,
+  ERC20_TRANSFER_COLLECTION,
+  BATCH_COLLECTION,
+  COMMAND_EVENT_COLLECTION,
+  IBC_CHANNEL_COLLECTION,
+  TVL_COLLECTION,
+  ASSET_COLLECTION,
+} = require('../../utils/config');
+
 const normalizeObject = object =>
   Array.isArray(object) ?
     object :
@@ -18,18 +31,16 @@ const normalizeObject = object =>
     );
 
 const transferCollections = [
-  'cross_chain_transfers',
-  'deposit_addresses',
-  'wraps',
-  'unwraps',
-  'erc20_transfers',
-  'batches',
-  'command_events',
-  'ibc_channels',
-  'tvls',
-  'assets',
-  'transfers',
-  'token_sent_events',
+  TRANSFER_COLLECTION,
+  DEPOSIT_ADDRESS_COLLECTION,
+  WRAP_COLLECTION,
+  UNWRAP_COLLECTION,
+  ERC20_TRANSFER_COLLECTION,
+  BATCH_COLLECTION,
+  COMMAND_EVENT_COLLECTION,
+  IBC_CHANNEL_COLLECTION,
+  TVL_COLLECTION,
+  ASSET_COLLECTION,
 ];
 
 module.exports = {

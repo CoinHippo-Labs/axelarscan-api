@@ -1,6 +1,3 @@
-const {
-  providers: { FallbackProvider, StaticJsonRpcProvider },
-} = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
 const config = require('config-yml');
@@ -189,34 +186,28 @@ const toJson = s => {
   return null;
 };
 
-const to_hex = byte_array => {
+const toHex = byteArray => {
   let string = '0x';
 
-  if (
-    typeof byte_array === 'string' &&
-    byte_array.startsWith('[') &&
-    byte_array.endsWith(']')
-  ) {
-    byte_array = to_json(byte_array);
+  if (typeof byteArray === 'string' && byteArray.startsWith('[') && byteArray.endsWith(']')) {
+    byteArray = to_json(byteArray);
   }
 
-  if (Array.isArray(byte_array)) {
-    byte_array
-      .forEach(byte =>
-        string += (
-          '0' +
-          (byte & 0xFF)
-            .toString(16)
-        )
-        .slice(-2)
-      );
+  if (Array.isArray(byteArray)) {
+    byteArray.forEach(byte => string += ('0' + (byte & 0xFF).toString(16)).slice(-2));
   }
   else {
-    string = byte_array;
+    string = byteArray;
   }
 
   return string;
 };
+
+const fixDecimals = (
+  number = 0,
+  decimals = 2,
+) =>
+  parseFloat((number || 0).toFixed(decimals));
 
 const normalize_original_chain = chain => {
   if (chain) {
@@ -280,162 +271,6 @@ const normalize_chain = chain => {
   return chain;
 };
 
-const fix_decimals = (
-  number = 0,
-  decimals = 2,
-) =>
-  parseFloat(
-    (
-      number ||
-      0
-    )
-    .toFixed(decimals)
-  );
-
-const transfer_actions =
-  [
-    'ConfirmDeposit',
-    'ConfirmERC20Deposit',
-  ];
-
-const vote_types =
-  [
-    'VoteConfirmDeposit',
-    'Vote',
-  ];
-
-const getTransaction = async (
-  provider,
-  tx_hash,
-  chain,
-) => {
-  let output;
-
-  if (
-    provider &&
-    tx_hash
-  ) {
-    output = {
-      id: tx_hash,
-      chain,
-    };
-
-    try {
-      // get transaction
-      output.transaction =
-        await provider
-          .getTransaction(
-            tx_hash,
-          );
-
-      // get receipt
-      output.receipt =
-        await provider
-          .getTransactionReceipt(
-            tx_hash,
-          );
-    } catch (error) {}
-  }
-
-  return output;
-};
-
-const getBlockTime = async (
-  provider,
-  block_number,
-) => {
-  let output;
-
-  if (
-    provider &&
-    block_number
-  ) {
-    try {
-      // get block
-      const block =
-        await provider
-          .getBlock(
-            block_number,
-          );
-
-      const {
-        timestamp,
-      } = { ...block };
-
-      if (timestamp) {
-        output = timestamp;
-      }
-    } catch (error) {}
-  }
-
-  return output;
-};
-
-const createRpcProvider = (
-  url,
-  chain_id,
-) => 
-  new StaticJsonRpcProvider(
-    url,
-    chain_id ?
-      Number(chain_id) :
-      undefined,
-  );
-
-const getProvider = (
-  chain_data,
-  _rpcs,
-) => {
-  const {
-    chain_id,
-    provider_params,
-  } = { ...chain_data };
-  const {
-    rpcUrls,
-  } = { ..._.head(provider_params) };
-
-  /* start normalize rpcs */
-  let rpcs =
-    _rpcs ||
-    rpcUrls ||
-    [];
-
-  if (!Array.isArray(rpcs)) {
-    rpcs = [rpcs];
-  }
-
-  rpcs =
-    rpcs
-      .filter(url => url);
-  /* end normalize rpcs */
-
-  const provider =
-    rpcs.length > 0 ?
-      rpcs.length === 1 ?
-        createRpcProvider(
-          _.head(rpcs),
-          chain_id,
-        ) :
-        new FallbackProvider(
-          rpcs
-            .map((url, i) => {
-              return {
-                provider:
-                  createRpcProvider(
-                    url,
-                    chain_id,
-                  ),
-                priority: i + 1,
-                stallTimeout: 1000,
-              };
-            }),
-          rpcs.length / 3,
-        ) :
-      null;
-
-  return provider;
-};
-
 module.exports = {
   log,
   sleep,
@@ -447,14 +282,8 @@ module.exports = {
   capitalize,
   camel,
   toJson,
-  to_hex,
+  toHex,
   normalize_original_chain,
   normalize_chain,
-  fix_decimals,
-  transfer_actions,
-  vote_types,
-  getTransaction,
-  getBlockTime,
-  createRpcProvider,
-  getProvider,
+  fixDecimals,
 };
