@@ -574,7 +574,7 @@ module.exports = async (
                   }
                 }
 
-                if (!erc20_transfer) {
+                if (!wrap && !erc20_transfer) {
                   const _response =
                     await read(
                       'erc20_transfers',
