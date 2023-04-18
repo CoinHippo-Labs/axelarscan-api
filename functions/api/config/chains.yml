@@ -1,6 +1,6 @@
-######################
-# RPCs Configuration #
-######################
+########################
+# Chains Configuration #
+########################
 
 mainnet:
   evm:
@@ -1646,34 +1646,6 @@ testnet:
       prefix_address: "juno"
       prefix_chain_ids:
         - "uni-"
-    crescent:
-      chain_name: "crescent"
-      endpoints:
-        lcd:
-          - "https://testnet-endpoint.crescent.network/api/crescent"
-        timeout:
-          lcd: 3000
-      native_token:
-        name: "Crescent"
-        symbol: "CRE"
-        decimals: 6
-      name: "Crescent"
-      short_name: "CRE"
-      image: "/logos/chains/crescent.svg"
-      color: "#bf7c5e"
-      explorer:
-        name: "Mintscan"
-        url: "https://testnet.mintscan.io/crescent-testnet"
-        icon: "/logos/explorers/mintscan.png"
-        block_path: "/block/{block}"
-        address_path: "/account/{address}"
-        contract_path: "/account/{address}"
-        contract_0_path: "/account/{address}"
-        transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
-      prefix_address: "cre"
-      prefix_chain_ids:
-        - "mooncat-"
     crescent:
       chain_name: "crescent"
       endpoints:
