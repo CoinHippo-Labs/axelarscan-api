@@ -3,7 +3,7 @@ const moment = require('moment');
 
 const {
   read,
-} = require('../../service/index');
+} = require('../../services/index');
 const {
   IBC_CHANNEL_COLLECTION,
   getChains,
@@ -22,8 +22,6 @@ const {
 module.exports = async (
   params = {},
 ) => {
-  let output;
-
   const {
     asset,
     chain,
@@ -203,7 +201,5 @@ module.exports = async (
       'address',
     );
 
-  output = { data };
-
-  return output;
+  return { data };
 };

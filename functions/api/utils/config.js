@@ -155,6 +155,11 @@ const getAssets = (
 ) =>
   assets?.[environment];
 
+const getAssetsList = (
+  environment = ENVIRONMENT,
+) =>
+  Object.values({ ...getAssets(environment) }).map(a => { return { ...a, id: a.denom }; });
+
 const getAssetData = (
   asset,
   environment = ENVIRONMENT,
@@ -202,6 +207,7 @@ module.exports = {
   getRPC,
   getLCD,
   getAssets,
+  getAssetsList,
   getAssetData,
   getTokens,
   getTVL,

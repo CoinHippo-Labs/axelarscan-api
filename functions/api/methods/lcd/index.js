@@ -3,9 +3,17 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const {
+  saveBlock,
+  saveUptime,
+  addBlockEvents,
+} = require('./block');
+const {
+  saveIBCChannels,
+} = require('./ibc');
+const {
   get,
   write,
-} = require('../../service/index');
+} = require('../../services/index');
 const {
   LCD_CACHE_COLLECTION,
   getEndpoints,
@@ -151,22 +159,31 @@ module.exports = async (
       command_ids,
     } = { ...output };
 
-    if (index) {
-      // if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && tx_response?.txhash) {
-      //   output = await index_tx(output);
-      // }
-      // else if (path.startsWith('/cosmos/tx/v1beta1/txs') && !path.endsWith('/') && tx_responses?.length > 0) {
-      //   output = await index_txs(output);
-      // }
-      // else if (path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') && !path.endsWith('/') && block?.header?.height) {
-      //   output = await index_block(output);
-      // }
-      // else if (path === '/ibc/core/channel/v1/channels' && channels) {
-      //   output = await index_ibc_channels(path, output);
-      // }
-      // else if (path.startsWith('/axelar/evm/v1beta1/batched_commands/') && !path.endsWith('/') && command_ids) {
-      //   output = await index_batch(path, output, created_at);
-      // }
+    if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && tx_response?.txhash) {
+      if (index) {
+        output = await index_tx(output);
+      }
+    }
+    else if (path.startsWith('/cosmos/tx/v1beta1/txs') && !path.endsWith('/') && toArray(tx_responses).length > 0) {
+      if (index) {
+        output = await index_txs(output);
+      }
+    }
+    else if (path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') && !path.endsWith('/') && block?.header?.height) {
+      if (index) {
+        output = await saveBlock(output);
+        output = await saveUptime(output);
+      }
+
+      output = await addBlockEvents(output);
+    }
+    else if (path === '/ibc/core/channel/v1/channels' && channels) {
+      output = await saveIBCChannels(path, output);
+    }
+    else if (path.startsWith('/axelar/evm/v1beta1/batched_commands/') && !path.endsWith('/') && command_ids) {
+      if (index) {
+        output = await index_batch(path, output, created_at);
+      }
     }
 
     output = {
