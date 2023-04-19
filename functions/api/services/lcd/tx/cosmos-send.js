@@ -224,7 +224,7 @@ module.exports = async (
 
                   const data = {
                     type,
-                    unwrap: uunwrap || undefined,
+                    unwrap: unwrap || undefined,
                   };
 
                   try {
@@ -263,7 +263,6 @@ module.exports = async (
                 if (found) {
                   tx_hashes.push(txhash);
                   source_chain = chain_data?.id;
-
                   break;
                 }
               }
