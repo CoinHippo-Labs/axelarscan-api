@@ -1,31 +1,4 @@
-const _ = require('lodash');
 const moment = require('moment');
-const config = require('config-yml');
-
-const environment =
-  process.env.ENVIRONMENT ||
-  config?.environment;
-
-const {
-  log_level,
-} = { ...config };
-
-const evm_chains_data =
-  require('../data')?.chains?.[environment]?.evm ||
-  [];
-const cosmos_chains_data =
-  require('../data')?.chains?.[environment]?.cosmos ||
-  [];
-const chains_data =
-  _.concat(
-    evm_chains_data,
-    cosmos_chains_data,
-  );
-const axelarnet =
-  chains_data
-    .find(c =>
-      c?.id === 'axelarnet'
-    );
 
 const log = (
   level = 'info',
@@ -209,67 +182,11 @@ const fixDecimals = (
 ) =>
   parseFloat((number || 0).toFixed(decimals));
 
-const normalize_original_chain = chain => {
-  if (chain) {
-    chain =
-      chain
-        .trim()
-        .toLowerCase()
-        .split('"')
-        .join('');
-
-    switch (chain) {
-      case 'axelar':
-        chain = axelarnet.id;
-        break;
-      default:
-        break;
-    }
-  }
-
-  return chain;
-};
-
-const normalize_chain = chain => {
-  const regex = /^[0-9.\b]+$/;
-
-  if (chain) {
-    chain =
-      chain
-        .trim()
-        .toLowerCase()
-        .split('"')
-        .join('');
-
-    if (
-      chains_data
-        .findIndex(c =>
-          equals_ignore_case(
-            c?.id,
-            chain,
-          )
-        ) < 0
-    ) {
-      chain =
-        chain
-          .split('-')
-          .filter(c =>
-            !regex.test(c)
-          )
-          .join('');
-    }
-
-    switch (chain) {
-      case 'axelar':
-        chain = axelarnet.id;
-        break;
-      default:
-        break;
-    }
-  }
-
-  return chain;
-};
+const normalizeQuote = (
+  string,
+  to_case = 'normal',
+) =>
+  split(string, 'normal', '"').join('');
 
 module.exports = {
   log,
@@ -283,7 +200,6 @@ module.exports = {
   camel,
   toJson,
   toHex,
-  normalize_original_chain,
-  normalize_chain,
   fixDecimals,
+  normalizeQuote,
 };

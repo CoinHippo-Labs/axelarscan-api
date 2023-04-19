@@ -8,6 +8,7 @@ const {
   equalsIgnoreCase,
   toArray,
   capitalize,
+  normalizeQuote,
 } = require('./');
 
 const {
@@ -15,6 +16,7 @@ const {
   contracts,
   endpoints,
   assets,
+  tokens,
   tvl,
   supply,
 } = { ...config };
@@ -33,14 +35,6 @@ const getChains = (
   chain_types = toArray(chain_types);
 
   const _chains = chains?.[environment];
-
-  const {
-    cosmos,
-  } = { ..._chains };
-
-  const {
-    axelarnet,
-  } = { ...cosmos };
 
   return (
     Object.fromEntries(
@@ -113,7 +107,7 @@ const getChainKey = (
   let key;
 
   if (chain) {
-    chain = chain.toLowerCase();
+    chain = normalizeQuote(chain, 'lower');
 
     key =
       _.head(
@@ -152,12 +146,22 @@ const getEndpoints = (
 ) =>
   endpoints?.[environment];
 
+const getRPC = () => getEndpoints()?.rpc;
+
 const getLCD = () => getEndpoints()?.lcd;
 
 const getAssets = (
   environment = ENVIRONMENT,
 ) =>
   assets?.[environment];
+
+const getAssetData = (
+  asset,
+  environment = ENVIRONMENT,
+) =>
+  asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset));
+
+const getTokens = () => tokens;
 
 const getTVL = (
   environment = ENVIRONMENT,
@@ -186,6 +190,7 @@ module.exports = {
   IBC_CHANNEL_COLLECTION: 'ibc_channels',
   TVL_COLLECTION: 'tvls',
   ASSET_COLLECTION: 'assets',
+  TOKEN_COLLECTION: 'tokens',
   CURRENCY: 'usd',
   TRANSFER_ACTIONS: ['ConfirmDeposit', 'ConfirmERC20Deposit'],
   VOTE_TYPES: ['VoteConfirmDeposit', 'Vote'],
@@ -194,8 +199,11 @@ module.exports = {
   getChainKey,
   getChainData,
   getEndpoints,
+  getRPC,
   getLCD,
   getAssets,
+  getAssetData,
+  getTokens,
   getTVL,
   getSupply,
 };

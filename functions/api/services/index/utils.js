@@ -9,6 +9,7 @@ const {
   IBC_CHANNEL_COLLECTION,
   TVL_COLLECTION,
   ASSET_COLLECTION,
+  TOKEN_COLLECTION,
 } = require('../../utils/config');
 
 const normalizeObject = object =>
@@ -41,6 +42,7 @@ const transferCollections = [
   IBC_CHANNEL_COLLECTION,
   TVL_COLLECTION,
   ASSET_COLLECTION,
+  TOKEN_COLLECTION,
 ];
 
 module.exports = {

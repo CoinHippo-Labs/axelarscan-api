@@ -3,6 +3,8 @@ exports.handler = async (
   context,
   callback,
 ) => {
+  let output;
+
   const config = require('config-yml');
 
   const rpc = require('./services/rpc');
@@ -71,8 +73,6 @@ exports.handler = async (
   // setup query parameters
   const params = get_params(req);
 
-  let response;
-
   switch (req.url) {
     case '/':
       const {
@@ -115,13 +115,13 @@ exports.handler = async (
       switch (_module) {
         case 'rpc':
           try {
-            response =
+            output =
               await rpc(
                 path,
                 params,
               );
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -130,7 +130,7 @@ exports.handler = async (
           break;
         case 'lcd':
           try {
-            response =
+            output =
               await lcd(
                 path,
                 params,
@@ -138,7 +138,7 @@ exports.handler = async (
                 cache_timeout,
               );
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -147,9 +147,9 @@ exports.handler = async (
           break;
         case 'index':
           try {
-            response = await crud(params);
+            output = await crud(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -158,9 +158,9 @@ exports.handler = async (
           break;
         case 'assets':
           try {
-            response = await assets_price(params);
+            output = await assets_price(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -169,13 +169,13 @@ exports.handler = async (
           break;
         case 'coingecko':
           try {
-            response =
+            output =
               await coingecko(
                 path,
                 params,
               );
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -185,16 +185,16 @@ exports.handler = async (
         case 'data':
           switch (collection) {
             case 'chains':
-              response = require('./data')?.chains?.[environment];
+              output = require('./data')?.chains?.[environment];
               break;
             case 'evm_chains':
-              response = evm_chains_data;
+              output = evm_chains_data;
               break;
             case 'cosmos_chains':
-              response = cosmos_chains_data;
+              output = cosmos_chains_data;
               break;
             case 'assets':
-              response = assets_data;
+              output = assets_data;
               break;
           }
           break;
@@ -206,9 +206,9 @@ exports.handler = async (
       switch (req.params.function?.toLowerCase()) {
         case 'transfers':
           try {
-            response = await transfers(params);
+            output = await transfers(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -217,9 +217,9 @@ exports.handler = async (
           break;
         case 'transfers-status':
           try {
-            response = await getTransfersStatus(params);
+            output = await getTransfersStatus(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -228,9 +228,9 @@ exports.handler = async (
           break;
         case 'transfers-stats':
           try {
-            response = await transfersStats(params);
+            output = await transfersStats(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -239,9 +239,9 @@ exports.handler = async (
           break;
         case 'transfers-chart':
           try {
-            response = await transfersStatsChart(params);
+            output = await transfersStatsChart(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -250,9 +250,9 @@ exports.handler = async (
           break;
         case 'cumulative-volume':
           try {
-            response = await cumulativeVolume(params);
+            output = await cumulativeVolume(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -261,9 +261,9 @@ exports.handler = async (
           break;
         case 'total-volume':
           try {
-            response = await totalVolume(params);
+            output = await totalVolume(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -272,9 +272,9 @@ exports.handler = async (
           break;
         case 'save-deposit-for-wrap':
           try {
-            response = await saveDepositForWrap(params);
+            output = await saveDepositForWrap(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -283,9 +283,9 @@ exports.handler = async (
           break;
         case 'save-wrap':
           try {
-            response = await saveWrap(params);
+            output = await saveWrap(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -294,9 +294,9 @@ exports.handler = async (
           break;
         case 'save-deposit-for-unwrap':
           try {
-            response = await saveDepositForUnwrap(params);
+            output = await saveDepositForUnwrap(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -305,9 +305,9 @@ exports.handler = async (
           break;
         case 'save-unwrap':
           try {
-            response = await saveUnwrap(params);
+            output = await saveUnwrap(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -315,12 +315,12 @@ exports.handler = async (
           }
           break;
         case 'chains':
-          response = {
+          output = {
             ...require('./data')?.chains?.[environment],
           };
           break;
         case 'assets':
-          response =
+          output =
             assets_data
               .map(a =>
                 Object.fromEntries(
@@ -333,9 +333,9 @@ exports.handler = async (
           break;
         case 'tvl':
           try {
-            response = await tvl(params);
+            output = await tvl(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -350,9 +350,9 @@ exports.handler = async (
       switch (req.params.function?.toLowerCase()) {
         case 'evm-polls':
           try {
-            response = await require('./services/evm-polls')(params);
+            output = await require('./services/evm-polls')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -361,9 +361,9 @@ exports.handler = async (
           break;
         case 'validators-evm-votes':
           try {
-            response = await require('./services/validators-evm-votes')(params);
+            output = await require('./services/validators-evm-votes')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -372,9 +372,9 @@ exports.handler = async (
           break;
         case 'heartbeats':
           try {
-            response = await require('./services/heartbeats')(params);
+            output = await require('./services/heartbeats')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -383,9 +383,9 @@ exports.handler = async (
           break;
         case 'inflation':
           try {
-            response = await require('./services/inflation')(params);
+            output = await require('./services/inflation')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -394,9 +394,9 @@ exports.handler = async (
           break;
         case 'batches':
           try {
-            response = await require('./services/batches')(params);
+            output = await require('./services/batches')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -405,9 +405,9 @@ exports.handler = async (
           break;
         case 'chain-maintainers':
           try {
-            response = await require('./services/chain-maintainers')(params);
+            output = await require('./services/chain-maintainers')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -416,9 +416,9 @@ exports.handler = async (
           break;
         case 'wraps':
           try {
-            response = await require('./services/wraps')(params);
+            output = await require('./services/wraps')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -427,9 +427,9 @@ exports.handler = async (
           break;
         case 'unwraps':
           try {
-            response = await require('./services/unwraps')(params);
+            output = await require('./services/unwraps')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -438,9 +438,9 @@ exports.handler = async (
           break;
         case 'addresses':
           try {
-            response = await require('./services/addresses')(params);
+            output = await require('./services/addresses')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -449,9 +449,9 @@ exports.handler = async (
           break;
         case 'escrow-addresses':
           try {
-            response = await require('./services/escrow-addresses')(params);
+            output = await require('./services/escrow-addresses')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -460,9 +460,9 @@ exports.handler = async (
           break;
         case 'circulating-supply':
           try {
-            response = await require('./services/circulating-supply')(params);
+            output = await require('./services/circulating-supply')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -471,9 +471,9 @@ exports.handler = async (
           break;
         case 'total-supply':
           try {
-            response = await require('./services/total-supply')(params);
+            output = await require('./services/total-supply')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -482,9 +482,9 @@ exports.handler = async (
           break;
         case 'tvl-alert':
           try {
-            response = await require('./services/tvl/alert')(params);
+            output = await require('./services/tvl/alert')(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -500,9 +500,9 @@ exports.handler = async (
       switch (req.params.function?.toLowerCase()) {
         case 'save-event':
           try {
-            response = await saveEvent(params);
+            output = await saveEvent(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -511,9 +511,9 @@ exports.handler = async (
           break;
         case 'latest-event-block':
           try {
-            response = await getLatestEventBlock(params);
+            output = await getLatestEventBlock(params);
           } catch (error) {
-            response = {
+            output = {
               error: true,
               code: 400,
               message: error?.message,
@@ -577,7 +577,7 @@ exports.handler = async (
         require('./services/archiver')();
 
         // update tvl cache
-        response = await require('./services/tvl/updater')(context);
+        output = await require('./services/tvl/updater')(context);
 
         // hold lambda function to not exit before timeout
         while (context.getRemainingTimeInMillis() > remain_ms_to_exit) {
@@ -587,9 +587,9 @@ exports.handler = async (
       break;
   }
 
-  if (response?.error?.config) {
-    delete response.error.config;
+  if (output?.error?.config) {
+    delete output.error.config;
   }
 
-  return response;
+  return output;
 };

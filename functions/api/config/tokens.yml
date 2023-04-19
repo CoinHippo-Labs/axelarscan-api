@@ -1,0 +1,139 @@
+######################
+# Tokens Information #
+######################
+
+ETH:
+  coingecko_id: "ethereum"
+  decimals: 18
+BNB:
+  coingecko_id: "binancecoin"
+  decimals: 18
+MATIC:
+  coingecko_id: "matic-network"
+  decimals: 18
+AVAX:
+  coingecko_id: "avalanche-2"
+  decimals: 18
+FTM:
+  coingecko_id: "fantom"
+  decimals: 18
+GLMR:
+  coingecko_id: "moonbeam"
+  decimals: 18
+DEV:
+  redirect: "GLMR"
+AURORA:
+  coingecko_id: "aurora-near"
+  decimals: 18
+aETH:
+  redirect: "ETH"
+CELO:
+  coingecko_id: "celo"
+  decimals: 18
+KAVA:
+  coingecko_id: "kava"
+  decimals: 18
+FIL:
+  coingecko_id: "filecoin"
+  decimals: 18
+AXL:
+  coingecko_id: "axelar"
+  decimals: 6
+OSMO:
+  coingecko_id: "osmosis"
+  decimals: 6
+wAXL:
+  redirect: "AXL"
+WAXL:
+  redirect: "AXL"
+WBTC:
+  coingecko_id: "wrapped-bitcoin"
+  decimals: 8
+axlWBTC:
+  redirect: "WBTC"
+axlBTC:
+  redirect: "WBTC"
+WETH:
+  coingecko_id: "weth"
+  decimals: 18
+axlWETH:
+  redirect: "WETH"
+axlETH:
+  redirect: "WETH"
+WBNB:
+  coingecko_id: "wbnb"
+  decimals: 18
+axlWBNB:
+  redirect: "WBNB"
+axlBNB:
+  redirect: "WBNB"
+WMATIC:
+  coingecko_id: "wmatic"
+  decimals: 18
+axlWMATIC:
+  redirect: "WMATIC"
+axlMATIC:
+  redirect: "WMATIC"
+WAVAX:
+  coingecko_id: "wrapped-avax"
+  decimals: 18
+axlWAVAX:
+  redirect: "WAVAX"
+axlAVAX:
+  redirect: "WAVAX"
+WFTM:
+  coingecko_id: "wrapped-fantom"
+  decimals: 18
+axlWFTM:
+  redirect: "WFTM"
+axlFTM:
+  redirect: "WFTM"
+WGLMR:
+  coingecko_id: "wrapped-moonbeam"
+  decimals: 18
+axlWGLMR:
+  redirect: "WGLMR"
+axlGLMR:
+  redirect: "WGLMR"
+WDEV:
+  redirect: "WGLMR"
+axlWDEV:
+  redirect: "WGLMR"
+axlDEV:
+  redirect: "WGLMR"
+WFIL:
+  redirect: "FIL"
+axlWFIL:
+  redirect: "FIL"
+axlFIL:
+  redirect: "FIL"
+USDC:
+  coingecko_id: "usd-coin"
+  default_price:
+    usd: 1.00
+  decimals: 6
+axlUSDC:
+  redirect: "USDC"
+aUSDC:
+  redirect: "USDC"
+USDT:
+  coingecko_id: "tether"
+  default_price:
+    usd: 1.00
+  decimals: 6
+axlUSDT:
+  redirect: "USDT"
+DAI:
+  coingecko_id: "dai"
+  default_price:
+    usd: 1.00
+  decimals: 18
+axlDAI:
+  redirect: "USDT"
+BUSD:
+  coingecko_id: "binance-usd"
+  default_price:
+    usd: 1.00
+  decimals: 18
+axlBUSD:
+  redirect: "BUSD"
