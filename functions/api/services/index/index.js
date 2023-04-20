@@ -308,7 +308,7 @@ const remove = async (
     },
   );
 
-const delete_by_query = async (
+const deleteByQuery = async (
   collection,
   query,
   params = {},
@@ -330,5 +330,5 @@ module.exports = {
   read,
   write,
   remove,
-  delete_by_query,
+  deleteByQuery,
 };

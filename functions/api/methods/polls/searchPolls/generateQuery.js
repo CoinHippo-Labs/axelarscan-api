@@ -266,12 +266,12 @@ module.exports = async params => {
                 break;
               case 'fromBlock':
                 if (v) {
-                  obj = { range: { height: { gte: v } } };
+                  obj = { range: { height: { gte: Number(v) } } };
                 }
                 break;
               case 'toBlock':
                 if (v) {
-                  obj = { range: { height: { lte: v } } };
+                  obj = { range: { height: { lte: Number(v) } } };
                 }
                 break;
               case 'fromTime':

@@ -17,6 +17,8 @@ const {
   searchPolls,
 } = require('./polls');
 const {
+  searchUptimes,
+  searchHeartbeats,
   getValidatorsVotes,
 } = require('./validators');
 const {
@@ -34,6 +36,10 @@ const {
   saveDepositForERC20Transfer,
   saveERC20Transfer,
 } = require('./transfers/erc20-transfer');
+const {
+  archive,
+  updatePolls,
+} = require('./auto-update');
 
 module.exports = {
   crud,
@@ -46,6 +52,8 @@ module.exports = {
   getChainMaintainers,
   getEscrowAddresses,
   searchPolls,
+  searchUptimes,
+  searchHeartbeats,
   getValidatorsVotes,
   searchBatches,
   saveDepositForWrap,
@@ -54,4 +62,6 @@ module.exports = {
   saveUnwrap,
   saveDepositForERC20Transfer,
   saveERC20Transfer,
+  archive,
+  updatePolls,
 };

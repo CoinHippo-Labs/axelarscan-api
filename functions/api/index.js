@@ -16,6 +16,8 @@ exports.handler = async (
     getChainMaintainers,
     getEscrowAddresses,
     searchPolls,
+    searchUptimes,
+    searchHeartbeats,
     getValidatorsVotes,
     searchBatches,
     saveDepositForWrap,
@@ -24,6 +26,8 @@ exports.handler = async (
     saveUnwrap,
     saveDepositForERC20Transfer,
     saveERC20Transfer,
+    archive,
+    updatePolls,
   } = require('./methods');
   const {
     getParams,
@@ -31,6 +35,7 @@ exports.handler = async (
     finalizeOutput,
   } = require('./utils/io');
   const {
+    getContracts,
     getChainsList,
     getAssetsList,
   } = require('./utils/config');
@@ -229,6 +234,9 @@ exports.handler = async (
           output = errorOutput(error);
         }
         break;
+      case 'getContracts':
+        output = getContracts();
+        break;
       case 'getChains':
         output = getChainsList();
         break;
@@ -276,7 +284,21 @@ exports.handler = async (
           output = errorOutput(error);
         }
         break;
+      case 'getUptimes':
+      case 'searchUptimes':
+        try {
+          output = await searchUptimes(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       case 'getHeartbeats':
+      case 'searchHeartbeats':
+        try {
+          output = await searchHeartbeats(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'getPolls':
       case 'searchPolls':
@@ -359,6 +381,20 @@ exports.handler = async (
         break;
       case 'getTVLAlert':
         break;
+      case 'archive':
+        try {
+          await archive();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updatePolls':
+        try {
+          await updatePolls();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       default:
         break;
     }
@@ -367,7 +403,7 @@ exports.handler = async (
   }
 
   // log result
-  if (!['searchTransfers'].includes(method)) {
+  if (!method?.startsWith('search')) {
     log(
       'debug',
       service_name,
