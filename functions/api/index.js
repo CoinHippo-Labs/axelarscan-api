@@ -15,6 +15,8 @@ exports.handler = async (
     getInflation,
     getChainMaintainers,
     getEscrowAddresses,
+    searchPolls,
+    getValidatorsVotes,
     searchBatches,
     saveDepositForWrap,
     saveWrap,
@@ -278,8 +280,18 @@ exports.handler = async (
         break;
       case 'getPolls':
       case 'searchPolls':
+        try {
+          output = await searchPolls(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'getValidatorsVotes':
+        try {
+          output = await getValidatorsVotes(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'getBatches':
       case 'searchBatches':

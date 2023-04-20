@@ -14,6 +14,12 @@ const {
   getEscrowAddresses,
 } = require('./axelar');
 const {
+  searchPolls,
+} = require('./polls');
+const {
+  getValidatorsVotes,
+} = require('./validators');
+const {
   searchBatches,
 } = require('./batches');
 const {
@@ -39,6 +45,8 @@ module.exports = {
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
+  searchPolls,
+  getValidatorsVotes,
   searchBatches,
   saveDepositForWrap,
   saveWrap,

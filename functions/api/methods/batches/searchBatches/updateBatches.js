@@ -8,13 +8,10 @@ const {
 
 const MAX_CREATED_AT_TIME_DIFF_DAYS = 7;
 
-module.exports = async (
-  collection,
-  data,
-) => {
+module.exports = async data => {
   let updated;
 
-  if (collection && toArray(data).length > 0) {
+  if (toArray(data).length > 0) {
     updated =
       toArray(
         await Promise.all(

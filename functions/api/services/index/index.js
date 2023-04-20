@@ -36,9 +36,9 @@ const crud = async (
   } = { ...params };
 
   // indexer credential
-  const indexer_url = transferCollections.includes(collection) ? process.env.GENERAL_INDEXER_URL : process.env.TRANSFERS_INDEXER_URL;
-  const indexer_username = transferCollections.includes(collection) ? process.env.GENERAL_INDEXER_USERNAME : process.env.TRANSFERS_INDEXER_USERNAME;
-  const indexer_password = transferCollections.includes(collection) ? process.env.GENERAL_INDEXER_PASSWORD : process.env.TRANSFERS_INDEXER_PASSWORD;
+  const indexer_url = transferCollections.includes(collection) ? process.env.TRANSFERS_INDEXER_URL : process.env.GENERAL_INDEXER_URL;
+  const indexer_username = transferCollections.includes(collection) ? process.env.TRANSFERS_INDEXER_USERNAME : process.env.GENERAL_INDEXER_USERNAME;
+  const indexer_password = transferCollections.includes(collection) ? process.env.TRANSFERS_INDEXER_PASSWORD : process.env.GENERAL_INDEXER_PASSWORD;
 
   // normalize
   path = path || '';

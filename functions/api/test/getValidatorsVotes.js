@@ -6,23 +6,23 @@ const {
 } = { ...chai };
 
 const {
-  searchBatches,
+  getValidatorsVotes,
 } = require('../methods');
 
 module.exports = () => {
   describe(
-    'searchBatches',
+    'getValidatorsVotes',
     () => {
       it(
-        'Should receive list of batch',
+        'Should receive list of validator with votes',
         async () => {
-          const response = await searchBatches();
+          const response = await getValidatorsVotes();
 
           const {
             data,
           } = { ...response };
 
-          expect(data).to.be.an('array');
+          expect(data).to.be.an('object');
         },
       )
       .timeout(30000);

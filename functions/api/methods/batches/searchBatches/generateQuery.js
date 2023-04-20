@@ -1,10 +1,6 @@
 module.exports = params => {
   const {
     query,
-    size,
-  } = { ...params };
-  let {
-    toTime,
   } = { ...params };
 
   return {
@@ -103,6 +99,7 @@ module.exports = params => {
                           },
                           { match: { status: 'BATCHED_COMMANDS_STATUS_SIGNING' } },
                         ],
+                        minimum_should_match: 1,
                       },
                     };
                     break;

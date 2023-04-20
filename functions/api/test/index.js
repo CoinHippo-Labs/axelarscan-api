@@ -4,6 +4,8 @@ const getTotalSupply = require('./getTotalSupply');
 const getInflation = require('./getInflation');
 const getChainMaintainers = require('./getChainMaintainers');
 const getEscrowAddresses = require('./getEscrowAddresses');
+const searchPolls = require('./searchPolls');
+const getValidatorsVotes = require('./getValidatorsVotes');
 const searchBatches = require('./searchBatches');
 
 const test = async () => {
@@ -13,6 +15,8 @@ const test = async () => {
   await getInflation();
   await getChainMaintainers();
   await getEscrowAddresses();
+  await searchPolls();
+  await getValidatorsVotes();
   await searchBatches();
 };
 

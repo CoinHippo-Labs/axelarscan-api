@@ -6,17 +6,17 @@ const {
 } = { ...chai };
 
 const {
-  searchBatches,
+  searchPolls,
 } = require('../methods');
 
 module.exports = () => {
   describe(
-    'searchBatches',
+    'searchPolls',
     () => {
       it(
-        'Should receive list of batch',
+        'Should receive list of poll',
         async () => {
-          const response = await searchBatches();
+          const response = await searchPolls();
 
           const {
             data,
