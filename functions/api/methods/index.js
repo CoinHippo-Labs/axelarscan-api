@@ -7,15 +7,24 @@ const {
   getTokensPrice,
 } = require('./tokens');
 const {
-  getTokensPrice,
-} = require('./tokens');
-const {
   getCirculatingSupply,
   getTotalSupply,
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
 } = require('./axelar');
+const {
+  saveDepositForWrap,
+  saveWrap,
+} = require('./transfers/wrap');
+const {
+  saveDepositForUnwrap,
+  saveUnwrap,
+} = require('./transfers/unwrap');
+const {
+  saveDepositForERC20Transfer,
+  saveERC20Transfer,
+} = require('./transfers/erc20-transfer');
 
 module.exports = {
   crud,
@@ -27,4 +36,10 @@ module.exports = {
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
+  saveDepositForWrap,
+  saveWrap,
+  saveDepositForUnwrap,
+  saveUnwrap,
+  saveDepositForERC20Transfer,
+  saveERC20Transfer,
 };

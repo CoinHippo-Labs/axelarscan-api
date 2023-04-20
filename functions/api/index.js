@@ -15,6 +15,12 @@ exports.handler = async (
     getInflation,
     getChainMaintainers,
     getEscrowAddresses,
+    saveDepositForWrap,
+    saveWrap,
+    saveDepositForUnwrap,
+    saveUnwrap,
+    saveDepositForERC20Transfer,
+    saveERC20Transfer,
   } = require('./methods');
   const {
     getParams,
@@ -22,7 +28,7 @@ exports.handler = async (
     finalizeOutput,
   } = require('./utils/io');
   const {
-    getChains,
+    getChainsList,
     getAssetsList,
   } = require('./utils/config');
   const {
@@ -221,13 +227,13 @@ exports.handler = async (
         }
         break;
       case 'getChains':
-        output = getChains();
+        output = getChainsList();
         break;
       case 'getEVMChains':
-        output = getChains('evm');
+        output = getChainsList('evm');
         break;
       case 'getCosmosChains':
-        output = getChains('cosmos');
+        output = getChainsList('cosmos');
         break;
       case 'getAssets':
         output = getAssetsList();
@@ -290,16 +296,46 @@ exports.handler = async (
       case 'getTVL':
         break;
       case 'saveDepositForWrap':
+        try {
+          output = await saveDepositForWrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'saveWrap':
+        try {
+          output = await saveWrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'saveDepositForUnwrap':
+        try {
+          output = await saveDepositForUnwrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'saveUnwrap':
+        try {
+          output = await saveUnwrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'saveDepositForERC20Transfer':
+        try {
+          output = await saveDepositForERC20Transfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'saveERC20Transfer':
+        try {
+          output = await saveERC20Transfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'getTVLAlert':
         break;

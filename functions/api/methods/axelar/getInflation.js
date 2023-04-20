@@ -2,14 +2,14 @@ const _ = require('lodash');
 
 const lcd = require('../lcd');
 const {
-  getChains,
+  getChainsList,
 } = require('../../utils/config');
 const {
   fixDecimals,
   normalizeQuote,
 } = require('../../utils');
 
-const evm_chains_data = getChains('evm').filter(c => !c.no_inflation);
+const evm_chains_data = getChainsList('evm').filter(c => !c.no_inflation);
 
 module.exports = async (
   params = {},

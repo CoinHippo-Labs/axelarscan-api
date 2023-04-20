@@ -65,7 +65,7 @@ const getChains = (
               let gateway_address;
               let no_inflation;
 
-              switch (chain_type) {
+              switch (k) {
                 case 'evm':
                   provider_params = [
                     {
@@ -98,6 +98,12 @@ const getChains = (
     )
   )
 };
+
+const getChainsList = (
+  chain_types = [],
+  environment = ENVIRONMENT,
+) =>
+  Object.values({ ...getChains(chain_types, environment) });
 
 const getChainKey = (
   chain,
@@ -201,6 +207,7 @@ module.exports = {
   VOTE_TYPES: ['VoteConfirmDeposit', 'Vote'],
   getContracts,
   getChains,
+  getChainsList,
   getChainKey,
   getChainData,
   getEndpoints,

@@ -22,6 +22,7 @@ const {
   equalsIgnoreCase,
   toArray,
 } = require('../../../utils');
+
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 const IBurnableMintableCappedERC20 = require('../../../data/contracts/interfaces/IBurnableMintableCappedERC20.json');
 
@@ -111,7 +112,7 @@ module.exports = async (
 
           const {
             address,
-          } = { addresses?.[chain] };
+          } = { ...addresses?.[chain] };
 
           const erc20 = address && new Contract(address, IBurnableMintableCappedERC20.abi, provider);
 

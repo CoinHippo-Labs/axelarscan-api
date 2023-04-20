@@ -44,7 +44,7 @@ module.exports = async (
       } = { ...result };
 
       switch (path) {
-        case: '/status':
+        case '/status':
           try {
             data = sync_info;
 

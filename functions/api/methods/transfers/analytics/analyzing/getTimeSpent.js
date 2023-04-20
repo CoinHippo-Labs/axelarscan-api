@@ -2,11 +2,11 @@ const _ = require('lodash');
 
 const {
   getChainData,
-} = require('../../../utils/config');
+} = require('../../../../utils/config');
 const {
   equalsIgnoreCase,
   toArray,
-} = require('../../../utils');
+} = require('../../../../utils');
 
 const getTime = object => ((object?.received_at?.ms || object?.created_at?.ms) / 1000) || object?.block_timestamp;
 

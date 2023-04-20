@@ -5,8 +5,11 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const {
+  generateId,
+} = require('../../transfers/analytics/preprocessing');
+const {
   getTimeSpent,
-} = require('../../transfers/analyzing');
+} = require('../../transfers/analytics/analyzing');
 const {
   read,
   write,
@@ -18,13 +21,14 @@ const {
   TRANSFER_COLLECTION,
   BATCH_COLLECTION,
   COMMAND_EVENT_COLLECTION,
-  getChains,
+  getChainsList,
   getChainKey,
   getChainData,
 } = require('../../../utils/config');
 const {
   getGranularity,
 } = require('../../../utils/time');
+
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
 module.exports = async (
@@ -191,19 +195,17 @@ module.exports = async (
               const {
                 txhash,
                 sender_address,
-              } = { ...send };
-              let {
                 source_chain,
               } = { ...send };
 
-              source_chain = getChainKey(getChains('cosmos').filter(c => c.id !== 'axelarnet').find(c => sender_address?.startsWith(c.prefix_address))?.id || source_chain);
+              send.source_chain = getChainKey(getChainsList('cosmos').filter(c => c.id !== 'axelarnet').find(c => sender_address?.startsWith(c.prefix_address))?.id || source_chain);
+              d.send = send;
+              const _id = generateId(d);
 
-              if (txhash && source_chain) {
-                const _id = `${txhash}_${source_chain}`.toLowerCase();
-
+              if (_id) {
                 updated_transfers_data[_id] = {
-                  ..d,
-                  send: { ...send, source_chain },
+                  ...d,
+                  send,
                   command,
                   time_spent: getTimeSpent(d),
                 };

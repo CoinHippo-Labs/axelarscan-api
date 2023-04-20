@@ -6,7 +6,7 @@ const {
 } = require('../../services/index');
 const {
   IBC_CHANNEL_COLLECTION,
-  getChains,
+  getChainsList,
   getChainData,
   getAssets,
   getAssetData,
@@ -43,13 +43,13 @@ module.exports = async (
   chains = toArray(chains || chain);
 
   if (chains.length < 1) {
-    chains = getChains().filter(c => c.gateway_address || c.chain_type === 'cosmos').map(c => c.id);
+    chains = getChainsList().filter(c => c.gateway_address || c.chain_type === 'cosmos').map(c => c.id);
   }
   else {
     chains = _.uniq(_.concat('axelarnet', toArray(chains.map(c => getChainData(c)?.id))));
   }
 
-  const cosmos_chains_data = getChains('cosmos').filter(c => chains.includes(c.id));
+  const cosmos_chains_data = getChainsList('cosmos').filter(c => chains.includes(c.id));
 
   let data = [];
 
@@ -177,7 +177,7 @@ module.exports = async (
                           const {
                             name,
                             image,
-                          } = { ...getChains().find(c => a.startsWith(c.prefix_address)) }
+                          } = { ...getChainsList().find(c => a.startsWith(c.prefix_address)) }
 
                           return {
                             address: a,
