@@ -12,7 +12,7 @@ const base64ToHex = string => {
   }
 };
 
-const base64ToString = (string = 'c3BlbmRlcg==') => {
+const base64ToString = string => {
   try {
     return toUtf8String(decodeBase64(string));
   } catch (error) {
