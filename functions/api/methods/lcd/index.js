@@ -8,6 +8,10 @@ const {
   addBlockEvents,
 } = require('./block');
 const {
+  saveBatch,
+  updateTransfer,
+} = require('./batch');
+const {
   saveIBCChannels,
 } = require('./ibc');
 const {
@@ -177,13 +181,14 @@ module.exports = async (
 
       output = await addBlockEvents(output);
     }
-    else if (path === '/ibc/core/channel/v1/channels' && channels) {
-      output = await saveIBCChannels(path, output);
-    }
     else if (path.startsWith('/axelar/evm/v1beta1/batched_commands/') && !path.endsWith('/') && command_ids) {
       if (index) {
-        output = await index_batch(path, output, created_at);
+        output = await saveBatch(path, output);
+        output = await updateTransfer(output, created_at);
       }
+    }
+    else if (path === '/ibc/core/channel/v1/channels' && channels) {
+      output = await saveIBCChannels(path, output);
     }
 
     output = {
