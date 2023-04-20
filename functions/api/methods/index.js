@@ -14,6 +14,9 @@ const {
   getEscrowAddresses,
 } = require('./axelar');
 const {
+  searchBatches,
+} = require('./batches');
+const {
   saveDepositForWrap,
   saveWrap,
 } = require('./transfers/wrap');
@@ -36,6 +39,7 @@ module.exports = {
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
+  searchBatches,
   saveDepositForWrap,
   saveWrap,
   saveDepositForUnwrap,

@@ -191,10 +191,12 @@ module.exports = async (
       output = await saveIBCChannels(path, output);
     }
 
-    output = {
-      ...output,
-      cache_hit,
-    };
+    if (!index) {
+      output = {
+        ...output,
+        cache_hit,
+      };
+    }
   }
 
   return output;

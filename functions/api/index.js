@@ -15,6 +15,7 @@ exports.handler = async (
     getInflation,
     getChainMaintainers,
     getEscrowAddresses,
+    searchBatches,
     saveDepositForWrap,
     saveWrap,
     saveDepositForUnwrap,
@@ -117,7 +118,7 @@ exports.handler = async (
           method = 'getValidatorsVotes';
           break;
         case 'batches':
-          method = 'getBatches';
+          method = 'searchBatches';
           break;
         case 'transfers-stats':
           method = 'transfersStats';
@@ -276,10 +277,17 @@ exports.handler = async (
       case 'getHeartbeats':
         break;
       case 'getPolls':
+      case 'searchPolls':
         break;
       case 'getValidatorsVotes':
         break;
       case 'getBatches':
+      case 'searchBatches':
+        try {
+          output = await searchBatches(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'transfersStats':
         break;
