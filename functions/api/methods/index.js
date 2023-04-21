@@ -44,6 +44,9 @@ const {
 const {
   archive,
   updatePolls,
+  updateWraps,
+  updateUnwraps,
+  updateERC20Transfers,
 } = require('./auto-update');
 
 module.exports = {
@@ -72,4 +75,7 @@ module.exports = {
   saveERC20Transfer,
   archive,
   updatePolls,
+  updateWraps,
+  updateUnwraps,
+  updateERC20Transfers,
 };

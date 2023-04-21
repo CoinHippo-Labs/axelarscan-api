@@ -41,7 +41,7 @@ module.exports = async () => {
         }
       )
     )
-  )
+  );
 
   return;
 };

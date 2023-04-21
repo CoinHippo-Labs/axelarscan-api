@@ -31,6 +31,9 @@ exports.handler = async (
     saveERC20Transfer,
     archive,
     updatePolls,
+    updateWraps,
+    updateUnwraps,
+    updateERC20Transfers,
   } = require('./methods');
   const {
     getParams,
@@ -422,6 +425,27 @@ exports.handler = async (
           output = errorOutput(error);
         }
         break;
+      case 'updateWraps':
+        try {
+          await updateWraps();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateUnwraps':
+        try {
+          await updateUnwraps();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateERC20Transfers':
+        try {
+          await updateERC20Transfers();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       default:
         break;
     }
@@ -430,7 +454,7 @@ exports.handler = async (
   }
 
   // log result
-  if (!method?.startsWith('search')) {
+  if (['search', 'update'].findIndex(s => method?.startsWith(s)) < 0) {
     log(
       'debug',
       service_name,

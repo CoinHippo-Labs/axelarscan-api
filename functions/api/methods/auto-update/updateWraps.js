@@ -1,0 +1,83 @@
+const moment = require('moment');
+
+const {
+  searchWraps,
+} = require('../transfers/wrap');
+const {
+  getTransaction,
+  getBlockTime,
+} = require('../transfers/utils');
+const {
+  write,
+} = require('../../services/index');
+const {
+  getProvider,
+} = require('../../utils/chain/evm');
+const {
+  TRANSFER_COLLECTION,
+} = require('../../utils/config');
+const {
+  getGranularity,
+} = require('../../utils/time');
+const {
+  toArray,
+} = require('../../utils');
+
+module.exports = async () => {
+  const response = await searchWraps({ status: 'to_update' });
+
+  const {
+    data,
+  } = { ...response };
+
+  await Promise.all(
+    toArray(data)
+      .map(d =>
+        new Promise(
+          async resolve => {
+            const {
+              tx_hash,
+              tx_hash_wrap,
+              source_chain,
+            } = { ...d };
+
+            if (tx_hash && tx_hash_wrap && source_chain) {
+              const provider = getProvider(source_chain);
+
+              if (provider) {
+                const transaction_data = await getTransaction(provider, tx_hash, source_chain);
+
+                const {
+                  blockNumber,
+                } = { ...transaction_data?.transaction };
+
+                if (blockNumber) {
+                  const block_timestamp = await getBlockTime(provider, blockNumber, source_chain);
+
+                  await write(
+                    TRANSFER_COLLECTION,
+                    toArray([tx_hash_wrap, source_chain], 'lower').join('_'),
+                    {
+                      type: 'wrap',
+                      wrap: {
+                        ...d,
+                        txhash: tx_hash,
+                        height: blockNumber,
+                        type: 'evm',
+                        created_at: getGranularity(moment(block_timestamp * 1000).utc()),
+                      },
+                    },
+                    true,
+                  );
+                }
+              }
+            }
+
+            resolve();
+          }
+        )
+      )
+  );
+
+  return;
+};
