@@ -24,6 +24,11 @@ module.exports = params => {
             let obj;
 
             switch (k) {
+              case 'depositAddress':
+                if (v) {
+                  obj = { match: { deposit_address: v } };
+                }
+                break;
               case 'fromBlock':
                 if (v) {
                   obj = { range: { height: { gte: Number(v) } } };

@@ -12,6 +12,8 @@ const {
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
+  searchBlocks,
+  searchTransactions,
 } = require('./axelar');
 const {
   searchPolls,
@@ -24,6 +26,9 @@ const {
 const {
   searchBatches,
 } = require('./batches');
+const {
+  searchDepositAddresses,
+} = require('./transfers');
 const {
   saveDepositForWrap,
   saveWrap,
@@ -51,11 +56,14 @@ module.exports = {
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
+  searchBlocks,
+  searchTransactions,
   searchPolls,
   searchUptimes,
   searchHeartbeats,
   getValidatorsVotes,
   searchBatches,
+  searchDepositAddresses,
   saveDepositForWrap,
   saveWrap,
   saveDepositForUnwrap,

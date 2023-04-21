@@ -13,8 +13,8 @@ module.exports = params => {
     fields: fields || undefined,
     _source: _source || undefined,
     from: !isNaN(from) ? Number(from) : 0,
-    size: !isNaN(size) ? Number(size) : 200,
-    sort: sort || [{ period_height: 'desc' }],
+    size: !isNaN(size) ? Number(size) : 50,
+    sort: sort || [{ height: 'desc' }],
     track_total_hits: true,
   };
 };

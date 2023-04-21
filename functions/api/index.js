@@ -15,11 +15,14 @@ exports.handler = async (
     getInflation,
     getChainMaintainers,
     getEscrowAddresses,
+    searchBlocks,
+    searchTransactions,
     searchPolls,
     searchUptimes,
     searchHeartbeats,
     getValidatorsVotes,
     searchBatches,
+    searchDepositAddresses,
     saveDepositForWrap,
     saveWrap,
     saveDepositForUnwrap,
@@ -284,6 +287,22 @@ exports.handler = async (
           output = errorOutput(error);
         }
         break;
+      case 'getBlocks':
+      case 'searchBlocks':
+        try {
+          output = await searchBlocks(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTransactions':
+      case 'searchTransactions':
+        try {
+          output = await searchTransactions(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       case 'getUptimes':
       case 'searchUptimes':
         try {
@@ -334,6 +353,14 @@ exports.handler = async (
       case 'searchTransfers':
         break;
       case 'resolveTransfer':
+        break;
+      case 'getDepositAddresses':
+      case 'searchDepositAddresses':
+        try {
+          output = await searchDepositAddresses(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'getTVL':
         break;

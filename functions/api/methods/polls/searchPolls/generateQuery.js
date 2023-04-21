@@ -48,6 +48,8 @@ module.exports = async params => {
               'method',
               'query',
               'aggs',
+              'fields',
+              '_source',
               'from',
               'size',
               'sort',
