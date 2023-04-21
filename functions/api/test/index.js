@@ -12,6 +12,7 @@ const searchHeartbeats = require('./searchHeartbeats');
 const getValidatorsVotes = require('./getValidatorsVotes');
 const searchBatches = require('./searchBatches');
 const searchDepositAddresses = require('./searchDepositAddresses');
+const getTVL = require('./getTVL');
 
 const test = async () => {
   await getTokensPrice();
@@ -28,6 +29,7 @@ const test = async () => {
   await getValidatorsVotes();
   await searchBatches();
   await searchDepositAddresses();
+  await getTVL();
 };
 
 test();

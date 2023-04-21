@@ -21,11 +21,3 @@ output "lambda_evm_crawler" {
 output "event_rule_evm_crawler" {
   value = aws_cloudwatch_event_rule.schedule_evm_crawler.arn
 }
-
-output "lambda_tvl" {
-  value = aws_lambda_function.tvl.arn
-}
-
-output "event_rule_tvl" {
-  value = aws_cloudwatch_event_rule.schedule_tvl.arn
-}

@@ -1556,9 +1556,9 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/tx/{tx}"
-      prefix_address: ""
+      prefix_address: "axelar"
       prefix_chain_ids:
-        - "-"
+        - "axelar-"
     osmosis:
       chain_name: "osmosis-5"
       endpoints:

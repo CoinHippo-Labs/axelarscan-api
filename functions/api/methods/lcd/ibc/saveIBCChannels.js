@@ -71,55 +71,63 @@ module.exports = async (
           };
         });
 
-      for (const channel of all_channels) {
-        const {
-          channel_id,
-          port_id,
-          version,
-          counterparty,
-          updated_at,
-        } = { ...channel };
-        let {
-          chain_id,
-          escrow_address,
-        } = { ...channel };
-
-        if (!chain_id || !escrow_address || (counterparty && !counterparty.escrow_address) || moment().diff(moment((0 || 0) * 1000), 'minutes', true) > 240) {
-          const response = await lcd.get(`/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`).catch(error => { return { error: error?.response?.data }; });
-
-          const {
-            client_state,
-          } = { ...response?.data?.identified_client_state };
-
-          chain_id = client_state?.chain_id || chain_id;
-
-          if (chain_id) {
-            escrow_address = getAddress(`${version}\x00${port_id}/${channel_id}`, getChainData('axelarnet')?.prefix_address) || escrow_address;
-
-            if (counterparty) {
+      await Promise.all(
+        all_channels.map(channel =>
+          new Promise(
+            async resolve => {
               const {
-                prefix_address,
-              } = { ...getChainData(chain_id, 'cosmos') };
-
-              if (prefix_address) {
-                counterparty.escrow_address = getAddress(`${version}\x00${counterparty.port_id}/${counterparty.channel_id}`, prefix_address);
-              }
-            }
-
-            await write(
-              IBC_CHANNEL_COLLECTION,
-              channel_id,
-              {
-                ...channel,
-                chain_id,
+                channel_id,
+                port_id,
+                version,
                 counterparty,
+                updated_at,
+              } = { ...channel };
+              let {
+                chain_id,
                 escrow_address,
-                updated_at: moment().unix(),
-              },
-            );
-          }
-        }
-      }
+              } = { ...channel };
+
+              if (!chain_id || !escrow_address || (counterparty && !counterparty.escrow_address) || moment().diff(moment((0 || 0) * 1000), 'minutes', true) > 240) {
+                const response = await lcd.get(`/ibc/core/channel/v1/channels/${channel_id}/ports/${port_id}/client_state`).catch(error => { return { error: error?.response?.data }; });
+
+                const {
+                  client_state,
+                } = { ...response?.data?.identified_client_state };
+
+                chain_id = client_state?.chain_id || chain_id;
+
+                if (chain_id) {
+                  escrow_address = getAddress(`${version}\x00${port_id}/${channel_id}`, getChainData('axelarnet')?.prefix_address) || escrow_address;
+
+                  if (counterparty) {
+                    const {
+                      prefix_address,
+                    } = { ...getChainData(chain_id, 'cosmos') };
+
+                    if (prefix_address) {
+                      counterparty.escrow_address = getAddress(`${version}\x00${counterparty.port_id}/${counterparty.channel_id}`, prefix_address);
+                    }
+                  }
+
+                  await write(
+                    IBC_CHANNEL_COLLECTION,
+                    channel_id,
+                    {
+                      ...channel,
+                      chain_id,
+                      counterparty,
+                      escrow_address,
+                      updated_at: moment().unix(),
+                    },
+                  );
+                }
+              }
+
+              resolve();
+            }
+          )
+        )
+      );
     }
   }
 

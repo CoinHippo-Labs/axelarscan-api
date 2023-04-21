@@ -76,8 +76,9 @@ const getChains = (
                       blockExplorerUrls: [url],
                     },
                   ];
-                  gateway_address = getContracts(environment)?.gateway_contracts?.[_k];
+                  gateway_address = getContracts(environment)?.gateway_contracts?.[_k]?.address;
                   no_inflation = !!(!maintainer_id || deprecated || !gateway_address);
+                  no_tvl = deprecated;
                   break;
                 default:
                   break;
@@ -90,6 +91,7 @@ const getChains = (
                 provider_params,
                 gateway_address,
                 no_inflation,
+                no_tvl,
               };
 
               return [_k, _v];

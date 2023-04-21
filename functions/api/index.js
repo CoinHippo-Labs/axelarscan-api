@@ -23,6 +23,7 @@ exports.handler = async (
     getValidatorsVotes,
     searchBatches,
     searchDepositAddresses,
+    getTVL,
     saveDepositForWrap,
     saveWrap,
     saveDepositForUnwrap,
@@ -366,6 +367,11 @@ exports.handler = async (
         }
         break;
       case 'getTVL':
+        try {
+          output = await getTVL(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'saveDepositForWrap':
         try {

@@ -40,6 +40,7 @@ const getLCDs = chain => {
                     baseURL: lcd,
                     timeout: timeout?.lcd || 5000,
                     headers: {
+                      agent: 'axelarscan',
                       'Accept-Encoding': 'gzip',
                     },
                   },

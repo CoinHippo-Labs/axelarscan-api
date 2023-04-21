@@ -30,6 +30,9 @@ const {
   searchDepositAddresses,
 } = require('./transfers');
 const {
+  getTVL,
+} = require('./tvl');
+const {
   saveDepositForWrap,
   saveWrap,
 } = require('./transfers/wrap');
@@ -67,6 +70,7 @@ module.exports = {
   getValidatorsVotes,
   searchBatches,
   searchDepositAddresses,
+  getTVL,
   saveDepositForWrap,
   saveWrap,
   saveDepositForUnwrap,

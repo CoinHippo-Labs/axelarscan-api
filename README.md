@@ -17,8 +17,6 @@ cd ./functions/axelar-crawler
 yarn
 cd ./functions/evm-crawler
 yarn
-cd ./functions/tvl
-yarn
 
 cd ./terraform/testnet
 cp variables.tf.example variables.tf

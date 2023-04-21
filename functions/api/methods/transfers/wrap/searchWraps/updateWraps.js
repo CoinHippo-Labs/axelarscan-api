@@ -1,9 +1,9 @@
 const {
   write,
-} = require('../../../services/index');
+} = require('../../../../services/index');
 const {
   toArray,
-} = require('../../../utils');
+} = require('../../../../utils');
 
 module.exports = async (
   collection,
