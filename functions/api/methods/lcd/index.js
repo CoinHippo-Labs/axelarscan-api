@@ -2,6 +2,8 @@ const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
 
+const indexTransaction = require('./tx');
+const indexTransactions = require('./txs');
 const {
   saveBlock,
   saveUptime,
@@ -165,12 +167,12 @@ module.exports = async (
 
     if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && tx_response?.txhash) {
       if (index) {
-        output = await index_tx(output);
+        output = await indexTransaction(output);
       }
     }
     else if (path.startsWith('/cosmos/tx/v1beta1/txs') && !path.endsWith('/') && toArray(tx_responses).length > 0) {
       if (index) {
-        output = await index_txs(output);
+        output = await indexTransactions(output);
       }
     }
     else if (path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') && !path.endsWith('/') && block?.header?.height) {

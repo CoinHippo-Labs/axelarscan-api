@@ -33,7 +33,7 @@ module.exports = async () => {
 
           while (next_key) {
             const page_key = typeof next_key === 'string' && next_key ? next_key : undefined;
-            const response = await lcd('/cosmos/tx/v1beta1/txs', { events: `tx.height=${height}`, 'pagination.key': page_key });
+            const response = await lcd('/cosmos/tx/v1beta1/txs', { index: true, events: `tx.height=${height}`, 'pagination.key': page_key });
             next_key = response?.pagination?.next_key;
           }
 
