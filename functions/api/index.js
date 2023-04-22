@@ -24,6 +24,7 @@ exports.handler = async (
     searchBatches,
     searchDepositAddresses,
     getTVL,
+    getTVLAlert,
     saveDepositForWrap,
     saveWrap,
     saveDepositForUnwrap,
@@ -32,6 +33,7 @@ exports.handler = async (
     saveERC20Transfer,
     archive,
     updatePolls,
+    updateTVL,
     updateWraps,
     updateUnwraps,
     updateERC20Transfers,
@@ -416,6 +418,11 @@ exports.handler = async (
         }
         break;
       case 'getTVLAlert':
+        try {
+          output = await getTVLAlert(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'archive':
         try {
@@ -427,6 +434,13 @@ exports.handler = async (
       case 'updatePolls':
         try {
           await updatePolls();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateTVL':
+        try {
+          await updateTVL();
         } catch (error) {
           output = errorOutput(error);
         }

@@ -31,6 +31,7 @@ const {
 } = require('./transfers');
 const {
   getTVL,
+  getTVLAlert,
 } = require('./tvl');
 const {
   saveDepositForWrap,
@@ -47,6 +48,7 @@ const {
 const {
   archive,
   updatePolls,
+  updateTVL,
   updateWraps,
   updateUnwraps,
   updateERC20Transfers,
@@ -71,6 +73,7 @@ module.exports = {
   searchBatches,
   searchDepositAddresses,
   getTVL,
+  getTVLAlert,
   saveDepositForWrap,
   saveWrap,
   saveDepositForUnwrap,
@@ -79,6 +82,7 @@ module.exports = {
   saveERC20Transfer,
   archive,
   updatePolls,
+  updateTVL,
   updateWraps,
   updateUnwraps,
   updateERC20Transfers,

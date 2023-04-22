@@ -169,7 +169,6 @@ module.exports = async (
 
     const {
       native_chain,
-      decimals,
       addresses,
     } = { ...asset_data };
 
