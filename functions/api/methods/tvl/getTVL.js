@@ -213,11 +213,11 @@ module.exports = async (
 
                         const {
                           address,
-                        } = { ...contract_data };                        
+                        } = { ...contract_data };
 
                         if (address && provider) {
                           const gateway_balance = await getEVMBalance(gateway_address, contract_data, provider, id);
-                          const supply = !is_native ? await getTokenSupply(contract_data, provider) : 0;
+                          const supply = !is_native ? await getTokenSupply(contract_data, provider, id) : 0;
 
                           result = {
                             contract_data,

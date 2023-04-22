@@ -24,6 +24,7 @@ const IBurnableMintableCappedERC20 = require('../../data/contracts/interfaces/IB
 const getTokenSupply = async (
   contract_data,
   provider,
+  chain,
 ) => {
   let supply;
 
@@ -42,7 +43,7 @@ const getTokenSupply = async (
       for (const url of toArray(chain_data?.endpoints?.rpc)) {
         try {
           const rpc = axios.create({ baseURL: url });
-          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_call', params: [{ from: JSON.stringify(IBurnableMintableCappedERC20.abi), value: ['totalSupply'] }, address], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_call', params: [{ from: JSON.stringify(IBurnableMintableCappedERC20.abi.filter(a => a.name === 'totalSupply')), value: ['totalSupply'] }, address], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
 
           const {
             data,
@@ -92,7 +93,7 @@ const getEVMBalance = async (
       for (const url of toArray(chain_data?.endpoints?.rpc)) {
         try {
           const rpc = axios.create({ baseURL: url });
-          const response = await rpc.post('', { jsonrpc: '2.0', method: address === ZeroAddress ? 'eth_getBalance' : 'eth_call', params: address === ZeroAddress ? [wallet_address, 'latest'] : [{ from: JSON.stringify(IBurnableMintableCappedERC20.abi), value: ['balanceOf'], to: wallet_address }, address], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: address === ZeroAddress ? 'eth_getBalance' : 'eth_call', params: address === ZeroAddress ? [wallet_address, 'latest'] : [{ from: JSON.stringify(IBurnableMintableCappedERC20.abi.filter(a => a.name === 'balanceOf')), value: ['balanceOf'], to: wallet_address }, address], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
 
           const {
             data,

@@ -127,10 +127,11 @@ const getChainKey = (
               maintainer_id,
               prefix_address,
               prefix_chain_ids,
+              chain_type,
             } = { ...v };
 
             return (
-              toArray([id, chain_name, maintainer_id, prefix_address]).findIndex(s => equalsIgnoreCase(chain, s) || chain.startsWith(s)) > -1 ||
+              toArray([id, chain_name, maintainer_id, prefix_address]).findIndex(s => equalsIgnoreCase(chain, s) || (chain_type !== 'evm' && chain.startsWith(s))) > -1 ||
               toArray(prefix_chain_ids).findIndex(p => chain.startsWith(p)) > -1
             );
           })
@@ -147,7 +148,7 @@ const getChainData = (
   chain,
   chain_types = [],
 ) =>
-  chain && getChains(chain_types)[getChainKey(chain)];
+  chain && getChains(chain_types)[getChainKey(chain, chain_types)];
 
 const getEndpoints = (
   environment = ENVIRONMENT,
