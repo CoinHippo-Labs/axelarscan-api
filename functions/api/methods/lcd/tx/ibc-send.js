@@ -168,7 +168,7 @@ module.exports = async (
           recipient_address: receiver,
           denom,
           amount: Number(formatUnits(amount, decimals || 6)),
-          transfer_id: toArray(transfer_events).find(e => equalsIgnoreCase(normalizeQuote(e.recipient || e.receipient), receiver) && equalsIgnoreCase(e.asset?.denom, denom) && equals_ignore_case(e.asset?.amount, amount))?.id,
+          transfer_id: toArray(transfer_events).find(e => equalsIgnoreCase(normalizeQuote(e.recipient || e.receipient), receiver) && equalsIgnoreCase(e.asset?.denom, denom) && equalsIgnoreCase(e.asset?.amount, amount))?.id,
           packet: e,
         };
       });
