@@ -1492,7 +1492,7 @@ mainnet:
         symbol: "axlSTETH"
   aave-wei:
     denom: "aave-wei"
-    native_chain: "aave"
+    native_chain: "ethereum"
     name: "Aave"
     symbol: "AAVE"
     decimals: 18

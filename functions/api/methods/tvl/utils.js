@@ -19,6 +19,8 @@ const {
   toArray,
 } = require('../../utils');
 
+const IBurnableMintableCappedERC20 = require('../../data/contracts/interfaces/IBurnableMintableCappedERC20.json');
+
 const getTokenSupply = async (
   contract_data,
   provider,
@@ -34,7 +36,29 @@ const getTokenSupply = async (
     try {
       const contract = new Contract(address, ['function totalSupply() view returns (uint256)'], provider);
       supply = await contract.totalSupply();
-    } catch (error) {}
+    } catch (error) {
+      const chain_data = getChainData(chain, 'evm');
+
+      for (const url of toArray(chain_data?.endpoints?.rpc)) {
+        try {
+          const rpc = axios.create({ baseURL: url });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_call', params: [{ from: JSON.stringify(IBurnableMintableCappedERC20.abi), value: ['totalSupply'] }, address], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
+
+          const {
+            data,
+          } = { ...response };
+
+          const {
+            result,
+          } = { ...data };
+
+          if (result) {
+            supply = toBigNumber(result);
+            break;
+          }
+        } catch (error) {}
+      }
+    }
   }
 
   return Number(formatUnits(supply || '0', decimals || 18));
@@ -68,22 +92,19 @@ const getEVMBalance = async (
       for (const url of toArray(chain_data?.endpoints?.rpc)) {
         try {
           const rpc = axios.create({ baseURL: url });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: address === ZeroAddress ? 'eth_getBalance' : 'eth_call', params: address === ZeroAddress ? [wallet_address, 'latest'] : [{ from: JSON.stringify(IBurnableMintableCappedERC20.abi), value: ['balanceOf'], to: wallet_address }, address], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
 
-          if (contract_address === ZeroAddress) {
-            const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBalance', params: [address, 'latest'], id: 0 }).catch(error => { return { data: { error: error?.response?.data } }; });
+          const {
+            data,
+          } = { ...response };
 
-            const {
-              data,
-            } = { ...response };
+          const {
+            result,
+          } = { ...data };
 
-            const {
-              result,
-            } = { ...data };
-
-            if (result) {
-              balance = toBigNumber(result);
-              break;
-            }
+          if (result) {
+            balance = toBigNumber(result);
+            break;
           }
         } catch (error) {}
       }
