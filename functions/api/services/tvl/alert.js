@@ -478,8 +478,6 @@ module.exports = async (
           ) :
         undefined;
 
-    status = 'alert';
-
     summary =
       evm_details &&
       cosmos_details ?
