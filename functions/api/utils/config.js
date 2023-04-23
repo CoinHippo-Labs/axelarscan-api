@@ -159,6 +159,8 @@ const getRPC = () => getEndpoints()?.rpc;
 
 const getLCD = () => getEndpoints()?.lcd;
 
+const getGMP = () => getEndpoints()?.gmp_api;
+
 const getAssets = (
   environment = ENVIRONMENT,
 ) =>
@@ -206,7 +208,7 @@ module.exports = {
   ASSET_COLLECTION: 'assets',
   TOKEN_COLLECTION: 'tokens',
   CURRENCY: 'usd',
-  TRANSFER_ACTIONS: ['ConfirmDeposit', 'ConfirmERC20Deposit'],
+  CONFIRM_TYPES: ['ConfirmDeposit', 'ConfirmERC20Deposit'],
   VOTE_TYPES: ['VoteConfirmDeposit', 'Vote'],
   getContracts,
   getChains,
@@ -216,6 +218,7 @@ module.exports = {
   getEndpoints,
   getRPC,
   getLCD,
+  getGMP,
   getAssets,
   getAssetsList,
   getAssetData,

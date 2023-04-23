@@ -41,13 +41,7 @@ const getTokensPrice = async (
   let tokens_data = toArray(symbols).map(s => getTokenConfig(s));
 
   if (tokens_data.findIndex(t => t?.coingecko_id) > -1) {
-    const api =
-      axios.create(
-        {
-          baseURL: PRICE_ORACLE_API,
-          timeout: 5000,
-        },
-      );
+    const api = axios.create({ baseURL: PRICE_ORACLE_API, timeout: 5000 });
 
     // query historical price
     if (timestamp && moment().diff(moment(timestamp), 'hours') > 4) {

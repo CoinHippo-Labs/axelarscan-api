@@ -34,13 +34,8 @@ module.exports = async (
   let updated = false;
 
   const {
-    tx,
     tx_response,
   } = { ...lcd_response };
-
-  const {
-    messages,
-  } = { ...tx?.body };
 
   const {
     txhash,

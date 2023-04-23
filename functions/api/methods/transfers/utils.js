@@ -1,16 +1,34 @@
 const {
+  formatUnits,
+  parseUnits,
   toBeHex,
 } = require('ethers');
 const axios = require('axios');
 const _ = require('lodash');
 
 const {
+  generateId,
+} = require('./analytics/preprocessing');
+const {
+  getTokensPrice,
+} = require('../tokens');
+const {
+  write,
+} = require('../../services/index');
+const {
+  TRANSFER_COLLECTION,
+  DEPOSIT_ADDRESS_COLLECTION,
+  getChainsList,
+  getChainKey,
   getChainData,
+  getLCD,
+  getAssetData,
 } = require('../../utils/config');
 const {
   toBigNumber,
 } = require('../../utils/number');
 const {
+  equalsIgnoreCase,
   toArray,
 } = require('../../utils');
 
@@ -313,6 +331,233 @@ const setBlockNumberToData = data => {
   return data;
 };
 
+const normalizeLink = link => {
+  if (link) {
+    link = _.cloneDeep(link);
+
+    const {
+      original_sender_chain,
+      original_recipient_chain,
+      sender_chain,
+      recipient_chain,
+    } = { ...link };
+
+    link = {
+      ...link,
+      original_source_chain: original_sender_chain,
+      original_destination_chain: original_recipient_chain,
+      source_chain: sender_chain,
+      destination_chain: recipient_chain,
+    };
+
+    delete link.original_sender_chain;
+    delete link.original_recipient_chain;
+    delete link.sender_chain;
+    delete link.recipient_chain;
+  }
+
+  return link;
+};
+
+const updateLink = async (
+  link,
+  send,
+) => {
+  if (link) {
+    const {
+      txhash,
+      original_destination_chain,
+      deposit_address,
+      asset,
+    } = { ...link };
+
+    let {
+      original_source_chain,
+      source_chain,
+      sender_address,
+      denom,
+      price,
+    } = { ...link };
+
+    let updated = false;
+
+    if (send && !equalsIgnoreCase(sender_address, send.sender_address)) {
+      sender_address = send.sender_address;
+      link.sender_address = sender_address;
+      updated = true;
+    }
+
+    if (sender_address && (equalsIgnoreCase(original_source_chain, 'axelarnet') || getChainData(original_source_chain, 'cosmos'))) {
+      const {
+        id,
+      } = { ...getChainsList('cosmos').find(c => sender_address.startsWith(c.prefix_address)) };
+
+      if (id) {
+        original_source_chain = id;
+        updated = updated || link.original_source_chain !== original_source_chain;
+        link.original_source_chain = original_source_chain;
+      }
+    }
+
+    if (send && sender_address) {
+      source_chain = getChainKey(getChainsList('cosmos').find(c => sender_address.startsWith(c.prefix_address))?.id || source_chain || send.source_chain);
+      updated = updated || link.source_chain !== source_chain;
+      link.source_chain = source_chain;
+
+      if (!original_source_chain?.startsWith(source_chain)) {
+        original_source_chain = source_chain;
+        link.original_source_chain = original_source_chain;
+        updated = true;
+      }
+    }
+
+    denom = send?.denom || asset || denom;
+
+    if ((typeof price !== 'number' || price <= 0 || !equalsIgnoreCase(link.denom, denom)) && denom) {
+      const response = await getTokensPrice(denom, moment(send?.created_at?.ms).utc());
+
+      if (typeof response === 'number') {
+        price = response;
+        link.price = response;
+        link.denom = denom;
+        updated = true;
+      }
+    }
+
+    if (deposit_address && updated) {
+      const _id = `${deposit_address}`.toLowerCase();
+      await write(DEPOSIT_ADDRESS_COLLECTION, _id, link);
+    }
+  }
+
+  return link;
+};
+
+const updateSend = async (
+  send,
+  link,
+  data,
+  update_only = false,
+) => {
+  if (send) {
+    send.source_chain = link?.source_chain || send.source_chain;
+    send.destination_chain = link?.destination_chain || send.destination_chain;
+    send.original_source_chain = link?.original_source_chain || getChainKey(send.source_chain || link?.source_chain);
+    send.original_destination_chain = link?.original_destination_chain || getChainKey(send.destination_chain || link?.destination_chain);
+
+    if (link) {
+      send.destination_chain = getChainKey(link.destination_chain || send.destination_chain);
+      send.denom = send.denom || link.asset || link.denom;
+
+      if (send.denom) {
+        const {
+          id,
+          chain_id,
+        } = { ...getChainData(send.source_chain) };
+
+        const asset_data = getAssetData(send.denom);
+
+        const {
+          addresses,
+        } = { ...asset_data };
+        let {
+          decimals,
+        } = { ...asset_data };
+
+        decimals = decimals || (send.denom.includes('-wei') ? 18 : 6);
+
+        // custom decimals for non-axelar wrap assets
+        let _decimals = decimals;
+
+        if (send.token_address && !equalsIgnoreCase(addresses?.[id]?.address, send.token_address)) {
+          if (
+            (['uusd'].includes(send.denom) && [137].includes(chain_id)) ||
+            (['uusdc'].includes(send.denom) && [3, 250].includes(chain_id))
+          ) {
+            _decimals = 18;
+          }
+        }
+
+        if (asset_data) {
+          send.denom = asset_data.denom || send.denom;
+
+          if (typeof send.amount === 'string') {
+            _decimals === 18 ? _decimals : send.amount.length > 18 ? 18 : _decimals;
+            send.amount = Number(formatUnits(send.amount, _decimals));
+          }
+
+          if (['uluna', 'uusd'].includes(send.denom) && send.created_at?.ms < moment('20220401', 'YYYYMMDD').utc().valueOf()) {
+            send.fee = parseFloat((send.amount * 0.001).toFixed(6));
+          }
+
+          if (typeof send.fee !== 'number') {
+            const lcd = getLCD() && axios.create({ baseURL: getLCD(), timeout: 5000, headers: { 'Accept-Encoding': 'gzip' } });
+
+            if (lcd) {
+              const response =
+                await lcd.get(
+                  '/axelar/nexus/v1beta1/transfer_fee',
+                  {
+                    params: {
+                      source_chain: send.original_source_chain,
+                      destination_chain: send.original_destination_chain,
+                      amount: `${parseUnits((send.amount || 0).toString(), decimals).toString()}${send.denom}`,
+                    },
+                  },
+                )
+                .catch(error => { return { error: error?.response?.data }; });
+
+              const {
+                amount,
+              } = { ...response?.data?.fee };
+
+              if (amount) {
+                send.fee = Number(formatUnits(amount, decimals));
+              }
+            }
+          }
+        }
+      }
+
+      if (typeof send.amount === 'number' && typeof link.price === 'number') {
+        send.value = send.amount * link.price;
+      }
+
+      if (typeof send.amount === 'number' && typeof send.fee === 'number') {
+        if (send.amount <= send.fee) {
+          send.insufficient_fee = true;
+        }
+        else {
+          send.insufficient_fee = false;
+          send.amount_received = send.amount - send.fee;
+        }
+
+        if (send.insufficient_fee && (data?.ibc_send || data?.command || data?.axelar_transfer || data?.unwrap?.tx_hash_unwrap || data?.vote)) {
+          send.insufficient_fee = false;
+        }
+      }
+    }
+
+    const _id = generateId({ send });
+
+    if (_id) {
+      const {
+        sender_address,
+      } = { ...send };
+
+      const {
+        prefix_address,
+      } = { ...getChainData(send.source_chain) };
+
+      if (!prefix_address || sender_address?.startsWith(prefix_address)) {
+        await write(TRANSFER_COLLECTION, _id, { ...data, send, link: link || undefined }, update_only);
+      };
+    }
+  }
+
+  return send;
+};
+
 module.exports = {
   getReceiptLogIndex,
   setReceiptLogIndexToData,
@@ -320,4 +565,7 @@ module.exports = {
   setTransactionIdToData,
   getBlockTime,
   setBlockNumberToData,
+  normalizeLink,
+  updateLink,
+  updateSend,
 };

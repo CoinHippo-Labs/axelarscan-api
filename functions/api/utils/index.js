@@ -163,7 +163,7 @@ const toHex = byteArray => {
   let string = '0x';
 
   if (typeof byteArray === 'string' && byteArray.startsWith('[') && byteArray.endsWith(']')) {
-    byteArray = to_json(byteArray);
+    byteArray = toJson(byteArray);
   }
 
   if (Array.isArray(byteArray)) {

@@ -18,11 +18,5 @@ module.exports = (
     source_chain,
   } = { ...send };
 
-  return (
-    _id ?
-      _id :
-      txhash && source_chain ?
-        toArray([txhash, source_chain], 'lower').join(delimiter) :
-        undefined
-  );
+  return _id ? _id : txhash && source_chain ? toArray([txhash, source_chain], 'lower').join(delimiter) : undefined;
 };

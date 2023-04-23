@@ -36,9 +36,7 @@ module.exports = async (
     logs,
   } = { ...tx_response };
 
-  if ( messages && logs) {
-    const created_at = moment(timestamp).utc().valueOf();
-
+  if (messages && logs) {
     updated =
       (await Promise.all(
         messages.map((m, i) =>
@@ -67,7 +65,7 @@ module.exports = async (
                   {
                     id: poll_id,
                     height,
-                    created_at: getGranularity(created_at),
+                    created_at: getGranularity(moment(timestamp).utc()),
                     sender_chain: getChainKey(chain),
                     transaction_id: toHex(tx_id),
                     participants: participants || undefined,

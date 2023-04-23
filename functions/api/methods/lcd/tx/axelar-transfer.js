@@ -44,8 +44,6 @@ module.exports = async (
     logs,
   } = { ...tx_response };
 
-  const created_at = moment(timestamp).utc().valueOf();
-
   const events =
     toArray(logs)
       .map(l => {
@@ -137,7 +135,7 @@ module.exports = async (
           height,
           status: code ? 'failed' : 'success',
           type: 'axelar',
-          created_at: getGranularity(created_at),
+          created_at: getGranularity(moment(timestamp).utc()),
           destination_chain: 'axelarnet',
           recipient_address: recipient,
           denom,
