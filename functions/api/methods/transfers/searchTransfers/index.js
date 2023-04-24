@@ -3,7 +3,6 @@ const generateReadParams = require('./generateReadParams');
 const search = require('./search');
 const updateTransfers = require('./updateTransfers');
 const addFieldsToResult = require('./addFieldsToResult');
-const normalizeResult = require('./normalizeResult');
 const {
   TRANSFER_COLLECTION,
 } = require('../../../utils/config');
@@ -27,8 +26,6 @@ module.exports = async (
     ...output,
     data: addFieldsToResult(output?.data),
   };
-
-  output = normalizeResult(output);
 
   return output;
 };

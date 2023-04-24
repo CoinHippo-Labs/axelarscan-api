@@ -23,6 +23,7 @@ exports.handler = async (
     getValidatorsVotes,
     searchBatches,
     searchDepositAddresses,
+    searchTransfers,
     getTVL,
     getTVLAlert,
     saveDepositForWrap,
@@ -31,6 +32,7 @@ exports.handler = async (
     saveUnwrap,
     saveDepositForERC20Transfer,
     saveERC20Transfer,
+    getLatestEventBlock,
     archive,
     updatePolls,
     updateTVL,
@@ -357,6 +359,11 @@ exports.handler = async (
       case 'transfersTotalVolume':
         break;
       case 'searchTransfers':
+        try {
+          output = await searchTransfers(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'resolveTransfer':
         break;
@@ -413,6 +420,17 @@ exports.handler = async (
       case 'saveERC20Transfer':
         try {
           output = await saveERC20Transfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getLatestEventBlock':
+        try {
+          const {
+            chain,
+          } = { ...params };
+
+          output = await getLatestEventBlock(chain);
         } catch (error) {
           output = errorOutput(error);
         }

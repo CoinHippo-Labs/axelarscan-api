@@ -1,3 +1,7 @@
+const {
+  toArray,
+} = require('../../../utils');
+
 module.exports = params => {
   const {
     aggs,
@@ -6,6 +10,7 @@ module.exports = params => {
     from,
     size,
     sort,
+    txHash,
   } = { ...params };
 
   return {
@@ -14,7 +19,7 @@ module.exports = params => {
     _source: _source || undefined,
     from: !isNaN(from) ? Number(from) : 0,
     size: !isNaN(size) ? Number(size) : 100,
-    sort: sort || [{ 'send.created_at.ms': 'desc' }],
+    sort: toArray([sort || { 'send.created_at.ms': 'desc' }, txHash && { 'confirm.created_at.ms': 'desc' }]),
     track_total_hits: true,
   };
 };

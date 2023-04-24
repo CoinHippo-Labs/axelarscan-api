@@ -28,6 +28,7 @@ const {
 } = require('./batches');
 const {
   searchDepositAddresses,
+  searchTransfers,
 } = require('./transfers');
 const {
   getTVL,
@@ -45,6 +46,9 @@ const {
   saveDepositForERC20Transfer,
   saveERC20Transfer,
 } = require('./transfers/erc20-transfer');
+const {
+  getLatestEventBlock,
+} = require('./crawler');
 const {
   archive,
   updatePolls,
@@ -72,6 +76,7 @@ module.exports = {
   getValidatorsVotes,
   searchBatches,
   searchDepositAddresses,
+  searchTransfers,
   getTVL,
   getTVLAlert,
   saveDepositForWrap,
@@ -80,6 +85,7 @@ module.exports = {
   saveUnwrap,
   saveDepositForERC20Transfer,
   saveERC20Transfer,
+  getLatestEventBlock,
   archive,
   updatePolls,
   updateTVL,

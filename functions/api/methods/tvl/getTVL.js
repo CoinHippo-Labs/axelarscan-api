@@ -256,11 +256,7 @@ module.exports = async (
                                       must: [
                                         { match: { state: 'STATE_OPEN' } },
                                       ],
-                                      should:
-                                        toArray(prefix_chain_ids)
-                                          .map(p => {
-                                            return { match_phrase_prefix: { chain_id: p } };
-                                          }),
+                                      should: toArray(prefix_chain_ids).map(p => { return { match_phrase_prefix: { chain_id: p } }; }),
                                       minimum_should_match: 1,
                                     },
                                   },
