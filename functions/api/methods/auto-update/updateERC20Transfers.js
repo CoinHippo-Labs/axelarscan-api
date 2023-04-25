@@ -8,6 +8,9 @@ const {
   getBlockTime,
 } = require('../transfers/utils');
 const {
+  recoverEvents,
+} = require('../crawler');
+const {
   write,
 } = require('../../services/index');
 const {
@@ -69,6 +72,8 @@ module.exports = async () => {
                     },
                     true,
                   );
+
+                  await recoverEvents({ txHash: tx_hash_transfer, chain: source_chain });
                 }
               }
             }

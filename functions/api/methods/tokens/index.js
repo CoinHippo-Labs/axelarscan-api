@@ -40,7 +40,7 @@ const getTokensPrice = async (
 ) => {
   let tokens_data = toArray(symbols).map(s => getTokenConfig(s));
 
-  if (tokens_data.findIndex(t => t?.coingecko_id) > -1) {
+  if (tokens_data.findIndex(t => t.coingecko_id) > -1) {
     const api = axios.create({ baseURL: PRICE_ORACLE_API, timeout: 5000 });
 
     // query historical price
@@ -97,13 +97,12 @@ const getTokensPrice = async (
     }
 
     // query current price
-    if (tokens_data.findIndex(t => typeof t?.price !== 'number') > -1) {
-      const ids = _.uniq(tokens_data.map(t => t?.coingecko_id).filter(id => id));
+    if (tokens_data.findIndex(t => typeof t.price !== 'number') > -1) {
+      const ids = _.uniq(tokens_data.map(t => t.coingecko_id).filter(id => id));
 
       let response;
       let cache;
-
-      const cache_id = ids.join('_').toLowerCase();
+      const cache_id = toArray(ids, 'lower').join('_');
 
       // get price from cache
       try {
@@ -148,7 +147,7 @@ const getTokensPrice = async (
           error,
         } = { ...data };
 
-        if (data && !error && tokens_data.findIndex(t => !data[t?.coingecko_id]?.[currency]) < 0) {
+        if (data && !error && tokens_data.findIndex(t => !data[t.coingecko_id]?.[currency]) < 0) {
           await write(
             COLLECTION,
             cache_id,

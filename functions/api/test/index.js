@@ -14,6 +14,7 @@ const searchBatches = require('./searchBatches');
 const searchDepositAddresses = require('./searchDepositAddresses');
 const searchTransfers = require('./searchTransfers');
 const getTVL = require('./getTVL');
+const getLatestEventBlock = require('./getLatestEventBlock');
 
 const test = async () => {
   await getTokensPrice();
@@ -32,6 +33,7 @@ const test = async () => {
   await searchDepositAddresses();
   await searchTransfers();
   await getTVL();
+  await getLatestEventBlock();
 };
 
 test();

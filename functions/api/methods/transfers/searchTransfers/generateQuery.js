@@ -247,7 +247,7 @@ module.exports = params => {
                                     minimum_should_match: 1,
                                   },
                                 } :
-                                { match_phrase: { 'send.denom': d } },
+                                { match_phrase: { 'send.denom': d } }
                             );
                           }),
                         minimum_should_match: 1,

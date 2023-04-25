@@ -365,8 +365,6 @@ const updateLink = async (
 ) => {
   if (link) {
     const {
-      txhash,
-      original_destination_chain,
       deposit_address,
       asset,
     } = { ...link };
@@ -486,7 +484,7 @@ const updateSend = async (
             send.amount = Number(formatUnits(send.amount, _decimals));
           }
 
-          if (['uluna', 'uusd'].includes(send.denom) && send.created_at?.ms < moment('20220401', 'YYYYMMDD').utc().valueOf()) {
+          if (['uluna', 'uusd'].includes(send.denom) && moment('20220401', 'YYYYMMDD').utc().diff(moment(send.created_at?.ms), 'seconds') > 0) {
             send.fee = parseFloat((send.amount * 0.001).toFixed(6));
           }
 

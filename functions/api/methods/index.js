@@ -29,6 +29,7 @@ const {
 const {
   searchDepositAddresses,
   searchTransfers,
+  resolveTransfer,
 } = require('./transfers');
 const {
   getTVL,
@@ -77,6 +78,7 @@ module.exports = {
   searchBatches,
   searchDepositAddresses,
   searchTransfers,
+  resolveTransfer,
   getTVL,
   getTVLAlert,
   saveDepositForWrap,

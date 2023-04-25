@@ -81,7 +81,6 @@ module.exports = async (
           } = { ...f };
 
           const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
-
           return [id, value];
         })
       );

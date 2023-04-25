@@ -24,6 +24,7 @@ exports.handler = async (
     searchBatches,
     searchDepositAddresses,
     searchTransfers,
+    resolveTransfer,
     getTVL,
     getTVLAlert,
     saveDepositForWrap,
@@ -366,6 +367,11 @@ exports.handler = async (
         }
         break;
       case 'resolveTransfer':
+        try {
+          output = await resolveTransfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'getDepositAddresses':
       case 'searchDepositAddresses':

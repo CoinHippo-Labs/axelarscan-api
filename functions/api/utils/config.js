@@ -210,6 +210,7 @@ module.exports = {
   CURRENCY: 'usd',
   CONFIRM_TYPES: ['ConfirmDeposit', 'ConfirmERC20Deposit'],
   VOTE_TYPES: ['VoteConfirmDeposit', 'Vote'],
+  GATEWAY_EVENTS: ['TokenSent', 'Executed'],
   getContracts,
   getChains,
   getChainsList,

@@ -41,7 +41,6 @@ module.exports = async chain => {
                   switch (c) {
                     case TRANSFER_COLLECTION:
                       key = 'token_sent_block';
-
                       try {
                         const response =
                           await read(
@@ -61,7 +60,7 @@ module.exports = async chain => {
                                 must_not: getOthersChainIds(chain).map(c => { return { match_phrase: { 'send.source_chain': c } }; }),
                               },
                             },
-                            { size: 1, sort: [{ 'send.height': 'desc' }] },
+                            { size: 1, sort: [{ 'send.created_at.ms': 'desc' }] },
                           );
 
                         const {
@@ -73,7 +72,6 @@ module.exports = async chain => {
                       break;
                     case COMMAND_EVENT_COLLECTION:
                       key = 'batches_executed_block';
-
                       try {
                         const response =
                           await read(
@@ -90,9 +88,7 @@ module.exports = async chain => {
                             { size: 1, sort: [{ 'blockNumber': 'desc' }] },
                           );
 
-                        const {
-                          event,
-                        } = { ..._.head(response?.data) };
+                        const event = { ..._.head(response?.data) };
 
                         height = event?.blockNumber;
                       } catch (error) {}
@@ -117,7 +113,7 @@ module.exports = async chain => {
       ...output,
       latest: {
         ...output.latest,
-        gateway_block: _.min(toArray(Object.values(output))),
+        gateway_block: _.min(toArray(Object.values(output.latest))),
       },
     };
   }

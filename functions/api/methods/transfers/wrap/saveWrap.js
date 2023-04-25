@@ -1,6 +1,10 @@
 const moment = require('moment');
 
 const {
+  recoverEvents,
+} = require('../../crawler');
+const {
+  get,
   write,
 } = require('../../../services/index');
 const {
@@ -73,7 +77,6 @@ module.exports = async (
           } = { ...f };
 
           const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
-
           return [id, value];
         })
       );
@@ -84,6 +87,16 @@ module.exports = async (
     const {
       result,
     } = { ...response };
+
+    if (data.tx_hash_wrap) {
+      const {
+        source_chain,
+      } = { ...await get(WRAP_COLLECTION, _id) };
+
+      if (source_chain) {
+        await recoverEvents({ txHash: data.tx_hash_wrap, chain: source_chain });
+      }
+    }
 
     return {
       error: false,
