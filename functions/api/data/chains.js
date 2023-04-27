@@ -2058,7 +2058,7 @@ module.exports = {
       },
       {
         id: 'osmosis',
-        chain_name: 'osmosis-5',
+        chain_name: 'osmosis-6',
         name: 'Osmosis',
         short_name: 'OSMO',
         explorer: {
@@ -2082,9 +2082,7 @@ module.exports = {
         ],
         endpoints: {
           lcds: [
-            'https://testnet-rest.osmosis.zone',
-            'https://lcd.testnet.osmosis.zone',
-            'https://osmosis-testnet-rpc.allthatnode.com:1317',
+            'https://lcd.osmotest5.osmosis.zone',
           ],
         },
         overrides: {
@@ -2098,6 +2096,9 @@ module.exports = {
 
           },
           'osmosis-5': {
+
+          },
+          'osmosis-6': {
 
           },
         },
