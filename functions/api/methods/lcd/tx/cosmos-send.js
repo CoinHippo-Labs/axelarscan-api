@@ -73,12 +73,14 @@ module.exports = async (
         const packet_data = toJson(attributes.find(a => a.key === 'packet_data')?.value);
         const packet_data_hex = attributes.find(a => a.key === 'packet_data_hex')?.value;
         const packet_sequence = attributes.find(a => a.key === 'packet_sequence')?.value;
+        const packet_timeout_timestamp = attributes.find(a => a.key === 'packet_timeout_timestamp')?.value;
 
         return {
           ...e,
           packet_data,
           packet_data_hex,
           packet_sequence,
+          packet_timeout_timestamp,
         };
       })
       .filter(e => typeof e.packet_data === 'object' && e.packet_data);
@@ -92,6 +94,7 @@ module.exports = async (
       packet_data,
       packet_data_hex,
       packet_sequence,
+      packet_timeout_timestamp,
     } = { ...event };
 
     const {
@@ -112,7 +115,16 @@ module.exports = async (
         tx_responses,
       } = { ...response };
 
-      if (toArray(tx_responses).length < 1) {
+      if (toArray(tx_responses).length < 1 && packet_timeout_timestamp) {
+        response = await lcd.query(`/cosmos/tx/v1beta1/txs?limit=5&events=send_packet.packet_sequence=${packet_sequence}&events=send_packet.packet_timeout_timestamp=${packet_timeout_timestamp}`);
+
+        if (response) {
+          txs = response.txs;
+          tx_responses = response.tx_responses;
+        }
+      }
+
+      if (toArray(tx_responses).length < 1 && packet_data_hex) {
         response = await lcd.query(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`send_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`);
 
         if (response) {
@@ -132,8 +144,6 @@ module.exports = async (
           });
 
       if (index > -1) {
-        const data = ;
-
         const {
           tx,
           tx_response,
@@ -155,73 +165,75 @@ module.exports = async (
           const recipient_address = toArray(messages).find(m => m.receiver)?.receiver;
           const amount_data = toArray(messages).find(m => m.token)?.token;
 
-          if (txhash && !code && recipient_address?.length >= 65 && amount_data?.amount) {
-            const response =
-              await read(
-                UNWRAP_COLLECTION,
-                {
-                  bool: {
-                    must: [
-                      { match: { tx_hash: txhash } },
-                      { match: { deposit_address_link: recipient_address } },
-                      { match: { source_chain: id } },
-                    ],
+          if (txhash && !code) {
+            if (recipient_address?.length >= 65 && amount_data?.amount) {
+              const response =
+                await read(
+                  UNWRAP_COLLECTION,
+                  {
+                    bool: {
+                      must: [
+                        { match: { tx_hash: txhash } },
+                        { match: { deposit_address_link: recipient_address } },
+                        { match: { source_chain: id } },
+                      ],
+                    },
                   },
-                },
-                { size: 1 },
-              );
+                  { size: 1 },
+                );
 
-            let unwrap = _.head(response?.data);
+              let unwrap = _.head(response?.data);
 
-            if (unwrap?.tx_hash_unwrap) {
-              const {
-                tx_hash_unwrap,
-                destination_chain,
-              } = { ...unwrap };
-
-              const provider = getProvider(destination_chain);
-
-              if (provider) {
-                const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
-
+              if (unwrap?.tx_hash_unwrap) {
                 const {
-                  blockNumber,
-                  from,
-                } = { ...transaction_data?.transaction };
+                  tx_hash_unwrap,
+                  destination_chain,
+                } = { ...unwrap };
 
-                if (blockNumber) {
-                  const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
+                const provider = getProvider(destination_chain);
 
-                  unwrap = {
-                    ...unwrap,
-                    height: blockNumber,
-                    type: 'evm',
-                    created_at: getGranularity(moment(block_timestamp * 1000).utc()),
-                    sender_address: from,
-                  };
+                if (provider) {
+                  const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
+
+                  const {
+                    blockNumber,
+                    from,
+                  } = { ...transaction_data?.transaction };
+
+                  if (blockNumber) {
+                    const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
+
+                    unwrap = {
+                      ...unwrap,
+                      height: blockNumber,
+                      type: 'evm',
+                      created_at: getGranularity(moment(block_timestamp * 1000).utc()),
+                      sender_address: from,
+                    };
+                  }
                 }
               }
+
+              const send = {
+                txhash,
+                height: Number(height),
+                status: code ? 'failed' : 'success',
+                type: 'ibc',
+                created_at: getGranularity(moment(timestamp).utc()),
+                source_chain: id,
+                sender_address,
+                recipient_address,
+                denom: amount_data.denom,
+                amount: amount_data.amount,
+              };
+
+              const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
+
+              let link = normalizeLink(_.head(_response?.data));
+              link = await updateLink(link, send);
+              await updateSend(send, link, { type: unwrap ? 'unwrap' : 'deposit_address', unwrap: unwrap || undefined });
             }
 
-            const send = {
-              txhash,
-              height,
-              status: code ? 'failed' : 'success',
-              type: 'ibc',
-              created_at: getGranularity(moment(timestamp).utc()),
-              source_chain: id,
-              sender_address,
-              recipient_address,
-              denom: amount_data.denom,
-              amount: amount_data.amount,
-            };
-
-            const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
-
-            let link = normalizeLink(_.head(_response?.data));
-            link = await updateLink(link, send);
-            await updateSend(send, link, { type: unwrap ? 'unwrap' : 'deposit_address', unwrap: unwrap || undefined });
-          
             tx_hashes.push(txhash);
             source_chain = id;
           }

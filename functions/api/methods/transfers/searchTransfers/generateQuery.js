@@ -123,7 +123,7 @@ module.exports = params => {
                                 must: [
                                   { exists: { field: 'command' } },
                                 ],
-                                should: getChainsList('evm').map(c => { return { match_phrase: { 'send.original_destination_chain': c.id } }; }),
+                                should: getChainsList('evm').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
                                 minimum_should_match: 1,
                               },
                             },
@@ -132,7 +132,7 @@ module.exports = params => {
                                 must: [
                                   { exists: { field: 'ibc_send' } },
                                 ],
-                                should: getChainsList('cosmos').map(c => { return { match_phrase: { 'send.original_destination_chain': c.id } }; }),
+                                should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
                                 minimum_should_match: 1,
                                 must_not: [
                                   { exists: { field: 'ibc_send.failed_txhash' } },
@@ -164,7 +164,7 @@ module.exports = params => {
                                       must: [
                                         { exists: { field: 'command' } },
                                       ],
-                                      should: getChainsList('evm').map(c => { return { match_phrase: { 'send.original_destination_chain': c.id } }; }),
+                                      should: getChainsList('evm').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
                                       minimum_should_match: 1,
                                     },
                                   },
@@ -173,7 +173,7 @@ module.exports = params => {
                                       must: [
                                         { exists: { field: 'ibc_send' } },
                                       ],
-                                      should: getChainsList('cosmos').map(c => { return { match_phrase: { 'send.original_destination_chain': c.id } }; }),
+                                      should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
                                       minimum_should_match: 1,
                                     },
                                   },
@@ -201,20 +201,24 @@ module.exports = params => {
               case 'sourceChain':
                 if (v) {
                   obj = {
-                    must: [
-                      { match_phrase: { 'send.original_source_chain': v } },
-                    ],
-                    must_not: getOthersChainIds(v).flatMap(c => [{ match_phrase: { 'send.original_source_chain': c } }, { match_phrase: { 'send.source_chain': c } }]),
+                    bool: {
+                      must: [
+                        { match_phrase: { 'send.original_source_chain': v } },
+                      ],
+                      must_not: getOthersChainIds(v).flatMap(c => [{ match_phrase: { 'send.original_source_chain': c } }, { match_phrase: { 'send.source_chain': c } }]),
+                    },
                   };
                 }
                 break;
               case 'destinationChain':
                 if (v) {
                   obj = {
-                    must: [
-                      { match_phrase: { 'send.original_destination_chain': v } },
-                    ],
-                    must_not: getOthersChainIds(v).flatMap(c => [{ match_phrase: { 'send.original_destination_chain': c } }, { match_phrase: { 'send.destination_chain': c } }]),
+                    bool: {
+                      must: [
+                        { match_phrase: { 'send.original_destination_chain': v } },
+                      ],
+                      must_not: getOthersChainIds(v).flatMap(c => [{ match_phrase: { 'send.original_destination_chain': c } }, { match_phrase: { 'send.destination_chain': c } }]),
+                    },
                   };
                 }
                 break;

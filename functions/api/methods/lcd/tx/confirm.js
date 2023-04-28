@@ -64,7 +64,7 @@ module.exports = async (
                   poll_id,
                   {
                     id: poll_id,
-                    height,
+                    height: Number(height),
                     created_at: getGranularity(moment(timestamp).utc()),
                     sender_chain: getChainKey(chain),
                     transaction_id: toHex(tx_id),

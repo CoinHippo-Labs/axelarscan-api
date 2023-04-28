@@ -132,7 +132,7 @@ module.exports = async (
         ...transfer_data,
         axelar_transfer: {
           txhash,
-          height,
+          height: Number(height),
           status: code ? 'failed' : 'success',
           type: 'axelar',
           created_at: getGranularity(moment(timestamp).utc()),

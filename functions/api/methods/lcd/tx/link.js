@@ -58,7 +58,7 @@ module.exports = async (
   const data = {
     ..._.head(messages),
     txhash,
-    height,
+    height: Number(height),
     created_at: getGranularity(moment(timestamp).utc()),
     sender_chain,
     deposit_address,
@@ -122,14 +122,14 @@ module.exports = async (
   }
 
   sender_chain = getChainKey(getChainsList('cosmos').filter(c => c.id !== 'axelarnet').find(c => sender_address?.startsWith(c.prefix_address))?.id || sender_chain || chain);
-  original_sender_chain = getChainKey(sender_chain);
+  original_sender_chain = getChainData(sender_chain)?.chain_name?.toLowerCase();
 
   if (!original_sender_chain?.startsWith(sender_chain)) {
     original_sender_chain = sender_chain;
   }
   
   recipient_chain = getChainKey(recipient_chain);
-  original_recipient_chain = getChainKey(recipient_chain);
+  original_recipient_chain = getChainData(recipient_chain)?.chain_name?.toLowerCase();
 
   if (!original_recipient_chain?.startsWith(recipient_chain)) {
     original_recipient_chain = recipient_chain;

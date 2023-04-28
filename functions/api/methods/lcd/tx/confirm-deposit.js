@@ -65,11 +65,14 @@ module.exports = async (
   const {
     txhash,
     code,
-    height,
     timestamp,
     logs,
   } = { ...tx_response };
+  let {
+    height,
+  } = { ...tx_response };
 
+  height = Number(height);
   const message = _.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'message'))));
 
   const {
@@ -134,7 +137,7 @@ module.exports = async (
             let command;
 
             if (destination_chain && transfer_id) {
-              const command_id = transfer_id.toString(16)padStart(64, '0');
+              const command_id = transfer_id.toString(16).padStart(64, '0');
 
               const response =
                 await read(

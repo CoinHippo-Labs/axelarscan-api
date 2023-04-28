@@ -391,7 +391,7 @@ const updateLink = async (
       } = { ...getChainsList('cosmos').find(c => sender_address.startsWith(c.prefix_address)) };
 
       if (id) {
-        original_source_chain = id;
+        original_source_chain = getChainData(id)?.chain_name?.toLowerCase();
         updated = updated || link.original_source_chain !== original_source_chain;
         link.original_source_chain = original_source_chain;
       }
@@ -440,8 +440,8 @@ const updateSend = async (
   if (send) {
     send.source_chain = link?.source_chain || send.source_chain;
     send.destination_chain = link?.destination_chain || send.destination_chain;
-    send.original_source_chain = link?.original_source_chain || getChainKey(send.source_chain || link?.source_chain);
-    send.original_destination_chain = link?.original_destination_chain || getChainKey(send.destination_chain || link?.destination_chain);
+    send.original_source_chain = link?.original_source_chain || getChainData(send.source_chain || link?.source_chain)?.chain_name?.toLowerCase();
+    send.original_destination_chain = link?.original_destination_chain || getChainData(send.destination_chain || link?.destination_chain)?.chain_name?.toLowerCase();
 
     if (link) {
       send.destination_chain = getChainKey(link.destination_chain || send.destination_chain);

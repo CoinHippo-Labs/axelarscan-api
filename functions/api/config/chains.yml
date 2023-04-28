@@ -1560,11 +1560,10 @@ testnet:
       prefix_chain_ids:
         - "axelar-"
     osmosis:
-      chain_name: "osmosis-5"
+      chain_name: "osmosis-6"
       endpoints:
         lcd:
-          - "https://testnet-rest.osmosis.zone"
-          - "https://lcd.testnet.osmosis.zone"
+          - "https://lcd.osmotest5.osmosis.zone"
         timeout:
           lcd: 3000
       native_token:

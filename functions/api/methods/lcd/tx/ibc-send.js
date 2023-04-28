@@ -40,10 +40,14 @@ module.exports = async (
   const {
     txhash,
     code,
-    height,
     timestamp,
     logs,
   } = { ...tx_response };
+  let {
+    height,
+  } = { ...tx_response };
+
+  height = Number(height);
 
   let transfer_events;
 

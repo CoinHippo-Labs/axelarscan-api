@@ -33,10 +33,13 @@ module.exports = async (
 
   const {
     txhash,
-    height,
     timestamp,
   } = { ...tx_response };
+  let {
+    height,
+  } = { ...tx_response };
 
+  height = Number(height);
   const sender = _.head(toArray(messages).map(m => m.sender));
   const period_height = height - ((height % NUM_BLOCKS_PER_HEARTBEAT) || NUM_BLOCKS_PER_HEARTBEAT) + FRACTION_HEARTBEAT_BLOCK;
 

@@ -150,7 +150,7 @@ module.exports = async (
 
           for (const field of fields) {
             if (Array.isArray(message[field])) {
-              message[field] = to_hex(message[field]);
+              message[field] = toHex(message[field]);
             }
           }
 
