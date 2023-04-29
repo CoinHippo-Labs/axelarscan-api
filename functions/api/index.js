@@ -23,6 +23,10 @@ exports.handler = async (
     getValidatorsVotes,
     searchBatches,
     searchDepositAddresses,
+    transfersStats,
+    transfersChart,
+    transfersCumulativeVolume,
+    transfersTotalVolume,
     searchTransfers,
     resolveTransfer,
     getTVL,
@@ -352,12 +356,32 @@ exports.handler = async (
         }
         break;
       case 'transfersStats':
+        try {
+          output = await transfersStats(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'transfersChart':
+        try {
+          output = await transfersChart(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'transfersCumulativeVolume':
+        try {
+          output = await transfersCumulativeVolume(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'transfersTotalVolume':
+        try {
+          output = await transfersTotalVolume(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
         break;
       case 'searchTransfers':
         try {

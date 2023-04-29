@@ -28,6 +28,10 @@ const {
 } = require('./batches');
 const {
   searchDepositAddresses,
+  transfersStats,
+  transfersChart,
+  transfersCumulativeVolume,
+  transfersTotalVolume,
   searchTransfers,
   resolveTransfer,
 } = require('./transfers');
@@ -77,6 +81,10 @@ module.exports = {
   getValidatorsVotes,
   searchBatches,
   searchDepositAddresses,
+  transfersStats,
+  transfersChart,
+  transfersCumulativeVolume,
+  transfersTotalVolume,
   searchTransfers,
   resolveTransfer,
   getTVL,
