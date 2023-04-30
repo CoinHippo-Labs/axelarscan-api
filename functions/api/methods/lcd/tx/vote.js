@@ -115,6 +115,7 @@ module.exports = async (
                     const unconfirmed = toArray(logs).findIndex(l => l.log?.includes('not enough votes')) > -1 && toArray(events).findIndex(e => e.type?.includes('EVMEventConfirmed')) < 0;
                     const failed = toArray(logs).findIndex(l => l.log?.includes('failed') && !l.log.includes('already confirmed')) > -1 || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1;
                     let end_block_events;
+
                     if (!unconfirmed && !failed && attributes) {
                       const response = await rpc('/block_results', { height });
                       end_block_events = toArray(response?.end_block_events);
@@ -124,6 +125,7 @@ module.exports = async (
                         events.push(event);
                       }
                     }
+
                     const success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(l => l.log?.includes('already confirmed')) > -1;
 
                     let poll_data;
@@ -324,7 +326,7 @@ module.exports = async (
                       _updated = true;
                     }
 
-                    if (txhash && transaction_id && vote && (confirmation || !unconfirmed || success) && !late && !failed) {
+                    if (txhash && transaction_id && vote && success && !late && !failed) {
                       const vote_data = {
                         txhash,
                         height,

@@ -24,6 +24,7 @@ const {
 } = require('../../../utils/time');
 const {
   equalsIgnoreCase,
+  toArray,
   toJson,
   normalizeQuote,
 } = require('../../../utils');

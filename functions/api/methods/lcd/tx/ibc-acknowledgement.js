@@ -23,6 +23,7 @@ const {
 } = require('../../../utils/time');
 const {
   equalsIgnoreCase,
+  toArray,
   toJson,
   normalizeQuote,
 } = require('../../../utils');
@@ -58,7 +59,6 @@ module.exports = async (
 
           const e = toArray(events).find(e => equalsIgnoreCase(e.type, 'acknowledge_packet'));
           const _e = toArray(events).find(e => equalsIgnoreCase(_.last(toArray(e.type, 'normal', '.')), 'IBCTransferCompleted'));
-
           const id = normalizeQuote(toArray(_e?.attributes).find(a => a.key === 'id')?.value);
 
           if (id) {

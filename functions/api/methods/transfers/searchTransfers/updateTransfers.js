@@ -1,3 +1,7 @@
+const _ = require('lodash');
+const moment = require('moment');
+
+const addFieldsToResult = require('./addFieldsToResult'); 
 const resolveTransfer = require('../resolveTransfer');
 const {
   generateId,
@@ -31,7 +35,7 @@ module.exports = async (
 ) => {
   let updated;
 
-  if (collection && toArray(data).length > 0) {
+  if (collection) {
     const {
       txHash,
       status,
@@ -135,15 +139,14 @@ module.exports = async (
 
                       if (
                         !(d.send.destination_chain && typeof d.send.amount === 'number' && typeof d.send.value === 'number' && typeof d.send.fee === 'number') ||
-                        (getChainData(d.send.destination_chain, 'evm') && !d.send.insufficient_fee && (vote || confirm) && !command?.executed) ||
+                        (getChainData(d.send.destination_chain, 'evm') && !d.send.insufficient_fee && (getChainData(d.send.source_chain, 'evm') ? vote?.success : confirm) && !command?.executed && !unwrap) ||
                         (d.send.destination_chain !== 'axelarnet' && getChainData(d.send.destination_chain, 'cosmos') && !d.send.insufficient_fee && (vote || confirm) && !(ibc_send?.failed_txhash || ibc_send?.ack_txhash || ibc_send?.recv_txhash)) ||
                         (d.send.destination_chain === 'axelarnet' && !d.send.insufficient_fee && !axelar_transfer) ||
-                        !(vote?.transfer_id || confirm?.transfer_id) ||
+                        (getChainData(d.send.source_chain, 'evm') ? vote?.success && !vote.transfer_id : !confirm) ||
                         (unwrap && !unwrap.tx_hash_unwrap) ||
                         (getChainData(d.send.source_chain, 'evm') && !d.send.insufficient_fee && !vote && (command || ibc_send || axelar_transfer))
                       ) {
-                        await resolveTransfer({ txHash: txhash, sourceChain: d.send.source_chain });
-                        _updated = true;
+                        _updated = !_.isEqual(_.head(addFieldsToResult(d)), _.head(await resolveTransfer({ txHash: txhash, sourceChain: d.send.source_chain })));
                         wrote = true;
                       }
                     }

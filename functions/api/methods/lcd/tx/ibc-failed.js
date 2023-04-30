@@ -15,6 +15,7 @@ const {
 } = require('../../../utils/config');
 const {
   equalsIgnoreCase,
+  toArray,
   toJson,
   normalizeQuote,
 } = require('../../../utils');
