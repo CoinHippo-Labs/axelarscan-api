@@ -193,12 +193,12 @@ module.exports = async (
         destination_chain = destination_chain || link?.destination_chain;
 
         if (height && destination_chain && packet_data_hex) {
-          const chain_data = getChainData(destinationchain, 'cosmos');
+          const chain_data = getChainData(destination_chain, 'cosmos');
           const chain = chain_data?.id;
           const lcd = getLCDs(chain);
 
           if (chain !== 'axelarnet' && lcd) {
-            let response = await lcd(`/cosmos/tx/v1beta1/txs?limit=5&events=recv_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`);
+            let response = await lcd.query(`/cosmos/tx/v1beta1/txs?limit=5&events=recv_packet.packet_sequence=${packet_sequence}&events=tx.height=${height}`);
 
             let {
               txs,
@@ -206,7 +206,7 @@ module.exports = async (
             } = { ...response };
 
             if (toArray(tx_responses).length < 1) {
-              response = await lcd(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`);
+              response = await lcd.query(`/cosmos/tx/v1beta1/txs?limit=5&events=${encodeURIComponent(`recv_packet.packet_data_hex='${packet_data_hex}'`)}&events=tx.height=${height}`);
 
               if (response) {
                 txs = response.txs;
