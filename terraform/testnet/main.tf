@@ -1,4 +1,9 @@
 terraform {
+  backend "s3" {
+    bucket = "axelar-terraform"
+    key    = "services/axelarscan-api/testnet/terraform.tfstate"
+    region = "us-east-2"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -10,7 +15,6 @@ terraform {
 
 provider "aws" {
   region  = var.aws_region
-  profile = var.aws_profile
 }
 
 provider "archive" {}
@@ -54,6 +58,7 @@ resource "aws_lambda_function" "api" {
   runtime          = "nodejs14.x"
   timeout          = 30
   memory_size      = 512
+  publish          = true
   environment {
     variables = {
       NODE_NO_WARNINGS           = 1
@@ -68,6 +73,12 @@ resource "aws_lambda_function" "api" {
     }
   }
   kms_key_arn      = ""
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "config" {
+  function_name                     = aws_lambda_function.api.function_name
+  provisioned_concurrent_executions = 100
+  qualifier                         = aws_lambda_function.api.version
 }
 
 resource "aws_apigatewayv2_api" "api" {

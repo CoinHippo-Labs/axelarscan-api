@@ -16,6 +16,7 @@ const {
 } = require('../../../utils/chain/evm');
 const {
   sleep,
+  toArray,
 } = require('../../../utils');
 
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');

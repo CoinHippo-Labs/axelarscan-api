@@ -193,12 +193,14 @@ module.exports = async (
                           { size: 1 },
                         );
 
+                      const transfer_data = _.head(response?.data);
+
                       const {
                         send,
                         link,
                         confirm,
                         vote,
-                      } = { ..._.head(response?.data) };
+                      } = { ...transfer_data };
 
                       if (!deposit_address) {
                         deposit_address = toHex(vote?.deposit_address || confirm?.deposit_address || send?.recipient_address || link?.deposit_address);
@@ -207,7 +209,7 @@ module.exports = async (
                         transaction_id = toHex(vote?.transaction_id || confirm?.transaction_id || send?.txhash);
                       }
                       if (!transfer_id) {
-                        transfer_id = vote?.transfer_id || confirm?.transfer_id || data?.transfer_id;
+                        transfer_id = vote?.transfer_id || confirm?.transfer_id || transfer_data?.transfer_id;
                       }
                       if (!participants) {
                         participants = confirm?.participants;

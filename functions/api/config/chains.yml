@@ -364,7 +364,6 @@ mainnet:
           - "https://lcd-axelar.imperator.co"
           - "https://axelar-rest.chainode.tech"
           - "https://axelar-lcd.qubelabs.io"
-        cosmostation: "https://api-axelar.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -397,7 +396,6 @@ mainnet:
           - "https://rest-osmosis.ecostake.com"
           - "https://api.osmosis.interbloc.org"
           - "https://osmosis-api.polkachu.com"
-        cosmostation: "https://api-osmosis.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -430,7 +428,6 @@ mainnet:
           - "https://cosmos-api.cyphercore.io"
           - "https://lcd-cosmoshub.blockapsis.com"
           - "https://lcd.cosmos.dragonstake.io"
-        cosmostation: "https://api.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -463,7 +460,6 @@ mainnet:
           - "https://lcd-juno.itastakers.com"
           - "https://lcd-cosmoshub.blockapsis.com"
           - "https://api.juno.interbloc.org"
-        cosmostation: "https://api-juno.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -496,7 +492,6 @@ mainnet:
           - "https://api.emoney.freak12techno.io"
           - "https://e-money-api.ibs.team"
           - "https://api.emoney.bh.rocks"
-        cosmostation: "https://api-emoney.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -527,7 +522,6 @@ mainnet:
           - "https://api-injective-ia.cosmosia.notional.ventures"
           - "https://injective-api.polkachu.com"
           - "https://public.lcd.injective.network"
-        cosmostation: "https://api-inj.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -557,7 +551,6 @@ mainnet:
         lcd:
           - "https://crescent-api.polkachu.com"
           - "https://mainnet.crescent.network:1317"
-        cosmostation: "https://api-crescent.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -591,7 +584,6 @@ mainnet:
           - "https://kujira-api.lavenderfive.com"
           - "https://rest-kujira.ecostake.com"
           - "https://kujira-lcd.wildsage.io"
-        cosmostation: "https://api-kujira.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -621,7 +613,6 @@ mainnet:
         lcd:
           - "https://lcd.secret.express"
           - "https://secretnetwork-lcd.stakely.io"
-        cosmostation: "https://api-secret.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -651,7 +642,6 @@ mainnet:
         lcd:
           - "https://lcd.secret.express"
           - "https://secretnetwork-lcd.stakely.io"
-        cosmostation: "https://api-secret.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -683,7 +673,6 @@ mainnet:
           - "https://stargaze-api.polkachu.com"
           - "https://api-stargaze.ezstaking.dev"
           - "https://stargaze-api.ibs.team"
-        cosmostation: "https://api-stargaze.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -716,7 +705,6 @@ mainnet:
           - "https://rest.assetmantle.one"
           - "https://rest-assetmantle.ecostake.com"
           - "https://api.assetmantle.nodestake.top"
-        cosmostation: "https://api-asset-mantle.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -747,7 +735,6 @@ mainnet:
           - "https://rest-fetchhub.fetch.ai"
           - "https://api-fetchhub-ia.cosmosia.notional.ventures"
           - "https://fetch-api.polkachu.com"
-        cosmostation: "https://api-fetchai.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -778,7 +765,6 @@ mainnet:
           - "https://api-mainnet.blockchain.ki"
           - "https://api.kichain.chaintools.tech"
           - "https://kichain-api.polkachu.com"
-        cosmostation: "https://api-kichain.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -811,7 +797,6 @@ mainnet:
           - "https://evmos-api.lavenderfive.com"
           - "https://lcd.evmos.bh.rocks"
           - "https://api.evmos.nodestake.top"
-        cosmostation: "https://api-evmos.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -843,7 +828,6 @@ mainnet:
           - "https://api-comdex.zenchainlabs.io"
           - "https://api.comdex.chaintools.tech"
           - "https://rest.comdex.one"
-        cosmostation: "https://api-comdex.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -876,7 +860,6 @@ mainnet:
           - "https://api-persistence.starsquid.io"
           - "https://persistence-api.polkachu.com"
           - "https://persistence-api.kleomedes.network"
-        cosmostation: "https://api-persistence.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -906,7 +889,6 @@ mainnet:
         lcd:
           - "https://api-regen-ia.cosmosia.notional.ventures"
           - "https://regen.stakesystems.io"
-        cosmostation: "https://api-regen.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -937,7 +919,6 @@ mainnet:
           - "https://api-umee-ia.cosmosia.notional.ventures"
           - "https://umee-api.polkachu.com"
           - "https://umee-lcd.quantnode.tech"
-        cosmostation: "https://api-umee.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -997,7 +978,6 @@ mainnet:
         lcd:
           - "https://dimension-lcd.xpla.io"
           - "https://dimension-lcd.xpla.dev"
-        cosmostation: "https://api-xpla.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:
@@ -1061,7 +1041,6 @@ mainnet:
           - "https://api.stride.silentvalidator.com"
           - "https://stride.api.kjnodes.com"
           - "https://api-stride.pupmos.network"
-        cosmostation: "https://api-stride.cosmostation.io/v1"
         timeout:
           lcd: 3000
       native_token:

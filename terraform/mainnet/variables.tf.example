@@ -3,11 +3,6 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
-variable "aws_profile" {
-  description = "AWS profile"
-  default     = "default"
-}
-
 variable "project_name" {
   description = "Project name"
   default     = "axelarscan"

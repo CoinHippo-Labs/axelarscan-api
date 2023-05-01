@@ -18,20 +18,26 @@ module.exports = async context => {
   const contracts_data = await getContracts();
 
   const _chains_data =
-    chains_data.map(c => {
-      const {
-        id,
-      } = { ...c };
+    await Promise.all(
+      chains_data.map(c =>
+        new Promise(
+          async resolve => {
+            const {
+              id,
+            } = { ...c };
 
-      return {
-        ...c,
-        provider: await getProvider(id, chains_data),
-        gateway: {
-          ...await getGateway(id, contracts_data),
-          abi: IAxelarGateway.abi,
-        },
-      };
-    });
+            return {
+              ...c,
+              provider: await getProvider(id, chains_data),
+              gateway: {
+                ...await getGateway(id, contracts_data),
+                abi: IAxelarGateway.abi,
+              },
+            };
+          }
+        )
+      )
+    );
 
   subscribeGateway(_chains_data, context);
 };

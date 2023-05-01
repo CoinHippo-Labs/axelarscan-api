@@ -8,7 +8,6 @@ mainnet:
   api: "https://api.axelarscan.io"
   gmp_api: "https://api.gmp.axelarscan.io"
   app: "https://axelarscan.io"
-  cosmostation: "https://api-axelar.cosmostation.io/v1"
   mintscan:
     api: "https://api.mintscan.io/v1/axelar"
     chain_id: "axelar-dojo-1"
@@ -21,7 +20,6 @@ testnet:
   api: "https://testnet.api.axelarscan.io"
   gmp_api: "https://testnet.api.gmp.axelarscan.io"
   app: "https://testnet.axelarscan.io"
-  cosmostation: "https://api-axelar-testnet.cosmostation.io/v1"
   mintscan:
     api: "https://api.mintscan.io/v1/axelar-testnet"
     chain_id: "axelar-testnet-lisbon-3"

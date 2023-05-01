@@ -32,6 +32,7 @@ module.exports = async (
 
   const {
     index_transfer,
+    index_poll,
   } = { ...params };
 
   if (tx_response) {
@@ -346,7 +347,7 @@ module.exports = async (
     transaction_data.types = types;
     /* end add message types field */
 
-    if (!index_transfer) {
+    if (!index_transfer && !index_poll) {
       await write(TX_COLLECTION, txhash, transaction_data);
     }
     /*************************
@@ -371,29 +372,41 @@ module.exports = async (
       }
       // MsgSend
       if (toArray(messages).findIndex(m => m['@type']?.includes('MsgSend')) > -1) {
-        await require('./axelar-send')(lcd_response);
+        if (!index_poll) {
+          await require('./axelar-send')(lcd_response);
+        }
       }
       // MsgRecvPacket
       if (toArray(messages).findIndex(m => m['@type']?.includes('MsgRecvPacket')) > -1) {
-        lcd_response = await require('./cosmos-send')(lcd_response);
+        if (!index_poll) {
+          lcd_response = await require('./cosmos-send')(lcd_response);
+        }
       }
       // RouteIBCTransfers
       if (toArray(messages).findIndex(m => m['@type']?.includes('RouteIBCTransfersRequest')) > -1) {
-        const response = await require('./ibc-send')(lcd_response);
-        logs = response?.logs || logs;
-        updated = response?.updated;
+        if (!index_poll) {
+          const response = await require('./ibc-send')(lcd_response);
+          logs = response?.logs || logs;
+          updated = response?.updated;
+        }
       }
       // MsgAcknowledgement
       if (toArray(messages).findIndex(m => m['@type']?.includes('MsgAcknowledgement')) > -1) {
-        updated = await require('./ibc-acknowledgement')(lcd_response);
+        if (!index_poll) {
+          updated = await require('./ibc-acknowledgement')(lcd_response);
+        }
       }
       // MsgTimeout
       if (toArray(messages).findIndex(m => m['@type']?.includes('MsgTimeout')) > -1) {
-        updated = await require('./ibc-failed')(lcd_response);
+        if (!index_poll) {
+          updated = await require('./ibc-failed')(lcd_response);
+        }
       }
       // ExecutePendingTransfers
       if (toArray(messages).findIndex(m => m['@type']?.includes('ExecutePendingTransfersRequest')) > -1) {
-        updated = await require('./axelar-transfer')(lcd_response);
+        if (!index_poll) {
+          updated = await require('./axelar-transfer')(lcd_response);
+        }
       }   
       // ConfirmTransferKey & ConfirmGatewayTx
       if (['ConfirmTransferKey', 'ConfirmGatewayTx'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1) {
@@ -403,7 +416,9 @@ module.exports = async (
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (CONFIRM_TYPES.findIndex(s => toArray(messages).findIndex(m => _.last(toArray(m['@type'], 'normal', '.'))?.replace('Request', '').includes(s)) > -1) > -1) {
-        await require('./confirm-deposit')(lcd_response);
+        if (!index_poll) {
+          await require('./confirm-deposit')(lcd_response);
+        }
       }
       // VoteConfirmDeposit & Vote
       if (VOTE_TYPES.findIndex(s => toArray(messages).findIndex(m => _.last(toArray(m.inner_message?.['@type'], 'normal', '.'))?.replace('Request', '').includes(s)) > -1) > -1) {
@@ -411,7 +426,9 @@ module.exports = async (
       }
       // SignCommands
       if (toArray(messages).findIndex(m => m['@type']?.includes('SignCommands')) > -1) {
-        await require('./batch')(lcd_response);
+        if (!index_poll) {
+          await require('./batch')(lcd_response);
+        }
       }
 
       lcd_response.tx_response.raw_log = JSON.stringify(logs);

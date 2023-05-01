@@ -80,31 +80,9 @@ module.exports = async (
             events,
           } = { ...params };
 
-          const txhash = _.last(toArray(path, 'normal', '/'));
           const height = typeof events === 'string' && events.startsWith('tx.height=') && Number(_.last(toArray(events, 'normal', '=')));
 
-          if (txhash && txhash !== 'txs') {
-            const api = endpoints?.cosmostation;
-            const cosmostation = api && axios.create({ baseURL: api, timeout: 5000 });
-
-            if (cosmostation) {
-              const path = `/tx/hash/${txhash}`;
-              const response = await cosmostation.get(path).catch(error => { return { error: error?.response?.data }; });
-
-              const {
-                tx,
-              } = { ...response?.data?.data };
-
-              if (tx) {
-                data = {
-                  url: `${api}${path}`,
-                  tx_response: response.data.data,
-                  tx,
-                };
-              }
-            }
-          }
-          else if (typeof height === 'number' && !isNaN(height)) {
+          if (typeof height === 'number' && !isNaN(height)) {
             const {
               api,
               chain_id,

@@ -124,6 +124,7 @@ const getPastEvents = async (
   chain_data,
   filters,
   options,
+  retry_time = 0,
 ) => {
   if (chain_data && filters && options) {
     const {
@@ -156,6 +157,7 @@ const getPastEvents = async (
           contract_address: address,
           filters,
           options,
+          retry_time,
         },
       );
 
@@ -183,13 +185,15 @@ const getPastEvents = async (
             contract_address: address,
             filters,
             options,
+            retry_time,
             error: message,
           },
         );
 
-        await sleep(1.5 * 1000);
-
-        return await getPastEvents(chain_data, filters, options);
+        if (retry_time < 3) {
+          await sleep(1.5 * 1000);
+          return await getPastEvents(chain_data, filters, options, retry_time + 1);
+        }
       }
     }
   }

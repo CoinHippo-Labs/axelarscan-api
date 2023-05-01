@@ -5,6 +5,8 @@ exports.handler = async (
 ) => {
   let output;
 
+  const moment = require('moment');
+
   const {
     crud,
     rpc,
@@ -109,7 +111,7 @@ exports.handler = async (
           }
           break;
         default:
-          method = params.module;
+          method = method || params.module;
           break;
       }
       break;
