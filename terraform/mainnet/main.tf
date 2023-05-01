@@ -18,7 +18,7 @@ provider "archive" {}
 data "archive_file" "zip_api" {
   type        = "zip"
   source_dir  = "../../functions/api"
-  excludes    = ["yarn.lock"]
+  excludes    = ["yarn.lock", ".env.example", ".env", "test"]
   output_path = "${var.project_name}-api.zip"
 }
 
@@ -102,7 +102,7 @@ resource "aws_apigatewayv2_route" "route_function" {
 data "archive_file" "zip_axelar_crawler" {
   type        = "zip"
   source_dir  = "../../functions/axelar-crawler"
-  excludes    = ["yarn.lock"]
+  excludes    = ["yarn.lock", ".env.example", ".env", "local.js"]
   output_path = "${var.project_name}-axelar-crawler.zip"
 }
 
@@ -139,7 +139,7 @@ resource "aws_cloudwatch_event_target" "target_axelar_crawler" {
 data "archive_file" "zip_evm_crawler" {
   type        = "zip"
   source_dir  = "../../functions/evm-crawler"
-  excludes    = ["yarn.lock"]
+  excludes    = ["yarn.lock", ".env.example", ".env", "local.js", "sync.js"]
   output_path = "${var.project_name}-evm-crawler.zip"
 }
 
