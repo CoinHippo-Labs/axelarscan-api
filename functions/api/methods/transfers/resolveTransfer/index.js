@@ -667,7 +667,7 @@ module.exports = async (
                     }
 
                     if (!d.insufficient_fee) {
-                      await Promise.all(_.range(1, 7).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, events: `tx.height=${height + i}` })))));
+                      await Promise.all(_.range(1, 7).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` })))));
                       await sleep(0.25 * 1000);
                       d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
                     }

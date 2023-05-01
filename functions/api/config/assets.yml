@@ -2752,7 +2752,7 @@ testnet:
       axelarnet:
         ibc_denom: "uaxl"
       osmosis:
-        ibc_denom: "ibc/52457B1109B9E64CC855317A66580B4BC5BBF8522EE78E1F571B5BD8AB873B17"
+        ibc_denom: "ibc/9463E39D230614B313B487836D13A392BD1731928713D4C8427A083627048DB3"
       secret:
         ibc_denom: "ibc/9B716BC053D45E17B5BA80BEE70B8F2A009EDDBE55C99D6FC5F1D7057E4BA4C6"
   uausdc:
@@ -2793,7 +2793,7 @@ testnet:
       axelarnet:
         ibc_denom: "uausdc"
       osmosis:
-        ibc_denom: "ibc/FF3065989E34457F342D4EFB8692406D49D4E2B5C70F725F127862E22CE6BDCD"
+        ibc_denom: "ibc/6F34E1BD664C36CE49ACC28E60D62559A5F96C4F9A6CCE4FC5A67B2852E24CFE"
       cosmoshub:
         ibc_denom: "ibc/3DC20E9A12C8F19A92CDEBC37116C26EADF4C65E7498193791A3DAAD0B263556"
       crescent:
@@ -2908,7 +2908,7 @@ testnet:
         ibc_denom: "eth-wei"
         symbol: "axlETH"
       osmosis:
-        ibc_denom: "ibc/F64E7E43CAC1AEB502D028893DC4BD62D2CDFC55B7E21F23043DAE602B8A1F3E"
+        ibc_denom: "ibc/29320BE25C3BF64A2355344625410899C1EB164038E328531C36095B0AA8BBFC"
         symbol: "axlETH"
       kujira:
         ibc_denom: "ibc/CC8B40E3F3536D003C6ED7C65421067215453AECE1517A6F0935470C634A036B"
@@ -3003,7 +3003,7 @@ testnet:
         ibc_denom: "wbnb-wei"
         symbol: "axlBNB"
       osmosis:
-        ibc_denom: "ibc/D38FD4C586C397DDAAB715C654DAEE3C3C40462CD410254AC7576208E947605B"
+        ibc_denom: "ibc/55E995E3FD16C2C717A18D818A862E90A8414D1C7FCBA9B9349DB944275C98A3"
         symbol: "axlBNB"
       kujira:
         ibc_denom: "ibc/E09D271B56568F9C4E4B6A32D877F4E904C35FF3B8A4503AD8547A95F6D9925C"
@@ -3098,7 +3098,7 @@ testnet:
         ibc_denom: "wmatic-wei"
         symbol: "axlMATIC"
       osmosis:
-        ibc_denom: "ibc/16F3EB18413FD15154B02F9929473A3C0A23902BF8044157E9E5E0FBEB24FCEE"
+        ibc_denom: "ibc/2B5D096F5732F3BADBFB987FE42FDA24B3569514BC5DFDEA1BC042B223A0CED3"
         symbol: "axlMATIC"
       cosmoshub:
         ibc_denom: "ibc/1BE5BF73F50D2D82C74628C6290834E66C5467F231B7FBC7DD45E217EE1D42A5"
@@ -3196,7 +3196,7 @@ testnet:
         ibc_denom: "wavax-wei"
         symbol: "axlAVAX"
       osmosis:
-        ibc_denom: "ibc/7186C4B1A0596A1AB34C201E27D659B4A9837B46A328BCE5C0E452CD7146BC8F"
+        ibc_denom: "ibc/609C07B33C99E40A50498BDDECDD14D8BCC89D1A14D4E36053082AEA2E8D193D"
         symbol: "axlAVAX"
       cosmoshub:
         ibc_denom: "ibc/88C2DE3AE63A443385CDFE54A18B0FC48402DDF3FE5AC532A663F9C3A1144462"
@@ -3294,7 +3294,7 @@ testnet:
         ibc_denom: "wftm-wei"
         symbol: "axlFTM"
       osmosis:
-        ibc_denom: "ibc/F9E624EB89ABEE4CB1EC04D7941F613BD8383EE7DE323589A82066D0345EF6EB"
+        ibc_denom: "ibc/055E7CBD9F1EF910CA7CA1DD293B39439CB33172F929194855DBAC6CB3081B95"
         symbol: "axlFTM"
       cosmoshub:
         ibc_denom: "ibc/947B84E653CBEC9386287883173A40D3C0A284AB554557342C50378219ECE147"
@@ -3392,7 +3392,7 @@ testnet:
         ibc_denom: "wdev-wei"
         symbol: "axlDEV"
       osmosis:
-        ibc_denom: "ibc/43B0722D9472C65ADD1E1A339FD1472147033F4A6FA30E472732CF6434DBDE93"
+        ibc_denom: "ibc/76C8C560FDE4EFE9F4AEFB0679E6D523CFF6A62BCD3F9541E8F6E3DA6831550E"
         symbol: "axlDEV"
       cosmoshub:
         ibc_denom: "ibc/12B944E03F3E2197589129CB359E1BD5FA3F06841792FFE46852EAFE31EEB20A"
@@ -3475,7 +3475,7 @@ testnet:
       axelarnet:
         ibc_denom: "wfil-wei"
       osmosis:
-        ibc_denom: "ibc/2CF44FF9C8283605A27820F1F8BA812D7B3ED654FD81D76A437E5D72AD46E0CC"
+        ibc_denom: "ibc/6FD17B51C0358E1CED4F03885CF0822555B8EE7E99B5D0B6DEE0A4DBB646FFCF"
       kujira:
         ibc_denom: "ibc/608009CB6074AE2E0A14A7867BDC97447453D913F1B9B3A3422C9F0E8CC9576A"
       secret:
@@ -3519,7 +3519,7 @@ testnet:
         ibc_denom: "celo-wei"
         symbol: "axlCELO"
       osmosis:
-        ibc_denom: "ibc/22078D4F29711E2AB5A3AB0D307E943D6F79FF9C4FDB75DD28F7744B2C335440"
+        ibc_denom: "ibc/FA09BFBC4469CF2026315EDA837C8B919174369418F3A5E3AF1EF63603A0B649"
         symbol: "axlCELO"
   uosmo:
     denom: "uosmo"

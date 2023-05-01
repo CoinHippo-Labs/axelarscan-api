@@ -172,7 +172,7 @@ module.exports = async (
     }
     else if (path.startsWith('/cosmos/tx/v1beta1/txs') && !path.endsWith('/') && toArray(tx_responses).length > 0) {
       if (index) {
-        output = await indexTransactions(output);
+        output = await indexTransactions(output, params);
       }
     }
     else if (path.startsWith('/cosmos/base/tendermint/v1beta1/blocks/') && !path.endsWith('/') && block?.header?.height) {

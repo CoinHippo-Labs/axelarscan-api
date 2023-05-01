@@ -23,11 +23,16 @@ const {
 
 module.exports = async (
   lcd_response = {},
+  params = {},
 ) => {
   const {
     tx,
     tx_response,
   } = { ...lcd_response };
+
+  const {
+    index_transfer,
+  } = { ...params };
 
   if (tx_response) {
     const {
@@ -341,7 +346,9 @@ module.exports = async (
     transaction_data.types = types;
     /* end add message types field */
 
-    await write(TX_COLLECTION, txhash, transaction_data);
+    if (!index_transfer) {
+      await write(TX_COLLECTION, txhash, transaction_data);
+    }
     /*************************
      * end index transaction *
      *************************/
@@ -352,11 +359,15 @@ module.exports = async (
 
       // Heartbeat
       if (toArray(messages).findIndex(m => m.inner_message?.['@type']?.includes('HeartBeatRequest')) > -1) {
-        await require('./heartbeat')(lcd_response);
+        if (!index_transfer) {
+          await require('./heartbeat')(lcd_response);
+        }
       }
       // Link
       if (toArray(messages).findIndex(m => m['@type']?.includes('LinkRequest')) > -1) {
-        await require('./link')(lcd_response);
+        if (!index_transfer) {
+          await require('./link')(lcd_response);
+        }
       }
       // MsgSend
       if (toArray(messages).findIndex(m => m['@type']?.includes('MsgSend')) > -1) {
@@ -386,7 +397,9 @@ module.exports = async (
       }   
       // ConfirmTransferKey & ConfirmGatewayTx
       if (['ConfirmTransferKey', 'ConfirmGatewayTx'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1) {
-        updated = await require('./confirm')(lcd_response);
+        if (!index_transfer) {
+          updated = await require('./confirm')(lcd_response);
+        }
       }
       // ConfirmDeposit & ConfirmERC20Deposit
       if (CONFIRM_TYPES.findIndex(s => toArray(messages).findIndex(m => _.last(toArray(m['@type'], 'normal', '.'))?.replace('Request', '').includes(s)) > -1) > -1) {
