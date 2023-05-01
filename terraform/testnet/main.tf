@@ -114,7 +114,7 @@ resource "aws_lambda_function" "axelar_crawler" {
   role             = aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
-  timeout          = 630
+  timeout          = 900
   memory_size      = 1536
   environment {
     variables = {

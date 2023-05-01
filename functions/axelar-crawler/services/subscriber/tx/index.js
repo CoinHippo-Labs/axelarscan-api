@@ -8,13 +8,13 @@ const {
   toArray,
 } = require('../../../utils');
 
-const service_name = 'axelarscan-axelar-crawler-tx';
-
-module.exports = () => {
+module.exports = context => {
   const api = getAPI();
   const ws = getWS();
 
   if (api && ws) {
+    const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler-tx`;
+
     const subscribe = () => {
       const events = ['open', 'error', 'close', 'message'];
 

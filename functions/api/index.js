@@ -254,7 +254,7 @@ exports.handler = async (
         output = getContracts();
         break;
       case 'getChains':
-        output = getChainsList();
+        output = getChainsList([], undefined, params?.for_crawler);
         break;
       case 'getEVMChains':
         output = getChainsList('evm');

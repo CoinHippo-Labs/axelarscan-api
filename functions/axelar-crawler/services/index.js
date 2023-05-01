@@ -9,12 +9,12 @@ const updateUnwraps = require('./updateUnwraps');
 const updateERC20Transfers = require('./updateERC20Transfers');
 
 module.exports = context => {
-  blockSubscriber();
-  txSubscriber();
-  reindex();
-  archive();
+  blockSubscriber(context);
+  txSubscriber(context);
+  reindex(context);
+  archive(context);
   updatePolls(context);
-  updateTVL();
+  updateTVL(context);
   updateWraps(context);
   updateUnwraps(context);
   updateERC20Transfers(context);

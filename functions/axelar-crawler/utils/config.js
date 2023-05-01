@@ -12,7 +12,8 @@ const {
 
 const getAPI = (
   timeout = 30000,
-) => api && axios.create({ baseURL: api, timeout });
+) =>
+  api && axios.create({ baseURL: api, timeout });
 
 const getWS = () => ws && new WebSocket(`${ws}/websocket`);
 

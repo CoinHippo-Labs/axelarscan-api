@@ -31,6 +31,7 @@ const getContracts = (
 const getChains = (
   chain_types = [],
   environment = ENVIRONMENT,
+  for_crawler = false,
 ) => {
   chain_types = toArray(chain_types);
 
@@ -54,12 +55,24 @@ const getChains = (
               } = { ..._v };
 
               const {
+                private_rpc,
+              } = { ...endpoints };
+              let {
                 rpc,
               } = { ...endpoints };
 
               const {
                 url,
               } = { ...explorer };
+
+              if (private_rpc) {
+                if (for_crawler) {
+                  rpc = _.uniq(toArray(_.concat(toArray(private_rpc), toArray(private_rpc).length < 1 && toArray(rpc))));
+                  _v.endpoints.rpc = rpc;
+                }
+
+                delete _v.endpoints.private_rpc;
+              }
 
               let provider_params;
               let gateway_address;

@@ -7,13 +7,13 @@ const {
   sleep,
 } = require('../../../utils');
 
-const service_name = 'axelarscan-axelar-crawler-block';
-
-module.exports = () => {
+module.exports = context => {
   const api = getAPI();
   const ws = getWS();
 
   if (api && ws) {
+    const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler-block`;
+
     const subscribe = () => {
       const events = ['open', 'error', 'close', 'message'];
 

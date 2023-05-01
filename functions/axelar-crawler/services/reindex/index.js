@@ -9,8 +9,6 @@ const {
   toArray,
 } = require('../../utils');
 
-const service_name = 'axelarscan-axelar-crawler-reindex';
-
 const {
   enable,
   start_block,
@@ -20,12 +18,13 @@ const {
 
 const MAX_TRANSACTIONS_ASYNC_INDEX = 25;
 
-module.exports = () => {
+module.exports = context => {
   const api = getAPI(15000);
 
   if (api) {
-    const indexTransaction = txhash => api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/tx/v1beta1/txs/${txhash}` } }).catch(error => { return { error: error?.response?.data }; });
+    const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler-reindex`;
 
+    const indexTransaction = txhash => api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/tx/v1beta1/txs/${txhash}` } }).catch(error => { return { error: error?.response?.data }; });
     const index = async i => {
       for (let height = start_block; height < end_block; height++) {
         if (height % num_processes === i) {
