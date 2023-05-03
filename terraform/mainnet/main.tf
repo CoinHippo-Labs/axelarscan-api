@@ -1,4 +1,9 @@
 terraform {
+  backend "s3" {
+    bucket = "axelar-terraform"
+    key    = "services/axelarscan-api/mainnet/terraform.tfstate"
+    region = "us-east-2"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
