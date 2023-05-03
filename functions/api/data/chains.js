@@ -1330,6 +1330,37 @@ module.exports = {
         },
       },
       {
+        id: 'sommelier',
+        chain_name: 'sommelier',
+        name: 'Sommelier',
+        short_name: 'SOMM',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/sommelier',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/sommelier.svg',
+        color: '#eb5d54',
+        prefix_address: 'somm',
+        prefix_chain_ids: [
+          'sommelier-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://lcd-sommelier.imperator.co',
+            'https://sommelier-api.polkachu.com',
+            'https://rest.cosmos.directory/sommelier',
+            'https://api-sommelier.pupmos.network',
+          ],
+        },
+      },
+      {
         id: 'terra-2',
         chain_name: 'terra-2',
         name: 'Terra',

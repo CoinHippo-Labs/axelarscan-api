@@ -313,6 +313,12 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65',
+          chain_id: 'sommelier',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4',
           chain_id: 'terra-2',
           decimals: 6,
@@ -375,6 +381,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/F17C9CA112815613C5B6771047A093054F837C3020CBA59DFFD9D780A8B2984C',
           chain_id: 'osmosis',
+          decimals: 6,
+          symbol: 'AvalancheUSDC',
+        },
+        {
+          ibc_denom: 'ibc/4AF49824065A2EB5F05E5AD5823178E595577D26500592615E3E8746EBDA5652',
+          chain_id: 'sommelier',
           decimals: 6,
           symbol: 'AvalancheUSDC',
         },
@@ -579,6 +591,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/812FE3017D74992A23CF4D65DCEBC5688B2F9D5595CBA7E7447522C6F2152778',
           chain_id: 'carbon',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          ibc_denom: 'ibc/462724F72AB1DDD92D751BF676AAD935B8FFE9ABF962259EA5ADDDC867959679',
+          chain_id: 'sommelier',
           decimals: 6,
           symbol: 'axlUSDT',
         },
@@ -790,6 +808,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/7E8C893B624C33274D18279546DE9353BCABF22B423D7D5E78B298144B23C6B2',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          ibc_denom: 'ibc/E1B637DCB7755B11574CA4FE1A10EEBE271ECC7F3C348A4BDD6B4204A2F66BB3',
+          chain_id: 'sommelier',
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -1432,6 +1456,12 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
+          ibc_denom: 'ibc/45C87C0C3027BD5E5BBECF6A6BF8570857E555ABCB6689130AC90D391016AD17',
+          chain_id: 'sommelier',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD',
           chain_id: 'terra-2',
           decimals: 8,
@@ -1584,6 +1614,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/DC44871FDB10B6FB4D4089247AA918B0F30428C8911AFB6192D98AE8E38E31CB',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/E3AB0DFDE9E782262B770C32DF94AC2A92B93DC4825376D6F6C874D3C877864E',
+          chain_id: 'sommelier',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -1747,6 +1783,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/DC44871FDB10B6FB4D4089247AA918B0F30428C8911AFB6192D98AE8E38E31CB',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
+          ibc_denom: 'ibc/E3AB0DFDE9E782262B770C32DF94AC2A92B93DC4825376D6F6C874D3C877864E',
+          chain_id: 'sommelier',
           decimals: 18,
           symbol: 'axlETH',
         },
@@ -2497,6 +2539,12 @@ module.exports = {
           symbol: 'axlWAVAX',
         },
         {
+          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
+          chain_id: 'sommelier',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
           ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2644,6 +2692,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/608FB6C36692B78844D22BC125F59CF46011B27B053DA40F730A15BCB248C3A8',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlAVAX',
+        },
+        {
+          ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
+          chain_id: 'sommelier',
           decimals: 18,
           symbol: 'axlAVAX',
         },
@@ -3245,7 +3299,6 @@ module.exports = {
         },
       ],
     },
-
     {
       id: 'arb-wei',
       symbol: 'ARB',
@@ -3385,6 +3438,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/666A6D8FD00975C1316DCC70A18BC82D6762724EEA82CD00327DCEBD6DCD3E3B',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlARB',
+        },
+        {
+          ibc_denom: 'ibc/D35774A7E5C3D52146C03DF1F458C7E81EA7E633FAE36BA58E0012ECFD77A127',
+          chain_id: 'sommelier',
           decimals: 18,
           symbol: 'axlARB',
         },
@@ -4419,6 +4478,42 @@ module.exports = {
         },
       ],
     },
+    {
+      id: 'usomm',
+      symbol: 'SOMM',
+      name: 'Sommelier',
+      image: '/logos/assets/somm.svg',
+      decimals: 6,
+      coingecko_id: 'sommelier',
+      contracts: [
+        {
+          contract_address: '0x421CC964D5A3FEf29c6839c54C40E9d1D554aFA4',
+          chain_id: 43114,
+          decimals: 6,
+          symbol: 'axlSOMM',
+        },
+        {
+          contract_address: '0x4e914bbDCDE0f455A8aC9d59d3bF739c46287Ed2',
+          chain_id: 42161,
+          decimals: 6,
+          symbol: 'axlSOMM',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/12A9901F2B585B3563C2AD4919D20ED478CCAB3D7F9ACBB76E829583B99B1DAA',
+          chain_id: 'axelarnet',
+          decimals: 6,
+          symbol: 'axlSOMM',
+        },
+        {
+          ibc_denom: 'usomm',
+          chain_id: 'sommelier',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
+    },
     /*{
       id: 'uxki',
       symbol: 'XKI',
@@ -5022,6 +5117,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/17A3A5E3FCDBBC131DE31690C5708144D6A882652689BA86162EACC23BA04087',
           chain_id: 'carbon',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/38D142F182413E7B44A3EBA2DA1FDBDE2B08BFC44A91DBD21A5D3583D99F47F6',
+          chain_id: 'sommelier',
           decimals: 18,
         },
         {
