@@ -37,15 +37,15 @@ module.exports = async (
   } = { ...getChainData('axelarnet') };
 
   if (hash) {
-    lcd_response.header.hash = base64ToHex(hash);
+    lcd_response.block.header.hash = base64ToHex(hash);
   }
 
   if (proposer_address) {
-    lcd_response.header.proposer_address = base64ToBech32(proposer_address, `${prefix_address}valcons`);
+    lcd_response.block.header.proposer_address = base64ToBech32(proposer_address, `${prefix_address}valcons`);
   }
 
   if (signatures) {
-    lcd_response.last_commit.validators = toArray(toArray(signatures).map(s => s.validator_address)).map(a => base64ToBech32(a, `${prefix_address}valcons`));
+    lcd_response.block.last_commit.validators = toArray(toArray(signatures).map(s => s.validator_address)).map(a => base64ToBech32(a, `${prefix_address}valcons`));
   }
 
   return lcd_response;
