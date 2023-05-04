@@ -1,3 +1,4 @@
+const normalizeResult = require('./normalizeResult');
 const rpc = require('../../rpc');
 
 module.exports = async (
@@ -25,5 +26,5 @@ module.exports = async (
     lcd_response.end_block_events = end_block_events;
   }
 
-  return lcd_response;
+  return normalizeResult(lcd_response);
 };

@@ -2,18 +2,18 @@ const {
   toArray,
 } = require('../../../utils');
 
-module.exports = data => {
+module.exports = output => {
   const {
     aggs,
-  } = { ...data };
+  } = { ...output };
 
   const {
     buckets,
   } = { ...aggs?.types };
 
   if (buckets) {
-    data = toArray(buckets).map(b => { return { key: b.key, count: b.doc_count }; });
+    output = toArray(buckets).map(b => { return { key: b.key, count: b.doc_count }; });
   }
 
-  return data;
+  return output;
 };

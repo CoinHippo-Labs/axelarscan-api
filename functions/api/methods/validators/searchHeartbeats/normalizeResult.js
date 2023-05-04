@@ -2,17 +2,17 @@ const {
   toArray,
 } = require('../../../utils');
 
-module.exports = data => {
+module.exports = output => {
   const {
     aggs,
-  } = { ...data };
+  } = { ...output };
 
   const {
     buckets,
   } = { ...aggs?.heartbeats };
 
   if (buckets) {
-    data =
+    output =
       toArray(buckets).map(b => {
         const {
           key,
@@ -27,5 +27,5 @@ module.exports = data => {
       });
   }
 
-  return data;
+  return output;
 };

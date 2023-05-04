@@ -22,6 +22,7 @@ exports.handler = async (
     searchPolls,
     searchUptimes,
     searchHeartbeats,
+    getValidators,
     getValidatorsVotes,
     searchBatches,
     searchDepositAddresses,
@@ -338,6 +339,13 @@ exports.handler = async (
       case 'searchPolls':
         try {
           output = await searchPolls(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getValidators':
+        try {
+          output = await getValidators(params);
         } catch (error) {
           output = errorOutput(error);
         }

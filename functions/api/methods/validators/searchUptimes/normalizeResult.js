@@ -8,22 +8,23 @@ const {
   toArray,
 } = require('../../../utils');
 
-module.exports = data => {
+module.exports = output => {
   const {
+    data,
     aggs,
     total,
-  } = { ...data };
+  } = { ...output };
 
   const {
     buckets,
   } = { ...aggs?.uptimes };
 
-  if (buckets) {
-    const {
-      prefix_address,
-    } = { ...getChainData('axelarnet') };
+  const {
+    prefix_address,
+  } = { ...getChainData('axelarnet') };
 
-    data = {
+  if (buckets) {
+    output = {
       data:
         Object.fromEntries(
           toArray(buckets)
@@ -39,6 +40,12 @@ module.exports = data => {
       total,
     };
   }
+  else if (data) {
+    output = {
+      ...output,
+      data: toArray(data).map(d => { return { ...d, validators: toArray(d.validators).map(a => base64ToBech32(a, `${prefix_address}valcons`)) }; }),
+    };
+  }
 
-  return data;
+  return output;
 };

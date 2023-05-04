@@ -164,6 +164,9 @@ mainnet:
       carbon:
         ibc_denom: "ibc/7C0807A56073C4A27B0DE1C21BA3EB75DF75FD763F4AD37BC159917FC01145F0"
         symbol: "axlUSDC"
+      sommelier:
+        ibc_denom: "ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65"
+        symbol: "axlUSDC"
       terra-2:
         ibc_denom: "ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4"
         symbol: "axlUSDC"
@@ -197,6 +200,8 @@ mainnet:
         ibc_denom: "avalanche-uusdc"
       osmosis:
         ibc_denom: "ibc/F17C9CA112815613C5B6771047A093054F837C3020CBA59DFFD9D780A8B2984C"
+      sommelier:
+        ibc_denom: "ibc/4AF49824065A2EB5F05E5AD5823178E595577D26500592615E3E8746EBDA5652"
   uusdt:
     denom: "uusdt"
     native_chain: "ethereum"
@@ -303,6 +308,9 @@ mainnet:
         symbol: "axlUSDT"
       carbon:
         ibc_denom: "ibc/812FE3017D74992A23CF4D65DCEBC5688B2F9D5595CBA7E7447522C6F2152778"
+        symbol: "axlUSDT"
+      sommelier:
+        ibc_denom: "ibc/462724F72AB1DDD92D751BF676AAD935B8FFE9ABF962259EA5ADDDC867959679"
         symbol: "axlUSDT"
       terra-2:
         ibc_denom: "ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF"
@@ -414,6 +422,9 @@ mainnet:
         symbol: "axlDAI"
       carbon:
         ibc_denom: "ibc/7E8C893B624C33274D18279546DE9353BCABF22B423D7D5E78B298144B23C6B2"
+        symbol: "axlDAI"
+      sommelier:
+        ibc_denom: "ibc/E1B637DCB7755B11574CA4FE1A10EEBE271ECC7F3C348A4BDD6B4204A2F66BB3"
         symbol: "axlDAI"
       terra-2:
         ibc_denom: "ibc/E46EF5449878F6B81219163F211E7329CC0729AA99DA8A589A865F82F754ADE8"
@@ -749,6 +760,9 @@ mainnet:
       carbon:
         ibc_denom: "ibc/9CCCFA44CA6F74517C3E3416971EF2B7EC8506F2A00C62C660935DD9CB5E1C63"
         symbol: "axlWBTC"
+      sommelier:
+        ibc_denom: "ibc/45C87C0C3027BD5E5BBECF6A6BF8570857E555ABCB6689130AC90D391016AD17"
+        symbol: "axlWBTC"
       terra-2:
         ibc_denom: "ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD"
         symbol: "axlWBTC"
@@ -841,6 +855,9 @@ mainnet:
       carbon:
         ibc_denom: "ibc/DC44871FDB10B6FB4D4089247AA918B0F30428C8911AFB6192D98AE8E38E31CB"
         symbol: "axlETH"
+      sommelier:
+        ibc_denom: "ibc/E3AB0DFDE9E782262B770C32DF94AC2A92B93DC4825376D6F6C874D3C877864E"
+        symbol: "axlETH"
       terra-2:
         ibc_denom: "ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674"
         symbol: "axlETH"
@@ -897,6 +914,8 @@ mainnet:
         ibc_denom: "ibc/38D142F182413E7B44A3EBA2DA1FDBDE2B08BFC44A91DBD21A5D3583D99F47F6"
       carbon:
         ibc_denom: "ibc/17A3A5E3FCDBBC131DE31690C5708144D6A882652689BA86162EACC23BA04087"
+      sommelier:
+        ibc_denom: "ibc/38D142F182413E7B44A3EBA2DA1FDBDE2B08BFC44A91DBD21A5D3583D99F47F6"
       terra-2:
         ibc_denom: "ibc/57C5ECAE3AAA7382AC93CFE971CA2F9B669323FDF5A5A138B535E4F9EAD185BD"
   cbeth-wei:
@@ -1307,6 +1326,9 @@ mainnet:
       carbon:
         ibc_denom: "ibc/608FB6C36692B78844D22BC125F59CF46011B27B053DA40F730A15BCB248C3A8"
         symbol: "axlAVAX"
+      sommelier:
+        ibc_denom: "ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9"
+        symbol: "axlAVAX"
       terra-2:
         ibc_denom: "ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B"
         symbol: "axlAVAX"
@@ -1546,6 +1568,9 @@ mainnet:
         symbol: "axlARB"
       carbon:
         ibc_denom: "ibc/666A6D8FD00975C1316DCC70A18BC82D6762724EEA82CD00327DCEBD6DCD3E3B"
+        symbol: "axlARB"
+      sommelier:
+        ibc_denom: "ibc/D35774A7E5C3D52146C03DF1F458C7E81EA7E633FAE36BA58E0012ECFD77A127"
         symbol: "axlARB"
       terra-2:
         ibc_denom: "ibc/0A31B4B46B4C5F10ED3EF4BFBD1453CE96A270D168FC672436ABCA2DB4CC1401"
@@ -2562,6 +2587,26 @@ mainnet:
         ibc_denom: "ibc/CFB9D610B7BB02E8E6FDB0AF87FCADDF97687A3F13E76AC624C500E54335ADAA"
       stride:
         ibc_denom: "stuatom"
+  usomm:
+    denom: "usomm"
+    native_chain: "sommelier"
+    name: "Sommelier"
+    symbol: "SOMM"
+    decimals: 6
+    image: "/logos/assets/somm.svg"
+    coingecko_id: "sommelier"
+    addresses:
+      avalanche:
+        address: "0x421CC964D5A3FEf29c6839c54C40E9d1D554aFA4"
+        symbol: "axlSOMM"
+      arbitrum:
+        address: "0x4e914bbDCDE0f455A8aC9d59d3bF739c46287Ed2"
+        symbol: "axlSOMM"
+      axelarnet:
+        ibc_denom: "ibc/12A9901F2B585B3563C2AD4919D20ED478CCAB3D7F9ACBB76E829583B99B1DAA"
+        symbol: "axlSOMM"
+      sommelier:
+        ibc_denom: "usomm"
   dot-planck:
     denom: "dot-planck"
     native_chain: "moonbeam"

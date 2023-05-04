@@ -5,6 +5,10 @@ const {
   tmhash,
 } = require('tendermint/lib/hash');
 
+const {
+  bech32ToBech32,
+} = require('./bech32');
+
 const toHash = (
   string,
   length,
@@ -47,8 +51,15 @@ const isOperatorAddress = (
   return false;
 };
 
+const getDelegatorAddress = (
+  address,
+  prefix = 'axelar',
+) =>
+  bech32ToBech32(address, prefix);
+
 module.exports = {
   toHash,
   getAddress,
   isOperatorAddress,
+  getDelegatorAddress,
 };

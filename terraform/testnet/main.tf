@@ -38,14 +38,13 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
-resource "aws_iam_role" "role" {
-  name               = "${var.project_name}-role-lambda"
-  assume_role_policy = data.aws_iam_policy_document.policy.json
+data "aws_iam_role" "role" {
+  name = "${var.iam_role}"
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
   name       = "${var.project_name}-attachment"
-  roles      = [aws_iam_role.role.name]
+  roles      = [data.aws_iam_role.role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -53,7 +52,7 @@ resource "aws_lambda_function" "api" {
   function_name    = "${var.project_name}-${var.environment}"
   filename         = data.archive_file.zip_api.output_path
   source_code_hash = data.archive_file.zip_api.output_base64sha256
-  role             = aws_iam_role.role.arn
+  role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 30
@@ -122,7 +121,7 @@ resource "aws_lambda_function" "axelar_crawler" {
   function_name    = "${var.project_name}-axelar-crawler-${var.environment}"
   filename         = data.archive_file.zip_axelar_crawler.output_path
   source_code_hash = data.archive_file.zip_axelar_crawler.output_base64sha256
-  role             = aws_iam_role.role.arn
+  role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 900
@@ -159,7 +158,7 @@ resource "aws_lambda_function" "evm_crawler" {
   function_name    = "${var.project_name}-evm-crawler-${var.environment}"
   filename         = data.archive_file.zip_evm_crawler.output_path
   source_code_hash = data.archive_file.zip_evm_crawler.output_base64sha256
-  role             = aws_iam_role.role.arn
+  role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 630

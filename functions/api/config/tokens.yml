@@ -42,6 +42,84 @@ AXL:
 OSMO:
   coingecko_id: "osmosis"
   decimals: 6
+ATOM:
+  coingecko_id: "cosmos"
+  decimals: 6
+JUNO:
+  coingecko_id: "juno-network"
+  decimals: 6
+NGM:
+  coingecko_id: "e-money"
+  decimals: 6
+INJ:
+  coingecko_id: "injective-protocol"
+  decimals: 6
+CRE:
+  coingecko_id: "crescent-network"
+  decimals: 6
+KUJI:
+  coingecko_id: "kujira"
+  decimals: 6
+SCRT:
+  coingecko_id: "secret"
+  decimals: 6
+SEI:
+  coingecko_id: "sei-network"
+  decimals: 6
+STARS:
+  coingecko_id: "stargaze"
+  decimals: 6
+MNTL:
+  coingecko_id: "assetmantle"
+  decimals: 6
+FET:
+  coingecko_id: "fetch-ai"
+  decimals: 6
+KI:
+  coingecko_id: "ki"
+  decimals: 6
+EVMOS:
+  coingecko_id: "evmos"
+  decimals: 6
+AURA:
+  coingecko_id: "aura-network"
+  decimals: 6
+CMDX:
+  coingecko_id: "comdex"
+  decimals: 6
+XPRT:
+  coingecko_id: "persistence"
+  decimals: 6
+REGEN:
+  coingecko_id: "regen"
+  decimals: 6
+UMEE:
+  coingecko_id: "umee"
+  decimals: 6
+BLD:
+  coingecko_id: "agoric"
+  decimals: 6
+XPLA:
+  coingecko_id: "xpla"
+  decimals: 6
+ACRE:
+  coingecko_id: "arable-protocol"
+  decimals: 6
+STRD:
+  coingecko_id: "stride"
+  decimals: 6
+SWTH:
+  coingecko_id: "switcheo"
+  decimals: 6
+ODIN:
+  coingecko_id: "odin-protocol"
+  decimals: 6
+SOMM:
+  coingecko_id: "sommelier"
+  decimals: 6
+LUNA:
+  coingecko_id: "terra-luna-2"
+  decimals: 6
 wAXL:
   redirect: "AXL"
 WAXL:
@@ -137,3 +215,13 @@ BUSD:
   decimals: 18
 axlBUSD:
   redirect: "BUSD"
+axlOSMO:
+  redirect: "OSMO"
+axlATOM:
+  redirect: "ATOM"
+axlJUNO:
+  redirect: "JUNO"
+axlSEI:
+  redirect: "SEI"
+axlSOMM:
+  redirect: "SOMM"

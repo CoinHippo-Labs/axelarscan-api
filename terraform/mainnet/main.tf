@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "policy" {
 }
 
 data "aws_iam_role" "role" {
-  name = "${var.project_name}-role-lambda"
+  name = "${var.iam_role}"
 }
 
 resource "aws_iam_policy_attachment" "attachment" {

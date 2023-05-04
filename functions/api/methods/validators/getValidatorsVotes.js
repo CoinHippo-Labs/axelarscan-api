@@ -1,57 +1,17 @@
 const _ = require('lodash');
 
+const getBroadcasters = require('./getBroadcasters');
 const rpc = require('../rpc');
 const {
   searchPolls,
 } = require('../polls');
 const {
-  read,
-} = require('../../services/index');
-const {
-  TX_COLLECTION,
   getChainData,
 } = require('../../utils/config');
 const {
   equalsIgnoreCase,
   toArray,
 } = require('../../utils');
-
-const getBroadcasters = async (
-  size = 100,
-) => {
-  const response =
-    await read(
-      TX_COLLECTION,
-      {
-        bool: {
-          must: [
-            { match: { types: 'RegisterProxyRequest' } },
-            { exists: { field: 'tx.body.messages.sender' } },
-            { exists: { field: 'tx.body.messages.proxy_addr' } },
-          ],
-        },
-      },
-      { size },
-    );
-
-  const {
-    data,
-  } = { ...response };
-
-  return (
-    Object.fromEntries(
-      toArray(data)
-        .map(d => {
-          const {
-            sender,
-            proxy_addr,
-          } = { ...toArray(d.tx?.body?.messages).find(m => m.sender && m.proxy_addr) };
-
-          return [sender.toLowerCase(), proxy_addr.toLowerCase()];
-        })
-    )
-  );
-};
 
 module.exports = async (
   params = {},
@@ -149,7 +109,7 @@ module.exports = async (
                   participants,
                 } = { ...p };
 
-                participants = toArray(participants).map(a => broadcasters[a.toLowerCase()] || a);
+                participants = toArray(participants).map(a => broadcasters[a.toLowerCase()]?.address || a);
                 const addresses = Object.keys({ ...p }).filter(k => k.startsWith(`${prefix_address}1`));
 
                 return (

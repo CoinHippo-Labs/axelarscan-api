@@ -9,6 +9,7 @@ const searchTransactions = require('./searchTransactions');
 const searchPolls = require('./searchPolls');
 const searchUptimes = require('./searchUptimes');
 const searchHeartbeats = require('./searchHeartbeats');
+const getValidators = require('./getValidators');
 const getValidatorsVotes = require('./getValidatorsVotes');
 const searchBatches = require('./searchBatches');
 const searchDepositAddresses = require('./searchDepositAddresses');
@@ -32,6 +33,7 @@ const test = async () => {
   await searchPolls();
   await searchUptimes();
   await searchHeartbeats();
+  await getValidators();
   await getValidatorsVotes();
   await searchBatches();
   await searchDepositAddresses();

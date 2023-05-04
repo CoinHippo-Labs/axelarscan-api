@@ -21,6 +21,7 @@ const {
 const {
   searchUptimes,
   searchHeartbeats,
+  getValidators,
   getValidatorsVotes,
 } = require('./validators');
 const {
@@ -78,6 +79,7 @@ module.exports = {
   searchPolls,
   searchUptimes,
   searchHeartbeats,
+  getValidators,
   getValidatorsVotes,
   searchBatches,
   searchDepositAddresses,

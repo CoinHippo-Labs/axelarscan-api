@@ -1092,6 +1092,37 @@ mainnet:
       prefix_address: "burnt"
       prefix_chain_ids:
         - "carbon-"
+    sommelier:
+      chain_name: "sommelier"
+      endpoints:
+        lcd:
+          - "https://lcd-sommelier.imperator.co"
+          - "https://sommelier-api.polkachu.com"
+          - "https://rest.cosmos.directory/sommelier"
+          - "https://api-sommelier.pupmos.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Sommelier"
+        symbol: "SOMM"
+        decimals: 6
+      name: "Sommelier"
+      short_name: "SOMM"
+      image: "/logos/chains/sommelier.svg"
+      color: "#eb5d54"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/sommelier"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "somm"
+      prefix_chain_ids:
+        - "sommelier-"
     terra-2:
       chain_name: "terra-2"
       endpoints:
