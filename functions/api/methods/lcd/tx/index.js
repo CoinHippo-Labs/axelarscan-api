@@ -119,6 +119,96 @@ module.exports = async (
     delete transaction_data.events;
     transaction_data.timestamp = moment(timestamp).utc().valueOf();
 
+    // convert some fields before insert to indexer
+    if (transaction_data.tx?.body) {
+      const {
+        messages,
+      } = { ...transaction_data.tx.body };
+
+      if (messages) {
+        for (let i = 0; i < messages.length; i++) {
+          const message = messages[i];
+
+          if (message) {
+            const fields = ['limit', 'chain'];
+
+            for (const field of fields) {
+              if (message[field] && typeof message[field] === 'object') {
+                message[field] = message[field].toString();   
+              }
+            }
+
+            messages[i] = message;
+          }
+        }
+
+        transaction_data.tx.body.messages = messages;
+      }
+    }
+
+    /* start add addresses field */
+    let addresses = [];
+    const address_fields = ['voter', 'delegator_address', 'signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress'];
+
+    const {
+      prefix_address,
+    } = { ...getChainData('axelarnet') };
+
+    if (logs) {
+      addresses =
+        _.uniq(
+          _.concat(
+            addresses,
+            toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => address_fields.includes(a.key)).map(a => a.value))),
+          )
+          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
+          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
+        );
+    }
+
+    if (messages) {
+      addresses =
+        _.uniq(
+          _.concat(
+            addresses,
+            toArray(messages).flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f]))),
+          )
+          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
+          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
+        );
+    }
+
+    transaction_data.addresses = addresses;
+    /* end add addresses field */
+
+    /* start add message types field */
+    let types = [];
+
+    // inner message type
+    if (messages) {
+      types = _.uniq(toArray(_.concat(types, toArray(messages).flatMap(m => m.inner_message?.['@type']))));
+    }
+
+    // message action
+    if (logs) {
+      types = _.uniq(toArray(_.concat(types, toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'message')).flatMap(e => toArray(e.attributes).filter(a => a.key === 'action').map(a => a.value))))));
+    }
+
+    // message type
+    if (messages) {
+      types = _.uniq(toArray(_.concat(types, toArray(messages).flatMap(m => m['@type']))));
+    }
+
+    types = _.uniq(toArray(types.map(t => capitalize(_.last(toArray(t, 'normal', '.'))))));
+    types = types.filter(t => !types.includes(`${t}Request`));
+
+    transaction_data.types = types;
+    /* end add message types field */
+
+    if (!index_transfer && !index_poll) {
+      await write(TX_COLLECTION, txhash, transaction_data);
+    }
+
     /* start convert bytearray to hex */
     if (messages) {
       if (['LinkRequest'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1) {
@@ -255,101 +345,12 @@ module.exports = async (
       tx.body.messages = messages;
       transaction_data.tx = tx;
     }
-    /* end convert bytearray to hex */
-
-    // convert some fields before insert to indexer
-    if (transaction_data.tx?.body) {
-      const {
-        messages,
-      } = { ...transaction_data.tx.body };
-
-      if (messages) {
-        for (let i = 0; i < messages.length; i++) {
-          const message = messages[i];
-
-          if (message) {
-            const fields = ['limit', 'chain'];
-
-            for (const field of fields) {
-              if (message[field] && typeof message[field] === 'object') {
-                message[field] = message[field].toString();   
-              }
-            }
-
-            messages[i] = message;
-          }
-        }
-
-        transaction_data.tx.body.messages = messages;
-      }
-    }
 
     tx_response.tx = tx;
     lcd_response.tx = tx;
     lcd_response.tx_response = tx_response;
+    /* end convert bytearray to hex */
 
-    /* start add addresses field */
-    let addresses = [];
-    const address_fields = ['voter', 'delegator_address', 'signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress'];
-
-    const {
-      prefix_address,
-    } = { ...getChainData('axelarnet') };
-
-    if (logs) {
-      addresses =
-        _.uniq(
-          _.concat(
-            addresses,
-            toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => address_fields.includes(a.key)).map(a => a.value))),
-          )
-          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
-          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
-        );
-    }
-
-    if (messages) {
-      addresses =
-        _.uniq(
-          _.concat(
-            addresses,
-            toArray(messages).flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f]))),
-          )
-          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
-          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
-        );
-    }
-
-    transaction_data.addresses = addresses;
-    /* end add addresses field */
-
-    /* start add message types field */
-    let types = [];
-
-    // inner message type
-    if (messages) {
-      types = _.uniq(toArray(_.concat(types, toArray(messages).flatMap(m => m.inner_message?.['@type']))));
-    }
-
-    // message action
-    if (logs) {
-      types = _.uniq(toArray(_.concat(types, toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'message')).flatMap(e => toArray(e.attributes).filter(a => a.key === 'action').map(a => a.value))))));
-    }
-
-    // message type
-    if (messages) {
-      types = _.uniq(toArray(_.concat(types, toArray(messages).flatMap(m => m['@type']))));
-    }
-
-    types = _.uniq(toArray(types.map(t => capitalize(_.last(toArray(t, 'normal', '.'))))));
-    types = types.filter(t => !types.includes(`${t}Request`));
-
-    transaction_data.types = types;
-    /* end add message types field */
-
-    if (!index_transfer && !index_poll) {
-      await write(TX_COLLECTION, txhash, transaction_data);
-    }
     /*************************
      * end index transaction *
      *************************/

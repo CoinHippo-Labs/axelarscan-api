@@ -137,7 +137,7 @@ mainnet:
         decimals: 18
       name: "Fantom"
       short_name: "FTM"
-      image: "/logos/chains/ftm.svg"
+      image: "/logos/chains/fantom.svg"
       color: "#1869ff"
       explorer:
         name: "FTMScan"
@@ -1165,7 +1165,7 @@ mainnet:
         decimals: 6
       name: "Terra Classic"
       short_name: "TERRAC"
-      image: "/logos/chains/terra.svg"
+      image: "/logos/chains/terra.png"
       color: "#ffd83d"
       explorer:
         name: "Terra"
@@ -1358,7 +1358,7 @@ testnet:
         decimals: 18
       name: "Moonbase"
       short_name: "MOONBASE"
-      image: "/logos/chains/moonbase.svg"
+      image: "/logos/chains/moonbase.png"
       color: "#53cbc8"
       explorer:
         name: "Moonscan"
@@ -2087,7 +2087,7 @@ testnet:
         decimals: 6
       name: "Terra Classic"
       short_name: "TERRAC"
-      image: "/logos/chains/terra.svg"
+      image: "/logos/chains/terra.png"
       color: "#ffd83d"
       explorer:
         name: "Terra"

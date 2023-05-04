@@ -1838,7 +1838,7 @@ mainnet:
     name: "Lido Staked Ether"
     symbol: "stETH"
     decimals: 18
-    image: "/logos/assets/steth.svg"
+    image: "/logos/assets/steth.png"
     coingecko_id: "staked-ether"
     addresses:
       ethereum:
@@ -2690,7 +2690,7 @@ mainnet:
     name: "TerraClassicUSD"
     symbol: "USTC"
     decimals: 6
-    image: "/logos/assets/ust.svg"
+    image: "/logos/assets/ust.png"
     coingecko_id: "terrausd"
     addresses:
       ethereum:
@@ -2719,7 +2719,7 @@ mainnet:
     name: "Terra Classic"
     symbol: "LUNC"
     decimals: 6
-    image: "/logos/assets/lunc.svg"
+    image: "/logos/assets/lunc.png"
     coingecko_id: "terra-luna"
     addresses:
       ethereum:
@@ -3294,7 +3294,7 @@ testnet:
     name: "Wrapped Fantom"
     symbol: "WFTM"
     decimals: 18
-    image: "/logos/assets/ftm.svg"
+    image: "/logos/assets/wftm.svg"
     coingecko_id: "wrapped-fantom"
     addresses:
       ethereum-2:
@@ -3640,7 +3640,7 @@ testnet:
     name: "TerraClassicUSD"
     symbol: "USTC"
     decimals: 6
-    image: "/logos/assets/ust.svg"
+    image: "/logos/assets/ust.png"
     coingecko_id: "terrausd"
     no_tvl: true
     addresses:
@@ -3670,7 +3670,7 @@ testnet:
     name: "Terra Classic"
     symbol: "LUNC"
     decimals: 6
-    image: "/logos/assets/lunc.svg"
+    image: "/logos/assets/lunc.png"
     coingecko_id: "terra-luna"
     no_tvl: true
     addresses:
