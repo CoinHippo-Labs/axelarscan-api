@@ -8,7 +8,7 @@ const {
 module.exports = async context => {
   const api = getAPI();
 
-  if (api) {
+  if (api && process.env.ENVIRONMENT === 'mainnet') {
     const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler`;
     const method = 'updateTVL';
 

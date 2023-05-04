@@ -188,7 +188,7 @@ const getAssetData = (
   asset,
   environment = ENVIRONMENT,
 ) =>
-  asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset));
+  asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset) || toArray(Object.values({ ...a.addresses })).findIndex(_a => equalsIgnoreCase(_a.ibc_denom, asset)) > -1);
 
 const getTokens = () => tokens;
 

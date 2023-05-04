@@ -271,7 +271,7 @@ module.exports = async (
                                       value,
                                     } = { ...a };
 
-                                    return [key, toJson(value) || (typeof value === 'string' ? normalizeQuote(value) : value)];
+                                    return [key, (!['asset'].includes(key) && toJson(value)) || (typeof value === 'string' ? normalizeQuote(value) : value)];
                                   })
                               ),
                             };

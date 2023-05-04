@@ -38,7 +38,7 @@ const getTokensPrice = async (
   timestamp = moment(),
   currency = CURRENCY,
 ) => {
-  let tokens_data = toArray(symbols).map(s => getTokenConfig(s));
+  let tokens_data = toArray(toArray(symbols).map(s => getTokenConfig(s)));
 
   if (tokens_data.findIndex(t => t.coingecko_id) > -1) {
     const api = axios.create({ baseURL: PRICE_ORACLE_API, timeout: 5000 });

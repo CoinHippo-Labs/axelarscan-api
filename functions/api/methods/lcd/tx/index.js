@@ -120,6 +120,57 @@ module.exports = async (
     transaction_data.timestamp = moment(timestamp).utc().valueOf();
 
     // convert some fields before insert to indexer
+    if (messages) {
+      if (['LinkRequest'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1) {
+        for (let i = 0; i < messages.length; i++) {
+          const message = messages[i];
+          message.denom = message.asset;
+          delete message.asset;
+          messages[i] = message;
+        }
+      }
+      else if (
+        [
+          'ConfirmDepositRequest',
+          'ConfirmGatewayTxRequest',
+          'ConfirmTransferKeyRequest',
+          'ConfirmTokenRequest',
+          'CreateDeployTokenRequest',
+        ]
+        .findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1
+      ) {
+        const fields = ['tx_id', 'burner_address', 'burn_address', 'address'];
+
+        for (let i = 0; i < messages.length; i++) {
+          const message = messages[i];
+
+          if (typeof message?.amount === 'string') {
+            const {
+              attributes,
+            } = { ..._.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => ['depositConfirmation', 'eventConfirmation'].findIndex(s => equalsIgnoreCase(e.type, s) || e.type?.includes(s)) > -1))) };
+
+            const amount = toArray(attributes).find(a => a.key === 'amount')?.value;
+            const denom = transaction_data.denom || message.denom;
+            message.amount = [{ amount, denom }];
+          }
+
+          for (const field of fields) {
+            if (Array.isArray(message[field])) {
+              message[field] = toHex(message[field]);
+            }
+          }
+
+          messages[i] = message;
+        }
+      }
+
+      tx.body.messages = messages;
+      transaction_data.tx = tx;
+      tx_response.tx = tx;
+      lcd_response.tx = tx;
+      lcd_response.tx_response = tx_response;
+    }
+
     if (transaction_data.tx?.body) {
       const {
         messages,
@@ -211,49 +262,7 @@ module.exports = async (
 
     /* start convert bytearray to hex */
     if (messages) {
-      if (['LinkRequest'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1) {
-        for (let i = 0; i < messages.length; i++) {
-          const message = messages[i];
-          message.denom = message.asset;
-          delete message.asset;
-          messages[i] = message;
-        }
-      }
-      else if (
-        [
-          'ConfirmDepositRequest',
-          'ConfirmGatewayTxRequest',
-          'ConfirmTransferKeyRequest',
-          'ConfirmTokenRequest',
-          'CreateDeployTokenRequest',
-        ]
-        .findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1
-      ) {
-        const fields = ['tx_id', 'burner_address', 'burn_address', 'address'];
-
-        for (let i = 0; i < messages.length; i++) {
-          const message = messages[i];
-
-          if (typeof message?.amount === 'string') {
-            const {
-              attributes,
-            } = { ..._.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => ['depositConfirmation', 'eventConfirmation'].findIndex(s => equalsIgnoreCase(e.type, s) || e.type?.includes(s)) > -1))) };
-
-            const amount = toArray(attributes).find(a => a.key === 'amount')?.value;
-            const denom = transaction_data.denom || message.denom;
-            message.amount = [{ amount, denom }];
-          }
-
-          for (const field of fields) {
-            if (Array.isArray(message[field])) {
-              message[field] = toHex(message[field]);
-            }
-          }
-
-          messages[i] = message;
-        }
-      }
-      else if (['VoteRequest'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s) || m.inner_message?.['@type']?.includes(s)) > -1) > -1) {
+      if (['VoteRequest'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s) || m.inner_message?.['@type']?.includes(s)) > -1) > -1) {
         const fields = ['tx_id', 'to', 'sender', 'payload_hash', 'pre_operators', 'new_operators', 'token_address'];
         const event_fields = ['transfer', 'contract_call', 'contract_call_with_token', 'token_sent', 'multisig_operatorship_transferred', 'token_deployed'];
 
@@ -344,11 +353,10 @@ module.exports = async (
 
       tx.body.messages = messages;
       transaction_data.tx = tx;
+      tx_response.tx = tx;
+      lcd_response.tx = tx;
+      lcd_response.tx_response = tx_response;
     }
-
-    tx_response.tx = tx;
-    lcd_response.tx = tx;
-    lcd_response.tx_response = tx_response;
     /* end convert bytearray to hex */
 
     /*************************

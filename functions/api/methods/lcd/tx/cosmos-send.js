@@ -18,6 +18,7 @@ const {
   getLCDs,
 } = require('../../../utils/chain/cosmos');
 const {
+  DEPOSIT_ADDRESS_COLLECTION,
   UNWRAP_COLLECTION,
   getChainsList,
 } = require('../../../utils/config');
