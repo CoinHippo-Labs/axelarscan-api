@@ -4,6 +4,11 @@ const {
 const {
   getAssetsList,
 } = require('../../utils/config');
+const {
+  log,
+} = require('../../utils');
+
+const service_name = 'updateTVL';
 
 module.exports = async () =>
   Object.fromEntries(
@@ -15,7 +20,23 @@ module.exports = async () =>
               id,
             } = { ...a };
 
-            resolve([id, await getTVL({ asset: id, force_update: true })]);
+            log(
+              'info',
+              service_name,
+              'start update',
+              { id },
+            );
+
+            const response = await getTVL({ asset: id, force_update: true });
+
+            log(
+              'info',
+              service_name,
+              'end update',
+              { id, response },
+            );
+
+            resolve([id, response]);
           }
         )
       )

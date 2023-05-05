@@ -92,10 +92,7 @@ const onEmit = async (
           'info',
           service_name,
           `event emitted: ${event}`,
-          {
-            chain,
-            ...data,
-          },
+          { chain, ...data },
         );
 
         await saveEvent(data, chain, address, env);

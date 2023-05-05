@@ -28,9 +28,10 @@ const getLatestEventBlock = async chain => {
 
     const {
       data,
+      error,
     } = { ...response };
 
-    if (data) {
+    if (data && !error) {
       output = data;
     }
 
@@ -38,7 +39,7 @@ const getLatestEventBlock = async chain => {
       'debug',
       service_name,
       'latest event block',
-      { output, params },
+      { output, error, params },
     );
   }
 
@@ -88,7 +89,7 @@ const saveEvent = async (
       'debug',
       service_name,
       'save event result',
-      { output, params },
+      { output, error, params },
     );
   }
 

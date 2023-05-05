@@ -235,10 +235,7 @@ const crud = async (
           'debug',
           'indexer',
           'request to opensearch',
-          {
-            params: _params,
-            error,
-          },
+          { params: _params, error },
         );
 
         delete response.data.error;
