@@ -2020,6 +2020,36 @@ testnet:
       prefix_address: "odin"
       prefix_chain_ids:
         - "odin-"
+    neutron:
+      chain_name: "neutron"
+      endpoints:
+        lcd:
+          - "https://rest-palvus.pion-1.ntrn.tech"
+          - "https://cosmo-sand-box.vercel.app/api/rest"
+          - "https://api.baryon.remedy.tm.p2p.org"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Neutron"
+        symbol: "NTRN"
+        decimals: 6
+      name: "Neutron"
+      short_name: "NTRN"
+      image: "/logos/chains/neutron.svg"
+      color: "#131928"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/neutron-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "neutron"
+      prefix_chain_ids:
+        - "pion-"
     terra-3:
       chain_name: "terra-3"
       endpoints:

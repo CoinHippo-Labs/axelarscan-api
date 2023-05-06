@@ -117,6 +117,9 @@ ODIN:
 SOMM:
   coingecko_id: "sommelier"
   decimals: 6
+NTRN:
+  coingecko_id: "neutron-1"
+  decimals: 6
 LUNA:
   coingecko_id: "terra-luna-2"
   decimals: 6

@@ -2364,6 +2364,47 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/C22747737204871040AE896E7CA7791CF541AC269BF1D521870891E67AC83DA4"
         symbol: "axlXCN"
+  pepe-wei:
+    denom: "pepe-wei"
+    native_chain: "ethereum"
+    name: "Pepe"
+    symbol: "PEPE"
+    decimals: 18
+    image: "/logos/assets/pepe.svg"
+    coingecko_id: "pepe"
+    addresses:
+      ethereum:
+        address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933"
+      axelarnet:
+        ibc_denom: "pepe-wei"
+        symbol: "axlPEPE"
+      osmosis:
+        ibc_denom: "ibc/E47F4E97C534C95B942729E1B25DBDE111EA791411CFF100515050BEA0AC0C6B"
+        symbol: "axlPEPE"
+      cosmoshub:
+        ibc_denom: "ibc/8558CA5E183C44947A9B63FC9BD75A18D0A2407025898A3B64AD782C4F3DBBCB"
+        symbol: "axlPEPE"
+      juno:
+        ibc_denom: "ibc/3406FBBAEB20E62FF238FF6FD061BCF21F515E1546D3E9FF8571B12BDA29DDBB"
+        symbol: "axlPEPE"
+      crescent:
+        ibc_denom: "ibc/796FAF4E82B4EB778E18F4E0A2C67C9CF55D5ACD176F3B6FD6DC420ABDDBABC1"
+        symbol: "axlPEPE"
+      kujira:
+        ibc_denom: "ibc/0447761C090DB521DAC0268E8CB4EBF567E519B937DE6FECD2472AA6A1EDE658"
+        symbol: "axlPEPE"
+      evmos:
+        ibc_denom: "ibc/26E6508A1757E12B15A087E951F5D35E73CF036F0D97BC809E1598D1DD870BED"
+        symbol: "axlPEPE"
+      comdex:
+        ibc_denom: "ibc/A55A949CB5EE326933173D5CC23A97446EB4578D4F80F30C41B4D83E2643B37A"
+        symbol: "axlPEPE"
+      umee:
+        ibc_denom: "ibc/536179FABD7E85D0F122A4355168157740D0E9D4DEEE40A038DE317D8ABFCDCA"
+        symbol: "axlPEPE"
+      terra-2:
+        ibc_denom: "ibc/ED1D1CEACDB852377A99B1776BF3459472084BBA8F39D2D41AAF3E86E67CA8F3"
+        symbol: "axlPEPE"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
@@ -2867,6 +2908,8 @@ testnet:
         ibc_denom: "ibc/4BDF2D63B8FFE3454AF30E9BC10D2D7979BD3A938D989889ABC94FC5B86F1E2D"
       odin:
         ibc_denom: "ibc/035BDC396AA81E38271D2FA5E4799AE159044B90BCF02CCA218EB364829C869E"
+      neutron:
+        ibc_denom: "ibc/F91EA2C0A23697A1048E08C2F787E3A58AC6F706A1CD2257A504925158CFC0F3"
       terra-3:
         ibc_denom: "ibc/720B52BDE1E2B84C5898D07C983B085C77EB5ED2D4C0ACD56B882A14777F750C"
   wbtc-satoshi:

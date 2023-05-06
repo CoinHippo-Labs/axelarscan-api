@@ -192,7 +192,7 @@ const getCosmosBalance = async (
 
           balance = amount;
 
-          if (balance && balance !== '0') {
+          if (balance/* && balance !== '0'*/) {
             valid = true;
             break;
           }
