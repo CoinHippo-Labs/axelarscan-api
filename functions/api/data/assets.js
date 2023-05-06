@@ -6320,6 +6320,84 @@ module.exports = {
       ],
     },
     {
+      id: 'pepe-wei',
+      symbol: 'PEPE',
+      name: 'Pepe',
+      image: '/logos/assets/pepe.svg',
+      decimals: 18,
+      coingecko_id: 'pepe',
+      contracts: [
+        {
+          contract_address: '0x6982508145454Ce325dDbE47a25d4ec3d2311933',
+          chain_id: 1,
+          decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'pepe-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/8558CA5E183C44947A9B63FC9BD75A18D0A2407025898A3B64AD782C4F3DBBCB',
+          chain_id: 'cosmoshub',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/E47F4E97C534C95B942729E1B25DBDE111EA791411CFF100515050BEA0AC0C6B',
+          chain_id: 'osmosis',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/3406FBBAEB20E62FF238FF6FD061BCF21F515E1546D3E9FF8571B12BDA29DDBB',
+          chain_id: 'juno',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/796FAF4E82B4EB778E18F4E0A2C67C9CF55D5ACD176F3B6FD6DC420ABDDBABC1',
+          chain_id: 'crescent',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/0447761C090DB521DAC0268E8CB4EBF567E519B937DE6FECD2472AA6A1EDE658',
+          chain_id: 'kujira',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/26E6508A1757E12B15A087E951F5D35E73CF036F0D97BC809E1598D1DD870BED',
+          chain_id: 'evmos',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/A55A949CB5EE326933173D5CC23A97446EB4578D4F80F30C41B4D83E2643B37A',
+          chain_id: 'comdex',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/536179FABD7E85D0F122A4355168157740D0E9D4DEEE40A038DE317D8ABFCDCA',
+          chain_id: 'umee',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+        {
+          ibc_denom: 'ibc/ED1D1CEACDB852377A99B1776BF3459472084BBA8F39D2D41AAF3E86E67CA8F3',
+          chain_id: 'terra-2',
+          decimals: 18,
+          symbol: 'axlPEPE',
+        },
+      ],
+    },
+    {
       id: 'uusd',
       symbol: 'UST',
       name: 'TerraUSD',
@@ -6708,6 +6786,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/035BDC396AA81E38271D2FA5E4799AE159044B90BCF02CCA218EB364829C869E',
           chain_id: 'odin',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'ibc/F91EA2C0A23697A1048E08C2F787E3A58AC6F706A1CD2257A504925158CFC0F3',
+          chain_id: 'neutron',
           decimals: 6,
         },
         {

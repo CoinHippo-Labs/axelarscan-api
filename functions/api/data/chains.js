@@ -2542,6 +2542,37 @@ module.exports = {
         },
       },
       {
+        id: 'neutron',
+        chain_name: 'neutron',
+        name: 'Neutron',
+        short_name: 'NTRN',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://testnet.mintscan.io/neutron-testnet',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/neutron.svg',
+        color: '#131928',
+        website: 'https://neutron.org',
+        prefix_address: 'neutron',
+        prefix_chain_ids: [
+          'pion-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://rest-palvus.pion-1.ntrn.tech',
+            'https://cosmo-sand-box.vercel.app/api/rest',
+            'https://api.baryon.remedy.tm.p2p.org',
+          ],
+        },
+      },
+      {
         id: 'terra-3',
         chain_name: 'terra-3',
         name: 'Terra',
