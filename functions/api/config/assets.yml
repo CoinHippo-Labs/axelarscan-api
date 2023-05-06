@@ -510,7 +510,7 @@ mainnet:
         ibc_denom: "ibc/FDDF98401F29AC63212C1742F9EC86D3AA1E1BE94BF9EB2F72B990C490303F42"
         symbol: "axlBUSD"
   frax-wei:
-    denom: "dai-wei"
+    denom: "frax-wei"
     native_chain: "ethereum"
     name: "Frax"
     symbol: "FRAX"

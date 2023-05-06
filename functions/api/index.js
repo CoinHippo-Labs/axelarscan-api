@@ -498,7 +498,7 @@ exports.handler = async (
         break;
       case 'updateTVL':
         try {
-          await updateTVL();
+          await updateTVL(params);
         } catch (error) {
           output = errorOutput(error);
         }

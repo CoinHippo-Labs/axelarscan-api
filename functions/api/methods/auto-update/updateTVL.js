@@ -10,35 +10,46 @@ const {
 
 const service_name = 'updateTVL';
 
-module.exports = async () =>
-  Object.fromEntries(
-    await Promise.all(
-      getAssetsList().map(a =>
-        new Promise(
-          async resolve => {
-            const {
-              id,
-            } = { ...a };
+module.exports = async (
+  params = {},
+) => {
+  const {
+    id,
+  } = { ...params };
 
-            log(
-              'info',
-              service_name,
-              'start update',
-              { id },
-            );
+  return (
+    Object.fromEntries(
+      await Promise.all(
+        getAssetsList()
+          .filter(a => !id || a.id === id)
+          .map(a =>
+            new Promise(
+              async resolve => {
+                const {
+                  id,
+                } = { ...a };
 
-            const response = await getTVL({ asset: id, force_update: true });
+                log(
+                  'info',
+                  service_name,
+                  'start update',
+                  { id },
+                );
 
-            log(
-              'info',
-              service_name,
-              'end update',
-              { id, response },
-            );
+                const response = await getTVL({ asset: id, force_update: true });
 
-            resolve([id, response]);
-          }
+                log(
+                  'info',
+                  service_name,
+                  'end update',
+                  { id, response },
+                );
+
+                resolve([id, response]);
+              }
+            )
+          )
         )
-      )
     )
   );
+};

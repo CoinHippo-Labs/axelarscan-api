@@ -3,6 +3,7 @@ const {
 } = require('../../utils/config');
 const {
   log,
+  toArray,
 } = require('../../utils');
 
 module.exports = async context => {
@@ -12,8 +13,20 @@ module.exports = async context => {
     const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler`;
     const method = 'updateTVL';
 
-    log('info', service_name, `start ${method}`);
-    await api.get('/', { params: { method } }).catch(error => { return { error: error?.response?.data }; });
-    log('info', service_name, `end ${method}`);
+    const response = await api.get('/', { params: { method: 'getAssets' } }).catch(error => { return { error: error?.response?.data }; });
+
+    const {
+      data,
+    } = { ...response }; 
+
+    for (const d of data) {
+      const {
+        id,
+      } = { ...d };
+
+      log('info', service_name, `start ${method}`, { id });
+      await api.get('/', { params: { method, id } }).catch(error => { return { error: error?.response?.data }; });
+      log('info', service_name, `end ${method}`, { id });
+    }
   }
 };
