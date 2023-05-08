@@ -81,7 +81,6 @@ const crud = async (
     switch (method) {
       case 'get':
         path = path || `/${collection}/_doc/${id}`;
-
         response = await indexer.get(path, { params, auth }).catch(error => { return { data: { error: error?.response?.data } }; });
 
         const {
@@ -218,7 +217,6 @@ const crud = async (
       case 'delete':
       case 'remove':
         path = path || `/${collection}/_doc/${id}`;
-
         response = await indexer.delete(path, { params, auth }).catch(error => { return { data: { error: error?.response?.data } }; });
         break;
       default:

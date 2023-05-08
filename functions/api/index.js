@@ -24,6 +24,8 @@ exports.handler = async (
     searchHeartbeats,
     getValidators,
     getValidatorsVotes,
+    getProposals,
+    getProposal,
     searchBatches,
     searchDepositAddresses,
     transfersStats,
@@ -205,7 +207,10 @@ exports.handler = async (
   if (method) {
     // for calculate time spent
     const start_time = moment();
-    delete params.method;
+
+    if (!['crud'].includes(method)) {
+      delete params.method;
+    }
 
     switch (method) {
       case 'crud':
@@ -353,6 +358,20 @@ exports.handler = async (
       case 'getValidatorsVotes':
         try {
           output = await getValidatorsVotes(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getProposals':
+        try {
+          output = await getProposals();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getProposal':
+        try {
+          output = await getProposal(params);
         } catch (error) {
           output = errorOutput(error);
         }

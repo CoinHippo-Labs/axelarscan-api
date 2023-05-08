@@ -25,6 +25,10 @@ const {
   getValidatorsVotes,
 } = require('./validators');
 const {
+  getProposals,
+  getProposal,
+} = require('./proposals');
+const {
   searchBatches,
 } = require('./batches');
 const {
@@ -81,6 +85,8 @@ module.exports = {
   searchHeartbeats,
   getValidators,
   getValidatorsVotes,
+  getProposals,
+  getProposal,
   searchBatches,
   searchDepositAddresses,
   transfersStats,
