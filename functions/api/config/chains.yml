@@ -80,7 +80,7 @@ mainnet:
         symbol: "MATIC"
         decimals: 18
       name: "Polygon"
-      short_name: "MATIC"
+      short_name: "POLYGON"
       image: "/logos/chains/polygon.svg"
       color: "#8247e5"
       explorer:
@@ -1279,7 +1279,7 @@ testnet:
         symbol: "MATIC"
         decimals: 18
       name: "Polygon"
-      short_name: "MATIC"
+      short_name: "POLYGON"
       image: "/logos/chains/polygon.svg"
       color: "#8247e5"
       explorer:
