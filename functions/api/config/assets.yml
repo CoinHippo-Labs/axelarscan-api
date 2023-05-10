@@ -921,7 +921,7 @@ mainnet:
   cbeth-wei:
     denom: "cbeth-wei"
     native_chain: "ethereum"
-    name: "Coinbase Wrapped Staked ETH"
+    name: "Coinbase Staked ETH"
     symbol: "cbETH"
     decimals: 18
     image: "/logos/assets/cbeth.svg"
