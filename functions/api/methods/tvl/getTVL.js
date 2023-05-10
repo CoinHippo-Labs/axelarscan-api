@@ -331,7 +331,7 @@ module.exports = async (
                               url && address_path && toArray(source_escrow_addresses).length > 0 && is_native_on_cosmos ?
                                 `${url}${address_path.replace('{address}', _.last(source_escrow_addresses))}` :
                                 url && asset_path && ibc_denom?.includes('/') ?
-                                  `${url}${asset_path.replace('{ibc_denom}', _.last(toArray(ibc_denom, 'normal', '/')))}` :
+                                  `${url}${asset_path.replace('{ibc_denom}', Buffer.from(_.last(toArray(ibc_denom, 'normal', '/'))).toString('base64'))}` :
                                   axelarnet.explorer?.url && axelarnet.explorer.address_path && toArray(escrow_addresses).length > 0 ?
                                     `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
                                     null,
