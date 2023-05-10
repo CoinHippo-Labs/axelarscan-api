@@ -244,7 +244,7 @@ mainnet:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
       axelarnet:
-        ibc_denom: "uusdc"
+        ibc_denom: "uusdt"
         symbol: "axlUSDT"
       osmosis:
         ibc_denom: "ibc/8242AD24008032E457D2E12D46588FD39FB54FB29680C6C7663D296B383C37C4"
