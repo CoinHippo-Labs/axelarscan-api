@@ -208,7 +208,7 @@ mainnet:
     name: "Tether"
     symbol: "USDT"
     decimals: 6
-    image: "/logos/assets/uusdt.svg"
+    image: "/logos/assets/usdt.svg"
     coingecko_id: "tether"
     addresses:
       ethereum:
