@@ -71,6 +71,7 @@ module.exports = async params => {
                       } = { ...consensus_pubkey };
 
                       d.tokens = numberFormatUnits(tokens);
+                      d.quadratic_voting_power = Math.floor(Math.sqrt(d.tokens));
                       d.delegator_shares = numberFormatUnits(delegator_shares);
                       d.min_self_delegation = numberFormatUnits(min_self_delegation);
 
