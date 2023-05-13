@@ -229,7 +229,6 @@ module.exports = async (
               };
 
               const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
-
               let link = normalizeLink(_.head(_response?.data));
               link = await updateLink(link, send);
               await updateSend(send, link, { type: unwrap ? 'unwrap' : 'deposit_address', unwrap: unwrap || undefined });

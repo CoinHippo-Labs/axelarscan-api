@@ -48,64 +48,60 @@ module.exports = async params => {
       pagination,
     } = { ...response };
 
-    validators_data =
-      _.orderBy(
-        _.uniqBy(
-          _.concat(
-            toArray(validators_data),
-            await Promise.all(
-              toArray(validators)
-                .map(d =>
-                  new Promise(
-                    async resolve => {
-                      const {
-                        consensus_pubkey,
-                        operator_address,
-                        tokens,
-                        delegator_shares,
-                        min_self_delegation,
-                      } = { ...d };
+    validators_data = _.orderBy(
+      _.uniqBy(
+        _.concat(
+          toArray(validators_data),
+          await Promise.all(
+            toArray(validators).map(d =>
+              new Promise(
+                async resolve => {
+                  const {
+                    consensus_pubkey,
+                    operator_address,
+                    tokens,
+                    delegator_shares,
+                    min_self_delegation,
+                  } = { ...d };
 
-                      const {
-                        key,
-                      } = { ...consensus_pubkey };
+                  const {
+                    key,
+                  } = { ...consensus_pubkey };
 
-                      d.tokens = numberFormatUnits(tokens);
-                      d.quadratic_voting_power = Math.floor(Math.sqrt(d.tokens));
-                      d.delegator_shares = numberFormatUnits(delegator_shares);
-                      d.min_self_delegation = numberFormatUnits(min_self_delegation);
+                  d.tokens = numberFormatUnits(tokens);
+                  d.quadratic_voting_power = Math.floor(Math.sqrt(d.tokens));
+                  d.delegator_shares = numberFormatUnits(delegator_shares);
+                  d.min_self_delegation = numberFormatUnits(min_self_delegation);
 
-                      if (key) {
-                        d.consensus_address = pubKeyToBech32(key, `${prefix_address}valcons`);
-                      }
+                  if (key) {
+                    d.consensus_address = pubKeyToBech32(key, `${prefix_address}valcons`);
+                  }
+                  if (operator_address) {
+                    d.delegator_address = getDelegatorAddress(operator_address);
+                  }
 
-                      if (operator_address) {
-                        d.delegator_address = getDelegatorAddress(operator_address);
-                      }
+                  if (d.delegator_address) {
+                    const response = await lcd(`/cosmos/staking/v1beta1/validators/${operator_address}/delegations/${d.delegator_address}`);
 
-                      if (d.delegator_address) {
-                        const response = await lcd(`/cosmos/staking/v1beta1/validators/${operator_address}/delegations/${d.delegator_address}`);
+                    const {
+                      shares,
+                    } = { ...response?.delegation_response?.delegation };
 
-                        const {
-                          shares,
-                        } = { ...response?.delegation_response?.delegation };
+                    d.self_delegation = numberFormatUnits(shares);
+                  }
 
-                        d.self_delegation = numberFormatUnits(shares);
-                      }
-
-                      resolve(d);
-                    }
-                  )
-                )
-            ),
+                  resolve(d);
+                }
+              )
+            )
           ),
-          'operator_address',
         ),
-        ['description.moniker'],
-        ['asc'],
-      );
+        'operator_address',
+      ),
+      ['description.moniker'], ['asc'],
+    );
 
-    page_key = pagination?.page_key;
+    page_key = pagination?.next_key;
   }
 
   if (toArray(validators_data).length > 0) {
@@ -201,7 +197,7 @@ module.exports = async params => {
                   });
               }
 
-              page_key = pagination?.page_key;
+              page_key = pagination?.next_key;
             }
           } catch (error) {}
           break;

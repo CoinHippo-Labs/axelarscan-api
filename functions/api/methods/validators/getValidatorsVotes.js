@@ -71,26 +71,24 @@ module.exports = async (
         }
       }
 
-      data =
-        toArray(
-          _.concat(
-            data,
-            (await Promise.all(
-              offsets.map(o =>
-                new Promise(
-                  async resolve => {
-                    const response = await searchPolls({ ..._params, from: o });
-                    resolve(toArray(response?.data));
-                  }
-                )
+      data = toArray(
+        _.concat(
+          data,
+          (await Promise.all(
+            offsets.map(o =>
+              new Promise(
+                async resolve => {
+                  const response = await searchPolls({ ..._params, from: o });
+                  resolve(toArray(response?.data));
+                }
               )
-            ))
-            .flatMap(d => d),
-          )
-        );
+            )
+          ))
+          .flatMap(d => d),
+        )
+      );
 
       polls = _.orderBy(_.uniqBy(data, 'id'), ['created_at.ms'], ['desc']);
-
       const broadcasters = polls.length > 0 ? await getBroadcasters() : {};
 
       const {
@@ -145,19 +143,18 @@ module.exports = async (
           .map(([k, v]) => {
             const chains =
               Object.fromEntries(
-                Object.entries(_.groupBy(v, 'chain'))
-                  .map(([_k, _v]) => {
-                    return (
-                      [
-                        _k,
-                        {
-                          total: _v.filter(d => typeof d.vote === 'boolean').length,
-                          total_polls: _v.length,
-                          votes: _.countBy(_v, 'vote'),
-                        },
-                      ]
-                    );
-                  })
+                Object.entries(_.groupBy(v, 'chain')).map(([_k, _v]) => {
+                  return (
+                    [
+                      _k,
+                      {
+                        total: _v.filter(d => typeof d.vote === 'boolean').length,
+                        total_polls: _v.length,
+                        votes: _.countBy(_v, 'vote'),
+                      },
+                    ]
+                  );
+                })
               );
 
             return [k, { chains, total: _.sumBy(Object.values(chains), 'total') }];

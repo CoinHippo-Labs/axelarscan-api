@@ -206,27 +206,25 @@ module.exports = async (
     } = { ...getChainData('axelarnet') };
 
     if (logs) {
-      addresses =
-        _.uniq(
-          _.concat(
-            addresses,
-            toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => address_fields.includes(a.key)).map(a => a.value))),
-          )
-          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
-          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
-        );
+      addresses = _.uniq(
+        _.concat(
+          addresses,
+          toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => address_fields.includes(a.key)).map(a => a.value))),
+        )
+        .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
+        .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
+      );
     }
 
     if (messages) {
-      addresses =
-        _.uniq(
-          _.concat(
-            addresses,
-            toArray(messages).flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f]))),
-          )
-          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
-          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
-        );
+      addresses = _.uniq(
+        _.concat(
+          addresses,
+          toArray(messages).flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f]))),
+        )
+        .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
+        .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
+      );
     }
 
     transaction_data.addresses = addresses;
@@ -278,7 +276,6 @@ module.exports = async (
           if (results) {
             for (let j = 0; j < results.length; j++) {
               const result = results[j];
-
               if (result) {
                 for (const field of fields) {
                   if (Array.isArray(result[field])) {
@@ -292,17 +289,14 @@ module.exports = async (
                   }
                 }
               }
-
               results[j] = result;
             }
-
             message.inner_message.vote.results = results;
           }
 
           if (result?.events) {
             for (let j = 0; j < result.events.length; j++) {
               const event = result.events[j];
-
               if (event) {
                 for (const field of fields) {
                   if (Array.isArray(event[field])) {
@@ -316,17 +310,14 @@ module.exports = async (
                   }
                 }
               }
-
               result.events[j] = event;
             }
-
             message.inner_message.vote.result = result;
           }
 
           if (events) {
             for (let j = 0; j < events.length; j++) {
               const event = events[j];
-
               if (event) {
                 for (const field of fields) {
                   if (Array.isArray(event[field])) {
@@ -340,13 +331,10 @@ module.exports = async (
                   }
                 }
               }
-
               events[j] = event;
             }
-
             message.inner_message.vote.events = events;
           }
-
           messages[i] = message;
         }
       }

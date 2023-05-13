@@ -215,14 +215,13 @@ module.exports = async (
             }
 
             const transaction_data =
-              toArray(tx_responses)
-                .find(t => {
-                  const {
-                    attributes,
-                  } = { ..._.head(toArray(t.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')))) };
+              toArray(tx_responses).find(t => {
+                const {
+                  attributes,
+                } = { ..._.head(toArray(t.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')))) };
 
-                  return packet_sequence === toArray(attributes).find(a => a.key === 'packet_sequence')?.value;
-                });
+                return packet_sequence === toArray(attributes).find(a => a.key === 'packet_sequence')?.value;
+              });
 
             const {
               txhash,

@@ -89,7 +89,6 @@ module.exports = async chain => {
                           );
 
                         const event = { ..._.head(response?.data) };
-
                         height = event?.blockNumber;
                       } catch (error) {}
                       break;

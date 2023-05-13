@@ -52,44 +52,41 @@ module.exports = async params => {
 
   if (buckets) {
     output = {
-      data:
-        _.orderBy(
-          buckets.flatMap(b => {
-            const {
-              destination_chains,
-            } = { ...b };
+      data: _.orderBy(
+        buckets.flatMap(b => {
+          const {
+            destination_chains,
+          } = { ...b };
 
-            return (
-              toArray(destination_chains?.buckets)
-                .flatMap(_b => {
+          return (
+            toArray(destination_chains?.buckets).flatMap(_b => {
+              const {
+                assets,
+              } = { ..._b };
+
+              return (
+                toArray(assets?.buckets).map(__b => {
                   const {
-                    assets,
-                  } = { ..._b };
+                    volume,
+                    doc_count,
+                  } = { ...__b };
 
-                  return (
-                    toArray(assets?.buckets)
-                      .map(__b => {
-                        const {
-                          volume,
-                          doc_count,
-                        } = { ...__b };
-
-                        return {
-                          id: [b.key, _b.key, __b.key].join('_'),
-                          source_chain: b.key,
-                          destination_chain: _b.key,
-                          asset: __b.key,
-                          num_txs: doc_count,
-                          volume: volume?.value || 0,
-                        };
-                      })
-                  );
+                  return {
+                    id: [b.key, _b.key, __b.key].join('_'),
+                    source_chain: b.key,
+                    destination_chain: _b.key,
+                    asset: __b.key,
+                    num_txs: doc_count,
+                    volume: volume?.value || 0,
+                  };
                 })
-            );
-          }),
-          ['volume', 'num_txs'],
-          ['desc', 'desc'],
-        ),
+              );
+            })
+          );
+        }),
+        ['volume', 'num_txs'],
+        ['desc', 'desc'],
+      ),
       total,
     };
   }

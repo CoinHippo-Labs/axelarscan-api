@@ -260,19 +260,17 @@ module.exports = async (
                             } = { ...e };
 
                             type = _.last(toArray(type, 'normal', '.'));
-
                             return {
                               type,
                               ...Object.fromEntries(
-                                toArray(attributes)
-                                  .map(a => {
-                                    const {
-                                      key,
-                                      value,
-                                    } = { ...a };
+                                toArray(attributes).map(a => {
+                                  const {
+                                    key,
+                                    value,
+                                  } = { ...a };
 
-                                    return [key, (!['asset'].includes(key) && toJson(value)) || (typeof value === 'string' ? normalizeQuote(value) : value)];
-                                  })
+                                  return [key, (!['asset'].includes(key) && toJson(value)) || (typeof value === 'string' ? normalizeQuote(value) : value)];
+                                })
                               ),
                             };
                           });
@@ -441,22 +439,21 @@ module.exports = async (
                                   let _amount;
 
                                   if (!asset_data || !amount) {
-                                    _amount =
-                                      _.head(
-                                        toArray(logs)
-                                          .filter(l => getAssetsList().findIndex(a => a.denom === getAssetData(denom)?.denom && equalsIgnoreCase(l.address, a.addresses?.[source_chain]?.address)) > -1)
-                                          .map(l => l.data)
-                                          .filter(d => d.length >= 64)
-                                          .map(d => d.substring(d.length - 64).replace('0x', '').replace(/^0+/, '') || ZeroAddress.replace('0x', ''))
-                                          .filter(d => {
-                                            try {
-                                              d = BigInt(`0x${d}`);
-                                              return true;
-                                            } catch (error) {
-                                              return false;
-                                            }
-                                          })
-                                      );
+                                    _amount = _.head(
+                                      toArray(logs)
+                                        .filter(l => getAssetsList().findIndex(a => a.denom === getAssetData(denom)?.denom && equalsIgnoreCase(l.address, a.addresses?.[source_chain]?.address)) > -1)
+                                        .map(l => l.data)
+                                        .filter(d => d.length >= 64)
+                                        .map(d => d.substring(d.length - 64).replace('0x', '').replace(/^0+/, '') || ZeroAddress.replace('0x', ''))
+                                        .filter(d => {
+                                          try {
+                                            d = BigInt(`0x${d}`);
+                                            return true;
+                                          } catch (error) {
+                                            return false;
+                                          }
+                                        })
+                                    );
                                   }
 
                                   denom = asset_data?.denom || denom;

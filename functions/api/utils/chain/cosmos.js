@@ -34,18 +34,7 @@ const getLCDs = chain => {
 
           if (path) {
             for (const lcd of lcds) {
-              const provider =
-                axios.create(
-                  {
-                    baseURL: lcd,
-                    timeout: timeout?.lcd || 5000,
-                    headers: {
-                      agent: 'axelarscan',
-                      'Accept-Encoding': 'gzip',
-                    },
-                  },
-                );
-
+              const provider = axios.create({ baseURL: lcd, timeout: timeout?.lcd || 5000, headers: { agent: 'axelarscan', 'Accept-Encoding': 'gzip' } });
               const response = await provider.get(path, { params }).catch(error => { return { error: error?.response?.data }; });
 
               const {
@@ -74,7 +63,6 @@ const getAssetsData = async (
 ) => {
   const config = axios.create({ baseURL: `https://axelar-${env}.s3.us-east-2.amazonaws.com/${env}-asset-config.json` });
   const response = await config.get('').catch(error => { return { error: error?.response?.data }; });
-
   return response?.data;
 };
 
@@ -88,7 +76,6 @@ const getSymbol = async (
     if (!assetsData) {
       assetsData = await getAssetsData(env);
     }
-
     return assetsData?.[denom]?.chain_aliases?.[_.head(toArray(chain, 'lower', '-'))]?.assetSymbol;
   }
 

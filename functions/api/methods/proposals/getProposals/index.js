@@ -25,72 +25,69 @@ module.exports = async () => {
       pagination,
     } = { ...response };
 
-    data =
-      _.orderBy(
-        _.uniqBy(
-          _.concat(
-            toArray(data),
-            toArray(proposals)
-              .map(d => {
+    data = _.orderBy(
+      _.uniqBy(
+        _.concat(
+          toArray(data),
+          toArray(proposals).map(d => {
+            const {
+              proposal_id,
+              content,
+              status,
+              submit_time,
+              deposit_end_time,
+              voting_start_time,
+              voting_end_time,
+              total_deposit,
+              final_tally_result,
+            } = { ...d };
+
+            const {
+              plan,
+            } = { ...content };
+
+            const {
+              height,
+            } = { ...plan };
+
+            d.proposal_id = Number(proposal_id);
+            d.type = _.last(split(content?.['@type'], 'normal', '.'))?.replace('Proposal', '');
+            d.content = { ...content, plan: plan && { ...plan, height: Number(height) } };
+            d.status = status?.replace('PROPOSAL_STATUS_', '');
+            d.submit_time = moment(submit_time).valueOf();
+            d.deposit_end_time = moment(deposit_end_time).valueOf();
+            d.voting_start_time = moment(voting_start_time).valueOf();
+            d.voting_end_time = moment(voting_end_time).valueOf();
+            d.total_deposit =
+              toArray(total_deposit).map(_d => {
                 const {
-                  proposal_id,
-                  content,
-                  status,
-                  submit_time,
-                  deposit_end_time,
-                  voting_start_time,
-                  voting_end_time,
-                  total_deposit,
-                  final_tally_result,
-                } = { ...d };
+                  denom,
+                  amount,
+                } = { ..._d };
 
                 const {
-                  plan,
-                } = { ...content };
+                  symbol,
+                  decimals,
+                } = { ...getAssetData(denom) };
 
-                const {
-                  height,
-                } = { ...plan };
+                return {
+                  ..._d,
+                  symbol,
+                  amount: formatUnits(amount, decimals || 6),
+                };
+              });
+            d.final_tally_result = Object.fromEntries(Object.entries({ ...final_tally_result }).map(([k, v]) => [k, formatUnits(v, 6)]));
 
-                d.proposal_id = Number(proposal_id);
-                d.type = _.last(split(content?.['@type'], 'normal', '.'))?.replace('Proposal', '');
-                d.content = { ...content, plan: plan && { ...plan, height: Number(height) } };
-                d.status = status?.replace('PROPOSAL_STATUS_', '');
-                d.submit_time = moment(submit_time).valueOf();
-                d.deposit_end_time = moment(deposit_end_time).valueOf();
-                d.voting_start_time = moment(voting_start_time).valueOf();
-                d.voting_end_time = moment(voting_end_time).valueOf();
-                d.total_deposit =
-                  toArray(total_deposit)
-                    .map(_d => {
-                      const {
-                        denom,
-                        amount,
-                      } = { ..._d };
-
-                      const {
-                        symbol,
-                        decimals,
-                      } = { ...getAssetData(denom) };
-
-                      return {
-                        ..._d,
-                        symbol,
-                        amount: formatUnits(amount, decimals || 6),
-                      };
-                    });
-                d.final_tally_result = Object.fromEntries(Object.entries({ ...final_tally_result }).map(([k, v]) => [k, formatUnits(v, 6)]));
-
-                return d;
-              })
-          ),
-          'proposal_id',
+            return d;
+          })
         ),
-        ['proposal_id'],
-        ['desc'],
-      );
+        'proposal_id',
+      ),
+      ['proposal_id'],
+      ['desc'],
+    );
 
-    page_key = pagination?.page_key;
+    page_key = pagination?.next_key;
   }
 
   return {

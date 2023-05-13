@@ -11,7 +11,6 @@ const {
 
 const getOthersChainIds = chain => {
   const chains = Object.keys(getChains());
-
   const id = find(chain, chains);
 
   const [

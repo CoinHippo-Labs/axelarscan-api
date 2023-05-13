@@ -54,26 +54,25 @@ module.exports = async params => {
 
   if (buckets) {
     output = {
-      data:
-        _.orderBy(
-          buckets.map(b => {
-            const {
-              key,
-              volume,
-              cumulative_volume,
-              doc_count,
-            } = { ...b };
+      data: _.orderBy(
+        buckets.map(b => {
+          const {
+            key,
+            volume,
+            cumulative_volume,
+            doc_count,
+          } = { ...b };
 
-            return {
-              timestamp: key,
-              volume: volume?.value || 0,
-              cumulative_volume: cumulative_volume?.value || 0,
-              num_txs: doc_count,
-            };
-          }),
-          ['timestamp'],
-          ['asc'],
-        ),
+          return {
+            timestamp: key,
+            volume: volume?.value || 0,
+            cumulative_volume: cumulative_volume?.value || 0,
+            num_txs: doc_count,
+          };
+        }),
+        ['timestamp'],
+        ['asc'],
+      ),
       total,
     };
   }

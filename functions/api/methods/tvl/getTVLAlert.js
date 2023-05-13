@@ -46,25 +46,23 @@ module.exports = async (
     updated_at,
   } =  { ..._.head(data) };
 
-  data =
-    _.orderBy(
-      toArray(toArray(data).map(d => _.head(d.data)))
-        .map(d => {
-          const {
-            price,
-            total,
-            percent_diff_supply,
-          } = { ...d };
+  data = _.orderBy(
+    toArray(toArray(data).map(d => _.head(d.data))).map(d => {
+      const {
+        price,
+        total,
+        percent_diff_supply,
+      } = { ...d };
 
-          return {
-            ...d,
-            value: (total * price) || 0,
-            value_diff: (total * (percent_diff_supply / 100) * price) || 0,
-          };
-        }),
-      ['value_diff', 'value', 'total'],
-      ['desc', 'desc', 'desc'],
-    );
+      return {
+        ...d,
+        value: (total * price) || 0,
+        value_diff: (total * (percent_diff_supply / 100) * price) || 0,
+      };
+    }),
+    ['value_diff', 'value', 'total'],
+    ['desc', 'desc', 'desc'],
+  );
 
   const _data =
     data.filter(d =>
@@ -72,19 +70,18 @@ module.exports = async (
       (
         toArray(Object.values({ ...d.tvl })).findIndex(_d => _d.is_abnormal_supply) > -1 &&
         _.sum(
-          Object.values({ ...d.tvl })
-            .map(_d => {
-              const {
-                price,
-              } = { ...d };
-              const {
-                supply,
-                escrow_balance,
-                percent_diff_supply,
-              } = { ..._d };
+          Object.values({ ...d.tvl }).map(_d => {
+            const {
+              price,
+            } = { ...d };
+            const {
+              supply,
+              escrow_balance,
+              percent_diff_supply,
+            } = { ..._d };
 
-              return ((supply || escrow_balance) * (percent_diff_supply / 100) * price) || 0;
-            })
+            return ((supply || escrow_balance) * (percent_diff_supply / 100) * price) || 0;
+          })
         ) > alert_asset_value_threshold
       )
     );
@@ -144,16 +141,15 @@ module.exports = async (
               total_on_cosmos,
               evm_escrow_address,
               evm_escrow_balance,
-              links:
-                _.uniq(
-                  toArray(
-                    _.concat(
-                      evm_escrow_address_urls,
-                      toArray(tvl?.[native_chain]).flatMap(_d => _.concat(_d.url, _d.escrow_addresses_urls, _d.supply_urls)),
-                      app_urls,
-                    )
+              links: _.uniq(
+                toArray(
+                  _.concat(
+                    evm_escrow_address_urls,
+                    toArray(tvl?.[native_chain]).flatMap(_d => _.concat(_d.url, _d.escrow_addresses_urls, _d.supply_urls)),
+                    app_urls,
                   )
-                ),
+                )
+              ),
             } :
             {
               chains:
@@ -201,15 +197,14 @@ module.exports = async (
                       link: url,
                     };
                   }),
-              links:
-                _.uniq(
-                  toArray(
-                    _.concat(
-                      toArray(Object.values({ ...tvl })).filter(_d => _d.is_abnormal_supply).flatMap(_d => _.concat(_d.url, _d.escrow_addresses_urls, _d.supply_urls)),
-                      app_urls,
-                    )
+              links: _.uniq(
+                toArray(
+                  _.concat(
+                    toArray(Object.values({ ...tvl })).filter(_d => _d.is_abnormal_supply).flatMap(_d => _.concat(_d.url, _d.escrow_addresses_urls, _d.supply_urls)),
+                    app_urls,
                   )
-                ),
+                )
+              ),
             }
           ),
         };

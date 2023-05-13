@@ -128,74 +128,69 @@ module.exports = async (
     data.push({ asset, cosmos_escrow_data, evm_escrow_address });
   }
 
-  data =
-    _.uniqBy(
-      data.flatMap(d => {
-        const {
-          asset,
-          cosmos_escrow_data,
-          evm_escrow_address,
-        } = { ...d };
+  data = _.uniqBy(
+    data.flatMap(d => {
+      const {
+        asset,
+        cosmos_escrow_data,
+        evm_escrow_address,
+      } = { ...d };
 
-        const {
-          symbol,
-          image,
-        } = { ...getAssetData(asset) };
+      const {
+        symbol,
+        image,
+      } = { ...getAssetData(asset) };
 
-        return (
-          toArray(
-            _.concat(
-              Object.entries(cosmos_escrow_data)
-                .flatMap(([k, v]) => {
-                  const {
-                    ibc_channels,
-                    escrow_addresses,
-                    source_escrow_addresses,
-                  } = { ...v };
+      return (
+        toArray(
+          _.concat(
+            Object.entries(cosmos_escrow_data).flatMap(([k, v]) => {
+              const {
+                ibc_channels,
+                escrow_addresses,
+                source_escrow_addresses,
+              } = { ...v };
 
-                  const {
-                    name,
-                    image,
-                  } = { ...getChainData(k) };
-
-                  return (
-                    _.concat(
-                      toArray(escrow_addresses)
-                        .map(a => {
-                          return {
-                            address: a,
-                            name: `${name || k} - IBC escrow`,
-                            image,
-                          };
-                        }),
-                      toArray(source_escrow_addresses)
-                        .map(a => {
-                          const {
-                            name,
-                            image,
-                          } = { ...getChainsList().find(c => a.startsWith(c.prefix_address)) }
-
-                          return {
-                            address: a,
-                            name: `${name || a.substring(0, a.indexOf('1'))} - IBC escrow`,
-                            image,
-                          };
-                        }),
-                    )
-                  );
-                }),
-              evm_escrow_address &&
-              {
-                address: evm_escrow_address,
-                name: `${symbol || asset} - EVM IBC escrow`,
+              const {
+                name,
                 image,
-              },
-            )
+              } = { ...getChainData(k) };
+
+              return (
+                _.concat(
+                  toArray(escrow_addresses).map(a => {
+                    return {
+                      address: a,
+                      name: `${name || k} - IBC escrow`,
+                      image,
+                    };
+                  }),
+                  toArray(source_escrow_addresses).map(a => {
+                    const {
+                      name,
+                      image,
+                    } = { ...getChainsList().find(c => a.startsWith(c.prefix_address)) }
+
+                    return {
+                      address: a,
+                      name: `${name || a.substring(0, a.indexOf('1'))} - IBC escrow`,
+                      image,
+                    };
+                  }),
+                )
+              );
+            }),
+            evm_escrow_address && {
+              address: evm_escrow_address,
+              name: `${symbol || asset} - EVM IBC escrow`,
+              image,
+            },
           )
-        );
-      }),
-      'address',
-    );
+        )
+      );
+    }),
+    'address',
+  );
 
   return { data };
 };

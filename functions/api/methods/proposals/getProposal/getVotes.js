@@ -22,42 +22,39 @@ module.exports = async params => {
       pagination,
     } = { ...response };
 
-    data =
-      _.uniqBy(
-        _.concat(
-          toArray(data),
-          toArray(votes)
-            .map(d => {
+    data = _.uniqBy(
+      _.concat(
+        toArray(data),
+        toArray(votes).map(d => {
+          const {
+            proposal_id,
+            option,
+            options,
+          } = { ...d };
+
+          d.proposal_id = Number(proposal_id);
+          d.option = option?.replace('VOTE_OPTION_', '');
+          d.options =
+            toArray(options).map(_d => {
               const {
-                proposal_id,
                 option,
-                options,
-              } = { ...d };
+                weight,
+              } = { ..._d };
 
-              d.proposal_id = Number(proposal_id);
-              d.option = option?.replace('VOTE_OPTION_', '');
-              d.options =
-                toArray(options)
-                  .map(_d => {
-                    const {
-                      option,
-                      weight,
-                    } = { ..._d };
+              return {
+                ..._d,
+                option: option?.replace('VOTE_OPTION_', ''),
+                weight: Number(weight),
+              };
+            });
 
-                    return {
-                      ..._d,
-                      option: option?.replace('VOTE_OPTION_', ''),
-                      weight: Number(weight),
-                    };
-                  });
+          return d;
+        })
+      ),
+      'voter',
+    );
 
-              return d;
-            })
-        ),
-        'voter',
-      );
-
-    page_key = pagination?.page_key;
+    page_key = pagination?.next_key;
   }
 
   return {
