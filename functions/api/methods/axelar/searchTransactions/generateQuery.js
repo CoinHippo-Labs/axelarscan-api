@@ -24,6 +24,11 @@ module.exports = params => {
             let obj;
 
             switch (k) {
+              case 'txHash':
+                if (v) {
+                  obj = { match: { txhash: v } };
+                }
+                break;
               case 'type':
                 if (v) {
                   obj = { match: { types: v } };
