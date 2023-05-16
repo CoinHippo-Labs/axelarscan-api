@@ -17,20 +17,21 @@ module.exports = data => {
   } = { ...getChainData('axelarnet') };
 
   return (
-    toArray(data)
-      .map(d => {
-        const {
-          hash,
-          proposer_address,
-          num_txs,
-        } = { ...d };
+    toArray(data).map(d => {
+      const {
+        height,
+        hash,
+        proposer_address,
+        num_txs,
+      } = { ...d };
 
-        return {
-          ...d,
-          hash: base64ToHex(hash),
-          proposer_address: base64ToBech32(proposer_address, `${prefix_address}valcons`),
-          num_txs: num_txs || 0,
-        };
-      })
+      return {
+        ...d,
+        height: Number(height),
+        hash: base64ToHex(hash),
+        proposer_address: base64ToBech32(proposer_address, `${prefix_address}valcons`),
+        num_txs: num_txs || 0,
+      };
+    })
   );
 };
