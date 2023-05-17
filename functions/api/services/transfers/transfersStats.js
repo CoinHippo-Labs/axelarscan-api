@@ -159,59 +159,55 @@ module.exports = async (
     response = {
       data:
         _.orderBy(
-          source_chains.buckets.flatMap(s => {
-            const {
-              destination_chains,
-            } = { ...s };
+          Object.entries(
+            _.groupBy(
+              source_chains.buckets.flatMap(s => {
+                const {
+                  destination_chains,
+                } = { ...s };
 
-            s.key = get_distinguish_chain_id(s.key);
+                s.key = get_distinguish_chain_id(s.key);
 
-            return (
-              (destination_chains?.buckets || [])
-                .flatMap(d => {
-                  const {
-                    assets,
-                  } = { ...d };
+                return (
+                  (destination_chains?.buckets || [])
+                    .flatMap(d => {
+                      const {
+                        assets,
+                      } = { ...d };
 
-                  d.key = get_distinguish_chain_id(d.key);
+                      d.key = get_distinguish_chain_id(d.key);
 
-                  return (
-                    (assets?.buckets || [])
-                      .map(a => {
-                        return {
-                          id: `${s.key}_${d.key}_${a.key}`,
-                          source_chain: s.key,
-                          destination_chain: d.key,
-                          asset: a.key,
-                          num_txs: a.doc_count,
-                          volume: a.volume?.value,
-                        };
-                      }) ||
-                    [{
-                      id: `${s.key}_${d.key}`,
-                      source_chain: s.key,
-                      destination_chain: d.key,
-                      num_txs: d.doc_count,
-                      volume: d.volume?.value,
-                    }]
-                  );
-                }) ||
-              [{
-                id: `${s.key}`,
-                source_chain: s.key,
-                num_txs: s.doc_count,
-                volume: s.volume?.value,
-              }]
-            );
+                      return (
+                        (assets?.buckets || [])
+                          .map(a => {
+                            return {
+                              id: `${s.key}_${d.key}_${a.key}`,
+                              source_chain: s.key,
+                              destination_chain: d.key,
+                              asset: a.key,
+                              num_txs: a.doc_count,
+                              volume: a.volume?.value,
+                            };
+                          })
+                      );
+                    })
+                );
+              }),
+              'id',
+            )
+          )
+          .map(([k, v]) => {
+            return {
+              id: k,
+              source_chain: _.head(v)?.source_chain,
+              destination_chain: _.head(v)?.destination_chain,
+              asset: _.head(v)?.asset,
+              num_txs: _.sumBy(v, 'num_txs'),
+              volume: _.sumBy(v, 'volume'),
+            };
           }),
-          [
-            'volume',
-            'num_txs',
-          ],
-          [
-            'desc',
-            'desc',
-          ],
+          ['volume', 'num_txs'],
+          ['desc', 'desc'],
         ),
       total: response.total,
     };
