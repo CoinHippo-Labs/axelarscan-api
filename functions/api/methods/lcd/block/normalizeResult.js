@@ -16,12 +16,17 @@ module.exports = async (
 ) => {
   const {
     block,
+    block_id,
   } = { ...lcd_response };
 
   const {
     header,
     last_commit,
   } = { ...block };
+
+  const {
+    hash,
+  } = { ...block_id };
 
   const {
     hash,
@@ -37,7 +42,7 @@ module.exports = async (
   } = { ...getChainData('axelarnet') };
 
   if (hash) {
-    lcd_response.block.header.hash = base64ToHex(hash);
+    lcd_response.block_id.hash = base64ToHex(hash);
   }
 
   if (proposer_address) {
