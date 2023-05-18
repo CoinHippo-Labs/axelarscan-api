@@ -29,7 +29,6 @@ module.exports = async (
   } = { ...block_id };
 
   const {
-    hash,
     proposer_address,
   } = { ...header };
 
