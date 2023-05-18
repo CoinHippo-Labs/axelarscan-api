@@ -16,6 +16,12 @@ const {
   searchTransactions,
 } = require('./axelar');
 const {
+  getBalances,
+  getDelegations,
+  getRedelegations,
+  getUnbondings,
+} = require('./account');
+const {
   searchPolls,
 } = require('./polls');
 const {
@@ -80,6 +86,10 @@ module.exports = {
   getEscrowAddresses,
   searchBlocks,
   searchTransactions,
+  getBalances,
+  getDelegations,
+  getRedelegations,
+  getUnbondings,
   searchPolls,
   searchUptimes,
   searchHeartbeats,

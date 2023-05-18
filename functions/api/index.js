@@ -19,6 +19,10 @@ exports.handler = async (
     getEscrowAddresses,
     searchBlocks,
     searchTransactions,
+    getBalances,
+    getDelegations,
+    getRedelegations,
+    getUnbondings,
     searchPolls,
     searchUptimes,
     searchHeartbeats,
@@ -336,6 +340,34 @@ exports.handler = async (
       case 'searchHeartbeats':
         try {
           output = await searchHeartbeats(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getBalances':
+        try {
+          output = await getBalances(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getDelegations':
+        try {
+          output = await getDelegations(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getRedelegations':
+        try {
+          output = await getRedelegations(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getUnbondings':
+        try {
+          output = await getUnbondings(params);
         } catch (error) {
           output = errorOutput(error);
         }
