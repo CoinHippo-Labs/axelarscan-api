@@ -14,8 +14,15 @@ const toBigNumber = number =>
 const numberFormatUnits = (
   number,
   decimals = 6,
-) =>
-  Number(formatUnits(parseInt(number || '0'), decimals));
+) => {
+  try {
+    return Number(formatUnits(parseInt(number || '0'), decimals));
+  } catch (error) {
+    if (number?.toString().length > 18) {
+      return Number(formatUnits(number, 18));
+    }
+  }
+};
 
 module.exports = {
   toBigNumber,
