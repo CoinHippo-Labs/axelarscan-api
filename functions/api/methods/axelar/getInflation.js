@@ -33,10 +33,10 @@ module.exports = async (
   const communityTax = response?.params ? Number(response.params.community_tax) : 0;
 
   response = await lcd('/cosmos/params/v1beta1/params', { subspace: 'reward', key: 'KeyMgmtRelativeInflationRate' });
-  const keyMgmtRelativeInflationRate = response?.params ? Number(normalizeQuote(response.param.value)) : 0;
+  const keyMgmtRelativeInflationRate = response?.param ? Number(normalizeQuote(response.param.value)) : 0;
 
   response = await lcd('/cosmos/params/v1beta1/params', { subspace: 'reward', key: 'ExternalChainVotingInflationRate' });
-  const externalChainVotingInflationRate = response?.params ? Number(normalizeQuote(response.param.value)) : 0;
+  const externalChainVotingInflationRate = response?.param ? Number(normalizeQuote(response.param.value)) : 0;
 
   return {
     equation: `inflation = (uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * (${evm_chains_data.map(c => `(1 - ${c.id}UnsubmittedVoteRate)`).join(' + ')}))`,
