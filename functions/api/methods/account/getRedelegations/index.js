@@ -18,7 +18,7 @@ module.exports = async params => {
 
   while (page_key) {
     const response = await lcd(`/cosmos/staking/v1beta1/delegators/${address}/redelegations`, { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
-  
+
     const {
       redelegation_responses,
       pagination,

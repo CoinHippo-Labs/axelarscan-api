@@ -16,7 +16,7 @@ module.exports = async params => {
 
   while (page_key) {
     const response = await lcd(`/cosmos/gov/v1beta1/proposals/${id}/votes`, { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
-  
+
     const {
       votes,
       pagination,

@@ -42,7 +42,7 @@ module.exports = async params => {
 
   while (page_key) {
     const response = await lcd('/cosmos/staking/v1beta1/validators', { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
-  
+
     const {
       validators,
       pagination,

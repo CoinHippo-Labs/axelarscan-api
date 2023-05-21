@@ -21,7 +21,7 @@ module.exports = async params => {
 
   while (page_key) {
     const response = await lcd(`/cosmos/bank/v1beta1/balances/${address}`, { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
-  
+
     const {
       balances,
       pagination,
