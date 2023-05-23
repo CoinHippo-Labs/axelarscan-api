@@ -645,7 +645,7 @@ module.exports = async (
             const _id = generateId(d);
 
             if (_id) {
-              if (['ibc_sent', 'batch_signed', 'voted'].includes(d.status) && !d.insufficient_fee && d.vote?.txhash && d.vote.success && !(d.vote.transfer_id || d.confirm?.transfer_id)) {
+              if (['ibc_sent', 'batch_signed', 'voted'].includes(d.status) && !d.send?.insufficient_fee && d.vote?.txhash && d.vote.success && !(d.vote.transfer_id || d.confirm?.transfer_id)) {
                 await lcd(`/cosmos/tx/v1beta1/txs/${d.vote.txhash}`, { index: true });
                 await sleep(0.25 * 1000);
                 d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
@@ -661,7 +661,7 @@ module.exports = async (
                     d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
                   }
 
-                  if (!d.insufficient_fee) {
+                  if (!d.send?.insufficient_fee) {
                     await Promise.all(_.range(1, 7).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` })))));
                     await sleep(0.25 * 1000);
                     d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
@@ -669,7 +669,7 @@ module.exports = async (
                 }
               }
               else if (getChainData(d.send.destination_chain, 'evm')) {
-                if (['batch_signed', 'voted', 'deposit_confirmed'].includes(d.status) && !d.insufficient_fee) {
+                if (['batch_signed', 'voted', 'deposit_confirmed'].includes(d.status) && !d.send?.insufficient_fee) {
                   const transfer_id = d.vote?.transfer_id || d.confirm?.transfer_id || d.transfer_id;
 
                   if (transfer_id) {
