@@ -59,24 +59,23 @@ module.exports = async params => {
     voting_start_time: moment(voting_start_time).valueOf(),
     voting_end_time: moment(voting_end_time).valueOf(),
     total_deposit:
-      toArray(total_deposit)
-        .map(_d => {
-          const {
-            denom,
-            amount,
-          } = { ..._d };
+      toArray(total_deposit).map(_d => {
+        const {
+          denom,
+          amount,
+        } = { ..._d };
 
-          const {
-            symbol,
-            decimals,
-          } = { ...getAssetData(denom) };
+        const {
+          symbol,
+          decimals,
+        } = { ...getAssetData(denom) };
 
-          return {
-            ..._d,
-            symbol,
-            amount: formatUnits(amount, decimals || 6),
-          };
-        }),
+        return {
+          ..._d,
+          symbol,
+          amount: formatUnits(amount, decimals || 6),
+        };
+      }),
     final_tally_result: Object.fromEntries(Object.entries({ ...final_tally_result }).map(([k, v]) => [k, formatUnits(v, 6)])),
     votes: toArray(data),
   };

@@ -32,6 +32,9 @@ module.exports = async params => {
               },
             },
           },
+          types: {
+            terms: { field: 'type.keyword', size: 10 },
+          },
         },
         size: 0,
       },
@@ -44,6 +47,7 @@ module.exports = async params => {
 
   const {
     source_chains,
+    types,
   } = { ...aggs };
 
   const {
@@ -87,6 +91,18 @@ module.exports = async params => {
         ['volume', 'num_txs'],
         ['desc', 'desc'],
       ),
+      types:
+        toArray(types?.buckets).map(b => {
+          const {
+            key,
+            doc_count,
+          } = { ...b };
+
+          return {
+            key,
+            num_txs: doc_count,
+          };
+        }),
       total,
     };
   }

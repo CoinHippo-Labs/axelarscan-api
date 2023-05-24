@@ -33,77 +33,76 @@ module.exports = async () => {
   } = { ...response };
 
   await Promise.all(
-    toArray(data)
-      .map(d =>
-        new Promise(
-          async resolve => {
-            const {
-              deposit_address_link,
-              tx_hash_unwrap,
-              source_chain,
-              destination_chain,
-            } = { ...d };
+    toArray(data).map(d =>
+      new Promise(
+        async resolve => {
+          const {
+            deposit_address_link,
+            tx_hash_unwrap,
+            source_chain,
+            destination_chain,
+          } = { ...d };
 
-            if (deposit_address_link && tx_hash_unwrap && source_chain && destination_chain) {
-              const provider = getProvider(destination_chain);
+          if (deposit_address_link && tx_hash_unwrap && source_chain && destination_chain) {
+            const provider = getProvider(destination_chain);
 
-              if (provider) {
-                const response =
-                  await read(
-                    TRANSFER_COLLECTION,
-                    {
-                      bool: {
-                        must: [
-                          { exists: { field: 'send.txhash' } },
-                          { match: { 'send.recipient_address': deposit_address_link } },
-                          { match: { 'send.source_chain': source_chain } },
-                        ],
-                        must_not: [
-                          { exists: { field: 'unwrap' } },
-                        ],
-                      },
+            if (provider) {
+              const response =
+                await read(
+                  TRANSFER_COLLECTION,
+                  {
+                    bool: {
+                      must: [
+                        { exists: { field: 'send.txhash' } },
+                        { match: { 'send.recipient_address': deposit_address_link } },
+                        { match: { 'send.source_chain': source_chain } },
+                      ],
+                      must_not: [
+                        { exists: { field: 'unwrap' } },
+                      ],
                     },
-                    { size: 1 },
-                  );
+                  },
+                  { size: 1 },
+                );
+
+              const {
+                txhash,
+              } = { ..._.head(response?.data)?.send };
+
+              if (txhash) {
+                const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
 
                 const {
-                  txhash,
-                } = { ..._.head(response?.data)?.send };
+                  blockNumber,
+                } = { ...transaction_data?.transaction };
 
-                if (txhash) {
-                  const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
+                if (blockNumber) {
+                  const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
 
-                  const {
-                    blockNumber,
-                  } = { ...transaction_data?.transaction };
-
-                  if (blockNumber) {
-                    const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
-
-                    await write(
-                      TRANSFER_COLLECTION,
-                      toArray([txhash, source_chain], 'lower').join('_'),
-                      {
-                        type: 'unwrap',
-                        unwrap: {
-                          ...d,
-                          txhash: tx_hash_unwrap,
-                          height: blockNumber,
-                          type: 'evm',
-                          created_at: getGranularity(moment(block_timestamp * 1000).utc()),
-                        },
+                  await write(
+                    TRANSFER_COLLECTION,
+                    toArray([txhash, source_chain], 'lower').join('_'),
+                    {
+                      type: 'unwrap',
+                      unwrap: {
+                        ...d,
+                        txhash: tx_hash_unwrap,
+                        height: blockNumber,
+                        type: 'evm',
+                        created_at: getGranularity(moment(block_timestamp * 1000).utc()),
                       },
-                      true,
-                    );
-                  }
+                    },
+                    true,
+                  );
                 }
               }
             }
-
-            resolve();
           }
-        )
+
+          resolve();
+        }
       )
+    )
   );
 
   return;

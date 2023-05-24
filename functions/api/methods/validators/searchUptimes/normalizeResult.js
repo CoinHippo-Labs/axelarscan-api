@@ -27,15 +27,14 @@ module.exports = output => {
     output = {
       data:
         Object.fromEntries(
-          toArray(buckets)
-            .map(b => {
-              const {
-                key,
-                doc_count,
-              } = { ...b };
+          toArray(buckets).map(b => {
+            const {
+              key,
+              doc_count,
+            } = { ...b };
 
-              return [base64ToBech32(key, `${prefix_address}valcons`), doc_count];
-            })
+            return [base64ToBech32(key, `${prefix_address}valcons`), doc_count];
+          })
         ),
       total,
     };

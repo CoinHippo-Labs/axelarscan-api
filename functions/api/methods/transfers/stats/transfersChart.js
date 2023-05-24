@@ -62,8 +62,7 @@ module.exports = async params => {
             num_txs: doc_count,
           };
         }),
-        ['timestamp'],
-        ['asc'],
+        ['timestamp'], ['asc'],
       ),
       total,
     };

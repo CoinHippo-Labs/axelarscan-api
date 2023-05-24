@@ -194,20 +194,19 @@ const crud = async (
             {
               data: {
                 data:
-                  toArray(hits?.hits)
-                    .map(d => {
-                      const {
-                        _id,
-                        _source,
-                        fields,
-                      } = { ...d };
+                  toArray(hits?.hits).map(d => {
+                    const {
+                      _id,
+                      _source,
+                      fields,
+                    } = { ...d };
 
-                      return {
-                        ..._source,
-                        ...fields,
-                        id: _id,
-                      };
-                    }),
+                    return {
+                      ..._source,
+                      ...fields,
+                      id: _id,
+                    };
+                  }),
                 total: hits?.total?.value,
                 aggs: aggregations,
               },

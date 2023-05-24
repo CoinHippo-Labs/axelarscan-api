@@ -42,73 +42,72 @@ const getChains = (
       Object.entries({ ..._chains })
         .filter(([k, v]) => chain_types.length < 1 || chain_types.includes(k))
         .flatMap(([k, v]) =>
-          Object.entries({ ...v })
-            .map(([_k, _v]) => {
-              const {
-                chain_id,
-                maintainer_id,
-                deprecated,
-                endpoints,
-                native_token,
-                name,
-                explorer,
-              } = { ..._v };
+          Object.entries({ ...v }).map(([_k, _v]) => {
+            const {
+              chain_id,
+              maintainer_id,
+              deprecated,
+              endpoints,
+              native_token,
+              name,
+              explorer,
+            } = { ..._v };
 
-              const {
-                private_rpc,
-              } = { ...endpoints };
-              let {
-                rpc,
-              } = { ...endpoints };
+            const {
+              private_rpc,
+            } = { ...endpoints };
+            let {
+              rpc,
+            } = { ...endpoints };
 
-              const {
-                url,
-              } = { ...explorer };
+            const {
+              url,
+            } = { ...explorer };
 
-              if (private_rpc) {
-                if (for_crawler) {
-                  rpc = _.uniq(toArray(_.concat(toArray(private_rpc), toArray(private_rpc).length < 1 && toArray(rpc))));
-                  _v.endpoints.rpc = rpc;
-                }
-
-                delete _v.endpoints.private_rpc;
+            if (private_rpc) {
+              if (for_crawler) {
+                rpc = _.uniq(toArray(_.concat(toArray(private_rpc), toArray(private_rpc).length < 1 && toArray(rpc))));
+                _v.endpoints.rpc = rpc;
               }
 
-              let provider_params;
-              let gateway_address;
-              let no_inflation;
+              delete _v.endpoints.private_rpc;
+            }
 
-              switch (k) {
-                case 'evm':
-                  provider_params = [
-                    {
-                      chainId: toBeHex(chain_id),
-                      chainName: `${name} ${capitalize(environment)}`,
-                      rpcUrls: toArray(rpc),
-                      nativeCurrency: native_token,
-                      blockExplorerUrls: [url],
-                    },
-                  ];
-                  gateway_address = getContracts(environment)?.gateway_contracts?.[_k]?.address;
-                  no_inflation = !!(!maintainer_id || deprecated || !gateway_address);
-                  no_tvl = deprecated;
-                  break;
-                default:
-                  break;
-              }
+            let provider_params;
+            let gateway_address;
+            let no_inflation;
 
-              _v = {
-                ..._v,
-                id: _k,
-                chain_type: k,
-                provider_params,
-                gateway_address,
-                no_inflation,
-                no_tvl,
-              };
+            switch (k) {
+              case 'evm':
+                provider_params = [
+                  {
+                    chainId: toBeHex(chain_id),
+                    chainName: `${name} ${capitalize(environment)}`,
+                    rpcUrls: toArray(rpc),
+                    nativeCurrency: native_token,
+                    blockExplorerUrls: [url],
+                  },
+                ];
+                gateway_address = getContracts(environment)?.gateway_contracts?.[_k]?.address;
+                no_inflation = !!(!maintainer_id || deprecated || !gateway_address);
+                no_tvl = deprecated;
+                break;
+              default:
+                break;
+            }
 
-              return [_k, _v];
-            })
+            _v = {
+              ..._v,
+              id: _k,
+              chain_type: k,
+              provider_params,
+              gateway_address,
+              no_inflation,
+              no_tvl,
+            };
+
+            return [_k, _v];
+          })
         )
     )
   )

@@ -15,21 +15,7 @@ const {
 const normalizeObject = object =>
   Array.isArray(object) ?
     object :
-    Object.fromEntries(
-      Object.entries(object)
-        .map(([k, v]) =>
-          [
-            k,
-            typeof v === 'object' ?
-              normalizeObject(v) :
-              typeof v === 'boolean' ?
-                v :
-                !isNaN(v) ?
-                  Number(v) :
-                  v,
-          ]
-        )
-    );
+    Object.fromEntries(Object.entries(object).map(([k, v]) => [k, typeof v === 'object' ? normalizeObject(v) : typeof v === 'boolean' ? v : !isNaN(v) ? Number(v) : v]));
 
 const transferCollections = [
   TRANSFER_COLLECTION,

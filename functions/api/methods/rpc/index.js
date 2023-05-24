@@ -80,19 +80,18 @@ module.exports = async (
               ...result,
               height: Number(height),
               txs_results:
-                toArray(txs_results)
-                  .map(t => {
-                    const {
-                      log,
-                      events,
-                    } = { ...t };
+                toArray(txs_results).map(t => {
+                  const {
+                    log,
+                    events,
+                  } = { ...t };
 
-                    return {
-                      ...t,
-                      log: toJson(log) || log,
-                      events: decodeEvents(events),
-                    };
-                  }),
+                  return {
+                    ...t,
+                    log: toJson(log) || log,
+                    events: decodeEvents(events),
+                  };
+                }),
               begin_block_events: decodeEvents(begin_block_events),
               end_block_events: decodeEvents(end_block_events),
             };

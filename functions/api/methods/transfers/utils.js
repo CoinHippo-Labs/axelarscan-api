@@ -116,29 +116,28 @@ const getTransaction = async (
                             if (result) {
                               v =
                                 Object.fromEntries(
-                                  Object.entries({ ...result })
-                                    .map(([k, v]) => {
-                                      switch (k) {
-                                        case 'chainId':
-                                        case 'nonce':
-                                        case 'blockNumber':
-                                        case 'transactionIndex':
-                                        case 'value':
-                                        case 'type':
-                                        case 'v':
-                                          v = Number(toBigNumber(v));
-                                          break;
-                                        case 'gas':
-                                        case 'maxFeePerGas':
-                                        case 'maxPriorityFeePerGas':
-                                          v = toBigNumber(v);
-                                          break;
-                                        default:
-                                          break;
-                                      }
+                                  Object.entries({ ...result }).map(([k, v]) => {
+                                    switch (k) {
+                                      case 'chainId':
+                                      case 'nonce':
+                                      case 'blockNumber':
+                                      case 'transactionIndex':
+                                      case 'value':
+                                      case 'type':
+                                      case 'v':
+                                        v = Number(toBigNumber(v));
+                                        break;
+                                      case 'gas':
+                                      case 'maxFeePerGas':
+                                      case 'maxPriorityFeePerGas':
+                                        v = toBigNumber(v);
+                                        break;
+                                      default:
+                                        break;
+                                    }
 
-                                      return [k, v];
-                                    })
+                                    return [k, v];
+                                  })
                                 );
                               break;
                             }
@@ -155,16 +154,15 @@ const getTransaction = async (
                           transactionIndex: typeof _v.transactionIndex === 'number' ? _v.transactionIndex : _v.index,
                           confirmations: await _v.confirmations(),
                           logs:
-                            toArray(_v.logs)
-                              .map(l => {
-                                delete l.provider;
-                                l.logIndex = typeof l.logIndex === 'number' ? l.logIndex : l.index;
-                                delete l.index;
+                            toArray(_v.logs).map(l => {
+                              delete l.provider;
+                              l.logIndex = typeof l.logIndex === 'number' ? l.logIndex : l.index;
+                              delete l.index;
 
-                                return {
-                                  ...l,
-                                };
-                              }),
+                              return {
+                                ...l,
+                              };
+                            }),
                         };
 
                         delete v.index;
@@ -187,49 +185,46 @@ const getTransaction = async (
                             if (result) {
                               v =
                                 Object.fromEntries(
-                                  Object.entries({ ...result })
-                                    .map(([k, v]) => {
-                                      switch (k) {
-                                        case 'transactionIndex':
-                                        case 'blockNumber':
-                                        case 'status':
-                                        case 'type':
-                                          v = Number(toBigNumber(v));
-                                          break;
-                                        case 'cumulativeGasUsed':
-                                        case 'gasUsed':
-                                        case 'effectiveGasPrice':
-                                          v = toBigNumber(v);
-                                          break;
-                                        case 'logs':
-                                          v =
-                                            toArray(v)
-                                              .map(l => {
-                                                return {
-                                                  ...Object.fromEntries(
-                                                    Object.entries({ ...l })
-                                                      .map(([_k, _v]) => {
-                                                        switch (_k) {
-                                                          case 'logIndex':
-                                                          case 'transactionIndex':
-                                                          case 'blockNumber':
-                                                            _v = Number(toBigNumber(_v));
-                                                            break;
-                                                          default:
-                                                            break;
-                                                        }
+                                  Object.entries({ ...result }).map(([k, v]) => {
+                                    switch (k) {
+                                      case 'transactionIndex':
+                                      case 'blockNumber':
+                                      case 'status':
+                                      case 'type':
+                                        v = Number(toBigNumber(v));
+                                        break;
+                                      case 'cumulativeGasUsed':
+                                      case 'gasUsed':
+                                      case 'effectiveGasPrice':
+                                        v = toBigNumber(v);
+                                        break;
+                                      case 'logs':
+                                        v =
+                                          toArray(v).map(l => {
+                                            return {
+                                              ...Object.fromEntries(
+                                                Object.entries({ ...l }).map(([_k, _v]) => {
+                                                  switch (_k) {
+                                                    case 'logIndex':
+                                                    case 'transactionIndex':
+                                                    case 'blockNumber':
+                                                      _v = Number(toBigNumber(_v));
+                                                      break;
+                                                    default:
+                                                      break;
+                                                  }
 
-                                                        return [_k, _v];
-                                                      })
-                                                  ),
-                                                };
-                                              });
-                                        default:
-                                          break;
-                                      }
+                                                  return [_k, _v];
+                                                })
+                                              ),
+                                            };
+                                          });
+                                      default:
+                                        break;
+                                    }
 
-                                      return [k, v];
-                                    })
+                                    return [k, v];
+                                  })
                                 );
                               break;
                             }

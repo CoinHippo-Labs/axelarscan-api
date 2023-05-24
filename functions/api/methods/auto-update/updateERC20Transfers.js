@@ -34,54 +34,53 @@ module.exports = async () => {
   } = { ...response };
 
   await Promise.all(
-    toArray(data)
-      .map(d =>
-        new Promise(
-          async resolve => {
-            const {
-              tx_hash,
-              tx_hash_transfer,
-              source_chain,
-            } = { ...d };
+    toArray(data).map(d =>
+      new Promise(
+        async resolve => {
+          const {
+            tx_hash,
+            tx_hash_transfer,
+            source_chain,
+          } = { ...d };
 
-            if (tx_hash && tx_hash_transfer && source_chain) {
-              const provider = getProvider(source_chain);
+          if (tx_hash && tx_hash_transfer && source_chain) {
+            const provider = getProvider(source_chain);
 
-              if (provider) {
-                const transaction_data = await getTransaction(provider, tx_hash, source_chain);
+            if (provider) {
+              const transaction_data = await getTransaction(provider, tx_hash, source_chain);
 
-                const {
-                  blockNumber,
-                } = { ...transaction_data?.transaction };
+              const {
+                blockNumber,
+              } = { ...transaction_data?.transaction };
 
-                if (blockNumber) {
-                  const block_timestamp = await getBlockTime(provider, blockNumber, source_chain);
+              if (blockNumber) {
+                const block_timestamp = await getBlockTime(provider, blockNumber, source_chain);
 
-                  await write(
-                    TRANSFER_COLLECTION,
-                    toArray([tx_hash_transfer, source_chain], 'lower').join('_'),
-                    {
-                      type: 'erc20_transfer',
-                      erc20_transfer: {
-                        ...d,
-                        txhash: tx_hash,
-                        height: blockNumber,
-                        type: 'evm',
-                        created_at: getGranularity(moment(block_timestamp * 1000).utc()),
-                      },
+                await write(
+                  TRANSFER_COLLECTION,
+                  toArray([tx_hash_transfer, source_chain], 'lower').join('_'),
+                  {
+                    type: 'erc20_transfer',
+                    erc20_transfer: {
+                      ...d,
+                      txhash: tx_hash,
+                      height: blockNumber,
+                      type: 'evm',
+                      created_at: getGranularity(moment(block_timestamp * 1000).utc()),
                     },
-                    true,
-                  );
+                  },
+                  true,
+                );
 
-                  await recoverEvents({ txHash: tx_hash_transfer, chain: source_chain });
-                }
+                await recoverEvents({ txHash: tx_hash_transfer, chain: source_chain });
               }
             }
-
-            resolve();
           }
-        )
+
+          resolve();
+        }
       )
+    )
   );
 
   return;

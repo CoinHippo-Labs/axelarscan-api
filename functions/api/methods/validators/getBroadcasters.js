@@ -32,24 +32,23 @@ module.exports = async (
 
   return (
     Object.fromEntries(
-      toArray(data)
-        .map(d => {
-          const {
-            tx,
-            height,
-          } = { ...d };
+      toArray(data).map(d => {
+        const {
+          tx,
+          height,
+        } = { ...d };
 
-          const {
-            messages,
-          } = { ...tx?.body };
+        const {
+          messages,
+        } = { ...tx?.body };
 
-          const {
-            sender,
-            proxy_addr,
-          } = { ...toArray(messages).find(m => m.sender && m.proxy_addr) };
+        const {
+          sender,
+          proxy_addr,
+        } = { ...toArray(messages).find(m => m.sender && m.proxy_addr) };
 
-          return [sender.toLowerCase(), { address: proxy_addr.toLowerCase(), height }];
-        })
+        return [sender.toLowerCase(), { address: proxy_addr.toLowerCase(), height }];
+      })
     )
   );
 };
