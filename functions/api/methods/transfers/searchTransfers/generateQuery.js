@@ -230,7 +230,6 @@ module.exports = params => {
                   } = { ...getAssetData(v) };
 
                   const _denoms = toArray(_.concat(denom, denoms));
-
                   if (_denoms.findIndex(d => d.endsWith('-wei')) > -1) {
                     obj = {
                       bool: {
@@ -285,6 +284,7 @@ module.exports = params => {
                 }
                 break;
               case 'senderAddress':
+              case 'contractAddress':
                 if (v) {
                   obj = {
                     bool: {
