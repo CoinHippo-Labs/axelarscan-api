@@ -47,6 +47,8 @@ module.exports = async params => {
 
   const {
     source_chains,
+  } = { ...aggs };
+  let {
     types,
   } = { ...aggs };
 
@@ -55,6 +57,34 @@ module.exports = async params => {
   } = { ...source_chains };
 
   if (buckets) {
+    if (types) {
+      types =
+        toArray(types?.buckets).map(b => {
+          const {
+            key,
+            doc_count,
+          } = { ...b };
+
+          return {
+            key,
+            num_txs: doc_count,
+          };
+        });
+
+      const num_without_type = total - _.sumBy(types, 'num_txs');
+
+      if (num_without_type > 0) {
+        const index = types.findIndex(d => d.key === 'deposit_address');
+
+        if (index > -1) {
+          types[index].num_txs += num_without_type;
+        }
+        else {
+          types.push({ key: 'deposit_address', num_txs: num_without_type });
+        }
+      }
+    }
+
     output = {
       data: _.orderBy(
         buckets.flatMap(b => {
@@ -88,21 +118,9 @@ module.exports = async params => {
             })
           );
         }),
-        ['volume', 'num_txs'],
-        ['desc', 'desc'],
+        ['volume', 'num_txs'], ['desc', 'desc'],
       ),
-      types:
-        toArray(types?.buckets).map(b => {
-          const {
-            key,
-            doc_count,
-          } = { ...b };
-
-          return {
-            key,
-            num_txs: doc_count,
-          };
-        }),
+      types,
       total,
     };
   }
