@@ -1361,6 +1361,37 @@ module.exports = {
         },
       },
       {
+        id: 'neutron',
+        chain_name: 'neutron',
+        name: 'Neutron',
+        short_name: 'NTRN',
+        explorer: {
+          name: 'Mintscan',
+          url: 'https://www.mintscan.io/neutron',
+          icon: '/logos/explorers/mintscan.png',
+          block_path: '/blocks/{block}',
+          address_path: '/account/{address}',
+          contract_path: '/account/{address}',
+          contract_0_path: '/account/{address}',
+          asset_path: '/assets/{ibc_denom}?type=ibc',
+          transaction_path: '/txs/{tx}',
+        },
+        image: '/logos/chains/neutron.svg',
+        color: '#131928',
+        website: 'https://neutron.org',
+        prefix_address: 'neutron',
+        prefix_chain_ids: [
+          'neutron-',
+        ],
+        endpoints: {
+          lcds: [
+            'https://rest-kralum.neutron-1.neutron.org',
+            'https://neutron-api.lavenderfive.com',
+            'https://api.novel.remedy.tm.p2p.org',
+          ],
+        },
+      },
+      {
         id: 'terra-2',
         chain_name: 'terra-2',
         name: 'Terra',

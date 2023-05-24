@@ -319,6 +319,12 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349',
+          chain_id: 'neutron',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4',
           chain_id: 'terra-2',
           decimals: 6,
@@ -601,6 +607,12 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
+          ibc_denom: 'ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2',
+          chain_id: 'neutron',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
           ibc_denom: 'ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF',
           chain_id: 'terra-2',
           decimals: 6,
@@ -818,6 +830,12 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
+          ibc_denom: 'ibc/626DBDAD47E2867EE930907A2C97B9F61043523C40FB9C4FEEC980933D1F6790',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
           ibc_denom: 'ibc/E46EF5449878F6B81219163F211E7329CC0729AA99DA8A589A865F82F754ADE8',
           chain_id: 'terra-2',
           decimals: 18,
@@ -958,6 +976,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/AD706B02DD4D8468C287D2F22E4BA2FB80338DF5C1F4035086411074B755A485',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlBUSD',
+        },
+        {
+          ibc_denom: 'ibc/71BA048E21A9AEAC5E23FB7D91BE0E8730D50AB8993A01307616AA0C7EA618E3',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlBUSD',
         },
@@ -1168,6 +1192,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/F3146333E033F2F20125A2F9879F0DEED990B1005FFAF77873CC4E405FBDE8C4',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/59034348F9F2DBA4EAE6621D9DDA9ADF190F60BDDDD2DC99E226F800886F70B5',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1462,6 +1492,12 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
+          ibc_denom: 'ibc/DF8722298D192AAB85D86D0462E8166234A6A9A572DD4A2EA7996029DF4DB363',
+          chain_id: 'neutron',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD',
           chain_id: 'terra-2',
           decimals: 8,
@@ -1620,6 +1656,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E3AB0DFDE9E782262B770C32DF94AC2A92B93DC4825376D6F6C874D3C877864E',
           chain_id: 'sommelier',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -1793,6 +1835,12 @@ module.exports = {
           symbol: 'axlETH',
         },
         {
+          ibc_denom: 'ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
           ibc_denom: 'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674',
           chain_id: 'terra-2',
           decimals: 18,
@@ -1939,6 +1987,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/DF9C9A15AB22971A4F65FB8F471459A757745F9709905A599D5011E69FE3C375',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/5CB2E12B07D0B6D8EC24A68BA6B6E6E8D5BF85B7D22091D3A480DCDD61C6AC84',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -2100,6 +2154,12 @@ module.exports = {
           symbol: 'axlBNB',
         },
         {
+          ibc_denom: 'ibc/5CB2E12B07D0B6D8EC24A68BA6B6E6E8D5BF85B7D22091D3A480DCDD61C6AC84',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlBNB',
+        },
+        {
           ibc_denom: 'ibc/1319C6B38CA613C89D78C2D1461B305038B1085F6855E8CD276FE3F7C9600B4C',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2240,6 +2300,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E74941AEE93FA5FBC9195082758763917D56E2E05A48AE094AD142AA2DD10B7A',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/14767887A69DBEFF3B99AA3E5B176C7989B1DAD2395A1E843F48EE981AC4F83F',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -2395,6 +2461,12 @@ module.exports = {
           symbol: 'axlMATIC',
         },
         {
+          ibc_denom: 'ibc/14767887A69DBEFF3B99AA3E5B176C7989B1DAD2395A1E843F48EE981AC4F83F',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlMATIC',
+        },
+        {
           ibc_denom: 'ibc/14E4FD1AB72DE9BF1D6725CBA18373C406CB9A7DA17955299F3F4DC5C6131A4E',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2541,6 +2613,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9',
           chain_id: 'sommelier',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/7B6FFC996FC2984AA98DBA4CEBFBF790E55F4D7E65360DD614F2BE2D08F4D324',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -2702,6 +2780,12 @@ module.exports = {
           symbol: 'axlAVAX',
         },
         {
+          ibc_denom: 'ibc/7B6FFC996FC2984AA98DBA4CEBFBF790E55F4D7E65360DD614F2BE2D08F4D324',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlAVAX',
+        },
+        {
           ibc_denom: 'ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B',
           chain_id: 'terra-2',
           decimals: 18,
@@ -2842,6 +2926,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/2D4399D27A3988E41C1FA4CF3F0CCCDEA4094646A5C3B483D7508069489F860C',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/A96863E0BDFA3F2D96625FD5A649AF53F62F97521EF78FBBFE5B4199C3E23ABD',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -2997,6 +3087,12 @@ module.exports = {
           symbol: 'axlFTM',
         },
         {
+          ibc_denom: 'ibc/A96863E0BDFA3F2D96625FD5A649AF53F62F97521EF78FBBFE5B4199C3E23ABD',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlFTM',
+        },
+        {
           ibc_denom: 'ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746',
           chain_id: 'terra-2',
           decimals: 18,
@@ -3137,6 +3233,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/DA5F22C49C88D4B0AAB0E2275D320078EE98610EEB10AEC847929CCF2137144C',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
+          ibc_denom: 'ibc/5103F3B79845E445F46120B476A8336D76DE39A16E77132B2BB19BEA3857AF9B',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -3288,6 +3390,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/DA5F22C49C88D4B0AAB0E2275D320078EE98610EEB10AEC847929CCF2137144C',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlGLMR',
+        },
+        {
+          ibc_denom: 'ibc/5103F3B79845E445F46120B476A8336D76DE39A16E77132B2BB19BEA3857AF9B',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlGLMR',
         },
@@ -4002,6 +4110,12 @@ module.exports = {
           symbol: 'axlDOT',
         },
         {
+          ibc_denom: 'ibc/E74CD453F834EE007B02F1298EFFF4DCD9C97FB58DF7F6080FF935145B73C6A6',
+          chain_id: 'neutron',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
           ibc_denom: 'ibc/5B01781626783C316A22ACBB55ECA8C6C57AA92C1565C69128C192FA36680AFB',
           chain_id: 'terra-2',
           decimals: 10,
@@ -4667,6 +4781,12 @@ module.exports = {
           symbol: 'axlRAI',
         },
         {
+          ibc_denom: 'ibc/8F93A962F1ACCC0C55B45358ACCEA4557206AE71A8BC73A2044525EE43EF5D31',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
           ibc_denom: 'ibc/88C5B3E62FD8ECC8825107D86C4AC8CDECDC7B44135DD757D1D83E27203B6C9D',
           chain_id: 'terra-2',
           decimals: 18,
@@ -4807,6 +4927,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/8B40CD07C94E82E3AD214FF8EB5230040E9440AC1F77B6880CFF893C6F62E13D',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
+          ibc_denom: 'ibc/73D01D9D032390E81CBC20B7E0507B84DF54F3CE5302BFF52776E7D8930F2A6C',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -5122,6 +5248,11 @@ module.exports = {
         {
           ibc_denom: 'ibc/38D142F182413E7B44A3EBA2DA1FDBDE2B08BFC44A91DBD21A5D3583D99F47F6',
           chain_id: 'sommelier',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/4D04085167777659C11784A356D6B0D13D5C7F0CE77F7DB1152FE03A2DE2CBF2',
+          chain_id: 'neutron',
           decimals: 18,
         },
         {
@@ -5784,6 +5915,12 @@ module.exports = {
           symbol: 'axlUNI',
         },
         {
+          ibc_denom: 'ibc/ED457C0D88A8893E3BFEA226630E761C887AA2433F6C7BBCC29B591349A65BB7',
+          chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
           ibc_denom: 'ibc/6EFF21F9E65C9101370C38AA53049E4D1FF2B206A7C350B45F0ED3660E57AC75',
           chain_id: 'terra-2',
           decimals: 18,
@@ -5924,6 +6061,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/D8006E3E5D69B1B3A167E79E87A2A56999EE1EF060CCA62C4D15C1046F586C39',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
+          ibc_denom: 'ibc/6C18438B29DF9D62583F6890FFAA77770CB612C386E74425AD1C1BB6535D8FCB',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlSHIB',
         },
@@ -6308,6 +6451,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/D1506C95F0BDB40B370C7AE12FAC073B350DB11CF00A9B7251EB6CEF7D9F73DF',
           chain_id: 'carbon',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
+          ibc_denom: 'ibc/F2C3F097E1EFD9B54CF374BA1FA64C5FF995F228CC389CDFB094BF7942B8F00F',
+          chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlMKR',
         },
