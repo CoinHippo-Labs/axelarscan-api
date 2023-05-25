@@ -1,3 +1,7 @@
+const {
+  toArray,
+} = require('../../../../utils');
+
 module.exports = params => {
   const {
     query,
@@ -46,12 +50,42 @@ module.exports = params => {
                 break;
               case 'sourceChain':
                 if (v) {
-                  obj = { match: { source_chain: v } };
+                  v = toArray(v);
+                  obj = {
+                    bool: {
+                      should:
+                        v.map(c => {
+                          return {
+                            bool: {
+                              must: [
+                                { match: { source_chain: c } },
+                              ],
+                            },
+                          };
+                        }),
+                      minimum_should_match: 1,
+                    },
+                  };
                 }
                 break;
               case 'destinationChain':
                 if (v) {
-                  obj = { match: { destination_chain: v } };
+                  v = toArray(v);
+                  obj = {
+                    bool: {
+                      should:
+                        v.map(c => {
+                          return {
+                            bool: {
+                              must: [
+                                { match: { destination_chain: c } },
+                              ],
+                            },
+                          };
+                        }),
+                      minimum_should_match: 1,
+                    },
+                  };
                 }
                 break;
               case 'recipientAddress':

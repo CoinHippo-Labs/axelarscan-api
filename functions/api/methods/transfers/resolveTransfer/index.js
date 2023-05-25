@@ -100,7 +100,7 @@ module.exports = async (
           toArray(
             await Promise.all(
               getChainsList('evm')
-                .filter(c => !sourceChain || equalsIgnoreCase(c.id, sourceChain))
+                .filter(c => !sourceChain || toArray(sourceChain).findIndex(id => equalsIgnoreCase(id, c.id)) > -1)
                 .map(c => new Promise(async resolve => resolve(await recoverEvents({ txHash, chain: c.id }))))
             )
             .flatMap(d => toArray(d.events))
@@ -116,7 +116,7 @@ module.exports = async (
             toArray(
               await Promise.all(
                 getChainsList('evm')
-                  .filter(c => !sourceChain || equalsIgnoreCase(c.id, sourceChain))
+                  .filter(c => !sourceChain || toArray(sourceChain).findIndex(id => equalsIgnoreCase(id, c.id)) > -1)
                   .map(c =>
                     new Promise(
                       async resolve => {
@@ -297,7 +297,7 @@ module.exports = async (
           toArray(
             await Promise.all(
               getChainsList('cosmos')
-                .filter(c => !sourceChain || equalsIgnoreCase(c.id, sourceChain))
+                .filter(c => !sourceChain || toArray(sourceChain).findIndex(id => equalsIgnoreCase(id, c.id)) > -1)
                 .map(c =>
                   new Promise(
                     async resolve => {
