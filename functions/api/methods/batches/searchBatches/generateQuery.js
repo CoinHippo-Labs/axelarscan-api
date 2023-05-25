@@ -1,3 +1,7 @@
+const {
+  toArray,
+} = require('../../../utils');
+
 module.exports = params => {
   const {
     query,
@@ -26,7 +30,22 @@ module.exports = params => {
             switch (k) {
               case 'chain':
                 if (v) {
-                  obj = { match: { chain: v } };
+                  v = toArray(v);
+                  obj = {
+                    bool: {
+                      should:
+                        v.map(c => {
+                          return {
+                            bool: {
+                              must: [
+                                { match: { chain: c } },
+                              ],
+                            },
+                          };
+                        }),
+                      minimum_should_match: 1,
+                    },
+                  };
                 }
                 break;
               case 'batchId':

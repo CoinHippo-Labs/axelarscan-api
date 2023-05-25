@@ -72,7 +72,22 @@ module.exports = async params => {
                 break;
               case 'chain':
                 if (v) {
-                  obj = { match: { sender_chain: v } };
+                  v = toArray(v);
+                  obj = {
+                    bool: {
+                      should:
+                        v.map(c => {
+                          return {
+                            bool: {
+                              must: [
+                                { match: { sender_chain: c } },
+                              ],
+                            },
+                          };
+                        }),
+                      minimum_should_match: 1,
+                    },
+                  };
                 }
                 break;
               case 'transactionId':
