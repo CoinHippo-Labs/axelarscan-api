@@ -5265,7 +5265,7 @@ module.exports = {
     {
       id: 'cbeth-wei',
       symbol: 'cbETH',
-      name: 'Coinbase Wrapped Staked ETH',
+      name: 'Coinbase Staked ETH',
       image: '/logos/assets/cbeth.svg',
       decimals: 18,
       coingecko_id: 'coinbase-wrapped-staked-eth',
