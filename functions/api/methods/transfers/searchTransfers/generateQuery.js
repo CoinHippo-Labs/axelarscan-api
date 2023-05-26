@@ -4,6 +4,9 @@ const {
   getOthersChainIds,
 } = require('../../../utils/chain');
 const {
+  getOthersDenoms,
+} = require('../../../utils/asset');
+const {
   getChainsList,
   getAssetData,
 } = require('../../../utils/config');
@@ -241,44 +244,74 @@ module.exports = params => {
                 }
                 break;
               case 'asset':
+              case 'assets':
                 if (v) {
-                  const {
-                    denom,
-                    denoms,
-                  } = { ...getAssetData(v) };
-
-                  const _denoms = toArray(_.concat(denom, denoms));
-                  if (_denoms.findIndex(d => d.endsWith('-wei')) > -1) {
+                  v = toArray(v);
+                  if (v.length > 0) {
                     obj = {
                       bool: {
                         should:
-                          _denoms.map(d => {
-                            return (
-                              d.startsWith('w') && _denoms.includes(d.substring(1)) ?
-                                {
-                                  bool: {
-                                    must: [
-                                      { match_phrase: { 'send.denom': d } },
-                                    ],
-                                    should: [
-                                      { match: { type: 'wrap' } },
-                                      { match: { type: 'unwrap' } },
-                                      { match: { type: 'erc20_transfer' } },
-                                    ],
-                                    minimum_should_match: 1,
-                                  },
-                                } :
-                                { match_phrase: { 'send.denom': d } }
-                            );
+                          v.map(_v => {
+                            const {
+                              denom,
+                              denoms,
+                            } = { ...getAssetData(_v) };
+
+                            const _denoms = toArray(_.concat(denom, denoms));
+                            if (_denoms.findIndex(d => d.endsWith('-wei')) > -1) {
+                              return {
+                                bool: {
+                                  should:
+                                    _denoms.map(d => {
+                                      return (
+                                        d.startsWith('w') && _denoms.includes(d.substring(1)) ?
+                                          {
+                                            bool: {
+                                              must: [
+                                                { match_phrase: { 'send.denom': d } },
+                                              ],
+                                              should: [
+                                                { match: { type: 'wrap' } },
+                                                { match: { type: 'unwrap' } },
+                                                { match: { type: 'erc20_transfer' } },
+                                              ],
+                                              minimum_should_match: 1,
+                                              must_not: getOthersDenoms(d).map(_d => { return { match_phrase: { 'send.denom': _d } }; }),
+                                            },
+                                          } :
+                                          {
+                                            bool: {
+                                              must: [
+                                                { match_phrase: { 'send.denom': d } },
+                                              ],
+                                              must_not: getOthersDenoms(d).map(_d => { return { match_phrase: { 'send.denom': _d } }; }),
+                                            }
+                                          }
+                                      );
+                                    }),
+                                  minimum_should_match: 1,
+                                },
+                              };
+                            }
+                            else {
+                              return {
+                                bool: {
+                                  should:
+                                    _denoms.map(d => {
+                                      return {
+                                        bool: {
+                                          must: [
+                                            { match_phrase: { 'send.denom': d } },
+                                          ],
+                                          must_not: getOthersDenoms(d).map(_d => { return { match_phrase: { 'send.denom': _d } }; }),
+                                        }
+                                      };
+                                    }),
+                                  minimum_should_match: 1,
+                                },
+                              };
+                            }
                           }),
-                        minimum_should_match: 1,
-                      },
-                    };
-                  }
-                  else {
-                    obj = {
-                      bool: {
-                        should: _denoms.map(d => { return { match_phrase: { 'send.denom': d } }; }),
                         minimum_should_match: 1,
                       },
                     };
