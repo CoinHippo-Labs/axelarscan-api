@@ -114,7 +114,7 @@ module.exports = async (
           const transfer_data = _.head(data);
 
           if (transfer_data) {
-            const index = commands.findIndex(c => c.id === command_id);
+            const index = commands.findIndex(c => c?.id === command_id);
 
             let {
               executed,

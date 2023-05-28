@@ -132,7 +132,7 @@ module.exports = async (
     if (index > -1) {
       commands[index] = command;
     }
-    else {
+    else if (command) {
       commands.push(command);
     }
   }
@@ -191,7 +191,7 @@ module.exports = async (
     ...lcd_response,
     batch_id,
     chain,
-    commands,
+    commands: commands.filter(c => c.id),
   };
 
   if (status !== 'BATCHED_COMMANDS_STATUS_SIGNED' && commands.filter(c => !c.executed).length < 1) {
