@@ -1,8 +1,4 @@
-const {
-  decodeBase64,
-  hexlify,
-  toUtf8String,
-} = require('ethers');
+const { decodeBase64, hexlify, toUtf8String } = require('ethers');
 
 const base64ToHex = string => {
   try {

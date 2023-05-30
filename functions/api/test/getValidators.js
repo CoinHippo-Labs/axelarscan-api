@@ -1,13 +1,9 @@
 require('dotenv').config();
 
 const chai = require('chai');
-const {
-  expect,
-} = { ...chai };
+const { expect } = { ...chai };
 
-const {
-  getValidators,
-} = require('../methods');
+const { getValidators } = require('../methods');
 
 module.exports = () => {
   describe(
@@ -17,11 +13,7 @@ module.exports = () => {
         'Should receive list of validator',
         async () => {
           const response = await getValidators();
-
-          const {
-            data,
-          } = { ...response };
-
+          const { data } = { ...response };
           expect(data).to.be.an('array');
         },
       )

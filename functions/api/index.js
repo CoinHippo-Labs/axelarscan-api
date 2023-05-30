@@ -1,10 +1,4 @@
-exports.handler = async (
-  event,
-  context,
-  callback,
-) => {
-  let output;
-
+exports.handler = async (event, context, callback) => {
   const moment = require('moment');
 
   const {
@@ -54,22 +48,11 @@ exports.handler = async (
     updateUnwraps,
     updateERC20Transfers,
   } = require('./methods');
-  const {
-    getParams,
-    errorOutput,
-    finalizeOutput,
-  } = require('./utils/io');
-  const {
-    getContracts,
-    getChainsList,
-    getAssetsList,
-  } = require('./utils/config');
-  const {
-    log,
-  } = require('./utils');
+  const { getParams, errorOutput, finalizeOutput } = require('./utils/io');
+  const { getContracts, getChainsList, getAssetsList } = require('./utils/config');
+  const { log } = require('./utils');
 
   const service_name = 'api';
-
   // parse function event to req
   const req = {
     url: (event.routeKey || '').replace('ANY ', ''),
@@ -80,15 +63,11 @@ exports.handler = async (
     body: { ...(event.body && JSON.parse(event.body)) },
   };
 
+  let output;
   // create params from req
   const params = getParams(req, service_name);
-
-  const {
-    collection,
-  } = { ...params };
-  let {
-    method,
-  } = { ...params };
+  const { collection } = { ...params };
+  let { method } = { ...params };
 
   switch(req.url) {
     case '/':
@@ -211,7 +190,6 @@ exports.handler = async (
   if (method) {
     // for calculate time spent
     const start_time = moment();
-
     if (!['crud'].includes(method)) {
       delete params.method;
     }
@@ -226,12 +204,8 @@ exports.handler = async (
         break;
       case 'rpc':
         try {
-          const {
-            path,
-          } = { ...params };
-
+          const { path } = { ...params };
           delete params.path;
-
           output = await rpc(path, params);
         } catch (error) {
           output = errorOutput(error);
@@ -239,12 +213,8 @@ exports.handler = async (
         break;
       case 'lcd':
         try {
-          const {
-            path,
-          } = { ...params };
-
+          const { path } = { ...params };
           delete params.path;
-
           output = await lcd(path, params);
         } catch (error) {
           output = errorOutput(error);
@@ -252,11 +222,7 @@ exports.handler = async (
         break;
       case 'getTokensPrice':
         try {
-          const {
-            symbols,
-            timestamp,
-          } = { ...params };
-
+          const { symbols, timestamp } = { ...params };
           output = await getTokensPrice(symbols, timestamp);
         } catch (error) {
           output = errorOutput(error);
@@ -517,10 +483,7 @@ exports.handler = async (
         break;
       case 'getLatestEventBlock':
         try {
-          const {
-            chain,
-          } = { ...params };
-
+          const { chain } = { ...params };
           output = await getLatestEventBlock(chain);
         } catch (error) {
           output = errorOutput(error);
@@ -584,12 +547,7 @@ exports.handler = async (
 
   // log result
   if (['search', 'update'].findIndex(s => method?.startsWith(s)) < 0) {
-    log(
-      'debug',
-      service_name,
-      'send output',
-      output,
-    );
+    log('debug', service_name, 'send output', output);
   }
 
   return output;

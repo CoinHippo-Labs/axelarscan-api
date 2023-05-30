@@ -1,13 +1,9 @@
 require('dotenv').config();
 
 const chai = require('chai');
-const {
-  expect,
-} = { ...chai };
+const { expect } = { ...chai };
 
-const {
-  getCirculatingSupply,
-} = require('../methods');
+const { getCirculatingSupply } = require('../methods');
 
 module.exports = () => {
   describe(
@@ -17,7 +13,6 @@ module.exports = () => {
         'Should receive circulating supply',
         async () => {
           const response = await getCirculatingSupply();
-
           expect(response).to.be.a('number');
         },
       )

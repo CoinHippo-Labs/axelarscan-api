@@ -1,14 +1,7 @@
 const _ = require('lodash');
 
-const {
-  getAssets,
-} = require('../config');
-const {
-  equalsIgnoreCase,
-  split,
-  toArray,
-  find,
-} = require('../');
+const { getAssets } = require('../config');
+const { equalsIgnoreCase, split, toArray, find } = require('../');
 
 const getOthersDenoms = denom => {
   const assets = Object.values(getAssets()).map(a => { return { id: a.denom, values: toArray(_.concat(a.denom, a.denoms)) }; });

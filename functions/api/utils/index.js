@@ -75,19 +75,11 @@ const log = (
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const equalsIgnoreCase = (
-  a,
-  b,
-) =>
-  (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
+const equalsIgnoreCase = (a, b) => (!a && !b) || a?.toLowerCase() === b?.toLowerCase();
 
-const toCase = (
-  string,
-  to_case = 'normal',
-) => {
+const toCase = (string, to_case = 'normal') => {
   if (typeof string === 'string') {
     string = string.trim();
-
     switch (to_case) {
       case 'upper':
         string = string.toUpperCase();
@@ -99,7 +91,6 @@ const toCase = (
         break;
     }
   }
-
   return string;
 };
 
@@ -125,68 +116,43 @@ const toArray = (
     x.map(v => toCase(v, to_case)).filter(v => !filter_blank || v) :
     split(x, to_case, delimiter, filter_blank);
 
-const find = (
-  x,
-  list = [],
-) =>
-  list.find(_x => typeof x === 'string' ? equalsIgnoreCase(_x, x) : _x === x);
+const find = (x, list = []) => list.find(_x => typeof x === 'string' ? equalsIgnoreCase(_x, x) : _x === x);
 
-const includesStringList = (
-  x,
-  list = [],
-) =>
-  toArray(list).findIndex(s => toArray(x).findIndex(_x => _x.includes(s)) > -1) > -1;
+const includesStringList = (x, list = []) => toArray(list).findIndex(s => toArray(x).findIndex(_x => _x.includes(s)) > -1) > -1;
 
 const capitalize = s => typeof s !== 'string' ? '' : `${s.substr(0, 1).toUpperCase()}${s.substr(1)}`;
 
-const camel = (
-  s,
-  delimiter = '_',
-) =>
-  toArray(s, 'normal', delimiter).map((s, i) => i > 0 ? capitalize(s) : s).join('');
+const camel = (s, delimiter = '_') => toArray(s, 'normal', delimiter).map((s, i) => i > 0 ? capitalize(s) : s).join('');
 
 const toJson = s => {
   if (s) {
     if (typeof s === 'object') {
       return s;
     }
-
     try {
       return JSON.parse(s);
     } catch (error) {}
   }
-
   return null;
 };
 
 const toHex = byteArray => {
   let string = '0x';
-
   if (typeof byteArray === 'string' && byteArray.startsWith('[') && byteArray.endsWith(']')) {
     byteArray = toJson(byteArray);
   }
-
   if (Array.isArray(byteArray)) {
     byteArray.forEach(byte => string += ('0' + (byte & 0xFF).toString(16)).slice(-2));
   }
   else {
     string = byteArray;
   }
-
   return string;
 };
 
-const fixDecimals = (
-  number = 0,
-  decimals = 2,
-) =>
-  parseFloat((number || 0).toFixed(decimals));
+const fixDecimals = (number = 0, decimals = 2) => parseFloat((number || 0).toFixed(decimals));
 
-const normalizeQuote = (
-  string,
-  to_case = 'normal',
-) =>
-  split(string, 'normal', '"').join('');
+const normalizeQuote = (string, to_case = 'normal') => split(string, 'normal', '"').join('');
 
 module.exports = {
   log,

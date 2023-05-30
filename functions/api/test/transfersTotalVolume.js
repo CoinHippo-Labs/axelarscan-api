@@ -1,13 +1,9 @@
 require('dotenv').config();
 
 const chai = require('chai');
-const {
-  expect,
-} = { ...chai };
+const { expect } = { ...chai };
 
-const {
-  transfersTotalVolume,
-} = require('../methods');
+const { transfersTotalVolume } = require('../methods');
 
 module.exports = () => {
   describe(
@@ -17,7 +13,6 @@ module.exports = () => {
         'Should receive transfers total volume',
         async () => {
           const response = await transfersTotalVolume();
-
           expect(response).to.be.a('number');
         },
       )

@@ -1,22 +1,12 @@
 const _ = require('lodash');
 
-const {
-  getChains,
-} = require('../config');
-const {
-  equalsIgnoreCase,
-  split,
-  find,
-} = require('../');
+const { getChains } = require('../config');
+const { equalsIgnoreCase, split, find } = require('../');
 
 const getOthersChainIds = chain => {
   const chains = Object.keys(getChains());
   const id = find(chain, chains);
-
-  const [
-    _id,
-    version,
-  ] = split(chain, 'lower', '-');
+  const [_id, version] = split(chain, 'lower', '-');
 
   return (
     _.concat(

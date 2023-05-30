@@ -1570,6 +1570,30 @@ testnet:
         contract_path: "/address/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    linea:
+      chain_id: 59140
+      chain_name: "linea"
+      maintainer_id: "linea"
+      endpoints:
+        rpc:
+          - "https://rpc.goerli.linea.build"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Linea"
+      short_name: "LINEA"
+      image: "/logos/chains/linea.svg"
+      color: "#62dfff"
+      explorer:
+        name: "Linea"
+        url: "https://explorer.goerli.linea.build"
+        icon: "/logos/explorers/linea.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_name: "Axelarnet"

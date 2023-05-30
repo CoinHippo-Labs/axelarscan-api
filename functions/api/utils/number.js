@@ -1,20 +1,8 @@
-const {
-  formatUnits,
-  isHexString,
-} = require('ethers');
+const { formatUnits, isHexString } = require('ethers');
 
-const toBigNumber = number =>
-  (isHexString(number?.hex) ?
-    BigInt(number.hex) :
-    isHexString(number) ?
-      BigInt(number) :
-      number
-  )?.toString() || '0';
+const toBigNumber = number => (isHexString(number?.hex) ? BigInt(number.hex) : isHexString(number) ? BigInt(number) : number)?.toString() || '0';
 
-const numberFormatUnits = (
-  number,
-  decimals = 6,
-) => {
+const numberFormatUnits = (number, decimals = 6) => {
   try {
     return Number(formatUnits(parseInt(number || '0'), decimals));
   } catch (error) {

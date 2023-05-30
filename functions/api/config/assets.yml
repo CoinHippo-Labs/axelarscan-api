@@ -2891,6 +2891,9 @@ testnet:
       filecoin:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      linea:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       axelarnet:
         ibc_denom: "uaxl"
       osmosis:
@@ -2931,6 +2934,8 @@ testnet:
       kava:
         address: "0xAa03872057AD496Bd6f3eE85b85e1e4DABdb1a5d"
       filecoin:
+        address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
+      linea:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
       axelarnet:
         ibc_denom: "uausdc"
@@ -3048,6 +3053,9 @@ testnet:
       filecoin:
         address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
         symbol: "axlETH"
+      linea:
+        address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
+        symbol: "axlETH"
       axelarnet:
         ibc_denom: "eth-wei"
         symbol: "axlETH"
@@ -3143,6 +3151,9 @@ testnet:
       filecoin:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
         symbol: "axlBNB"
+      linea:
+        address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
+        symbol: "axlBNB"
       axelarnet:
         ibc_denom: "wbnb-wei"
         symbol: "axlBNB"
@@ -3236,6 +3247,9 @@ testnet:
         address: "0x5e372F445C6afc91Aaca0d6C0Fa170d5f8F30f49"
         symbol: "axlMATIC"
       filecoin:
+        address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
+        symbol: "axlMATIC"
+      linea:
         address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
         symbol: "axlMATIC"
       axelarnet:
@@ -3336,6 +3350,9 @@ testnet:
       filecoin:
         address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
         symbol: "axlAVAX"
+      linea:
+        address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
+        symbol: "axlAVAX"
       axelarnet:
         ibc_denom: "wavax-wei"
         symbol: "axlAVAX"
@@ -3432,6 +3449,9 @@ testnet:
         address: "0xd7ba4DE2d9cDF1D34D0aE608F3725Aed1A32821E"
         symbol: "axlFTM"
       filecoin:
+        address: "0x594D8b81eC765410536ab59E98091700b99508D8"
+        symbol: "axlFTM"
+      linea:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
         symbol: "axlFTM"
       axelarnet:
@@ -3532,6 +3552,9 @@ testnet:
       filecoin:
         address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
         symbol: "axlDEV"
+      linea:
+        address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
+        symbol: "axlDEV"
       axelarnet:
         ibc_denom: "wdev-wei"
         symbol: "axlDEV"
@@ -3616,6 +3639,8 @@ testnet:
         address: "0x13B83b6D03A23BCB2A24f09a9D311fF3b6078bBE"
       filecoin:
         address: "0x6C297AeD654816dc5d211c956DE816Ba923475D2"
+      linea:
+        address: "0x6Bf48cac8a850fA48b893f754AeD54A19a505A6F"
       axelarnet:
         ibc_denom: "wfil-wei"
       osmosis:

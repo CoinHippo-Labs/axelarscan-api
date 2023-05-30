@@ -1,13 +1,9 @@
 require('dotenv').config();
 
 const chai = require('chai');
-const {
-  expect,
-} = { ...chai };
+const { expect } = { ...chai };
 
-const {
-  searchTransfers,
-} = require('../methods');
+const { searchTransfers } = require('../methods');
 
 module.exports = () => {
   describe(
@@ -17,11 +13,7 @@ module.exports = () => {
         'Should receive list of transfer',
         async () => {
           const response = await searchTransfers();
-
-          const {
-            data,
-          } = { ...response };
-
+          const { data } = { ...response };
           expect(data).to.be.an('array');
         },
       )

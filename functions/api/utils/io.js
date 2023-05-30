@@ -1,29 +1,13 @@
 const moment = require('moment');
 
-const {
-  log,
-} = require('./');
+const { log } = require('./');
 
-const getParams = (
-  req,
-  service_name,
-) => {
-  const {
-    query,
-    body,
-  } = { ...req };
-
+const getParams = (req, service_name) => {
+  const { query, body } = { ...req };
   const params = { ...query, ...body };
-
   if (service_name) {
-    log(
-      'debug',
-      service_name,
-      'receive request',
-      { params },
-    );
+    log('debug', service_name, 'receive request', { params });
   }
-
   return params;
 };
 
@@ -35,15 +19,8 @@ const errorOutput = error => {
   };
 };
 
-const finalizeOutput = (
-  output,
-  params,
-  start_time = moment(),
-) => {
-  const {
-    method,
-  } = { ...params };
-
+const finalizeOutput = (output, params, start_time = moment()) => {
+  const { method } = { ...params };
   // on error, add parameters to output
   if (output?.error) {
     output = {
@@ -52,7 +29,6 @@ const finalizeOutput = (
       params: output.params || params,
     };
   }
-
   // add time spent to output
   if (output && typeof output === 'object' && !Array.isArray(output)) {
     output = {
@@ -60,7 +36,6 @@ const finalizeOutput = (
       time_spent: moment().diff(start_time),
     };
   }
-
   return output;
 };
 

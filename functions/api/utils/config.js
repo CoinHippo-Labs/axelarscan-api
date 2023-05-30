@@ -1,15 +1,8 @@
-const {
-  toBeHex,
-} = require('ethers');
+const { toBeHex } = require('ethers');
 const _ = require('lodash');
 const config = require('config-yml');
 
-const {
-  equalsIgnoreCase,
-  toArray,
-  capitalize,
-  normalizeQuote,
-} = require('./');
+const { equalsIgnoreCase, toArray, capitalize, normalizeQuote } = require('./');
 
 const {
   chains,
@@ -23,18 +16,10 @@ const {
 
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
-const getContracts = (
-  environment = ENVIRONMENT,
-) =>
-  contracts?.[environment];
+const getContracts = (environment = ENVIRONMENT) => contracts?.[environment];
 
-const getChains = (
-  chain_types = [],
-  environment = ENVIRONMENT,
-  for_crawler = false,
-) => {
+const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = false) => {
   chain_types = toArray(chain_types);
-
   const _chains = chains?.[environment];
 
   return (
@@ -43,33 +28,16 @@ const getChains = (
         .filter(([k, v]) => chain_types.length < 1 || chain_types.includes(k))
         .flatMap(([k, v]) =>
           Object.entries({ ...v }).map(([_k, _v]) => {
-            const {
-              chain_id,
-              maintainer_id,
-              deprecated,
-              endpoints,
-              native_token,
-              name,
-              explorer,
-            } = { ..._v };
-
-            const {
-              private_rpc,
-            } = { ...endpoints };
-            let {
-              rpc,
-            } = { ...endpoints };
-
-            const {
-              url,
-            } = { ...explorer };
+            const { chain_id, maintainer_id, deprecated, endpoints, native_token, name, explorer } = { ..._v };
+            const { private_rpc } = { ...endpoints };
+            let { rpc } = { ...endpoints };
+            const { url } = { ...explorer };
 
             if (private_rpc) {
               if (for_crawler) {
                 rpc = _.uniq(toArray(_.concat(toArray(private_rpc), toArray(private_rpc).length < 1 && toArray(rpc))));
                 _v.endpoints.rpc = rpc;
               }
-
               delete _v.endpoints.private_rpc;
             }
 
@@ -105,7 +73,6 @@ const getChains = (
               no_inflation,
               no_tvl,
             };
-
             return [_k, _v];
           })
         )
@@ -113,33 +80,16 @@ const getChains = (
   )
 };
 
-const getChainsList = (
-  chain_types = [],
-  environment = ENVIRONMENT,
-) =>
-  Object.values({ ...getChains(chain_types, environment) });
+const getChainsList = (chain_types = [], environment = ENVIRONMENT) => Object.values({ ...getChains(chain_types, environment) });
 
-const getChainKey = (
-  chain,
-  chain_types = [],
-  environment = ENVIRONMENT,
-) => {
+const getChainKey = (chain, chain_types = [], environment = ENVIRONMENT) => {
   let key;
-
   if (chain) {
     chain = normalizeQuote(chain, 'lower');
     key = _.head(
       Object.entries({ ...getChains(chain_types, environment) })
         .filter(([k, v]) => {
-          const {
-            id,
-            chain_name,
-            maintainer_id,
-            prefix_address,
-            prefix_chain_ids,
-            chain_type,
-          } = { ...v };
-
+          const { id, chain_name, maintainer_id, prefix_address, prefix_chain_ids, chain_type } = { ...v };
           return (
             toArray([id, chain_name, maintainer_id, prefix_address]).findIndex(s => equalsIgnoreCase(chain, s) || (chain_type !== 'evm' && chain.startsWith(s))) > -1 ||
             toArray(prefix_chain_ids).findIndex(p => chain.startsWith(p)) > -1
@@ -149,54 +99,20 @@ const getChainKey = (
     );
     key = key || chain;
   }
-
   return key;
 };
 
-const getChainData = (
-  chain,
-  chain_types = [],
-) =>
-  chain && getChains(chain_types)[getChainKey(chain, chain_types)];
-
-const getEndpoints = (
-  environment = ENVIRONMENT,
-) =>
-  endpoints?.[environment];
-
+const getChainData = (chain, chain_types = []) => chain && getChains(chain_types)[getChainKey(chain, chain_types)];
+const getEndpoints = (environment = ENVIRONMENT) => endpoints?.[environment];
 const getRPC = () => getEndpoints()?.rpc;
-
 const getLCD = () => getEndpoints()?.lcd;
-
 const getGMP = () => getEndpoints()?.gmp_api;
-
-const getAssets = (
-  environment = ENVIRONMENT,
-) =>
-  assets?.[environment];
-
-const getAssetsList = (
-  environment = ENVIRONMENT,
-) =>
-  Object.values({ ...getAssets(environment) }).map(a => { return { ...a, id: a.denom }; });
-
-const getAssetData = (
-  asset,
-  environment = ENVIRONMENT,
-) =>
-  asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset) || toArray(Object.values({ ...a.addresses })).findIndex(_a => equalsIgnoreCase(_a.ibc_denom, asset)) > -1);
-
+const getAssets = (environment = ENVIRONMENT) => assets?.[environment];
+const getAssetsList = (environment = ENVIRONMENT) => Object.values({ ...getAssets(environment) }).map(a => { return { ...a, id: a.denom }; });
+const getAssetData = (asset, environment = ENVIRONMENT) => asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset) || toArray(Object.values({ ...a.addresses })).findIndex(_a => equalsIgnoreCase(_a.ibc_denom, asset)) > -1);
 const getTokens = () => tokens;
-
-const getTVL = (
-  environment = ENVIRONMENT,
-) =>
-  tvl?.[environment];
-
-const getSupply = (
-  environment = ENVIRONMENT,
-) =>
-  supply?.[environment];
+const getTVL = (environment = ENVIRONMENT) => tvl?.[environment];
+const getSupply = (environment = ENVIRONMENT) => supply?.[environment];
 
 module.exports = {
   TX_COLLECTION: 'txs',

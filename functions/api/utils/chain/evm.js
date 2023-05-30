@@ -1,36 +1,14 @@
-const {
-  FallbackProvider,
-  JsonRpcProvider,
-} = require('ethers');
+const { FallbackProvider, JsonRpcProvider } = require('ethers');
 const _ = require('lodash');
 
-const {
-  getChainData,
-} = require('../config');
-const {
-  toArray,
-} = require('../');
+const { getChainData } = require('../config');
+const { toArray } = require('../');
 
-const createRpcProvider = (
-  url,
-  chain_id,
-) =>
-  new JsonRpcProvider(url, chain_id ? Number(chain_id) : undefined);
+const createRpcProvider = (url, chain_id) => new JsonRpcProvider(url, chain_id ? Number(chain_id) : undefined);
 
-const getProvider = (
-  chain,
-  _rpcs,
-) => {
-  const {
-    chain_id,
-    deprecated,
-    endpoints,
-  } = { ...getChainData(chain, 'evm') };
-
-  const {
-    rpc,
-  } = { ...endpoints };
-
+const getProvider = (chain, _rpcs) => {
+  const { chain_id, deprecated, endpoints } = { ...getChainData(chain, 'evm') };
+  const { rpc } = { ...endpoints };
   const rpcs = toArray(_rpcs || rpc);
 
   if (rpcs.length > 0 && !deprecated) {
@@ -52,7 +30,6 @@ const getProvider = (
       );
     } catch (error) {}
   }
-
   return null;
 };
 

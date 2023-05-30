@@ -1,13 +1,9 @@
 require('dotenv').config();
 
 const chai = require('chai');
-const {
-  expect,
-} = { ...chai };
+const { expect } = { ...chai };
 
-const {
-  searchBatches,
-} = require('../methods');
+const { searchBatches } = require('../methods');
 
 module.exports = () => {
   describe(
@@ -17,11 +13,7 @@ module.exports = () => {
         'Should receive list of batch',
         async () => {
           const response = await searchBatches();
-
-          const {
-            data,
-          } = { ...response };
-
+          const { data } = { ...response };
           expect(data).to.be.an('array');
         },
       )

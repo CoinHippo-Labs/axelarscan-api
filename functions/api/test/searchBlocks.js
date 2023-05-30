@@ -1,13 +1,9 @@
 require('dotenv').config();
 
 const chai = require('chai');
-const {
-  expect,
-} = { ...chai };
+const { expect } = { ...chai };
 
-const {
-  searchBlocks,
-} = require('../methods');
+const { searchBlocks } = require('../methods');
 
 module.exports = () => {
   describe(
@@ -17,11 +13,7 @@ module.exports = () => {
         'Should receive list of block',
         async () => {
           const response = await searchBlocks();
-
-          const {
-            data,
-          } = { ...response };
-
+          const { data } = { ...response };
           expect(data).to.be.an('array');
         },
       )
