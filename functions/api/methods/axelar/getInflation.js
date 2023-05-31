@@ -1,26 +1,13 @@
 const _ = require('lodash');
 
 const lcd = require('../lcd');
-const {
-  getChainsList,
-} = require('../../utils/config');
-const {
-  fixDecimals,
-  normalizeQuote,
-} = require('../../utils');
+const { getChainsList } = require('../../utils/config');
+const { fixDecimals, normalizeQuote } = require('../../utils');
 
 const evm_chains_data = getChainsList('evm').filter(c => !c.no_inflation);
 
-module.exports = async (
-  params = {},
-) => {
-  let {
-    uptimeRate,
-    heartbeatRate,
-    numEVMChains,
-    unsubmittedVoteRates,
-  } = { ...params };
-
+module.exports = async (params = {}) => {
+  let { uptimeRate, heartbeatRate, numEVMChains, unsubmittedVoteRates } = { ...params };
   uptimeRate = uptimeRate || 1;
   heartbeatRate = heartbeatRate || 1;
   numEVMChains = numEVMChains || evm_chains_data.length;

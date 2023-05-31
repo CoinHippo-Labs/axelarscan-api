@@ -6,47 +6,25 @@ const searchUptimes = require('../searchUptimes');
 const searchHeartbeats = require('../searchHeartbeats');
 const rpc = require('../../rpc');
 const lcd = require('../../lcd');
-const {
-  getChainData,
-} = require('../../../utils/config');
-const {
-  pubKeyToBech32,
-} = require('../../../utils/bech32');
-const {
-  getDelegatorAddress,
-} = require('../../../utils/address');
-const {
-  numberFormatUnits,
-} = require('../../../utils/number');
-const {
-  equalsIgnoreCase,
-  toArray,
-} = require('../../../utils');
+const { getChainData } = require('../../../utils/config');
+const { pubKeyToBech32 } = require('../../../utils/bech32');
+const { getDelegatorAddress } = require('../../../utils/address');
+const { numberFormatUnits } = require('../../../utils/number');
+const { equalsIgnoreCase, toArray } = require('../../../utils');
 
 const NUM_UPTIME_BLOCKS = 10000;
 
 module.exports = async params => {
   let validators_data;
 
-  let {
-    includes,
-  } = { ...params };
-
+  let { includes } = { ...params };
   includes = toArray(includes || ['uptimes', 'slash_infos', 'broadcasters', 'status']);
-
-  const {
-    prefix_address,
-  } = { ...getChainData('axelarnet') };
+  const { prefix_address } = { ...getChainData('axelarnet') };
 
   let page_key = true;
-
   while (page_key) {
     const response = await lcd('/cosmos/staking/v1beta1/validators', { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
-
-    const {
-      validators,
-      pagination,
-    } = { ...response };
+    const { validators, pagination } = { ...response };
 
     validators_data = _.orderBy(
       _.uniqBy(
@@ -56,17 +34,8 @@ module.exports = async params => {
             toArray(validators).map(d =>
               new Promise(
                 async resolve => {
-                  const {
-                    consensus_pubkey,
-                    operator_address,
-                    tokens,
-                    delegator_shares,
-                    min_self_delegation,
-                  } = { ...d };
-
-                  const {
-                    key,
-                  } = { ...consensus_pubkey };
+                  const { consensus_pubkey, operator_address, tokens, delegator_shares, min_self_delegation } = { ...d };
+                  const { key } = { ...consensus_pubkey };
 
                   d.tokens = numberFormatUnits(tokens);
                   d.quadratic_voting_power = Math.floor(Math.sqrt(d.tokens));
@@ -82,14 +51,9 @@ module.exports = async params => {
 
                   if (d.delegator_address) {
                     const response = await lcd(`/cosmos/staking/v1beta1/validators/${operator_address}/delegations/${d.delegator_address}`);
-
-                    const {
-                      shares,
-                    } = { ...response?.delegation_response?.delegation };
-
+                    const { shares } = { ...response?.delegation_response?.delegation };
                     d.self_delegation = numberFormatUnits(shares);
                   }
-
                   resolve(d);
                 }
               )
@@ -110,46 +74,29 @@ module.exports = async params => {
         case 'uptimes':
           try {
             const response = await rpc('/status');
-
-            let {
-              latest_block_height,
-            } = { ...response };
-
+            let { latest_block_height } = { ...response };
             latest_block_height = Number(latest_block_height);
 
-            const _response =
-              await searchUptimes(
-                {
-                  fromBlock: latest_block_height - NUM_UPTIME_BLOCKS,
-                  aggs: {
-                    uptimes: {
-                      terms: { field: 'validators.keyword', size: validators_data.length },
-                    },
+            const _response = await searchUptimes(
+              {
+                fromBlock: latest_block_height - NUM_UPTIME_BLOCKS,
+                aggs: {
+                  uptimes: {
+                    terms: { field: 'validators.keyword', size: validators_data.length },
                   },
-                  size: 0,
                 },
-              );
-
-            const {
-              data,
-              total,
-            } = { ..._response };
+                size: 0,
+              },
+            );
+            const { data, total } = { ..._response };
 
             if (data && total > 0) {
-              validators_data =
-                validators_data.map(d => {
-                  const {
-                    consensus_address,
-                  } = { ...d };
-
-                  let uptime = (data[consensus_address] || 0) * 100 / (total || NUM_UPTIME_BLOCKS);
-                  uptime = typeof uptime === 'number' ? uptime > 100 ? 100 : uptime < 0 ? 0 : uptime : undefined;
-
-                  return {
-                    ...d,
-                    uptime,
-                  };
-                });
+              validators_data = validators_data.map(d => {
+                const { consensus_address } = { ...d };
+                let uptime = (data[consensus_address] || 0) * 100 / (total || NUM_UPTIME_BLOCKS);
+                uptime = typeof uptime === 'number' ? uptime > 100 ? 100 : uptime < 0 ? 0 : uptime : undefined;
+                return { ...d, uptime };
+              });
             }
           } catch (error) {}
           break;
@@ -159,42 +106,25 @@ module.exports = async params => {
 
             while (page_key) {
               const response = await lcd('/cosmos/slashing/v1beta1/signing_infos', { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
-            
-              const {
-                info,
-                pagination,
-              } = { ...response };
+              const { info, pagination } = { ...response };
 
               if (info) {
-                validators_data =
-                  validators_data.map(d => {
-                    const {
-                      consensus_address,
-                    } = { ...d };
-
-                    const _info = toArray(info).find(i => equalsIgnoreCase(i.address, consensus_address));
-
-                    if (_info) {
-                      const {
-                        start_height,
-                        start_proxy_height,
-                        jailed_until,
-                        tombstoned,
-                        missed_blocks_counter,
-                      } = { ..._info };
-
-                      d = {
-                        ...d,
-                        start_height: Number(start_height),
-                        start_proxy_height: Number(start_proxy_height || start_height),
-                        jailed_until: jailed_until && moment(jailed_until).valueOf(),
-                        tombstoned: typeof tombstoned === 'boolean' ? tombstoned : undefined,
-                        missed_blocks_counter: Number(missed_blocks_counter),
-                      };
-                    }
-
-                    return d;
-                  });
+                validators_data = validators_data.map(d => {
+                  const { consensus_address } = { ...d };
+                  const _info = toArray(info).find(i => equalsIgnoreCase(i.address, consensus_address));
+                  if (_info) {
+                    const { start_height, start_proxy_height, jailed_until, tombstoned, missed_blocks_counter } = { ..._info };
+                    d = {
+                      ...d,
+                      start_height: Number(start_height),
+                      start_proxy_height: Number(start_proxy_height || start_height),
+                      jailed_until: jailed_until && moment(jailed_until).valueOf(),
+                      tombstoned: typeof tombstoned === 'boolean' ? tombstoned : undefined,
+                      missed_blocks_counter: Number(missed_blocks_counter),
+                    };
+                  }
+                  return d;
+                });
               }
 
               page_key = pagination?.next_key;
@@ -204,55 +134,35 @@ module.exports = async params => {
         case 'broadcasters':
           try {
             const response = await getBroadcasters();
-
             if (response) {
-              validators_data =
-                validators_data.map(d => {
-                  const {
-                    operator_address,
-                    start_proxy_height,
-                  } = { ...d };
-
-                  const broadcaster = response[operator_address?.toLowerCase()];
-
-                  if (broadcaster) {
-                    const {
-                      address,
-                      height,
-                    } = { ...broadcaster };
-
-                    d = {
-                      ...d,
-                      broadcaster_address: address,
-                      start_proxy_height: Number(height || start_proxy_height),
-                    };
-                  }
-
-                  return d;
-                });
+              validators_data = validators_data.map(d => {
+                const { operator_address, start_proxy_height } = { ...d };
+                const broadcaster = response[operator_address?.toLowerCase()];
+                if (broadcaster) {
+                  const { address, height } = { ...broadcaster };
+                  d = {
+                    ...d,
+                    broadcaster_address: address,
+                    start_proxy_height: Number(height || start_proxy_height),
+                  };
+                }
+                return d;
+              });
             }
           } catch (error) {}
           break;
         case 'status':
           try {
             const response = searchHeartbeats({ size: validators_data.length * 5 });
-
-            const {
-              data,
-            } = { ...response };
-
+            const { data } = { ...response };
             if (toArray(data).length > 0) {
-              validators_data =
-                validators_data.map(d => {
-                  const {
-                    broadcaster_address,
-                  } = { ...d };
-
-                  return {
-                    ...d,
-                    stale_heartbeats: toArray(data).findIndex(h => equalsIgnoreCase(h.sender, broadcaster_address)) < 0,
-                  };
-                });
+              validators_data = validators_data.map(d => {
+                const { broadcaster_address } = { ...d };
+                return {
+                  ...d,
+                  stale_heartbeats: toArray(data).findIndex(h => equalsIgnoreCase(h.sender, broadcaster_address)) < 0,
+                };
+              });
             }
           } catch (error) {}
           break;

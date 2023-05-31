@@ -1,11 +1,10 @@
-module.exports = params => {
-  const {
-    query,
-  } = { ...params };
+const { toArray } = require('../../../utils');
 
+module.exports = params => {
+  const { query } = { ...params };
   return {
     bool: {
-      must:
+      must: toArray(
         Object.entries(params)
           .filter(([k, v]) =>
             ![
@@ -22,7 +21,6 @@ module.exports = params => {
           )
           .map(([k, v]) => {
             let obj;
-
             switch (k) {
               case 'sender':
                 if (v) {
@@ -42,10 +40,9 @@ module.exports = params => {
               default:
                 break;
             }
-
             return obj;
           })
-          .filter(q => q),
+      ),
       ...query?.bool,
     },
   };

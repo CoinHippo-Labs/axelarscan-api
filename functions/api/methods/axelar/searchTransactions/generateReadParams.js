@@ -1,13 +1,5 @@
 module.exports = params => {
-  const {
-    aggs,
-    fields,
-    _source,
-    from,
-    size,
-    sort,
-  } = { ...params };
-
+  const { aggs, fields, _source, from, size, sort } = { ...params };
   return {
     aggs: aggs || undefined,
     fields: fields || undefined,

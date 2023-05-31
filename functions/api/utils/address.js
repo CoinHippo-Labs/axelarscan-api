@@ -1,9 +1,7 @@
 const { bech32 } = require('bech32');
 const { tmhash } = require('tendermint/lib/hash');
 
-const {
-  bech32ToBech32,
-} = require('./bech32');
+const { bech32ToBech32 } = require('./bech32');
 
 const toHash = (string, length) => {
   try {

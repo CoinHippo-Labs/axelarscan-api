@@ -2,9 +2,7 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const lcd = require('../../lcd');
-const {
-  toArray,
-} = require('../../../utils');
+const { toArray } = require('../../../utils');
 
 const MAX_CREATED_AT_TIME_DIFF_DAYS = 7;
 
@@ -17,19 +15,9 @@ module.exports = async data => {
         toArray(data).map(d =>
           new Promise(
             async resolve => {
-              const {
-                chain,
-                batch_id,
-                status,
-                commands,
-              } = { ...d };
-
-              const {
-                ms,
-              } = { ...d.created_at };
-
+              const { chain, batch_id, status, commands } = { ...d };
+              const { ms } = { ...d.created_at };
               const created_at = ms ? moment(ms).unix() : undefined;
-
               switch (status) {
                 case 'BATCHED_COMMANDS_STATUS_SIGNED':
                 case 'BATCHED_COMMANDS_STATUS_SIGNING':
