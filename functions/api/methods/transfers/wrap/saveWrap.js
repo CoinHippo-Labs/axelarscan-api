@@ -1,16 +1,8 @@
 const moment = require('moment');
 
-const {
-  recoverEvents,
-} = require('../../crawler');
-const {
-  get,
-  write,
-} = require('../../../services/index');
-const {
-  WRAP_COLLECTION,
-  getChainKey,
-} = require('../../../utils/config');
+const { recoverEvents } = require('../../crawler');
+const { get, write } = require('../../../services/index');
+const { WRAP_COLLECTION, getChainKey } = require('../../../utils/config');
 
 const fields = [
   {
@@ -37,20 +29,12 @@ const fields = [
   },
 ];
 
-module.exports = async (
-  params = {},
-) => {
+module.exports = async (params = {}) => {
   if (
     fields.findIndex(f => {
-      const {
-        id,
-        type,
-        required,
-      } = { ...f };
-
+      const { id, type, required } = { ...f };
       const value = params[id];
       const is_type_valid = !type || typeof value === type;
-
       return !(required ? value && is_type_valid : value === undefined || is_type_valid);
     }) > -1
   ) {
@@ -68,31 +52,20 @@ module.exports = async (
     };
   }
   else {
-    const data =
-      Object.fromEntries(
-        fields.map(f => {
-          const {
-            id,
-            normalize,
-          } = { ...f };
-
-          const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
-          return [id, value];
-        })
-      );
+    const data = Object.fromEntries(
+      fields.map(f => {
+        const { id, normalize } = { ...f };
+        const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
+        return [id, value];
+      })
+    );
 
     const _id = fields.filter(f => f.is_key && params[f.id]).map(f => params[f.id].toLowerCase()).join('_');
     const response = await write(WRAP_COLLECTION, _id, { ...data, updated_at: moment().valueOf() }, true);
-
-    const {
-      result,
-    } = { ...response };
+    const { result } = { ...response };
 
     if (data.tx_hash_wrap) {
-      const {
-        source_chain,
-      } = { ...await get(WRAP_COLLECTION, _id) };
-
+      const { source_chain } = { ...await get(WRAP_COLLECTION, _id) };
       if (source_chain) {
         await recoverEvents({ txHash: data.tx_hash_wrap, chain: source_chain });
       }

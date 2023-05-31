@@ -1,18 +1,7 @@
-const {
-  toArray,
-} = require('../../../utils');
+const { toArray } = require('../../../utils');
 
 module.exports = params => {
-  const {
-    aggs,
-    fields,
-    _source,
-    from,
-    size,
-    sort,
-    txHash,
-  } = { ...params };
-
+  const { aggs, fields, _source, from, size, sort, txHash } = { ...params };
   return {
     aggs: aggs || undefined,
     fields: fields || undefined,

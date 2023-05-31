@@ -1,19 +1,10 @@
 const _ = require('lodash');
 const moment = require('moment');
 
-const {
-  generateId,
-} = require('../analytics/preprocessing');
+const { generateId } = require('../analytics/preprocessing');
 const lcd = require('../../lcd');
-const {
-  read,
-  write,
-} = require('../../../services/index');
-const {
-  TRANSFER_COLLECTION,
-  UNWRAP_COLLECTION,
-  getChainKey,
-} = require('../../../utils/config');
+const { read, write } = require('../../../services/index');
+const { TRANSFER_COLLECTION, UNWRAP_COLLECTION, getChainKey } = require('../../../utils/config');
 
 const fields = [
   {
@@ -49,24 +40,12 @@ const fields = [
   },
 ];
 
-module.exports = async (
-  params = {},
-) => {
+module.exports = async (params = {}) => {
   if (!params.tx_hash && params.tx_hash_msg_update_client) {
-    const {
-      tx_hash_msg_update_client,
-    } = { ...params };
-    let {
-      tx_hash,
-    } = { ...params };
-
+    const { tx_hash_msg_update_client } = { ...params };
+    let { tx_hash } = { ...params };
     const lcd_response = await lcd(`/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`);
-
-    const {
-      tx_hashes,
-      source_chain,
-    } = { ...lcd_response };
-
+    const { tx_hashes, source_chain } = { ...lcd_response };
     tx_hash = _.head(tx_hashes);
 
     if (tx_hash) {
@@ -79,15 +58,9 @@ module.exports = async (
 
   if (
     fields.findIndex(f => {
-      const {
-        id,
-        type,
-        required,
-      } = { ...f };
-
+      const { id, type, required } = { ...f };
       const value = params[id];
       const is_type_valid = !type || typeof value === type;
-
       return !(required ? value && is_type_valid : value === undefined || is_type_valid);
     }) > -1
   ) {
@@ -105,50 +78,35 @@ module.exports = async (
     };
   }
   else {
-    const data =
-      Object.fromEntries(
-        fields.map(f => {
-          const {
-            id,
-            normalize,
-          } = { ...f };
-
-          const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
-          return [id, value];
-        })
-      );
+    const data = Object.fromEntries(
+      fields.map(f => {
+        const { id, normalize } = { ...f };
+        const value = typeof normalize === 'function' ? normalize(params[id]) : params[id];
+        return [id, value];
+      })
+    );
 
     const _id = fields.filter(f => f.is_key && params[f.id]).map(f => params[f.id].toLowerCase()).join('_');
     const response = await write(UNWRAP_COLLECTION, _id, { ...data, updated_at: moment().valueOf() });
+    const { result } = { ...response };
 
-    const {
-      result,
-    } = { ...response };
-
-    const {
-      tx_hash,
-      deposit_address_link,
-    } = { ...data };
-
+    const { tx_hash, deposit_address_link } = { ...data };
     if (tx_hash) {
-      const response =
-        await read(
-          TRANSFER_COLLECTION,
-          {
-            bool: {
-              must: [
-                { match: { 'send.txhash': tx_hash } },
-                { match: { 'send.recipient_address': deposit_address_link } },
-                { exists: { field: 'send.source_chain' } },
-              ],
-            },
+      const response = await read(
+        TRANSFER_COLLECTION,
+        {
+          bool: {
+            must: [
+              { match: { 'send.txhash': tx_hash } },
+              { match: { 'send.recipient_address': deposit_address_link } },
+              { exists: { field: 'send.source_chain' } },
+            ],
           },
-          { size: 1 },
-        );
-
+        },
+        { size: 1 },
+      );
       const transfer_data = _.head(response?.data);
       const _id = generateId(transfer_data);
-
       if (_id) {
         await write(TRANSFER_COLLECTION, _id, { ...transfer_data, unwrap: data, type: 'unwrap' }, true);
       }

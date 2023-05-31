@@ -1,51 +1,19 @@
-const {
-  Contract,
-} = require('ethers');
+const { Contract } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
 
-const {
-  generateId,
-} = require('../../transfers/analytics/preprocessing');
-const {
-  getTimeSpent,
-} = require('../../transfers/analytics/analyzing');
-const {
-  read,
-  write,
-} = require('../../../services/index');
-const {
-  getProvider,
-} = require('../../../utils/chain/evm');
-const {
-  TRANSFER_COLLECTION,
-  BATCH_COLLECTION,
-  COMMAND_EVENT_COLLECTION,
-  getChainsList,
-  getChainKey,
-  getChainData,
-} = require('../../../utils/config');
-const {
-  getGranularity,
-} = require('../../../utils/time');
+const { generateId } = require('../../transfers/analytics/preprocessing');
+const { getTimeSpent } = require('../../transfers/analytics/analyzing');
+const { read, write } = require('../../../services/index');
+const { getProvider } = require('../../../utils/chain/evm');
+const { TRANSFER_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainKey, getChainData } = require('../../../utils/config');
+const { getGranularity } = require('../../../utils/time');
 
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
-module.exports = async (
-  lcd_response = {},
-  created_at,
-) => {
-  const {
-    id,
-    command_ids,
-    status,
-    chain,
-    commands,
-  } = { ...lcd_response };
-  let {
-    batch_id,
-  } = { ...lcd_response };
-
+module.exports = async (lcd_response = {}, created_at) => {
+  const { id, command_ids, status, chain, commands } = { ...lcd_response };
+  let { batch_id } = { ...lcd_response };
   batch_id = batch_id || id;
 
   if (created_at) {
@@ -62,12 +30,8 @@ module.exports = async (
   };
 
   const updated_transfers_data = {};
-
   if (status === 'BATCHED_COMMANDS_STATUS_SIGNED' && command_ids) {
-    const {
-      gateway_address,
-    } = { ...getChainData(chain, 'evm') };
-
+    const { gateway_address } = { ...getChainData(chain, 'evm') };
     const provider = getProvider(chain);
     const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
 
@@ -78,58 +42,43 @@ module.exports = async (
         created_at: lcd_response.created_at,
       };
 
-      for (const command_id of command_ids.filter(c => parseInt(c, 16) > 0)) {
+      for (const command_id of command_ids.filter(c => parseInt(c, 16) > 0 && !parseInt(c, 16).toString().includes('e+'))) {
         try {
           const transfer_id = parseInt(command_id, 16);
-
           command = {
             ...command,
             command_id,
             transfer_id,
           };
 
-          const response =
-            await read(
-              TRANSFER_COLLECTION,
-              {
-                bool: {
-                  must: [
-                    { exists: { field: 'send.txhash' } },
-                  ],
-                  should: [
-                    { match: { 'confirm.transfer_id': transfer_id } },
-                    { match: { 'vote.transfer_id': transfer_id } },
-                    { match: { transfer_id } },
-                  ],
-                  minimum_should_match: 1,
-                },
+          const response = await read(
+            TRANSFER_COLLECTION,
+            {
+              bool: {
+                must: [
+                  { exists: { field: 'send.txhash' } },
+                ],
+                should: [
+                  { match: { 'confirm.transfer_id': transfer_id } },
+                  { match: { 'vote.transfer_id': transfer_id } },
+                  { match: { transfer_id } },
+                ],
+                minimum_should_match: 1,
               },
-              { size: 100 },
-            );
-
-          const {
-            data,
-          } = { ...response };
-
+            },
+            { size: 100 },
+          );
+          const { data } = { ...response };
           const transfer_data = _.head(data);
 
           if (transfer_data) {
             const index = commands.findIndex(c => c?.id === command_id);
-
-            let {
-              executed,
-              transactionHash,
-              transactionIndex,
-              logIndex,
-              block_timestamp,
-            } = { ...transfer_data.command };
+            let { executed, transactionHash, transactionIndex, logIndex, block_timestamp } = { ...transfer_data.command };
 
             executed = !!(executed || transactionHash || commands[index]?.executed);
-
             if (!executed) {
               try {
                 executed = await gateway.isCommandExecuted(`0x${command_id}`);
-
                 if (executed) {
                   if (index > -1) {
                     commands[index].executed = executed;
@@ -139,22 +88,20 @@ module.exports = async (
             }
 
             if (!transactionHash) {
-              const response =
-                await read(
-                  COMMAND_EVENT_COLLECTION,
-                  {
-                    bool: {
-                      must: [
-                        { match: { chain } },
-                        { match: { command_id } },
-                      ],
-                    },
+              const response = await read(
+                COMMAND_EVENT_COLLECTION,
+                {
+                  bool: {
+                    must: [
+                      { match: { chain } },
+                      { match: { command_id } },
+                    ],
                   },
-                  { size: 1 },
-                );
+                },
+                { size: 1 },
+              );
 
               const command_event = _.head(response?.data);
-
               if (command_event) {
                 transactionHash = command_event.transactionHash;
                 transactionIndex = command_event.transactionIndex;
@@ -164,7 +111,6 @@ module.exports = async (
                 if (transactionHash) {
                   executed = true;
                 }
-
                 if (index > -1) {
                   commands[index] = {
                     ...commands[index],
@@ -188,20 +134,13 @@ module.exports = async (
             };
 
             for (const d of data) {
-              const {
-                send,
-              } = { ...d };
-
-              const {
-                txhash,
-                sender_address,
-                source_chain,
-              } = { ...send };
+              const { send } = { ...d };
+              const { txhash, sender_address, source_chain } = { ...send };
 
               send.source_chain = getChainKey(getChainsList('cosmos').filter(c => c.id !== 'axelarnet').find(c => sender_address?.startsWith(c.prefix_address))?.id || source_chain);
               d.send = send;
-              const _id = generateId(d);
 
+              const _id = generateId(d);
               if (_id) {
                 updated_transfers_data[_id] = {
                   ...d,
@@ -227,17 +166,11 @@ module.exports = async (
   if (status !== 'BATCHED_COMMANDS_STATUS_SIGNED' && commands.filter(c => !c.executed).length < 1) {
     lcd_response.status = 'BATCHED_COMMANDS_STATUS_SIGNED';
   }
-
   await write(BATCH_COLLECTION, batch_id, lcd_response);
 
   for (const entry of Object.entries(updated_transfers_data)) {
-    const [
-      id,
-      data,
-    ] = entry;
-
+    const [d, data] = entry;
     await write(TRANSFER_COLLECTION, id, data, true);
   }
-
   return lcd_response;
 };

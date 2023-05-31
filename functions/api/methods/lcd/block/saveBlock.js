@@ -1,37 +1,13 @@
-const {
-  write,
-} = require('../../../services/index');
-const {
-  BLOCK_COLLECTION,
-} = require('../../../utils/config');
-const {
-  toArray,
-} = require('../../../utils');
+const { write } = require('../../../services/index');
+const { BLOCK_COLLECTION } = require('../../../utils/config');
+const { toArray } = require('../../../utils');
 
-module.exports = async (
-  lcd_response = {},
-) => {
-  const {
-    block,
-    block_id,
-  } = { ...lcd_response };
-
-  const {
-    header,
-    data,
-  } = { ...block };
-
-  const {
-    height,
-  } = { ...header };
-
-  const {
-    txs,
-  } = { ...data };
-
-  const {
-    hash,
-  } = { ...block_id };
+module.exports = async (lcd_response = {}) => {
+  const { block, block_id } = { ...lcd_response };
+  const { header, data } = { ...block };
+  const { height } = { ...header };
+  const { txs } = { ...data };
+  const { hash } = { ...block_id };
 
   if (height && hash) {
     await write(
@@ -44,6 +20,5 @@ module.exports = async (
       },
     );
   }
-
   return lcd_response;
 };

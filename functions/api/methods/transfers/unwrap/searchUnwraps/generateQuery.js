@@ -1,15 +1,10 @@
-const {
-  toArray,
-} = require('../../../../utils');
+const { toArray } = require('../../../../utils');
 
 module.exports = params => {
-  const {
-    query,
-  } = { ...params };
-
+  const { query } = { ...params };
   return {
     bool: {
-      must:
+      must: toArray(
         Object.entries(params)
           .filter(([k, v]) =>
             ![
@@ -26,7 +21,6 @@ module.exports = params => {
           )
           .map(([k, v]) => {
             let obj;
-
             switch (k) {
               case 'depositAddress':
                 if (v) {
@@ -53,16 +47,15 @@ module.exports = params => {
                   v = toArray(v);
                   obj = {
                     bool: {
-                      should:
-                        v.map(c => {
-                          return {
-                            bool: {
-                              must: [
-                                { match: { source_chain: c } },
-                              ],
-                            },
-                          };
-                        }),
+                      should: v.map(c => {
+                        return {
+                          bool: {
+                            must: [
+                              { match: { source_chain: c } },
+                            ],
+                          },
+                        };
+                      }),
                       minimum_should_match: 1,
                     },
                   };
@@ -73,16 +66,15 @@ module.exports = params => {
                   v = toArray(v);
                   obj = {
                     bool: {
-                      should:
-                        v.map(c => {
-                          return {
-                            bool: {
-                              must: [
-                                { match: { destination_chain: c } },
-                              ],
-                            },
-                          };
-                        }),
+                      should: v.map(c => {
+                        return {
+                          bool: {
+                            must: [
+                              { match: { destination_chain: c } },
+                            ],
+                          },
+                        };
+                      }),
                       minimum_should_match: 1,
                     },
                   };
@@ -140,10 +132,9 @@ module.exports = params => {
               default:
                 break;
             }
-
             return obj;
           })
-          .filter(q => q),
+      ),
       ...query?.bool,
     },
   };
