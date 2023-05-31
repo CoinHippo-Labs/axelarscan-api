@@ -467,14 +467,21 @@ module.exports = async (params = {}) => {
               }
             }
 
-            if (['unwrap', 'deposit_address'].includes(d.type) && typeof link?.price !== 'number') {
-              if (!link) {
-                const response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
-                d.link = normalizeLink(_.head(response?.data));
-                d.link = await updateLink(d.link, send);
+            if (['unwrap', 'deposit_address', 'send_token'].includes(d.type)) {
+              if (typeof link?.price !== 'number') {
+                if (!link) {
+                  const response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
+                  d.link = normalizeLink(_.head(response?.data));
+                }
+                if (d.link) {
+                  d.link = await updateLink(d.link, send);
+                  d.send = await updateSend(send, d.link, { ...d, time_spent: getTimeSpent(d) }, true);
+                  _updated = true;
+                  wrote = true;
+                }
               }
-              if (d.link) {
-                await updateSend(send, d.link, { ...d, time_spent: getTimeSpent(d) }, true);
+              else if (!(d.send.destination_chain && typeof d.send.amount === 'number' && typeof d.send.value === 'number' && typeof d.send.fee === 'number')) {
+                d.send = await updateSend(send, d.link, { ...d, time_spent: getTimeSpent(d) }, true);
                 _updated = true;
                 wrote = true;
               }
@@ -513,8 +520,10 @@ module.exports = async (params = {}) => {
                 }
 
                 if (!d.send?.insufficient_fee) {
-                  await Promise.all(_.range(1, 7).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` })))));
-                  await sleep(0.25 * 1000);
+                  // await Promise.all(_.range(1, 7).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` })))));
+                  // await sleep(0.25 * 1000);
+                  _.range(1, 7).forEach(i => lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` }));
+                  await sleep(5 * 1000);
                   d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
                 }
               }
