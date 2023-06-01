@@ -223,7 +223,7 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
-          ibc_denom: 'ibc/25BEA899D29934A185A2492310B1FF00FB3204C9BC93585EC84A3A30CD92279B',
+          ibc_denom: 'ibc/FC0FF958BC92354A5EF218C511B6949B29407D9EBEB741E2833137961ABAFD96',
           chain_id: 'secret-snip',
           decimals: 6,
           symbol: 'axlUSDC',
@@ -517,7 +517,7 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
-          ibc_denom: 'ibc/EC0C01200C242487466875F8FFE145751F77F64B92E373086288F5247D0D8190',
+          ibc_denom: 'ibc/7B00195095D3EA3A8B423E135AFA34F007C162CA84DF842A09F1EEDD3E2BDFC3',
           chain_id: 'secret-snip',
           decimals: 6,
           symbol: 'axlUSDT',
@@ -740,7 +740,7 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
-          ibc_denom: 'ibc/2AED702BADDD946658DB10674DA6E72C55B4A83D6CFEF90E5A1619F5F754B501',
+          ibc_denom: 'ibc/A7B80FED32358A60A9D263E257CE253F62CA84FA98AC38A8D5566F2CBE334870',
           chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlDAI',
@@ -898,6 +898,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/ABC6463CAA1EA8C15167DBD278C82B1E6193D9D7847DEC458DE87E12A5BE978E',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlBUSD',
+        },
+        {
+          ibc_denom: 'ibc/A70B6DE4D351223C4279BAF43E84930B03D3C44BDD5EA71E5CB5AF4CC728BA1E',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlBUSD',
         },
@@ -1112,7 +1118,7 @@ module.exports = {
           symbol: 'axlFRAX',
         },
         {
-          ibc_denom: 'ibc/CCF1B6F8A77AACE16BB5A85091CD244E8F9DA1CBC1B264A68691DD4F21EF5A11',
+          ibc_denom: 'ibc/B14422DAD95A933EABD371100A64B4F80231C2968169141E41F03ACD5CCEE796',
           chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlFRAX',
@@ -1402,7 +1408,7 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
-          ibc_denom: 'ibc/2F77C3C70B60DE12DBC8C89230888C4575A7B5831FC201BC0A5FA15A590DE682',
+          ibc_denom: 'ibc/45647DBF247B01D3335938040D7608F6FD8431B6255C7B5DEA77E963DD2F7148',
           chain_id: 'secret-snip',
           decimals: 8,
           symbol: 'axlWBTC',
@@ -1570,7 +1576,7 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
-          ibc_denom: 'ibc/ED182F6ABD428EFCE49C2985E2B65DD194E0DEFEAFAE60D99F790701046EDA23',
+          ibc_denom: 'ibc/63D64CE0A4CAAE106B251E1B3DB351A0384B1D00A65DCC88CC0F43D7C06D28F7',
           chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlWETH',
@@ -1745,7 +1751,7 @@ module.exports = {
           symbol: 'axlETH',
         },
         {
-          ibc_denom: 'ibc/ED182F6ABD428EFCE49C2985E2B65DD194E0DEFEAFAE60D99F790701046EDA23',
+          ibc_denom: 'ibc/63D64CE0A4CAAE106B251E1B3DB351A0384B1D00A65DCC88CC0F43D7C06D28F7',
           chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlETH',
@@ -1907,7 +1913,7 @@ module.exports = {
           symbol: 'axlWBNB',
         },
         {
-          ibc_denom: 'ibc/31FE8A2E9407F61D7675675ACC73C0D088C8885B93B2495BDEBFBF0BF07B93E1',
+          ibc_denom: 'ibc/9B8AAD7F324DE8BD46626BDB6A4142D0AEA2F2F27CD804D9D564B057E03EB0FF',
           chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlWBNB',
@@ -2070,7 +2076,7 @@ module.exports = {
           symbol: 'axlBNB',
         },
         {
-          ibc_denom: 'ibc/31FE8A2E9407F61D7675675ACC73C0D088C8885B93B2495BDEBFBF0BF07B93E1',
+          ibc_denom: 'ibc/9B8AAD7F324DE8BD46626BDB6A4142D0AEA2F2F27CD804D9D564B057E03EB0FF',
           chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlBNB',
@@ -5833,6 +5839,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A68DABF68FD9B27FA921C984DFB9B646478C68C0A8DF6E19AA2C0DD3CF2469F8',
           chain_id: 'secret',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
+          ibc_denom: 'ibc/294FFCD5D161FC31C182406396ED25272773708263BCC0A2CCA4D92B3E7A290A',
+          chain_id: 'secret-snip',
           decimals: 18,
           symbol: 'axlUNI',
         },
