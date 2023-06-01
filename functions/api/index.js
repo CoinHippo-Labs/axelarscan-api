@@ -34,6 +34,7 @@ exports.handler = async (event, context, callback) => {
     resolveTransfer,
     getTVL,
     getTVLAlert,
+    saveEvent,
     saveDepositForWrap,
     saveWrap,
     saveDepositForUnwrap,
@@ -435,6 +436,13 @@ exports.handler = async (event, context, callback) => {
       case 'getTVL':
         try {
           output = await getTVL(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveEvent':
+        try {
+          output = await saveEvent(params);
         } catch (error) {
           output = errorOutput(error);
         }

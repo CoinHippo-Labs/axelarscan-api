@@ -276,7 +276,7 @@ module.exports = async (params = {}) => {
                 if (status !== 'BATCHED_COMMANDS_STATUS_SIGNED' && commands.filter(c => !c.executed).length < 1) {
                   lcd_response.status = 'BATCHED_COMMANDS_STATUS_SIGNED';
                 }
-                await write(BATCH_COLLECTION, batch_id, { ...batch, status, commands, blockNumber }, true);
+                output = await write(BATCH_COLLECTION, batch_id, { ...batch, status, commands, blockNumber }, true);
               }
             }
           }

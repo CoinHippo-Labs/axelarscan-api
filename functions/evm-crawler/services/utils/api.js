@@ -39,8 +39,11 @@ const saveEvent = async (event, chain, contractAddress, env = environment) => {
         output = data;
         break;
       }
+      else if (error) {
+        output = error;
+      }
     }
-    log('debug', service_name, 'save event result', { output, error, params });
+    log('debug', service_name, 'save event result', { output, params });
   }
 
   return output;

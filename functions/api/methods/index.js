@@ -10,6 +10,7 @@ const { getProposals, getProposal } = require('./proposals');
 const { searchBatches } = require('./batches');
 const { searchDepositAddresses, transfersStats, transfersChart, transfersCumulativeVolume, transfersTotalVolume, searchTransfers, resolveTransfer } = require('./transfers');
 const { getTVL, getTVLAlert } = require('./tvl');
+const { saveEvent } = require('./events');
 const { saveDepositForWrap, saveWrap } = require('./transfers/wrap');
 const { saveDepositForUnwrap, saveUnwrap } = require('./transfers/unwrap');
 const { saveDepositForERC20Transfer, saveERC20Transfer } = require('./transfers/erc20-transfer');
@@ -49,6 +50,7 @@ module.exports = {
   resolveTransfer,
   getTVL,
   getTVLAlert,
+  saveEvent,
   saveDepositForWrap,
   saveWrap,
   saveDepositForUnwrap,
