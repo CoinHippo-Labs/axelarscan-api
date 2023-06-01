@@ -1,5 +1,4 @@
 module.exports = {
-  
   mainnet: [
     {
       id: 'uaxl',
