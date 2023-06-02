@@ -246,6 +246,7 @@ const normalizeLink = link => {
 
 const updateLink = async (link, send) => {
   if (link) {
+    link = normalizeLink(link);
     const { deposit_address, asset } = { ...link };
     let { original_source_chain, source_chain, sender_address, denom, price } = { ...link };
 

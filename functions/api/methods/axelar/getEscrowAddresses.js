@@ -3,7 +3,7 @@ const moment = require('moment');
 
 const { read } = require('../../services/index');
 const { IBC_CHANNEL_COLLECTION, getChainsList, getChainData, getAssets, getAssetData } = require('../../utils/config');
-const { toHash,  getAddress } = require('../../utils/address');
+const { toHash, getAddress } = require('../../utils/address');
 const { toArray } = require('../../utils');
 
 module.exports = async (params = {}) => {

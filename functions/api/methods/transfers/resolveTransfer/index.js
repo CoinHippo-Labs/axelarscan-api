@@ -1,4 +1,4 @@
-const { Contract, ZeroAddress } = require('ethers');
+const { Contract, ZeroAddress, getAddress } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
 
@@ -481,6 +481,7 @@ module.exports = async (params = {}) => {
                 }
               }
               else if (!(d.send.destination_chain && typeof d.send.amount === 'number' && typeof d.send.value === 'number' && typeof d.send.fee === 'number')) {
+                d.link = await updateLink(d.link, send);
                 d.send = await updateSend(send, d.link, { ...d, time_spent: getTimeSpent(d) }, true);
                 _updated = true;
                 wrote = true;
@@ -503,8 +504,23 @@ module.exports = async (params = {}) => {
         async resolve => {
           const _id = generateId(d);
           if (_id) {
+            let updated;
             if (['ibc_sent', 'batch_signed', 'voted'].includes(d.status) && !d.send?.insufficient_fee && d.vote?.txhash && d.vote.success && !(d.vote.transfer_id || d.confirm?.transfer_id)) {
               await lcd(`/cosmos/tx/v1beta1/txs/${d.vote.txhash}`, { index: true });
+              updated = true;
+            }
+            else if (d.status === 'asset_sent' && !d.send?.insufficient_fee && d.send?.recipient_address) {
+              let { recipient_address } = { ...d.send };
+              recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
+              if (!recipient_address.startsWith('0x')) {
+                await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `message.sender='${recipient_address}'` });
+                await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.sender='${recipient_address}'` });
+              }
+              await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `link.depositAddress='${recipient_address}'` });
+              // await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.recipient='${recipient_address}'` });
+              updated = true;
+            }
+            if (updated) {
               await sleep(0.25 * 1000);
               d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
             }
