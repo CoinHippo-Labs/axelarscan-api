@@ -2306,8 +2306,8 @@ module.exports = {
         ],
         endpoints: {
           lcds: [
-            'https://sei-testnet-rest.brocha.in',
-            'https://rest-sei-test.ecostake.com',
+            'https://rest.atlantic-2.seinetwork.io',
+            'https://sei-testnet-2-rest.brocha.in',
           ],
         },
       },
