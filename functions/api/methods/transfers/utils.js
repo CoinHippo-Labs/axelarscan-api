@@ -197,12 +197,14 @@ const getBlockTime = async (provider, blockNumber, chain) => {
       if (timestamp) {
         output = timestamp;
       }
-    } catch (error) {
+    } catch (error) {}
+
+    if (!output) {
       const chain_data = getChainData(chain, 'evm');
       for (const url of toArray(chain_data?.endpoints?.rpc)) {
         try {
           const rpc = axios.create({ baseURL: url });
-          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: [toBeHex(blockNumber), false], id: 0 }).catch(error => { return { error: error?.response?.data }; });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: [toBeHex(blockNumber).replace('0x0', '0x'), false], id: 0 }).catch(error => { return { error: error?.response?.data }; });
           const { data } = { ...response };
           const { timestamp } = { ...data?.result };
           if (timestamp) {
