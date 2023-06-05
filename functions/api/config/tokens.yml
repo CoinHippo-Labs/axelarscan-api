@@ -120,6 +120,9 @@ SOMM:
 NTRN:
   coingecko_id: "neutron-1"
   decimals: 6
+REBUS:
+  coingecko_id: "rebus"
+  decimals: 6
 LUNA:
   coingecko_id: "terra-luna-2"
   decimals: 6

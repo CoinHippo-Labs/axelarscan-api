@@ -21,7 +21,7 @@ mainnet:
     arbitrum:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism:
-      address: ""
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     base:
       address: ""
     celo:

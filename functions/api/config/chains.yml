@@ -665,6 +665,36 @@ mainnet:
       prefix_address: "secret"
       prefix_chain_ids:
         - "secret-"
+    sei:
+      chain_name: "sei"
+      endpoints:
+        lcd:
+          - "https://sei-api.polkachu.com"
+          - "https://sei-rest.brocha.in"
+          - "https://rest-sei.rhinostake.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Sei"
+        symbol: "SEI"
+        decimals: 6
+      name: "Sei"
+      short_name: "SEI"
+      image: "/logos/chains/sei.svg"
+      color: "#b5354f"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/sei"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "sei"
+      prefix_chain_ids:
+        - "pacific-"
     stargaze:
       chain_name: "stargaze"
       endpoints:
@@ -820,6 +850,33 @@ mainnet:
       prefix_address: "evmos"
       prefix_chain_ids:
         - "evmos_"
+    aura:
+      chain_name: "aura"
+      endpoints:
+        lcd:
+          - "https://lcd.aura.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Aura"
+        symbol: "AURA"
+        decimals: 6
+      name: "Aura"
+      short_name: "AURA"
+      image: "/logos/chains/aura.svg"
+      color: "#7bdddc"
+      explorer:
+        name: "Aurascan"
+        url: "https://aurascan.io"
+        icon: "/logos/explorers/aura.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "aura"
+      prefix_chain_ids:
+        - "xstaxy-"
     comdex:
       chain_name: "comdex"
       endpoints:
@@ -1153,6 +1210,34 @@ mainnet:
       prefix_address: "neutron"
       prefix_chain_ids:
         - "neutron-"
+    rebus:
+      chain_name: "rebus"
+      endpoints:
+        lcd:
+          - "https://api.rebuschain.com:1317"
+          - "https://api.mainnet.rebus.money:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Rebus"
+        symbol: "REBUS"
+        decimals: 6
+      name: "Rebus"
+      short_name: "REBUS"
+      image: "/logos/chains/rebus.svg"
+      color: "#e95075"
+      explorer:
+        name: "Rebus"
+        url: "https://rebus.explorers.guru"
+        icon: "/logos/explorers/rebus.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "rebus"
+      prefix_chain_ids:
+        - "reb_"
     terra-2:
       chain_name: "terra-2"
       endpoints:
