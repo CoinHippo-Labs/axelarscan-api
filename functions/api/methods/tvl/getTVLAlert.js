@@ -71,19 +71,10 @@ module.exports = async (params = {}) => {
         evm_escrow_address_urls,
         tvl,
       } = { ...d };
-
-      const {
-        native_chain,
-        symbol,
-        addresses,
-      } = { ...getAssetData(asset) };
-
-      const {
-        chain_type,
-      } = { ...getChainData(native_chain) };
+      const { native_chain, symbol, addresses } = { ...getAssetData(asset) };
+      const { chain_type } = { ...getChainData(native_chain) };
 
       const app_urls = app && [`${app}/tvl`, `${app}/transfers/search?asset=${asset}&fromTime=${moment().subtract(24, 'hours').valueOf()}&toTime=${moment().valueOf()}&sortBy=value`];
-
       return {
         asset,
         symbol,
@@ -129,9 +120,7 @@ module.exports = async (params = {}) => {
                   let { supply } = { ...v };
 
                   if (k === native_chain && k !== 'axelarnet') {
-                    const {
-                      total,
-                    } = { ...tvl?.axelarnet };
+                    const { total } = { ...tvl?.axelarnet };
                     supply = typeof total === 'number' ? total : supply;
                   }
 

@@ -22,10 +22,7 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
     let cache_hit = false;
     let cache_id = toArray(path, 'lower', '/').join('_');
 
-    if (
-      Object.keys({ ...params }).findIndex(k => ['pagination', 'events', 'subspace'].findIndex(s => k.includes(s)) > -1) > -1 ||
-      ['/cosmos/tx/v1beta1/txs'].findIndex(p => path.startsWith(p)) > -1
-    ) {
+    if (Object.keys({ ...params }).findIndex(k => ['pagination', 'events', 'subspace'].findIndex(s => k.includes(s)) > -1) > -1 || ['/cosmos/tx/v1beta1/txs'].findIndex(p => path.startsWith(p)) > -1) {
       cache_id = null;
     }
 
@@ -92,7 +89,7 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
     }
 
     const { index, created_at } = { ...params };
-    const { tx_response, tx_responses, block, channels, command_ids  } = { ...output };
+    const { tx_response, tx_responses, block, channels, command_ids } = { ...output };
 
     if (path.startsWith('/cosmos/tx/v1beta1/txs/') && !path.endsWith('/') && tx_response?.txhash) {
       if (index) {

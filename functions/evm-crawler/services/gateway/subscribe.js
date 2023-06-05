@@ -18,13 +18,7 @@ const onEmit = async (chain_data, data, env = environment) => {
       const { address, abi } = { ...gateway };
 
       // event attributes
-      const {
-        transactionHash,
-        transactionIndex,
-        logIndex,
-        event,
-        args,
-      } = { ...data };
+      const { transactionHash, transactionIndex, logIndex, event, args } = { ...data };
       // set event id from transaction hash with index
       data.id = `${transactionHash}_${transactionIndex}_${logIndex}`;
 

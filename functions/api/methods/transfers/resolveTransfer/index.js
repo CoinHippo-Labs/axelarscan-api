@@ -6,6 +6,8 @@ const { generateId } = require('../analytics/preprocessing');
 const { getTimeSpent } = require('../analytics/analyzing');
 const addFieldsToResult = require('../searchTransfers/addFieldsToResult'); 
 const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../utils');
+const { searchTransactions } = require('../../axelar');
+const indexTransaction = require('../../lcd/tx');
 const { recoverEvents } = require('../../crawler');
 const lcd = require('../../lcd');
 const { get, read, write } = require('../../../services/index');
@@ -13,7 +15,7 @@ const { getProvider } = require('../../../utils/chain/evm');
 const { getLCDs } = require('../../../utils/chain/cosmos');
 const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-const { sleep, equalsIgnoreCase, toArray } = require('../../../utils');
+const { sleep, equalsIgnoreCase, toArray, includesStringList } = require('../../../utils');
 
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
@@ -511,7 +513,7 @@ module.exports = async (params = {}) => {
             }
             else if (d.status === 'asset_sent' && !d.send?.insufficient_fee && d.send?.recipient_address) {
               let { recipient_address } = { ...d.send };
-              recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
+              recipient_address = recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
               if (!recipient_address.startsWith('0x')) {
                 await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `message.sender='${recipient_address}'` });
                 await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.sender='${recipient_address}'` });
@@ -536,10 +538,29 @@ module.exports = async (params = {}) => {
                 }
 
                 if (!d.send?.insufficient_fee) {
-                  // await Promise.all(_.range(1, 7).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` })))));
-                  // await sleep(0.25 * 1000);
-                  _.range(1, 7).forEach(i => lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` }));
-                  await sleep(5 * 1000);
+                  await Promise.all(_.range(1, 1).map(i => new Promise(async resolve => resolve(await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `tx.height=${height + i}` })))));
+                  await Promise.all(_.range(2, 7).map(i => new Promise(async resolve => {
+                    let type;
+                    switch (d.status) {
+                      case 'ibc_sent':
+                        type = ['MsgAcknowledgement', 'MsgTimeout'];
+                        break;
+                      case 'voted':
+                        type = ['RouteIBCTransfersRequest', 'ExecutePendingTransfersRequest'];
+                        break;
+                      case 'deposit_confirmed':
+                        type = getChainData(d.send.source_chain, 'evm') ? 'VoteRequest' : 'RouteIBCTransfersRequest';
+                        break;
+                      default:
+                        break;
+                    }
+
+                    const fromBlock = height + i;
+                    const toBlock = fromBlock;
+                    const response = await searchTransactions({ type, fromBlock, toBlock, size: 100 });
+                    const { data } = { ...response };
+                    resolve(await Promise.all(toArray(data).map(d => new Promise(async resolve => resolve(await indexTransaction({ tx: d.tx, tx_response: d }, { index_transfer: true, from_indexer: true }))))));
+                  })));
                   d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
                 }
               }

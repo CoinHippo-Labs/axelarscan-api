@@ -29,7 +29,21 @@ module.exports = params => {
                 break;
               case 'type':
                 if (v) {
-                  obj = { match: { types: v } };
+                  v = toArray(v);
+                  obj = {
+                    bool: {
+                      should: v.map(t => {
+                        return {
+                          bool: {
+                            must: [
+                              { match: { types: t } },
+                            ],
+                          },
+                        };
+                      }),
+                      minimum_should_match: 1,
+                    },
+                  };
                 }
                 break;
               case 'address':

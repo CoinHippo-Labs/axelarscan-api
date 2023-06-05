@@ -1,47 +1,34 @@
 const _ = require('lodash');
 
-const {
-  read,
-} = require('../../../services/index');
-const {
-  TX_COLLECTION,
-} = require('../../../utils/config');
-const {
-  toArray,
-} = require('../../../utils');
+const { read } = require('../../../services/index');
+const { TX_COLLECTION } = require('../../../utils/config');
+const { toArray } = require('../../../utils');
 
 module.exports = async params => {
-  const {
-    query,
-    voter,
-  } = { ...params };
+  const { query, voter } = { ...params };
 
   if (voter) {
     params.voter = voter.toLowerCase();
-
-    const response =
-      await read(
-        TX_COLLECTION,
-        {
-          bool: {
-            must: [
-              { match: { types: 'RegisterProxyRequest' } },
-              { match: { 'tx.body.messages.proxy_addr': params.voter } },
-            ],
-          },
+    const response = await read(
+      TX_COLLECTION,
+      {
+        bool: {
+          must: [
+            { match: { types: 'RegisterProxyRequest' } },
+            { match: { 'tx.body.messages.proxy_addr': params.voter } },
+          ],
         },
-        { size: 1 },
-      );
-
+      },
+      { size: 1 },
+    );
     const transaction_data = _.head(response?.data);
-
     params.height = params.height || transaction_data?.height;
     params.operator_address = params.operator_address || _.head(toArray(transaction_data?.tx?.body?.messages).map(m => m.sender));
   }
 
   return {
     bool: {
-      must:
+      must: toArray(
         Object.entries(params)
           .filter(([k, v]) =>
             ![
@@ -58,7 +45,6 @@ module.exports = async params => {
           )
           .map(([k, v]) => {
             let obj;
-
             switch (k) {
               case 'pollId':
                 if (v) {
@@ -75,16 +61,15 @@ module.exports = async params => {
                   v = toArray(v);
                   obj = {
                     bool: {
-                      should:
-                        v.map(c => {
-                          return {
-                            bool: {
-                              must: [
-                                { match: { sender_chain: c } },
-                              ],
-                            },
-                          };
-                        }),
+                      should: v.map(c => {
+                        return {
+                          bool: {
+                            must: [
+                              { match: { sender_chain: c } },
+                            ],
+                          },
+                        };
+                      }),
                       minimum_should_match: 1,
                     },
                   };
@@ -109,7 +94,7 @@ module.exports = async params => {
                 if (v) {
                   obj = {
                     bool: {
-                      must: [
+                      must: toArray([
                         { range: { height: { gte: params.height } } },
                         params.vote === 'yes' ?
                           { match: { [`${v}.vote`]: true } } :
@@ -146,9 +131,8 @@ module.exports = async params => {
                                 },
                               } :
                               null,
-                      ]
-                      .filter(m => m),
-                      should: [
+                      ]),
+                      should: toArray([
                         { exists: { field: v } },
                         { match: { participants: params.operator_address } },
                         params.vote === 'unsubmitted' && {
@@ -163,8 +147,7 @@ module.exports = async params => {
                             ],
                           },
                         },
-                      ]
-                      .filter(s => s),
+                      ]),
                       minimum_should_match: 1,
                     },
                   };
@@ -304,10 +287,9 @@ module.exports = async params => {
               default:
                 break;
             }
-
             return obj;
           })
-          .filter(q => q),
+      ),
       ...query?.bool,
     },
   };
