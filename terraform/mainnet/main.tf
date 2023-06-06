@@ -161,7 +161,7 @@ resource "aws_lambda_function" "function" {
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 240
-  memory_size      = 384
+  memory_size      = 512
   environment {
     variables = {
       NODE_NO_WARNINGS           = 1
