@@ -1359,6 +1359,12 @@ module.exports = {
         },
         {
           contract_address: '0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad',
+          chain_id: 2222,
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          contract_address: '0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad',
           chain_id: 314,
           decimals: 8,
           symbol: 'axlWBTC',
@@ -1524,6 +1530,12 @@ module.exports = {
           chain_id: 1,
           decimals: 18,
           is_native: true,
+        },
+        {
+          contract_address: '0xb829b68f57CC546dA7E5806A929e53bE32a4625D',
+          chain_id: 2222,
+          decimals: 18,
+          symbol: 'axlWETH',
         },
         {
           contract_address: '0xb829b68f57CC546dA7E5806A929e53bE32a4625D',
@@ -1693,6 +1705,12 @@ module.exports = {
           chain_id: 1,
           decimals: 18,
           is_native: true,
+        },
+        {
+          contract_address: '0xb829b68f57CC546dA7E5806A929e53bE32a4625D',
+          chain_id: 2222,
+          decimals: 18,
+          symbol: 'axlETH',
         },
         {
           contract_address: '0xb829b68f57CC546dA7E5806A929e53bE32a4625D',
