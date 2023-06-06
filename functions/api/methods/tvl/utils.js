@@ -18,7 +18,7 @@ const getTokenSupply = async (contract_data, provider, chain) => {
         const rpc = axios.create({ baseURL: url });
         const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_call', params: [{ to: address, data: keccak256(toUtf8Bytes('totalSupply()')) }, 'latest'], id: 0 }).catch(error => { return { error: error?.response?.data }; });
         const { data } = { ...response };
-        const { esult } = { ...data };
+        const { result } = { ...data };
         if (result) {
           supply = toBigNumber(result);
           break;
