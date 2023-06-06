@@ -1668,9 +1668,9 @@ mainnet:
       kujira:
         ibc_denom: "ibc/12B075C6C552060240E92A4A215CAF4DB0F1CA98F90897AB30282B9A15842595"
         symbol: "axlFIL"
-      secret:
-        ibc_denom: "ibc/5641EAC324DADD2C59ABB0E9E4F8C74763AD377EAC1BB43E02E849A5AC343084"
-        symbol: "axlFIL"
+      # secret:
+      #   ibc_denom: "ibc/5641EAC324DADD2C59ABB0E9E4F8C74763AD377EAC1BB43E02E849A5AC343084"
+      #   symbol: "axlFIL"
       stargaze:
         ibc_denom: "ibc/98700E5C77A9BA52269C33E1A3CFAC86B91900D7C7976FF5712D16BD0BE244E8"
         symbol: "axlFIL"
