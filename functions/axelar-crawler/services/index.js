@@ -14,7 +14,7 @@ module.exports = context => {
   reindex(context);
   archive(context);
   updatePolls(context);
-  updateTVL(context);
+  // updateTVL(context);
   updateWraps(context);
   updateUnwraps(context);
   updateERC20Transfers(context);
