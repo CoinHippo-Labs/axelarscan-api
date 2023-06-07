@@ -62,8 +62,8 @@ module.exports = async params => {
 
     output = {
       data: _.orderBy(
-        buckets.flatMap(b => {
-          toArray(b.destination_chains?.buckets).flatMap(d => {
+        buckets.flatMap(b =>
+          toArray(b.destination_chains?.buckets).flatMap(d =>
             toArray(d.assets?.buckets).map(a => {
               const { volume, doc_count } = { ...a };
               return {
@@ -75,8 +75,8 @@ module.exports = async params => {
                 volume: volume?.value || 0,
               };
             })
-          })
-        }),
+          )
+        ),
         ['volume', 'num_txs'], ['desc', 'desc'],
       ),
       types,
