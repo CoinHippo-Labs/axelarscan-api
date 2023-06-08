@@ -30,6 +30,7 @@ exports.handler = async (event, context, callback) => {
     transfersChart,
     transfersCumulativeVolume,
     transfersTotalVolume,
+    transfersTopUsers,
     searchTransfers,
     resolveTransfer,
     getTVL,
@@ -407,6 +408,13 @@ exports.handler = async (event, context, callback) => {
       case 'transfersTotalVolume':
         try {
           output = await transfersTotalVolume(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'transfersTopUsers':
+        try {
+          output = await transfersTopUsers(params);
         } catch (error) {
           output = errorOutput(error);
         }

@@ -18,6 +18,7 @@ const transfersStats = require('./transfersStats');
 const transfersChart = require('./transfersChart');
 const transfersCumulativeVolume = require('./transfersCumulativeVolume');
 const transfersTotalVolume = require('./transfersTotalVolume');
+const transfersTopUsers = require('./transfersTopUsers');
 const searchTransfers = require('./searchTransfers');
 const getTVL = require('./getTVL');
 const getLatestEventBlock = require('./getLatestEventBlock');
@@ -43,6 +44,7 @@ const test = async () => {
   await transfersChart();
   await transfersCumulativeVolume();
   await transfersTotalVolume();
+  await transfersTopUsers();
   await searchTransfers();
   await getTVL();
   await getLatestEventBlock();
