@@ -404,7 +404,7 @@ module.exports = async (params = {}) => {
 
             d.type = d.unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : type || 'deposit_address';
 
-            if (getChainData(source_chain, 'evm') && !vote && (command || ibc_send || axelar_transfer)) {
+            if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer)) {
               const response = await read(
                 POLL_COLLECTION,
                 {
@@ -512,15 +512,17 @@ module.exports = async (params = {}) => {
               updated = true;
             }
             else if (d.status === 'asset_sent' && !d.send?.insufficient_fee && d.send?.recipient_address) {
-              let { recipient_address } = { ...d.send };
-              recipient_address = recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
-              if (!recipient_address.startsWith('0x')) {
-                await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `message.sender='${recipient_address}'` });
-                await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.sender='${recipient_address}'` });
+              if (['unwrap', 'deposit_address'].includes(type)) {
+                let { recipient_address } = { ...d.send };
+                recipient_address = recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
+                if (!recipient_address.startsWith('0x')) {
+                  await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `message.sender='${recipient_address}'` });
+                  await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.sender='${recipient_address}'` });
+                }
+                await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `link.depositAddress='${recipient_address}'` });
+                // await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.recipient='${recipient_address}'` });
+                updated = true;
               }
-              await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `link.depositAddress='${recipient_address}'` });
-              // await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.recipient='${recipient_address}'` });
-              updated = true;
             }
             if (updated) {
               await sleep(0.25 * 1000);
