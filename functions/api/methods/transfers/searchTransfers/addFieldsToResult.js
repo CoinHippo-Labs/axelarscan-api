@@ -52,6 +52,8 @@ module.exports = data => toArray(data).map(d => {
       simplified_status = 'received';
       break;
     case 'ibc_sent':
+      simplified_status = ibc_send.ack_txhash ? 'received' : 'approved';
+      break;
     case 'batch_signed':
     case 'voted':
     case 'deposit_confirmed':
