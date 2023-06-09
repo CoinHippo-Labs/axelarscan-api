@@ -373,7 +373,7 @@ module.exports = {
         explorer: {
           name: 'Etherscan',
           url: 'https://optimistic.etherscan.io',
-          icon: '/logos/explorers/etherscan.png',
+          icon: '/logos/explorers/optimism.png',
           block_path: '/block/{block}',
           address_path: '/address/{address}',
           contract_path: '/token/{address}',
@@ -1934,7 +1934,7 @@ module.exports = {
         explorer: {
           name: 'Etherscan',
           url: 'https://goerli-optimism.etherscan.io',
-          icon: '/logos/explorers/etherscan.png',
+          icon: '/logos/explorers/optimism.png',
           block_path: '/block/{block}',
           address_path: '/address/{address}',
           contract_path: '/token/{address}',
