@@ -213,7 +213,7 @@ DAI:
     usd: 1.00
   decimals: 18
 axlDAI:
-  redirect: "USDT"
+  redirect: "DAI"
 BUSD:
   coingecko_id: "binance-usd"
   default_price:
