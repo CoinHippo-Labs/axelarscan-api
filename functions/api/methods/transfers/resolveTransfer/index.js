@@ -512,7 +512,7 @@ module.exports = async (params = {}) => {
               updated = true;
             }
             else if (d.status === 'asset_sent' && !d.send?.insufficient_fee && d.send?.recipient_address) {
-              if (['unwrap', 'deposit_address'].includes(type)) {
+              if (['unwrap', 'deposit_address'].includes(d.type)) {
                 let { recipient_address } = { ...d.send };
                 recipient_address = recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
                 if (!recipient_address.startsWith('0x')) {
