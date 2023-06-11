@@ -43,7 +43,7 @@ module.exports = async () => {
             d.voting_end_time = moment(voting_end_time).valueOf();
             d.total_deposit = toArray(total_deposit).map(_d => {
               const { denom, amount } = { ..._d };
-              const { ymbol, decimals } = { ...getAssetData(denom) };
+              const { symbol, decimals } = { ...getAssetData(denom) };
               return {
                 ..._d,
                 symbol,
