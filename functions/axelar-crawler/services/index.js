@@ -7,15 +7,22 @@ const updateTVL = require('./updateTVL');
 const updateWraps = require('./updateWraps');
 const updateUnwraps = require('./updateUnwraps');
 const updateERC20Transfers = require('./updateERC20Transfers');
+const { getReindex } = require('../utils/config');
+
+const { enable } = { ...getReindex() };
 
 module.exports = context => {
-  blockSubscriber(context);
-  txSubscriber(context);
-  reindex(context);
-  archive(context);
-  updatePolls(context);
-  // updateTVL(context);
-  updateWraps(context);
-  updateUnwraps(context);
-  updateERC20Transfers(context);
+  if (enable) {
+    blockSubscriber(context);
+    txSubscriber(context);
+    reindex(context);
+  }
+  if (context || !enable) {
+    archive(context);
+    updatePolls(context);
+    // updateTVL(context);
+    updateWraps(context);
+    updateUnwraps(context);
+    updateERC20Transfers(context);
+  }
 };
