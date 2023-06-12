@@ -14,7 +14,7 @@ module.exports = context => {
     const index = async i => {
       for (let height = start_block; height < end_block; height++) {
         if (height % num_processes === i) {
-          log('info', service_name, 'get block', { height,  start_block, end_block, i });
+          log('info', service_name, 'get block', { height, start_block, end_block, i });
           api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } }).catch(error => { return { error: error?.response?.data }; });
 
           // get transactions of each block
@@ -41,7 +41,7 @@ module.exports = context => {
       }
     };
     if (enable && start_block && end_block && start_block <= end_block && num_processes) {
-      _.range(1, num_processes).forEach(i => index(i));
+      _.range(0, num_processes).forEach(i => index(i));
     }
   }
 };

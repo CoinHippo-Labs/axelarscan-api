@@ -71,7 +71,7 @@ module.exports = async (
           sender,
         } = { ...toJson(toArray(attributes).find(a => a.key === 'packet_data')?.value) };
 
-        if (sender && toArray(logs).findIndex(l => toArray(l.events).findIndex(e => toArray(e.attributes).findIndex(a => ['minter', 'receiver'].includes(a.key) && equalsIgnoreCase(a.value,  sender)) > -1 || (toArray(e.attributes).findIndex(a => a.value === 'RouteIBCTransfers') > -1 && events.length === 1)) > -1) > -1) {
+        if (sender && toArray(logs).findIndex(l => toArray(l.events).findIndex(e => toArray(e.attributes).findIndex(a => ['minter', 'receiver'].includes(a.key) && equalsIgnoreCase(a.value, sender)) > -1 || (toArray(e.attributes).findIndex(a => a.value === 'RouteIBCTransfers') > -1 && events.length === 1)) > -1) > -1) {
           logs[0] = {
             ..._.head(logs),
             events: toArray(_.concat(_.head(logs).events, event)),
