@@ -3,7 +3,7 @@ const { base64ToHex } = require('../../../utils/base64');
 const { base64ToBech32 } = require('../../../utils/bech32');
 const { toArray } = require('../../../utils');
 
-module.exports = async (lcd_response = {}) => {
+module.exports = (lcd_response = {}) => {
   const { block, block_id } = { ...lcd_response };
   const { header, last_commit } = { ...block };
   const { hash } = { ...block_id };

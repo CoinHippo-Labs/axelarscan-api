@@ -20,6 +20,8 @@ module.exports = async (lcd_response = {}) => {
         timestamp: moment(timestamp).valueOf(),
         validators: toArray(signatures).map(s => s.validator_address),
       },
+      false,
+      false,
     );
   }
   return lcd_response;

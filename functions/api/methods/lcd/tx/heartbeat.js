@@ -56,6 +56,8 @@ module.exports = async (
         sender,
         key_ids: _.uniq(toArray(toArray(messages).flatMap(m => m.inner_message?.key_ids))),
       },
+      false,
+      false,
     );
   }
 };

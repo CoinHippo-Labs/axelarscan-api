@@ -15,7 +15,7 @@ module.exports = context => {
       for (let height = start_block; height < end_block; height++) {
         if (height % num_processes === i) {
           log('info', service_name, 'get block', { height, start_block, end_block, i });
-          api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } }).catch(error => { return { error: error?.response?.data }; });
+          await api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } }).catch(error => { return { error: error?.response?.data }; });
 
           // get transactions of each block
           let next_key = true;

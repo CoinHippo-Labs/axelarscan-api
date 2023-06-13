@@ -71,6 +71,8 @@ module.exports = async (path = '/ibc/core/channel/v1/channels', lcd_response = {
                       escrow_address,
                       updated_at: moment().unix(),
                     },
+                    false,
+                    false,
                   );
                 }
               }

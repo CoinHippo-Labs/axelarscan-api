@@ -81,6 +81,8 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
             response: JSON.stringify(output),
             updated_at: moment().unix(),
           },
+          false,
+          false,
         );
       }
     }
@@ -106,7 +108,9 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
         output = await saveBlock(output);
         output = await saveUptime(output);
       }
-      output = await addBlockEvents(output);
+      else {
+        output = await addBlockEvents(output);
+      }
     }
     else if (path.startsWith('/axelar/evm/v1beta1/batched_commands/') && !path.endsWith('/') && command_ids) {
       if (index) {

@@ -174,7 +174,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
       /* end add message types field */
 
       if (!index_transfer && !index_poll) {
-        await write(TX_COLLECTION, txhash, transaction_data);
+        await write(TX_COLLECTION, txhash, transaction_data, false, false);
       }
     }
     /*************************

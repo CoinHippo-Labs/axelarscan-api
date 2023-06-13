@@ -10,15 +10,7 @@ module.exports = async (lcd_response = {}) => {
   const { hash } = { ...block_id };
 
   if (height && hash) {
-    await write(
-      BLOCK_COLLECTION,
-      height,
-      {
-        ...header,
-        hash,
-        num_txs: toArray(txs).length,
-      },
-    );
+    await write(BLOCK_COLLECTION, height, { ...header, hash, num_txs: toArray(txs).length }, false, false);
   }
   return lcd_response;
 };

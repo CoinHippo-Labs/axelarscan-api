@@ -12,9 +12,9 @@ const { getReindex } = require('../utils/config');
 const { enable } = { ...getReindex() };
 
 module.exports = context => {
+  blockSubscriber(context);
+  txSubscriber(context);
   if (enable) {
-    blockSubscriber(context);
-    txSubscriber(context);
     reindex(context);
   }
   if (context || !enable) {
