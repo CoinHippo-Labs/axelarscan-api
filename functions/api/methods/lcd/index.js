@@ -81,8 +81,6 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
             response: JSON.stringify(output),
             updated_at: moment().unix(),
           },
-          false,
-          false,
         );
       }
     }
