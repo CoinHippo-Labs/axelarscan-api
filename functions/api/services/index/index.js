@@ -85,7 +85,7 @@ const crud = async (params = {}) => {
         }
         else {
           response = await (path.includes('_update') ? indexer.post(path, { doc: params }, { auth }) : indexer.put(path, params, { auth })).catch(error => { return { error: error?.response?.data }; });
-          const { error } = { ...response?.data };
+          const { error } = { ...response };
 
           // retry with update / insert
           if (error) {
@@ -160,12 +160,7 @@ const crud = async (params = {}) => {
             {
               data: {
                 data: toArray(hits?.hits).map(d => {
-                  const {
-                    _id,
-                    _source,
-                    fields,
-                  } = { ...d };
-
+                  const { _id, _source, fields } = { ...d };
                   return {
                     ..._source,
                     ...fields,
