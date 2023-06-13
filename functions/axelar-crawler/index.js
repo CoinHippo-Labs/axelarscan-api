@@ -1,4 +1,4 @@
-exports.handler = async (event, ontext, callback) => {
+exports.handler = async (event, context, callback) => {
   require('./services')(context);
 
   if (context) {
