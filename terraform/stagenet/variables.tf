@@ -3,11 +3,6 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
-variable "iam_role" {
-  description = "AWS IAM role"
-  default     = ""
-}
-
 variable "project_name" {
   description = "Project name"
   default     = "axelarscan"

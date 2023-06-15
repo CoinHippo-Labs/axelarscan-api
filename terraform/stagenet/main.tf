@@ -14,7 +14,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 provider "archive" {}
@@ -38,13 +38,45 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
-data "aws_iam_role" "role" {
-  name = "${var.iam_role}"
+resource "aws_iam_role" "axelarscan_lambda" {
+  name = "${var.project_name}-${var.environment}-role"
+  assume_role_policy = jsonencode(
+    {
+      Statement = [
+        {
+          Action = "sts:AssumeRole"
+          Effect = "Allow"
+          Principal = {
+            Service = "lambda.amazonaws.com"
+          }
+        },
+      ]
+      Version = "2012-10-17"
+    }
+  )
+
+  inline_policy {
+    name = "secret_manager_policy"
+    policy = jsonencode(
+      {
+        Statement = [
+          {
+            Action = [
+              "secretsmanager:GetSecretValue",
+            ]
+            Effect   = "Allow"
+            Resource = "*"
+          },
+        ]
+        Version = "2012-10-17"
+      }
+    )
+  }
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
   name       = "${var.project_name}-attachment"
-  roles      = [data.aws_iam_role.role.name]
+  roles      = [aws_iam_role.axelarscan_lambda.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -52,7 +84,7 @@ resource "aws_lambda_function" "api" {
   function_name    = "${var.project_name}-${var.environment}"
   filename         = data.archive_file.zip_api.output_path
   source_code_hash = data.archive_file.zip_api.output_base64sha256
-  role             = data.aws_iam_role.role.arn
+  role             = aws_iam_role.axelarscan_lambda.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 30
@@ -71,13 +103,21 @@ resource "aws_lambda_function" "api" {
       LOG_LEVEL                  = var.log_level
     }
   }
-  kms_key_arn      = ""
+  kms_key_arn = ""
 }
 
 resource "aws_lambda_provisioned_concurrency_config" "config" {
   function_name                     = aws_lambda_function.api.function_name
   provisioned_concurrent_executions = 100
   qualifier                         = aws_lambda_function.api.version
+}
+
+resource "aws_lambda_permission" "api" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.api.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }
 
 resource "aws_apigatewayv2_api" "api" {
@@ -88,26 +128,40 @@ resource "aws_apigatewayv2_api" "api" {
     allow_headers = ["*"]
     allow_methods = ["*"]
   }
-  route_key     = "ANY /${aws_lambda_function.api.function_name}"
-  target        = aws_lambda_function.api.arn
+  target = aws_lambda_function.api.arn
+}
+
+resource "aws_apigatewayv2_integration" "api" {
+  api_id             = aws_apigatewayv2_api.api.id
+  connection_type    = "INTERNET"
+  description        = "Lambda Integration - terraform"
+  integration_method = "POST"
+  integration_uri    = aws_lambda_function.api.invoke_arn
+  integration_type   = "AWS_PROXY"
 }
 
 resource "aws_apigatewayv2_route" "route_default" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /"
-  target    = "integrations/${var.api_gateway_integration_id}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
 resource "aws_apigatewayv2_route" "route_cross-chain" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /cross-chain/{function}"
-  target    = "integrations/${var.api_gateway_integration_id}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
 resource "aws_apigatewayv2_route" "route_function" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /{function}"
-  target    = "integrations/${var.api_gateway_integration_id}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+}
+
+resource "aws_apigatewayv2_stage" "lambda" {
+  api_id      = aws_apigatewayv2_api.api.id
+  auto_deploy = true
+  name        = "stagenet"
 }
 
 data "archive_file" "zip_axelar_crawler" {
@@ -121,7 +175,7 @@ resource "aws_lambda_function" "axelar_crawler" {
   function_name    = "${var.project_name}-axelar-crawler-${var.environment}"
   filename         = data.archive_file.zip_axelar_crawler.output_path
   source_code_hash = data.archive_file.zip_axelar_crawler.output_base64sha256
-  role             = data.aws_iam_role.role.arn
+  role             = aws_iam_role.axelarscan_lambda.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 900
@@ -133,7 +187,15 @@ resource "aws_lambda_function" "axelar_crawler" {
       LOG_LEVEL        = var.log_level
     }
   }
-  kms_key_arn      = ""
+  kms_key_arn = ""
+}
+
+resource "aws_lambda_permission" "axelar_crawler" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.axelar_crawler.function_name
+  statement_id  = "AllowCloudwatchEventBusInvoke"
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.schedule_axelar_crawler.arn
 }
 
 resource "aws_cloudwatch_event_rule" "schedule_axelar_crawler" {
@@ -158,7 +220,7 @@ resource "aws_lambda_function" "evm_crawler" {
   function_name    = "${var.project_name}-evm-crawler-${var.environment}"
   filename         = data.archive_file.zip_evm_crawler.output_path
   source_code_hash = data.archive_file.zip_evm_crawler.output_base64sha256
-  role             = data.aws_iam_role.role.arn
+  role             = aws_iam_role.axelarscan_lambda.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
   timeout          = 630
@@ -170,7 +232,15 @@ resource "aws_lambda_function" "evm_crawler" {
       LOG_LEVEL        = var.log_level
     }
   }
-  kms_key_arn      = ""
+  kms_key_arn = ""
+}
+
+resource "aws_lambda_permission" "evm_crawler" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.evm_crawler.function_name
+  statement_id  = "AllowCloudwatchEventBusInvoke"
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.schedule_evm_crawler.arn
 }
 
 resource "aws_cloudwatch_event_rule" "schedule_evm_crawler" {
