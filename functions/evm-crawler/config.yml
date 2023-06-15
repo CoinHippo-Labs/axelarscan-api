@@ -13,3 +13,8 @@ testnet:
   api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com"
   past_events_block_per_request: 100 # [1-500]
   max_query_events_block: 1000
+
+stagenet:
+  api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com/stagenet"
+  past_events_block_per_request: 100 # [1-500]
+  max_query_events_block: 1000
