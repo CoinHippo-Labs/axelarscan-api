@@ -2370,7 +2370,7 @@ module.exports = {
       },
       {
         id: 'sei',
-        chain_name: 'sei',
+        chain_name: 'sei-2',
         name: 'Sei Network',
         short_name: 'SEI',
         explorer: {
@@ -2396,6 +2396,11 @@ module.exports = {
             'https://rest.atlantic-2.seinetwork.io',
             'https://sei-testnet-2-rest.brocha.in',
           ],
+        },
+        overrides: {
+          'sei-2': {
+
+          },
         },
       },
       {
