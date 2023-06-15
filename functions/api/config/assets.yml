@@ -33,6 +33,9 @@ mainnet:
       arbitrum:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      optimism:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       celo:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
@@ -86,6 +89,9 @@ mainnet:
       arbitrum:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
+      optimism:
+        address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
+        symbol: "axlUSDC"
       celo:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
@@ -137,6 +143,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/63C53CBDF471D4E867366ABE2E631197257118D1B2BEAD1946C8A408F96464C3"
         symbol: "axlUSDC"
+      aura:
+        ibc_denom: "ibc/BFF0D3805B50D93E2FA5C0B2DDF7E0B30A631076CD80BC12A48C0E95404B4A41"
+        symbol: "axlUSDC"
       comdex:
         ibc_denom: "ibc/E1616E7C19EA474C565737709A628D6F8A23FF9D3E9A7A6871306CF5E0A5341E"
         symbol: "axlUSDC"
@@ -169,6 +178,9 @@ mainnet:
         symbol: "axlUSDC"
       neutron:
         ibc_denom: "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349"
+        symbol: "axlUSDC"
+      rebus:
+        ibc_denom: "ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F"
         symbol: "axlUSDC"
       terra-2:
         ibc_denom: "ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4"
@@ -237,6 +249,9 @@ mainnet:
       arbitrum:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
+      optimism:
+        address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
+        symbol: "axlUSDT"
       celo:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
@@ -288,6 +303,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/F11C8CB7743E4B5FDCEA7C97F3B2C115E1931C5614B84C183DAC439B4C919D94"
         symbol: "axlUSDT"
+      aura:
+        ibc_denom: "ibc/11FB4C0BC2FCCFF2B01976C0070F468D82DAE8D1F565F80E64063BFDBEE4A5BD"
+        symbol: "axlUSDT"
       comdex:
         ibc_denom: "ibc/F0BEB4540AF9E0C6C4DD6FA1635C9AE1F99FCA15366671C9219B1140AAC3FCB1"
         symbol: "axlUSDT"
@@ -317,6 +335,9 @@ mainnet:
         symbol: "axlUSDT"
       neutron:
         ibc_denom: "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2"
+        symbol: "axlUSDT"
+      rebus:
+        ibc_denom: "ibc/F2331645B9683116188EF36FC04A809C28BD36B54555E8705A37146D0182F045"
         symbol: "axlUSDT"
       terra-2:
         ibc_denom: "ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF"
@@ -352,6 +373,9 @@ mainnet:
         address: "0xF02eaeEa1350DAD8fc7A66d6BddB25876243ed1F"
         symbol: "axlDAI"
       arbitrum:
+        address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
+        symbol: "axlDAI"
+      optimism:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       celo:
@@ -405,6 +429,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/CBA4784581AD4BEF308C536A3CD44D4A940A520E61B0D1E4FB115C539F61DEE5"
         symbol: "axlDAI"
+      aura:
+        ibc_denom: "ibc/2017AFA149C1C42DBF54EC910DA168E9E4F928DF0D3A8E841189994A9339FED9"
+        symbol: "axlDAI"
       comdex:
         ibc_denom: "ibc/54DEF693B7C4BF171E7FFF3ABFE2B54D6A3B8A047A32BAAE9F1417A378594EC6"
         symbol: "axlDAI"
@@ -434,6 +461,9 @@ mainnet:
         symbol: "axlDAI"
       neutron:
         ibc_denom: "ibc/626DBDAD47E2867EE930907A2C97B9F61043523C40FB9C4FEEC980933D1F6790"
+        symbol: "axlDAI"
+      rebus:
+        ibc_denom: "ibc/3914BDEF46F429A26917E4D8D434620EC4817DC6B6E68FB327E190902F1E9242"
         symbol: "axlDAI"
       terra-2:
         ibc_denom: "ibc/E46EF5449878F6B81219163F211E7329CC0729AA99DA8A589A865F82F754ADE8"
@@ -491,6 +521,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/3A7C0D680D0F50A98115966A22C01594897FAE924FAF324E13C5FFB89F6864BF"
         symbol: "axlBUSD"
+      aura:
+        ibc_denom: "ibc/A7A2B8871CD2E999EB1D9E901B4F744617C80816CE94DE84CA1200109651C903"
+        symbol: "axlBUSD"
       comdex:
         ibc_denom: "ibc/F960753B47A20B18DF578FFDD51FB8B32AF5BF77FF8718580421333F7458E690"
         symbol: "axlBUSD"
@@ -517,6 +550,9 @@ mainnet:
         symbol: "axlBUSD"
       neutron:
         ibc_denom: "ibc/71BA048E21A9AEAC5E23FB7D91BE0E8730D50AB8993A01307616AA0C7EA618E3"
+        symbol: "axlBUSD"
+      rebus:
+        ibc_denom: "ibc/65CD60D7E37EF830BC6B6A6DF4E3E3884A96C0905A7D271C48DC0440B1989EC7"
         symbol: "axlBUSD"
       terra-2:
         ibc_denom: "ibc/FDDF98401F29AC63212C1742F9EC86D3AA1E1BE94BF9EB2F72B990C490303F42"
@@ -551,6 +587,9 @@ mainnet:
         address: "0x3FF4cb8EC5EC5eBBfD3424401D962F0627a67Cac"
         symbol: "axlFRAX"
       arbitrum:
+        address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
+        symbol: "axlFRAX"
+      optimism:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
       celo:
@@ -604,6 +643,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/6659354677AD62F7B4B30AEEB613E1100550D373366AFE33D54C5927BA868137"
         symbol: "axlFRAX"
+      aura:
+        ibc_denom: "ibc/21DB3093824F38A29399E7466B5870559AEC683D0D09D746F9EC47BB8505CBF7"
+        symbol: "axlFRAX"
       comdex:
         ibc_denom: "ibc/B0C60517B4B854164D87224AFF2D7633959BACD2402EB0BA460B64E95ED8D1ED"
         symbol: "axlFRAX"
@@ -630,6 +672,9 @@ mainnet:
         symbol: "axlFRAX"
       neutron:
         ibc_denom: "ibc/59034348F9F2DBA4EAE6621D9DDA9ADF190F60BDDDD2DC99E226F800886F70B5"
+        symbol: "axlFRAX"
+      rebus:
+        ibc_denom: "ibc/7B11FE7D6385B46B9F3598B298B81A773CB20A8BA12001D87A78580314218364"
         symbol: "axlFRAX"
       terra-2:
         ibc_denom: "ibc/2E435CEEEBA18CCB2719E0182BC5D142A364D6CCE9957DE6E1AC4D62127D2913"
@@ -751,6 +796,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/C834CD421B4FD910BBC97E06E86B5E6F64EA2FE36D6AE0E4304C2E1FB1E7333C"
         symbol: "axlWBTC"
+      aura:
+        ibc_denom: "ibc/7FFC60524C4513A3A8E0A407CC89BFF5A861EC624209D72EB26FC10ADAEBA70E"
+        symbol: "axlWBTC"
       comdex:
         ibc_denom: "ibc/0A6F20FA34BEBB63568E44C81C6E154C63ED061BA45E7EBC144B24C0DBBD0A4F"
         symbol: "axlWBTC"
@@ -780,6 +828,9 @@ mainnet:
         symbol: "axlWBTC"
       neutron:
         ibc_denom: "ibc/DF8722298D192AAB85D86D0462E8166234A6A9A572DD4A2EA7996029DF4DB363"
+        symbol: "axlWBTC"
+      rebus:
+        ibc_denom: "ibc/301DAF9CB0A9E247CD478533EF0E21F48FF8118C4A51F77C8BC3EB70E5566DBC"
         symbol: "axlWBTC"
       terra-2:
         ibc_denom: "ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD"
@@ -849,6 +900,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/356EDE917394B2AEF7F915EB24FA683A0CCB8D16DD4ECCEDC2AD0CEC6B66AC81"
         symbol: "axlETH"
+      aura:
+        ibc_denom: "ibc/F1806958CA98757B91C3FA1573ECECD24F6FA3804F074A6977658914A49E65A3"
+        symbol: "axlETH"
       comdex:
         ibc_denom: "ibc/81C3A46287D7664A8FD19843AC8D0CFD6C284EF1F750C661C48B3544277B1B29"
         symbol: "axlETH"
@@ -878,6 +932,9 @@ mainnet:
         symbol: "axlETH"
       neutron:
         ibc_denom: "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D"
+        symbol: "axlETH"
+      rebus:
+        ibc_denom: "ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7"
         symbol: "axlETH"
       terra-2:
         ibc_denom: "ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674"
@@ -1162,6 +1219,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/5BDA280DA1EA865301F0DB343F87971D6E6C399152B335D8CE475EEA2BA38D21"
         symbol: "axlBNB"
+      aura:
+        ibc_denom: "ibc/3D4499D811B055223D0EFB06D2211F84772CAEF0FB987F71BAE716191714B391"
+        symbol: "axlBNB"
       comdex:
         ibc_denom: "ibc/EC7576E3F8D254787264F0972E6518E42CFFB5305EC9D0BC7DD7B7FFEFACB28A"
         symbol: "axlBNB"
@@ -1188,6 +1248,9 @@ mainnet:
         symbol: "axlBNB"
       neutron:
         ibc_denom: "ibc/5CB2E12B07D0B6D8EC24A68BA6B6E6E8D5BF85B7D22091D3A480DCDD61C6AC84"
+        symbol: "axlBNB"
+      rebus:
+        ibc_denom: "ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833"
         symbol: "axlBNB"
       terra-2:
         ibc_denom: "ibc/1319C6B38CA613C89D78C2D1461B305038B1085F6855E8CD276FE3F7C9600B4C"
@@ -1245,6 +1308,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/7883D6C40128A175BF42226F013671C0B190F2AC2CA9215896EBD6F7F7097A77"
         symbol: "axlMATIC"
+      aura:
+        ibc_denom: "ibc/C322C7D0867CC3EE6FA3495DC9685E5A0F49B506369341287FDA1E110841A950"
+        symbol: "axlMATIC"
       comdex:
         ibc_denom: "ibc/E8F0355CBC21AFD4C758E93383D28404D19AEB81E8251A63FAA0C250672ADBEF"
         symbol: "axlMATIC"
@@ -1271,6 +1337,9 @@ mainnet:
         symbol: "axlMATIC"
       neutron:
         ibc_denom: "ibc/14767887A69DBEFF3B99AA3E5B176C7989B1DAD2395A1E843F48EE981AC4F83F"
+        symbol: "axlMATIC"
+      rebus:
+        ibc_denom: "ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6"
         symbol: "axlMATIC"
       terra-2:
         ibc_denom: "ibc/14E4FD1AB72DE9BF1D6725CBA18373C406CB9A7DA17955299F3F4DC5C6131A4E"
@@ -1331,6 +1400,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/990770DB97A9567A0B794EB5A3A9BD02C939CE538661FA2DB44DD791CF16DC0E"
         symbol: "axlAVAX"
+      aura:
+        ibc_denom: "ibc/0886E3462B7DD438353781848DBDF90E58BB7DE90266E3F95E41B3FA8ED1B453"
+        symbol: "axlAVAX"
       comdex:
         ibc_denom: "ibc/1D5738BD39B3189714B7A5C7CE8A206861ECAE79F7E29C45DA98151571F017E7"
         symbol: "axlAVAX"
@@ -1360,6 +1432,9 @@ mainnet:
         symbol: "axlAVAX"
       neutron:
         ibc_denom: "ibc/7B6FFC996FC2984AA98DBA4CEBFBF790E55F4D7E65360DD614F2BE2D08F4D324"
+        symbol: "axlAVAX"
+      rebus:
+        ibc_denom: "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2"
         symbol: "axlAVAX"
       terra-2:
         ibc_denom: "ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B"
@@ -1420,6 +1495,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/B389DF077401C819F7A4235167AC1399790FB819983191A3AFC646C7364D24C9"
         symbol: "axlFTM"
+      aura:
+        ibc_denom: "ibc/23B62EFD1B9444733889B42362570C774801430A1C656A0A3F8D6D69AE93ED8B"
+        symbol: "axlFTM"
       comdex:
         ibc_denom: "ibc/78A0828C273648513517BC6C10D9F7F2768472DD5C0F88B27CB54E346CB57D59"
         symbol: "axlFTM"
@@ -1446,6 +1524,9 @@ mainnet:
         symbol: "axlFTM"
       neutron:
         ibc_denom: "ibc/A96863E0BDFA3F2D96625FD5A649AF53F62F97521EF78FBBFE5B4199C3E23ABD"
+        symbol: "axlFTM"
+      rebus:
+        ibc_denom: "ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2"
         symbol: "axlFTM"
       terra-2:
         ibc_denom: "ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746"
@@ -1503,6 +1584,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/E9528EEB1589F209D5EA99BA6BDB1634A65DFD883769D53072DDD26FE7DE8CA3"
         symbol: "axlGLMR"
+      aura:
+        ibc_denom: "ibc/A7C06A800850847DBCC36213185EC5AAD3C719D42D1F0623F9C1F9EFF456F673"
+        symbol: "axlGLMR"
       comdex:
         ibc_denom: "ibc/14308B897F7966AD643E337853EC613200E9A123D159984DE7B59FE151BCE867"
         symbol: "axlGLMR"
@@ -1529,6 +1613,9 @@ mainnet:
         symbol: "axlGLMR"
       neutron:
         ibc_denom: "ibc/5103F3B79845E445F46120B476A8336D76DE39A16E77132B2BB19BEA3857AF9B"
+        symbol: "axlGLMR"
+      rebus:
+        ibc_denom: "ibc/C8D63703F5805CE6A2B20555139CF6ED9CDFA870389648EB08D688B94B0AE2C1"
         symbol: "axlGLMR"
       terra-2:
         ibc_denom: "ibc/D54CE4CD2927F744CDCA844DD0E1A5DF88762274C55CD9AAB13E504A29BE8933"
@@ -1638,6 +1725,8 @@ mainnet:
       moonbeam:
         address: "0x6A7b717aE5Ed65F85BA25403D5063D368239828e"
       arbitrum:
+        address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
+      optimism:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       celo:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
@@ -1763,6 +1852,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/0867589CE15E292BB84404A025BC883CE7FB58000C1809040A090701AEB20FE5"
         symbol: "axlLINK"
+      aura:
+        ibc_denom: "ibc/1AD2DD08D1AADAE7F667F82767425FEC119BAFEA5F514FCEA22E6E4E446BEADA"
+        symbol: "axlLINK"
       comdex:
         ibc_denom: "ibc/E37C113A206A0E27EC76453E66C045B1FB926F4A96E345D1C07455367BC4BE70"
         symbol: "axlLINK"
@@ -1789,6 +1881,9 @@ mainnet:
         symbol: "axlLINK"
       neutron:
         ibc_denom: "ibc/73D01D9D032390E81CBC20B7E0507B84DF54F3CE5302BFF52776E7D8930F2A6C"
+        symbol: "axlLINK"
+      rebus:
+        ibc_denom: "ibc/FC59D6840A41252352263CEA2B832BB86D68D03CBA194263CB9F3C15946796FB"
         symbol: "axlLINK"
       terra-2:
         ibc_denom: "ibc/1FD62537E1FBE67DF7574E0234112B4FE417B20AADC2F574026CB664EA9492C7"
@@ -1846,6 +1941,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/7B9ED005F19A3E02972D6CE0703EA8535D8E19C6C9064173B26DAFFBCB089D5E"
         symbol: "axlUNI"
+      aura:
+        ibc_denom: "ibc/392F7936508B675F7F794504F4829D6F459C0E7488EDE6B2C4E9192037E3F03F"
+        symbol: "axlUNI"
       comdex:
         ibc_denom: "ibc/B101E08F99A58A725E02F7B3F6683F43F2ABA152CA63AD1522C526A54FEDEBD8"
         symbol: "axlUNI"
@@ -1872,6 +1970,9 @@ mainnet:
         symbol: "axlUNI"
       neutron:
         ibc_denom: "ibc/ED457C0D88A8893E3BFEA226630E761C887AA2433F6C7BBCC29B591349A65BB7"
+        symbol: "axlUNI"
+      rebus:
+        ibc_denom: "ibc/0A88A08F3E9573DB9D8CB74AA3746F6D23C41C3EE7B6CC5AA4695A1DD74FF86B"
         symbol: "axlUNI"
       terra-2:
         ibc_denom: "ibc/6EFF21F9E65C9101370C38AA53049E4D1FF2B206A7C350B45F0ED3660E57AC75"
@@ -2026,6 +2127,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/620628A7B308C0B1CCC109A9CFD9BC8089F9A527674C91733B1E15D9A65CF567"
         symbol: "axlMKR"
+      aura:
+        ibc_denom: "ibc/1E8149AC74041CF61448A57858887B2D2C221B9B194509120BD3AD6E4278AAB0"
+        symbol: "axlMKR"
       comdex:
         ibc_denom: "ibc/74C6699525ADB582D2893666CE2F62616BA90041A6D486A65B1C94AD163D6670"
         symbol: "axlMKR"
@@ -2052,6 +2156,9 @@ mainnet:
         symbol: "axlMKR"
       neutron:
         ibc_denom: "ibc/F2C3F097E1EFD9B54CF374BA1FA64C5FF995F228CC389CDFB094BF7942B8F00F"
+        symbol: "axlMKR"
+      rebus:
+        ibc_denom: "ibc/31A4E6623063E702FB9CF2E7B616DFCCDE319CA2FC4775CDFF26F29F628E7ACF"
         symbol: "axlMKR"
       terra-2:
         ibc_denom: "ibc/EF21BC562B7EB4D22BBF467D011E3118B7E3AD6D095000A672A9FCECA5ABCF15"
@@ -2106,6 +2213,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/C89E6FC9D23CE6A43F8B9B1219AA4B68F795F92F33685A87522E9A09EA6A1E20"
         symbol: "axlSHIB"
+      aura:
+        ibc_denom: "ibc/D1F6A3A1A3C2E25A7039B4537E8D1B08490B6A3F57D758AB8C08AA512CE3E51A"
+        symbol: "axlSHIB"
       comdex:
         ibc_denom: "ibc/1F18934D62FFDA25C75ED7974EE34DB018BA004B58C42D46EB49AF41BB01AF01"
         symbol: "axlSHIB"
@@ -2132,6 +2242,9 @@ mainnet:
         symbol: "axlSHIB"
       neutron:
         ibc_denom: "ibc/6C18438B29DF9D62583F6890FFAA77770CB612C386E74425AD1C1BB6535D8FCB"
+        symbol: "axlSHIB"
+      rebus:
+        ibc_denom: "ibc/43BF3152103ED706E207005E7C433AB3440572C1D444FFE49321A0EF6A8EFC82"
         symbol: "axlSHIB"
       terra-2:
         ibc_denom: "ibc/62CC85ED0F0C43C453B1A059BF5A147498550C2A7ADDEE6324A0B4E9E371C9C7"
@@ -2322,6 +2435,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/4811C8371D83DFFFB92E0F51B70E6324E8F2BAA3AD406E20A1935D44E67BE15B"
         symbol: "axlRAI"
+      aura:
+        ibc_denom: "ibc/A1F1BAE8D0CF9F8080C22FE2B0C60DFD25E96F4F985AC27C7E11F5A597CEE83D"
+        symbol: "axlRAI"
       comdex:
         ibc_denom: "ibc/7FB70D35FF8085A02BDCDCB1DD2A2E6E5B56928853E34846F7C80C78AE3D5F1E"
         symbol: "axlRAI"
@@ -2348,6 +2464,9 @@ mainnet:
         symbol: "axlRAI"
       neutron:
         ibc_denom: "ibc/8F93A962F1ACCC0C55B45358ACCEA4557206AE71A8BC73A2044525EE43EF5D31"
+        symbol: "axlRAI"
+      rebus:
+        ibc_denom: "ibc/4CA23432A78B272A9EB7010CB72A15A199066D239F1B13BB583F3945EB8A315C"
         symbol: "axlRAI"
       terra-2:
         ibc_denom: "ibc/88C5B3E62FD8ECC8825107D86C4AC8CDECDC7B44135DD757D1D83E27203B6C9D"
@@ -2505,6 +2624,9 @@ mainnet:
       arbitrum:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
+      optimism:
+        address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
+        symbol: "axlATOM"
       celo:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
@@ -2558,6 +2680,8 @@ mainnet:
     coingecko_id: "kujira"
     addresses:
       arbitrum:
+        address: "0x3A18dcC9745eDcD1Ef33ecB93b0b6eBA5671e7Ca"
+      optimism:
         address: "0x3A18dcC9745eDcD1Ef33ecB93b0b6eBA5671e7Ca"
       kujira:
         ibc_denom: "ukuji"
@@ -2646,6 +2770,8 @@ mainnet:
         address: "0x85eBBf7253295d37C5FC98bE5Aac87CA4378c2e2"
       arbitrum:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
+      optimism:
+        address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       celo:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       axelarnet:
@@ -2674,6 +2800,8 @@ mainnet:
       moonbeam:
         address: "0x2924894E7886C6B9018179946EE389bb06534021"
       arbitrum:
+        address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
+      optimism:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       celo:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
@@ -2751,6 +2879,9 @@ mainnet:
       evmos:
         ibc_denom: "ibc/80938A67AB5C2302E74919802F40F9F3A9CCE40FC878361AA4A53734EC40AF5A"
         symbol: "axlDOT"
+      aura:
+        ibc_denom: "ibc/3208C8E45C27903988E437162134A172880BE112C0530B86117FB5DA7A5DF8B9"
+        symbol: "axlDOT"
       comdex:
         ibc_denom: "ibc/212040AC44BB9576E4E1B4DF0584C9D1C2D96C17D7ADC765927265D5D06ACF9D"
         symbol: "axlDOT"
@@ -2777,6 +2908,9 @@ mainnet:
         symbol: "axlDOT"
       neutron:
         ibc_denom: "ibc/E74CD453F834EE007B02F1298EFFF4DCD9C97FB58DF7F6080FF935145B73C6A6"
+        symbol: "axlDOT"
+      rebus:
+        ibc_denom: "ibc/B37E4D9FB5B30F3E1E20A4B2DE2A005E584C5C822C44527546556AE2470B4539"
         symbol: "axlDOT"
       terra-2:
         ibc_denom: "ibc/5B01781626783C316A22ACBB55ECA8C6C57AA92C1565C69128C192FA36680AFB"
