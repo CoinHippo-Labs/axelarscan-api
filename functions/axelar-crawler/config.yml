@@ -21,3 +21,12 @@ testnet:
     start_block: 7000000
     end_block: 7500000
     num_processes: 2
+
+stagenet:
+  api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com/stagenet"
+  ws: "ws://k8s-stagenet-axelarco-739f028d85-5da97ddbefdc3c4f.elb.us-east-2.amazonaws.com:26657"
+  reindex:
+    enable: false
+    start_block: 0
+    end_block: 228000
+    num_processes: 2

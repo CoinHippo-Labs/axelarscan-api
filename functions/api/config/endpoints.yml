@@ -23,3 +23,9 @@ testnet:
   mintscan:
     api: "https://api.mintscan.io/v1/axelar-testnet"
     chain_id: "axelar-testnet-lisbon-3"
+
+stagenet:
+  rpc: "k8s-stagenet-axelarco-739f028d85-5da97ddbefdc3c4f.elb.us-east-2.amazonaws.com:26657"
+  lcd: "k8s-stagenet-axelarco-739f028d85-5da97ddbefdc3c4f.elb.us-east-2.amazonaws.com:1317"
+  mintscan:
+    chain_id: "axelar-stagenet-1"

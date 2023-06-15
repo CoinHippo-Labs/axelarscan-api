@@ -2270,3 +2270,32 @@ testnet:
       prefix_address: "terra"
       prefix_chain_ids:
         - "bombay-"
+
+stagenet:
+  evm:
+    ethereum-2:
+      chain_id: 5
+      chain_name: "ethereum-2"
+      maintainer_id: "ethereum-2"
+      endpoints:
+        rpc:
+          - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://eth-goerli.public.blastapi.io"
+          - "https://rpc.ankr.com/eth_goerli"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ethereum"
+      short_name: "ETH"
+      image: "/logos/chains/ethereum.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://goerli.etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
