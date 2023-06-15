@@ -52,6 +52,12 @@ module.exports = {
         },
         {
           contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
+          chain_id: 10,
+          decimals: 6,
+          symbol: 'wAXL',
+        },
+        {
+          contract_address: '0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f',
           chain_id: 42220,
           decimals: 6,
           symbol: 'wAXL',
@@ -151,6 +157,12 @@ module.exports = {
         {
           contract_address: '0xEB466342C4d449BC9f53A865D5Cb90586f405215',
           chain_id: 42161,
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
+          contract_address: '0xEB466342C4d449BC9f53A865D5Cb90586f405215',
+          chain_id: 10,
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -259,6 +271,12 @@ module.exports = {
           symbol: 'axlUSDC',
         },
         {
+          ibc_denom: 'ibc/BFF0D3805B50D93E2FA5C0B2DDF7E0B30A631076CD80BC12A48C0E95404B4A41',
+          chain_id: 'aura',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
           ibc_denom: 'ibc/E1616E7C19EA474C565737709A628D6F8A23FF9D3E9A7A6871306CF5E0A5341E',
           chain_id: 'comdex',
           decimals: 6,
@@ -321,6 +339,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349',
           chain_id: 'neutron',
+          decimals: 6,
+          symbol: 'axlUSDC',
+        },
+        {
+          ibc_denom: 'ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F',
+          chain_id: 'rebus',
           decimals: 6,
           symbol: 'axlUSDC',
         },
@@ -456,6 +480,12 @@ module.exports = {
         },
         {
           contract_address: '0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6',
+          chain_id: 10,
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          contract_address: '0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6',
           chain_id: 42220,
           decimals: 6,
           symbol: 'axlUSDT',
@@ -553,6 +583,12 @@ module.exports = {
           symbol: 'axlUSDT',
         },
         {
+          ibc_denom: 'ibc/11FB4C0BC2FCCFF2B01976C0070F468D82DAE8D1F565F80E64063BFDBEE4A5BD',
+          chain_id: 'aura',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
           ibc_denom: 'ibc/F0BEB4540AF9E0C6C4DD6FA1635C9AE1F99FCA15366671C9219B1140AAC3FCB1',
           chain_id: 'comdex',
           decimals: 6,
@@ -609,6 +645,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2',
           chain_id: 'neutron',
+          decimals: 6,
+          symbol: 'axlUSDT',
+        },
+        {
+          ibc_denom: 'ibc/F2331645B9683116188EF36FC04A809C28BD36B54555E8705A37146D0182F045',
+          chain_id: 'rebus',
           decimals: 6,
           symbol: 'axlUSDT',
         },
@@ -674,6 +716,12 @@ module.exports = {
         {
           contract_address: '0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7',
           chain_id: 42161,
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          contract_address: '0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7',
+          chain_id: 10,
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -776,6 +824,12 @@ module.exports = {
           symbol: 'axlDAI',
         },
         {
+          ibc_denom: 'ibc/2017AFA149C1C42DBF54EC910DA168E9E4F928DF0D3A8E841189994A9339FED9',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
           ibc_denom: 'ibc/54DEF693B7C4BF171E7FFF3ABFE2B54D6A3B8A047A32BAAE9F1417A378594EC6',
           chain_id: 'comdex',
           decimals: 18,
@@ -832,6 +886,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/626DBDAD47E2867EE930907A2C97B9F61043523C40FB9C4FEEC980933D1F6790',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlDAI',
+        },
+        {
+          ibc_denom: 'ibc/3914BDEF46F429A26917E4D8D434620EC4817DC6B6E68FB327E190902F1E9242',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlDAI',
         },
@@ -938,6 +998,12 @@ module.exports = {
           symbol: 'axlBUSD',
         },
         {
+          ibc_denom: 'ibc/A7A2B8871CD2E999EB1D9E901B4F744617C80816CE94DE84CA1200109651C903',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlBUSD',
+        },
+        {
           ibc_denom: 'ibc/F960753B47A20B18DF578FFDD51FB8B32AF5BF77FF8718580421333F7458E690',
           chain_id: 'comdex',
           decimals: 18,
@@ -988,6 +1054,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/71BA048E21A9AEAC5E23FB7D91BE0E8730D50AB8993A01307616AA0C7EA618E3',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlBUSD',
+        },
+        {
+          ibc_denom: 'ibc/65CD60D7E37EF830BC6B6A6DF4E3E3884A96C0905A7D271C48DC0440B1989EC7',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlBUSD',
         },
@@ -1052,6 +1124,12 @@ module.exports = {
         {
           contract_address: '0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040',
           chain_id: 42161,
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          contract_address: '0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040',
+          chain_id: 10,
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1154,6 +1232,12 @@ module.exports = {
           symbol: 'axlFRAX',
         },
         {
+          ibc_denom: 'ibc/21DB3093824F38A29399E7466B5870559AEC683D0D09D746F9EC47BB8505CBF7',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
           ibc_denom: 'ibc/B0C60517B4B854164D87224AFF2D7633959BACD2402EB0BA460B64E95ED8D1ED',
           chain_id: 'comdex',
           decimals: 18,
@@ -1204,6 +1288,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/59034348F9F2DBA4EAE6621D9DDA9ADF190F60BDDDD2DC99E226F800886F70B5',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlFRAX',
+        },
+        {
+          ibc_denom: 'ibc/7B11FE7D6385B46B9F3598B298B81A773CB20A8BA12001D87A78580314218364',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlFRAX',
         },
@@ -1456,6 +1546,12 @@ module.exports = {
           symbol: 'axlWBTC',
         },
         {
+          ibc_denom: 'ibc/7FFC60524C4513A3A8E0A407CC89BFF5A861EC624209D72EB26FC10ADAEBA70E',
+          chain_id: 'aura',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
           ibc_denom: 'ibc/0A6F20FA34BEBB63568E44C81C6E154C63ED061BA45E7EBC144B24C0DBBD0A4F',
           chain_id: 'comdex',
           decimals: 8,
@@ -1512,6 +1608,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/DF8722298D192AAB85D86D0462E8166234A6A9A572DD4A2EA7996029DF4DB363',
           chain_id: 'neutron',
+          decimals: 8,
+          symbol: 'axlWBTC',
+        },
+        {
+          ibc_denom: 'ibc/301DAF9CB0A9E247CD478533EF0E21F48FF8118C4A51F77C8BC3EB70E5566DBC',
+          chain_id: 'rebus',
           decimals: 8,
           symbol: 'axlWBTC',
         },
@@ -1636,6 +1738,12 @@ module.exports = {
           symbol: 'axlWETH',
         },
         {
+          ibc_denom: 'ibc/F1806958CA98757B91C3FA1573ECECD24F6FA3804F074A6977658914A49E65A3',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
           ibc_denom: 'ibc/81C3A46287D7664A8FD19843AC8D0CFD6C284EF1F750C661C48B3544277B1B29',
           chain_id: 'comdex',
           decimals: 18,
@@ -1692,6 +1800,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlWETH',
+        },
+        {
+          ibc_denom: 'ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlWETH',
         },
@@ -1823,6 +1937,12 @@ module.exports = {
           symbol: 'axlETH',
         },
         {
+          ibc_denom: 'ibc/F1806958CA98757B91C3FA1573ECECD24F6FA3804F074A6977658914A49E65A3',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
           ibc_denom: 'ibc/81C3A46287D7664A8FD19843AC8D0CFD6C284EF1F750C661C48B3544277B1B29',
           chain_id: 'comdex',
           decimals: 18,
@@ -1879,6 +1999,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlETH',
+        },
+        {
+          ibc_denom: 'ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlETH',
         },
@@ -1985,6 +2111,12 @@ module.exports = {
           symbol: 'axlWBNB',
         },
         {
+          ibc_denom: 'ibc/3D4499D811B055223D0EFB06D2211F84772CAEF0FB987F71BAE716191714B391',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
           ibc_denom: 'ibc/EC7576E3F8D254787264F0972E6518E42CFFB5305EC9D0BC7DD7B7FFEFACB28A',
           chain_id: 'comdex',
           decimals: 18,
@@ -2035,6 +2167,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/5CB2E12B07D0B6D8EC24A68BA6B6E6E8D5BF85B7D22091D3A480DCDD61C6AC84',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlWBNB',
+        },
+        {
+          ibc_denom: 'ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlWBNB',
         },
@@ -2148,6 +2286,12 @@ module.exports = {
           symbol: 'axlBNB',
         },
         {
+          ibc_denom: 'ibc/3D4499D811B055223D0EFB06D2211F84772CAEF0FB987F71BAE716191714B391',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlBNB',
+        },
+        {
           ibc_denom: 'ibc/EC7576E3F8D254787264F0972E6518E42CFFB5305EC9D0BC7DD7B7FFEFACB28A',
           chain_id: 'comdex',
           decimals: 18,
@@ -2198,6 +2342,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/5CB2E12B07D0B6D8EC24A68BA6B6E6E8D5BF85B7D22091D3A480DCDD61C6AC84',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlBNB',
+        },
+        {
+          ibc_denom: 'ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlBNB',
         },
@@ -2298,6 +2448,12 @@ module.exports = {
           symbol: 'axlWMATIC',
         },
         {
+          ibc_denom: 'ibc/C322C7D0867CC3EE6FA3495DC9685E5A0F49B506369341287FDA1E110841A950',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
           ibc_denom: 'ibc/E8F0355CBC21AFD4C758E93383D28404D19AEB81E8251A63FAA0C250672ADBEF',
           chain_id: 'comdex',
           decimals: 18,
@@ -2348,6 +2504,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/14767887A69DBEFF3B99AA3E5B176C7989B1DAD2395A1E843F48EE981AC4F83F',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlWMATIC',
+        },
+        {
+          ibc_denom: 'ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlWMATIC',
         },
@@ -2455,6 +2617,12 @@ module.exports = {
           symbol: 'axlMATIC',
         },
         {
+          ibc_denom: 'ibc/C322C7D0867CC3EE6FA3495DC9685E5A0F49B506369341287FDA1E110841A950',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlMATIC',
+        },
+        {
           ibc_denom: 'ibc/E8F0355CBC21AFD4C758E93383D28404D19AEB81E8251A63FAA0C250672ADBEF',
           chain_id: 'comdex',
           decimals: 18,
@@ -2505,6 +2673,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/14767887A69DBEFF3B99AA3E5B176C7989B1DAD2395A1E843F48EE981AC4F83F',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlMATIC',
+        },
+        {
+          ibc_denom: 'ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlMATIC',
         },
@@ -2605,6 +2779,12 @@ module.exports = {
           symbol: 'axlWAVAX',
         },
         {
+          ibc_denom: 'ibc/0886E3462B7DD438353781848DBDF90E58BB7DE90266E3F95E41B3FA8ED1B453',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
           ibc_denom: 'ibc/1D5738BD39B3189714B7A5C7CE8A206861ECAE79F7E29C45DA98151571F017E7',
           chain_id: 'comdex',
           decimals: 18,
@@ -2661,6 +2841,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/7B6FFC996FC2984AA98DBA4CEBFBF790E55F4D7E65360DD614F2BE2D08F4D324',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlWAVAX',
+        },
+        {
+          ibc_denom: 'ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlWAVAX',
         },
@@ -2768,6 +2954,12 @@ module.exports = {
           symbol: 'axlAVAX',
         },
         {
+          ibc_denom: 'ibc/0886E3462B7DD438353781848DBDF90E58BB7DE90266E3F95E41B3FA8ED1B453',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlAVAX',
+        },
+        {
           ibc_denom: 'ibc/1D5738BD39B3189714B7A5C7CE8A206861ECAE79F7E29C45DA98151571F017E7',
           chain_id: 'comdex',
           decimals: 18,
@@ -2824,6 +3016,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/7B6FFC996FC2984AA98DBA4CEBFBF790E55F4D7E65360DD614F2BE2D08F4D324',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlAVAX',
+        },
+        {
+          ibc_denom: 'ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlAVAX',
         },
@@ -2924,6 +3122,12 @@ module.exports = {
           symbol: 'axlWFTM',
         },
         {
+          ibc_denom: 'ibc/23B62EFD1B9444733889B42362570C774801430A1C656A0A3F8D6D69AE93ED8B',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
           ibc_denom: 'ibc/78A0828C273648513517BC6C10D9F7F2768472DD5C0F88B27CB54E346CB57D59',
           chain_id: 'comdex',
           decimals: 18,
@@ -2974,6 +3178,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/A96863E0BDFA3F2D96625FD5A649AF53F62F97521EF78FBBFE5B4199C3E23ABD',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlWFTM',
+        },
+        {
+          ibc_denom: 'ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlWFTM',
         },
@@ -3081,6 +3291,12 @@ module.exports = {
           symbol: 'axlFTM',
         },
         {
+          ibc_denom: 'ibc/23B62EFD1B9444733889B42362570C774801430A1C656A0A3F8D6D69AE93ED8B',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlFTM',
+        },
+        {
           ibc_denom: 'ibc/78A0828C273648513517BC6C10D9F7F2768472DD5C0F88B27CB54E346CB57D59',
           chain_id: 'comdex',
           decimals: 18,
@@ -3133,6 +3349,12 @@ module.exports = {
           chain_id: 'neutron',
           decimals: 18,
           symbol: 'axlFTM',
+        },
+        {
+          ibc_denom: 'ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2',
+          chain_id: 'rebus',
+          decimals: 18,
+          symbol: 'axlWFTM',
         },
         {
           ibc_denom: 'ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746',
@@ -3231,6 +3453,12 @@ module.exports = {
           symbol: 'axlWGLMR',
         },
         {
+          ibc_denom: 'ibc/A7C06A800850847DBCC36213185EC5AAD3C719D42D1F0623F9C1F9EFF456F673',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
           ibc_denom: 'ibc/14308B897F7966AD643E337853EC613200E9A123D159984DE7B59FE151BCE867',
           chain_id: 'comdex',
           decimals: 18,
@@ -3281,6 +3509,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/5103F3B79845E445F46120B476A8336D76DE39A16E77132B2BB19BEA3857AF9B',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlWGLMR',
+        },
+        {
+          ibc_denom: 'ibc/C8D63703F5805CE6A2B20555139CF6ED9CDFA870389648EB08D688B94B0AE2C1',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlWGLMR',
         },
@@ -3388,6 +3622,12 @@ module.exports = {
           symbol: 'axlGLMR',
         },
         {
+          ibc_denom: 'ibc/A7C06A800850847DBCC36213185EC5AAD3C719D42D1F0623F9C1F9EFF456F673',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlGLMR',
+        },
+        {
           ibc_denom: 'ibc/14308B897F7966AD643E337853EC613200E9A123D159984DE7B59FE151BCE867',
           chain_id: 'comdex',
           decimals: 18,
@@ -3438,6 +3678,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/5103F3B79845E445F46120B476A8336D76DE39A16E77132B2BB19BEA3857AF9B',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlGLMR',
+        },
+        {
+          ibc_denom: 'ibc/C8D63703F5805CE6A2B20555139CF6ED9CDFA870389648EB08D688B94B0AE2C1',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlGLMR',
         },
@@ -3657,6 +3903,12 @@ module.exports = {
         },
         {
           contract_address: '0x5E2Cf56A562b1bDD32ec26315063074ADC420C73',
+          chain_id: 10,
+          decimals: 18,
+          symbol: 'axlWFIL',
+        },
+        {
+          contract_address: '0x5E2Cf56A562b1bDD32ec26315063074ADC420C73',
           chain_id: 42220,
           decimals: 18,
           symbol: 'axlWFIL',
@@ -3857,6 +4109,12 @@ module.exports = {
         {
           contract_address: '0x5E2Cf56A562b1bDD32ec26315063074ADC420C73',
           chain_id: 42161,
+          decimals: 18,
+          symbol: 'axlFIL',
+        },
+        {
+          contract_address: '0x5E2Cf56A562b1bDD32ec26315063074ADC420C73',
+          chain_id: 10,
           decimals: 18,
           symbol: 'axlFIL',
         },
@@ -4104,6 +4362,12 @@ module.exports = {
           symbol: 'axlDOT',
         },
         {
+          ibc_denom: 'ibc/3208C8E45C27903988E437162134A172880BE112C0530B86117FB5DA7A5DF8B9',
+          chain_id: 'aura',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
           ibc_denom: 'ibc/212040AC44BB9576E4E1B4DF0584C9D1C2D96C17D7ADC765927265D5D06ACF9D',
           chain_id: 'comdex',
           decimals: 10,
@@ -4154,6 +4418,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/E74CD453F834EE007B02F1298EFFF4DCD9C97FB58DF7F6080FF935145B73C6A6',
           chain_id: 'neutron',
+          decimals: 10,
+          symbol: 'axlDOT',
+        },
+        {
+          ibc_denom: 'ibc/B37E4D9FB5B30F3E1E20A4B2DE2A005E584C5C822C44527546556AE2470B4539',
+          chain_id: 'rebus',
           decimals: 10,
           symbol: 'axlDOT',
         },
@@ -4212,6 +4482,12 @@ module.exports = {
         {
           contract_address: '0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff',
           chain_id: 42161,
+          decimals: 6,
+          symbol: 'axlATOM',
+        },
+        {
+          contract_address: '0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff',
+          chain_id: 10,
           decimals: 6,
           symbol: 'axlATOM',
         },
@@ -4480,6 +4756,11 @@ module.exports = {
           chain_id: 42161,
           decimals: 6,
         },
+        {
+          contract_address: '0x3A18dcC9745eDcD1Ef33ecB93b0b6eBA5671e7Ca',
+          chain_id: 10,
+          decimals: 6,
+        },
       ],
       ibc: [
         {
@@ -4537,6 +4818,12 @@ module.exports = {
         {
           contract_address: '0x7ba861c07d40e3341B901Fd6F418e96E0132E25b',
           chain_id: 42161,
+          decimals: 6,
+          symbol: 'stATOM',
+        },
+        {
+          contract_address: '0x7ba861c07d40e3341B901Fd6F418e96E0132E25b',
+          chain_id: 10,
           decimals: 6,
           symbol: 'stATOM',
         },
@@ -4609,6 +4896,12 @@ module.exports = {
         {
           contract_address: '0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F',
           chain_id: 42161,
+          decimals: 6,
+          symbol: 'STRD',
+        },
+        {
+          contract_address: '0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F',
+          chain_id: 10,
           decimals: 6,
           symbol: 'STRD',
         },
@@ -4775,6 +5068,12 @@ module.exports = {
           symbol: 'axlRAI',
         },
         {
+          ibc_denom: 'ibc/A1F1BAE8D0CF9F8080C22FE2B0C60DFD25E96F4F985AC27C7E11F5A597CEE83D',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
           ibc_denom: 'ibc/7FB70D35FF8085A02BDCDCB1DD2A2E6E5B56928853E34846F7C80C78AE3D5F1E',
           chain_id: 'comdex',
           decimals: 18,
@@ -4825,6 +5124,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/8F93A962F1ACCC0C55B45358ACCEA4557206AE71A8BC73A2044525EE43EF5D31',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlRAI',
+        },
+        {
+          ibc_denom: 'ibc/4CA23432A78B272A9EB7010CB72A15A199066D239F1B13BB583F3945EB8A315C',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlRAI',
         },
@@ -4925,6 +5230,12 @@ module.exports = {
           symbol: 'axlLINK',
         },
         {
+          ibc_denom: 'ibc/1AD2DD08D1AADAE7F667F82767425FEC119BAFEA5F514FCEA22E6E4E446BEADA',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
           ibc_denom: 'ibc/E37C113A206A0E27EC76453E66C045B1FB926F4A96E345D1C07455367BC4BE70',
           chain_id: 'comdex',
           decimals: 18,
@@ -4975,6 +5286,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/73D01D9D032390E81CBC20B7E0507B84DF54F3CE5302BFF52776E7D8930F2A6C',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlLINK',
+        },
+        {
+          ibc_denom: 'ibc/FC59D6840A41252352263CEA2B832BB86D68D03CBA194263CB9F3C15946796FB',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlLINK',
         },
@@ -5915,6 +6232,12 @@ module.exports = {
           symbol: 'axlUNI',
         },
         {
+          ibc_denom: 'ibc/392F7936508B675F7F794504F4829D6F459C0E7488EDE6B2C4E9192037E3F03F',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
           ibc_denom: 'ibc/B101E08F99A58A725E02F7B3F6683F43F2ABA152CA63AD1522C526A54FEDEBD8',
           chain_id: 'comdex',
           decimals: 18,
@@ -5965,6 +6288,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/ED457C0D88A8893E3BFEA226630E761C887AA2433F6C7BBCC29B591349A65BB7',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlUNI',
+        },
+        {
+          ibc_denom: 'ibc/0A88A08F3E9573DB9D8CB74AA3746F6D23C41C3EE7B6CC5AA4695A1DD74FF86B',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlUNI',
         },
@@ -6065,6 +6394,12 @@ module.exports = {
           symbol: 'axlSHIB',
         },
         {
+          ibc_denom: 'ibc/D1F6A3A1A3C2E25A7039B4537E8D1B08490B6A3F57D758AB8C08AA512CE3E51A',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
           ibc_denom: 'ibc/1F18934D62FFDA25C75ED7974EE34DB018BA004B58C42D46EB49AF41BB01AF01',
           chain_id: 'comdex',
           decimals: 18,
@@ -6115,6 +6450,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/6C18438B29DF9D62583F6890FFAA77770CB612C386E74425AD1C1BB6535D8FCB',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlSHIB',
+        },
+        {
+          ibc_denom: 'ibc/43BF3152103ED706E207005E7C433AB3440572C1D444FFE49321A0EF6A8EFC82',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlSHIB',
         },
@@ -6455,6 +6796,12 @@ module.exports = {
           symbol: 'axlMKR',
         },
         {
+          ibc_denom: 'ibc/1E8149AC74041CF61448A57858887B2D2C221B9B194509120BD3AD6E4278AAB0',
+          chain_id: 'aura',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
           ibc_denom: 'ibc/74C6699525ADB582D2893666CE2F62616BA90041A6D486A65B1C94AD163D6670',
           chain_id: 'comdex',
           decimals: 18,
@@ -6505,6 +6852,12 @@ module.exports = {
         {
           ibc_denom: 'ibc/F2C3F097E1EFD9B54CF374BA1FA64C5FF995F228CC389CDFB094BF7942B8F00F',
           chain_id: 'neutron',
+          decimals: 18,
+          symbol: 'axlMKR',
+        },
+        {
+          ibc_denom: 'ibc/31A4E6623063E702FB9CF2E7B616DFCCDE319CA2FC4775CDFF26F29F628E7ACF',
+          chain_id: 'rebus',
           decimals: 18,
           symbol: 'axlMKR',
         },
