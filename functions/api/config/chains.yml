@@ -1881,7 +1881,7 @@ testnet:
       prefix_chain_ids:
         - "pulsar-"
     sei:
-      chain_name: "sei"
+      chain_name: "sei-2"
       endpoints:
         lcd:
           - "https://rest.atlantic-2.seinetwork.io"
