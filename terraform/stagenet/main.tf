@@ -72,12 +72,26 @@ resource "aws_iam_role" "axelarscan_lambda" {
       }
     )
   }
-}
 
-resource "aws_iam_policy_attachment" "attachment" {
-  name       = "${var.project_name}-attachment"
-  roles      = [aws_iam_role.axelarscan_lambda.name]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  inline_policy {
+    name = "lambda_execution_policy"
+    policy = jsonencode(
+      {
+        Statement = [
+          {
+            Action = [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ]
+            Effect   = "Allow"
+            Resource = "*"
+          },
+        ]
+        Version = "2012-10-17"
+      }
+    )
+  }
 }
 
 resource "aws_lambda_function" "api" {
