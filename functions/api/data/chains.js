@@ -2123,13 +2123,13 @@ module.exports = {
               decimals: 18,
             },
             blockExplorerUrls: [
-              'https://explorer.goerli.linea.build',
+              'https://goerli.lineascan.build',
             ],
           },
         ],
         explorer: {
           name: 'Linea',
-          url: 'https://explorer.goerli.linea.build',
+          url: 'https://goerli.lineascan.build',
           icon: '/logos/explorers/linea.png',
           block_path: '/block/{block}',
           address_path: '/address/{address}',
