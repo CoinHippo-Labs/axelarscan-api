@@ -734,6 +734,23 @@ mainnet:
         ibc_denom: "ibc/E305B30EBA7FCA794906997F2F67B0E6C0C9C0EDE1654D6D80F986BA1ACAA50D"
       terra-2:
         ibc_denom: "ibc/C86836CB16D81FEFE13176C79F1EED3CEE20A8CBED191CE3454DD8E0D0097127"
+  yieldusd-wei:
+    denom: "yieldusd-wei"
+    native_chain: "ethereum"
+    name: "Yield USD"
+    symbol: "YieldUSD"
+    decimals: 18
+    image: "/logos/assets/yieldusd.svg"
+    coingecko_id: "tether"
+    addresses:
+      ethereum:
+        address: "0x97e6E0a40a3D02F12d1cEC30ebfbAE04e37C119E"
+      arbitrum:
+        address: "0x0cfD82F3910b3A5faf3a0417Fb0063953D6B911b"
+        symbol: "axlYieldUSD"
+      axelarnet:
+        ibc_denom: "yieldusd-wei"
+        symbol: "axlYieldUSD"
   wbtc-satoshi:
     denom: "wbtc-satoshi"
     native_chain: "ethereum"
@@ -939,6 +956,41 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674"
         symbol: "axlETH"
+  steth-wei:
+    denom: "steth-wei"
+    native_chain: "ethereum"
+    name: "Lido Staked Ether"
+    symbol: "stETH"
+    decimals: 18
+    image: "/logos/assets/steth.png"
+    coingecko_id: "staked-ether"
+    addresses:
+      ethereum:
+        address: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
+      axelarnet:
+        ibc_denom: "steth-wei"
+        symbol: "axlSTETH"
+      osmosis:
+        ibc_denom: "ibc/129F401C84FCD5B0183472ED83745193B0B3A69855635A56B9056EEF8D3C241C"
+        symbol: "axlSTETH"
+      cosmoshub:
+        ibc_denom: "ibc/63B1B80C5F6742F68B5BEA04ED255B0865E5649EF311B2A131936180A0ADC119"
+        symbol: "axlSTETH"
+      juno:
+        ibc_denom: "ibc/C740EF04C154165820688D9438AD90EA1E6B59BFF3715197AA570E928A44A937"
+        symbol: "axlSTETH"
+      crescent:
+        ibc_denom: "ibc/B74E78325EB51CABBA812618947F04941B564F137C6A9C19E2626CE3EB5E1F8D"
+        symbol: "axlSTETH"
+      kujira:
+        ibc_denom: "ibc/CA856BEC686F1F2DCFA410D282B1325D98B8AB81436A626F4214B7BF441AAA98"
+        symbol: "axlSTETH"
+      secret:
+        ibc_denom: "ibc/25FE726817716360DC551E7BB648D3BE44F4130C710C1BC68C4B777A9A3EEDD0"
+        symbol: "axlSTETH"
+      terra-2:
+        ibc_denom: "ibc/DBA10CEE0874A76DA817F4BA19D611F08910EF213D1698AF06F10D7096A0F3E9"
+        symbol: "axlSTETH"
   wsteth-wei:
     denom: "wsteth-wei"
     native_chain: "ethereum"
@@ -1108,6 +1160,37 @@ mainnet:
         ibc_denom: "ibc/B2009E8CD505BE427C024B221C30BF03792EAC38D2AA2CDE17E54D2527073B43"
       terra-2:
         ibc_denom: "ibc/1EA41719164ECAC4272F16B8916D42F666881B0742FB1D59A26488735CCD9BE5"
+  sfrxeth-wei:
+    denom: "sfrxeth-wei"
+    native_chain: "ethereum"
+    name: "Staked Frax Ether"
+    symbol: "sfrxETH"
+    decimals: 18
+    image: "/logos/assets/sfrxeth.svg"
+    coingecko_id: "staked-frax-ether"
+    addresses:
+      ethereum:
+        address: "0xac3E018457B222d93114458476f3E3416Abbe38F"
+      axelarnet:
+        ibc_denom: "sfrxeth-wei"
+      osmosis:
+        ibc_denom: "ibc/81F578C39006EB4B27FFFA9460954527910D73390991B379C03B18934D272F46"
+      cosmoshub:
+        ibc_denom: "ibc/0871D26D2C71319765EA323D6EB8B8A074706AD253FC7EB51E88E269A4CDB911"
+      juno:
+        ibc_denom: "ibc/39A90E0FA128DAE477510F0B9BE848B0D3C6D3BE2A464667B79EAD9BB847CC47"
+      crescent:
+        ibc_denom: "ibc/11261571EB3E679315BA19C51F42F143113A139F598729D97624B45043C4D7C0"
+      kujira:
+        ibc_denom: "ibc/579194AD6EB1B02FE30D7031EF284C1BB7B272EE5F7700462CD8B3DECB542175"
+      evmos:
+        ibc_denom: "ibc/0C9C3EAE01AB2438F14032341507E51759FD1871BACF35078361A10AB02F3BE1"
+      comdex:
+        ibc_denom: "ibc/3A2B63D5098AEBD42CE789B2EE64E46FA8197431F6C687051934C48AAF53B8F6"
+      umee:
+        ibc_denom: "ibc/3F972A6BFE64248AF19C9328FA59A1270CBC57D4545A099860E035C2BA4C79FD"
+      terra-2:
+        ibc_denom: "ibc/F89222965B85BEDE242359DDB25339BCEEFDA8C687F49E78623FD5713F2DEE03"
   reth-wei:
     denom: "reth-wei"
     native_chain: "ethereum"
@@ -1163,6 +1246,23 @@ mainnet:
         ibc_denom: "ibc/1622E6A962819D6B42522BC1E8F50ABBB6AF06E8D46022E73DD2A849B4553CFC"
       terra-2:
         ibc_denom: "ibc/655515DE6E1E7CD9DDDEC9E1A06141AEF7BB612F7EB57504B16EB171D61F4D87"
+  yieldeth-wei:
+    denom: "yieldeth-wei"
+    native_chain: "ethereum"
+    name: "Yield Ethereum"
+    symbol: "YieldETH"
+    decimals: 18
+    image: "/logos/assets/yieldeth.svg"
+    coingecko_id: "weth"
+    addresses:
+      ethereum:
+        address: "0xb5b29320d2Dde5BA5BAFA1EbcD270052070483ec"
+      arbitrum:
+        address: "0xA9AF51A55F275503a3876077a08Ae6540835EF8C"
+        symbol: "axlYieldETH"
+      axelarnet:
+        ibc_denom: "yieldeth-wei"
+        symbol: "axlYieldETH"
   bnb-wei:
     denom: "bnb-wei"
     denoms:
@@ -1255,6 +1355,21 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/1319C6B38CA613C89D78C2D1461B305038B1085F6855E8CD276FE3F7C9600B4C"
         symbol: "axlBNB"
+  stkbnb-wei:
+    denom: "stkbnb-wei"
+    native_chain: "binance"
+    name: "pSTAKE BNB"
+    symbol: "stkBNB"
+    decimals: 18
+    image: "/logos/assets/stkbnb.svg"
+    coingecko_id: "pstake-staked-bnb"
+    addresses:
+      binance:
+        address: "0xc2E9d07F66A89c44062459A47a0D2Dc038E4fb16"
+      axelarnet:
+        ibc_denom: "stkbnb-wei"
+      persistence:
+        ibc_denom: "ibc/525F28AACB70E540D19117E5AF4875DA8EB62F0C8C666233BCC4970C20D5CC32"
   matic-wei:
     denom: "matic-wei"
     denoms:
@@ -1977,41 +2092,6 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/6EFF21F9E65C9101370C38AA53049E4D1FF2B206A7C350B45F0ED3660E57AC75"
         symbol: "axlUNI"
-  steth-wei:
-    denom: "steth-wei"
-    native_chain: "ethereum"
-    name: "Lido Staked Ether"
-    symbol: "stETH"
-    decimals: 18
-    image: "/logos/assets/steth.png"
-    coingecko_id: "staked-ether"
-    addresses:
-      ethereum:
-        address: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
-      axelarnet:
-        ibc_denom: "steth-wei"
-        symbol: "axlSTETH"
-      osmosis:
-        ibc_denom: "ibc/129F401C84FCD5B0183472ED83745193B0B3A69855635A56B9056EEF8D3C241C"
-        symbol: "axlSTETH"
-      cosmoshub:
-        ibc_denom: "ibc/63B1B80C5F6742F68B5BEA04ED255B0865E5649EF311B2A131936180A0ADC119"
-        symbol: "axlSTETH"
-      juno:
-        ibc_denom: "ibc/C740EF04C154165820688D9438AD90EA1E6B59BFF3715197AA570E928A44A937"
-        symbol: "axlSTETH"
-      crescent:
-        ibc_denom: "ibc/B74E78325EB51CABBA812618947F04941B564F137C6A9C19E2626CE3EB5E1F8D"
-        symbol: "axlSTETH"
-      kujira:
-        ibc_denom: "ibc/CA856BEC686F1F2DCFA410D282B1325D98B8AB81436A626F4214B7BF441AAA98"
-        symbol: "axlSTETH"
-      secret:
-        ibc_denom: "ibc/25FE726817716360DC551E7BB648D3BE44F4130C710C1BC68C4B777A9A3EEDD0"
-        symbol: "axlSTETH"
-      terra-2:
-        ibc_denom: "ibc/DBA10CEE0874A76DA817F4BA19D611F08910EF213D1698AF06F10D7096A0F3E9"
-        symbol: "axlSTETH"
   aave-wei:
     denom: "aave-wei"
     native_chain: "ethereum"
@@ -2577,6 +2657,90 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/ED1D1CEACDB852377A99B1776BF3459472084BBA8F39D2D41AAF3E86E67CA8F3"
         symbol: "axlPEPE"
+  mpx-wei:
+    denom: "mpx-wei"
+    native_chain: "fantom"
+    name: "Morphex"
+    symbol: "MPX"
+    decimals: 18
+    image: "/logos/assets/mpx.svg"
+    coingecko_id: "mpx"
+    addresses:
+      binance:
+        address: "0x94C6B279b5df54b335aE51866d6E2A56BF5Ef9b7"
+      fantom:
+        address: "0x66eEd5FF1701E6ed8470DC391F05e27B1d0657eb"
+      axelarnet:
+        ibc_denom: "mpx-wei"
+  wmai-wei:
+    denom: "wmai-wei"
+    native_chain: "ethereum"
+    name: "WMAI"
+    symbol: "WMAI"
+    decimals: 18
+    image: "/logos/assets/wmai.svg"
+    coingecko_id: "mimatic"
+    addresses:
+      ethereum:
+        address: "0x05770332D4410b6D7f07Fd497E4c00F8F7bFb74A"
+      binance:
+        address: "0x501e3d716A72E11E1e22eDcf0365556b357DA0c9"
+        symbol: "axlWMAI"
+      polygon:
+        address: "0x08aD99fB3f9f262853B54613249B4064901BD358"
+        symbol: "axlWMAI"
+      avalanche:
+        address: "0xd889657E1570c5bedD3fa846aB7865a86aAa338a"
+        symbol: "axlWMAI"
+      fantom:
+        address: "0x501e3d716A72E11E1e22eDcf0365556b357DA0c9"
+        symbol: "axlWMAI"
+      moonbeam:
+        address: "0xbFE3Acdca835bB60A6B51Ee6B947779A02eCE911"
+        symbol: "axlWMAI"
+      arbitrum:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
+      optimism:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
+      celo:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
+      kava:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
+      filecoin:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
+      axelarnet:
+        ibc_denom: "wmai-wei"
+        symbol: "axlWMAI"
+  ern-wei:
+    denom: "ern-wei"
+    native_chain: "optimism"
+    name: "Ethos Reserve Note"
+    symbol: "ERN"
+    decimals: 18
+    image: "/logos/assets/ern.svg"
+    coingecko_id: "ethos-reserve-note"
+    addresses:
+      ethereum:
+        address: "0x91A69021b0BaeF3445E51726458a0CE601471846"
+      binance:
+        address: "0xce1E3cc1950D2aAEb47dE04DE2dec2Dc86380E0A"
+      polygon:
+        address: "0xC3a9a54c043f348027fffAac0F2F996123A19bF4"
+      avalanche:
+        address: "0x08d58F06DDfA9b99AE651f68232014BE3914C5cd"
+      fantom:
+        address: "0xce1E3cc1950D2aAEb47dE04DE2dec2Dc86380E0A"
+      arbitrum:
+        address: "0xa334884bF6b0A066d553D19e507315E839409e62"
+      optimism:
+        address: "0xc5b001DC33727F8F26880B184090D3E252470D45"
+      axelarnet:
+        ibc_denom: "ern-wei"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
@@ -2747,6 +2911,21 @@ mainnet:
         ibc_denom: "ibc/373EF14936B38AC8F8A7E7024C0FB7099369FDDFDA3CDA9EFA73684B16249B64"
       emoney:
         ibc_denom: "eeur"
+  uumee:
+    denom: "uumee"
+    native_chain: "umee"
+    name: "Umee"
+    symbol: "UMEE"
+    decimals: 6
+    image: "/logos/assets/umee.svg"
+    coingecko_id: "umee"
+    addresses:
+      ethereum:
+        address: "0x923e030f951A2401426a3407a9bcc7EB715d9a0b"
+      axelarnet:
+        ibc_denom: "ibc/DA8D591FFA8836FDF3AD0F9F8AF4EAA77D9D4F23DA3D10DFD1FC3B9A3644B26D"
+      umee:
+        ibc_denom: "uumee"
   ustrd:
     denom: "ustrd"
     native_chain: "stride"
@@ -3952,6 +4131,8 @@ testnet:
         symbol: "axlLUNC"
       terra:
         ibc_denom: "uluna"
+
+
 
 stagenet:
   uaxl:

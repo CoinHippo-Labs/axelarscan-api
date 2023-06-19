@@ -25,6 +25,8 @@ DEV:
 AURORA:
   coingecko_id: "aurora-near"
   decimals: 18
+ARB:
+  redirect: "arbitrum"
 aETH:
   redirect: "ETH"
 CELO:
@@ -144,6 +146,29 @@ axlWETH:
   redirect: "WETH"
 axlETH:
   redirect: "WETH"
+stETH:
+  coingecko_id: "staked-ether"
+  decimals: 18
+axlSTETH:
+  redirect: "stETH"
+wstETH:
+  coingecko_id: "staked-ether"
+  decimals: 18
+cbETH:
+  coingecko_id: "coinbase-wrapped-staked-eth"
+  decimals: 18
+frxETH:
+  coingecko_id: "frax-ether"
+  decimals: 18
+sfrxETH:
+  coingecko_id: "staked-frax-ether"
+  decimals: 18
+rETH:
+  coingecko_id: "rocket-pool-eth"
+  decimals: 18
+yieldeth:
+  coingecko_id: "weth"
+  decimals: 18
 WBNB:
   coingecko_id: "wbnb"
   decimals: 18
@@ -151,6 +176,9 @@ axlWBNB:
   redirect: "WBNB"
 axlBNB:
   redirect: "WBNB"
+stkBNB:
+  coingecko_id: "pstake-staked-bnb"
+  decimals: 18
 WMATIC:
   coingecko_id: "wmatic"
   decimals: 18
@@ -221,6 +249,99 @@ BUSD:
   decimals: 18
 axlBUSD:
   redirect: "BUSD"
+FRAX:
+  coingecko_id: "frax"
+  default_price:
+    usd: 1.00
+  decimals: 18
+axlFRAX:
+  redirect: "FRAX"
+cUSD:
+  coingecko_id: "celo-dollar"
+  default_price:
+    usd: 1.00
+  decimals: 18
+YieldUSD:
+  coingecko_id: "tether"
+  default_price:
+    usd: 1.00
+  decimals: 18
+axlYieldUSD:
+  redirect: "YieldUSD"
+EEUR:
+  coingecko_id: "e-money-eur"
+  decimals: 18
+LINK:
+  coingecko_id: "chainlink"
+  decimals: 18
+axlLINK:
+  redirect: "LINK"
+UNI:
+  coingecko_id: "uniswap"
+  decimals: 18
+axlUNI:
+  redirect: "UNI"
+AAVE:
+  coingecko_id: "aave"
+  decimals: 18
+axlAAVE:
+  redirect: "AAVE"
+MKR:
+  coingecko_id: "maker"
+  decimals: 18
+axlMKR:
+  redirect: "MKR"
+SHIB:
+  coingecko_id: "shiba-inu"
+  decimals: 18
+axlSHIB:
+  redirect: "SHIB"
+APE:
+  coingecko_id: "apecoin"
+  decimals: 18
+axlAPE:
+  redirect: "APE"
+AXS:
+  coingecko_id: "axie-infinity"
+  decimals: 18
+axlAXS:
+  redirect: "AXS"
+RAI:
+  coingecko_id: "rai"
+  decimals: 18
+axlRAI:
+  redirect: "RAI"
+XCN:
+  coingecko_id: "chain-2"
+  decimals: 18
+axlXCN:
+  redirect: "XCN"
+PEPE:
+  coingecko_id: "pepe"
+  decimals: 18
+axlPEPE:
+  redirect: "PEPE"
+MPX:
+  coingecko_id: "mpx"
+  decimals: 18
+WMAI:
+  coingecko_id: "mimatic"
+  decimals: 18
+axlWMAI:
+  redirect: "WMAI"
+ERN:
+  coingecko_id: "ethos-reserve-note"
+  decimals: 18
+stATOM:
+  coingecko_id: "stride-staked-atom"
+  decimals: 6
+DOT:
+  coingecko_id: "polkadot"
+  decimals: 10
+xcDOT:
+  redirect: "DOT"
+axlDOT:
+  redirect: "DOT"
 axlOSMO:
   redirect: "OSMO"
 axlATOM:
