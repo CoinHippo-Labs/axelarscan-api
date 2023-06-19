@@ -1434,6 +1434,36 @@ module.exports = {
       ],
     },
     {
+      id: 'yieldusd-wei',
+      symbol: 'YieldUSD',
+      name: 'Yield USD',
+      image: '/logos/assets/yieldusd.svg',
+      decimals: 18,
+      coingecko_id: 'tether',
+      contracts: [
+        {
+          contract_address: '0x97e6E0a40a3D02F12d1cEC30ebfbAE04e37C119E',
+          chain_id: 1,
+          decimals: 18,
+          is_native: true,
+        },
+        {
+          contract_address: '0x0cfD82F3910b3A5faf3a0417Fb0063953D6B911b',
+          chain_id: 42161,
+          decimals: 18,
+          symbol: 'axlYieldUSD',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'yieldusd-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+          symbol: 'axlYieldUSD',
+        },
+      ],
+    },
+    {
       id: 'wbtc-satoshi',
       symbol: 'WBTC',
       name: 'Wrapped Bitcoin',
@@ -4772,6 +4802,34 @@ module.exports = {
       ],
     },
     {
+      id: 'uumee',
+      symbol: 'UMEE',
+      name: 'Umee',
+      image: '/logos/assets/umee.svg',
+      decimals: 6,
+      coingecko_id: 'umee',
+      contracts: [
+        {
+          contract_address: '0x923e030f951A2401426a3407a9bcc7EB715d9a0b',
+          chain_id: 1,
+          decimals: 6,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ibc/DA8D591FFA8836FDF3AD0F9F8AF4EAA77D9D4F23DA3D10DFD1FC3B9A3644B26D',
+          chain_id: 'axelarnet',
+          decimals: 6,
+        },
+        {
+          ibc_denom: 'uumee',
+          chain_id: 'umee',
+          decimals: 6,
+          is_native: true,
+        },
+      ],
+    },
+    {
       id: 'stuatom',
       symbol: 'stATOM',
       name: 'Stride ATOM',
@@ -5878,6 +5936,74 @@ module.exports = {
       ],
     },
     {
+      id: 'sfrxeth-wei',
+      symbol: 'sfrxETH',
+      name: 'Staked Frax Ether',
+      image: '/logos/assets/sfrxeth.svg',
+      decimals: 18,
+      coingecko_id: 'staked-frax-ether',
+      contracts: [
+        {
+          contract_address: '0xac3E018457B222d93114458476f3E3416Abbe38F',
+          chain_id: 1,
+          decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'sfrxeth-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/0871D26D2C71319765EA323D6EB8B8A074706AD253FC7EB51E88E269A4CDB911',
+          chain_id: 'cosmoshub',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/81F578C39006EB4B27FFFA9460954527910D73390991B379C03B18934D272F46',
+          chain_id: 'osmosis',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/39A90E0FA128DAE477510F0B9BE848B0D3C6D3BE2A464667B79EAD9BB847CC47',
+          chain_id: 'juno',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/11261571EB3E679315BA19C51F42F143113A139F598729D97624B45043C4D7C0',
+          chain_id: 'crescent',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/579194AD6EB1B02FE30D7031EF284C1BB7B272EE5F7700462CD8B3DECB542175',
+          chain_id: 'kujira',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/0C9C3EAE01AB2438F14032341507E51759FD1871BACF35078361A10AB02F3BE1',
+          chain_id: 'evmos',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/3A2B63D5098AEBD42CE789B2EE64E46FA8197431F6C687051934C48AAF53B8F6',
+          chain_id: 'comdex',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/3F972A6BFE64248AF19C9328FA59A1270CBC57D4545A099860E035C2BA4C79FD',
+          chain_id: 'umee',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/F89222965B85BEDE242359DDB25339BCEEFDA8C687F49E78623FD5713F2DEE03',
+          chain_id: 'terra-2',
+          decimals: 18,
+        },
+      ],
+    },
+    {
       id: 'reth-wei',
       symbol: 'rETH',
       name: 'Rocket Pool ETH',
@@ -6001,6 +6127,64 @@ module.exports = {
         {
           ibc_denom: 'ibc/655515DE6E1E7CD9DDDEC9E1A06141AEF7BB612F7EB57504B16EB171D61F4D87',
           chain_id: 'terra-2',
+          decimals: 18,
+        },
+      ],
+    },
+    {
+      id: 'yieldeth-wei',
+      symbol: 'YieldETH',
+      name: 'Yield Ethereum',
+      image: '/logos/assets/yieldeth.svg',
+      decimals: 18,
+      coingecko_id: 'weth',
+      contracts: [
+        {
+          contract_address: '0xb5b29320d2Dde5BA5BAFA1EbcD270052070483ec',
+          chain_id: 1,
+          decimals: 18,
+          is_native: true,
+        },
+        {
+          contract_address: '0xA9AF51A55F275503a3876077a08Ae6540835EF8C',
+          chain_id: 42161,
+          decimals: 18,
+          symbol: 'axlYieldETH',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'yieldeth-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+          symbol: 'axlYieldETH',
+        },
+      ],
+    },
+    {
+      id: 'stkbnb-wei',
+      symbol: 'stkBNB',
+      name: 'pSTAKE BNB',
+      image: '/logos/assets/stkbnb.svg',
+      decimals: 18,
+      coingecko_id: 'pstake-staked-bnb',
+      contracts: [
+        {
+          contract_address: '0xc2E9d07F66A89c44062459A47a0D2Dc038E4fb16',
+          chain_id: 56,
+          decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'stkbnb-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+        },
+        {
+          ibc_denom: 'ibc/525F28AACB70E540D19117E5AF4875DA8EB62F0C8C666233BCC4970C20D5CC32',
+          chain_id: 'persistence',
           decimals: 18,
         },
       ],
@@ -6944,6 +7128,171 @@ module.exports = {
           chain_id: 'terra-2',
           decimals: 18,
           symbol: 'axlPEPE',
+        },
+      ],
+    },
+    {
+      id: 'mpx-wei',
+      symbol: 'MPX',
+      name: 'Morphex',
+      image: '/logos/assets/mpx.svg',
+      decimals: 18,
+      coingecko_id: 'mpx',
+      contracts: [
+        {
+          contract_address: '0x94C6B279b5df54b335aE51866d6E2A56BF5Ef9b7',
+          chain_id: 56,
+          decimals: 18,
+        },
+        {
+          contract_address: '0x66eEd5FF1701E6ed8470DC391F05e27B1d0657eb',
+          chain_id: 250,
+          decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'mpx-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+        },
+      ],
+    },
+    {
+      id: 'wmai-wei',
+      symbol: 'WMAI',
+      name: 'WMAI',
+      image: '/logos/assets/wmai.svg',
+      decimals: 18,
+      coingecko_id: 'mimatic',
+      contracts: [
+        {
+          contract_address: '0x05770332D4410b6D7f07Fd497E4c00F8F7bFb74A',
+          chain_id: 1,
+          decimals: 18,
+          is_native: true,
+        },
+        {
+          contract_address: '0x501e3d716A72E11E1e22eDcf0365556b357DA0c9',
+          chain_id: 56,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x08aD99fB3f9f262853B54613249B4064901BD358',
+          chain_id: 137,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0xd889657E1570c5bedD3fa846aB7865a86aAa338a',
+          chain_id: 43114,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x501e3d716A72E11E1e22eDcf0365556b357DA0c9',
+          chain_id: 250,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0xbFE3Acdca835bB60A6B51Ee6B947779A02eCE911',
+          chain_id: 1284,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb',
+          chain_id: 42161,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb',
+          chain_id: 10,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb',
+          chain_id: 42220,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb',
+          chain_id: 2222,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+        {
+          contract_address: '0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb',
+          chain_id: 314,
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'wmai-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
+          symbol: 'axlWMAI',
+        },
+      ],
+    },
+    {
+      id: 'ern-wei',
+      symbol: 'ERN',
+      name: 'Ethos Reserve Note',
+      image: '/logos/assets/ern.svg',
+      decimals: 18,
+      coingecko_id: 'ethos-reserve-note',
+      contracts: [
+        {
+          contract_address: '0x91A69021b0BaeF3445E51726458a0CE601471846',
+          chain_id: 1,
+          decimals: 18,
+        },
+        {
+          contract_address: '0xce1E3cc1950D2aAEb47dE04DE2dec2Dc86380E0A',
+          chain_id: 56,
+          decimals: 18,
+        },
+        {
+          contract_address: '0xC3a9a54c043f348027fffAac0F2F996123A19bF4',
+          chain_id: 137,
+          decimals: 18,
+        },
+        {
+          contract_address: '0x08d58F06DDfA9b99AE651f68232014BE3914C5cd',
+          chain_id: 43114,
+          decimals: 18,
+        },
+        {
+          contract_address: '0xce1E3cc1950D2aAEb47dE04DE2dec2Dc86380E0A',
+          chain_id: 250,
+          decimals: 18,
+        },
+        {
+          contract_address: '0xa334884bF6b0A066d553D19e507315E839409e62',
+          chain_id: 42161,
+          decimals: 18,
+        },
+        {
+          contract_address: '0xc5b001DC33727F8F26880B184090D3E252470D45',
+          chain_id: 10,
+          decimals: 18,
+          is_native: true,
+        },
+      ],
+      ibc: [
+        {
+          ibc_denom: 'ern-wei',
+          chain_id: 'axelarnet',
+          decimals: 18,
         },
       ],
     },
