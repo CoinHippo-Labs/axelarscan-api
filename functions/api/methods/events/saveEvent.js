@@ -8,6 +8,7 @@ const { read, write } = require('../../services/index');
 const { getProvider } = require('../../utils/chain/evm');
 const { WRAP_COLLECTION, ERC20_TRANSFER_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getContracts, getChainKey, getAssetData } = require('../../utils/config');
 const { getGranularity } = require('../../utils/time');
+const { toBigNumber } = require('../../utils/number');
 const { equalsIgnoreCase, toArray } = require('../../utils');
 
 module.exports = async (params = {}) => {
@@ -69,7 +70,7 @@ module.exports = async (params = {}) => {
 
           const { denom, decimals, addresses } = { ...getAssetData(symbol) };
           if (denom && decimals) {
-            amount = Number(formatUnits(amount || '0', decimals));
+            amount = Number(formatUnits(toBigNumber(amount || '0'), decimals));
             const price = await getTokensPrice(denom, moment(block_timestamp * 1000).utc());
             event = {
               ...event,

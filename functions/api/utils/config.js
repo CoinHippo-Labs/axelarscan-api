@@ -109,7 +109,7 @@ const getLCD = () => getEndpoints()?.lcd;
 const getGMP = () => getEndpoints()?.gmp_api;
 const getAssets = (environment = ENVIRONMENT) => assets?.[environment];
 const getAssetsList = (environment = ENVIRONMENT) => Object.values({ ...getAssets(environment) }).map(a => { return { ...a, id: a.denom }; });
-const getAssetData = (asset, environment = ENVIRONMENT) => asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset) || toArray(Object.values({ ...a.addresses })).findIndex(_a => equalsIgnoreCase(_a.ibc_denom, asset)) > -1);
+const getAssetData = (asset, environment = ENVIRONMENT) => asset && Object.values({ ...getAssets(environment) }).find(a => equalsIgnoreCase(a.denom, asset) || toArray(a.denoms).findIndex(d => equalsIgnoreCase(d, asset)) > -1 || equalsIgnoreCase(a.symbol, asset) || toArray(Object.values({ ...a.addresses })).findIndex(_a => equalsIgnoreCase(_a.ibc_denom, asset) || equalsIgnoreCase(_a.symbol, asset)) > -1);
 const getTokens = () => tokens;
 const getTVL = (environment = ENVIRONMENT) => tvl?.[environment];
 const getSupply = (environment = ENVIRONMENT) => supply?.[environment];
