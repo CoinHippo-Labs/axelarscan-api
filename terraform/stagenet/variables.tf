@@ -26,7 +26,7 @@ variable "general_indexer_username" {
 variable "general_indexer_password" {
   description = "General indexer password"
   default     = ""
-  sensitive = true
+  sensitive   = true
 }
 
 variable "transfers_indexer_url" {
@@ -41,7 +41,7 @@ variable "transfers_indexer_username" {
 
 variable "transfers_indexer_password" {
   description = "Transfers indexer password"
-  sensitive = true
+  sensitive   = true
   default     = ""
 }
 
