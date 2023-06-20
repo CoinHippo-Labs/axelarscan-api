@@ -146,12 +146,13 @@ resource "aws_apigatewayv2_api" "api" {
 }
 
 resource "aws_apigatewayv2_integration" "api" {
-  api_id             = aws_apigatewayv2_api.api.id
-  connection_type    = "INTERNET"
-  description        = "Lambda Integration - terraform"
-  integration_method = "POST"
-  integration_uri    = aws_lambda_function.api.invoke_arn
-  integration_type   = "AWS_PROXY"
+  api_id                 = aws_apigatewayv2_api.api.id
+  connection_type        = "INTERNET"
+  description            = "Lambda Integration - terraform"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.api.invoke_arn
+  integration_type       = "AWS_PROXY"
+  payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "route_default" {
