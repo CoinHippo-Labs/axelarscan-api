@@ -346,7 +346,7 @@ mainnet:
       name: "Filecoin"
       short_name: "FIL"
       image: "/logos/chains/filecoin.svg"
-      color: "#"
+      color: "#0090ff"
       explorer:
         name: "Filecoin"
         url: "https://filfox.info"
