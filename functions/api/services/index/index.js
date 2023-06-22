@@ -69,7 +69,6 @@ const crud = async (params = {}) => {
     switch (method) {
       case 'get':
         path = path || `/${collection}/_doc/${id}`;
-
         response = await indexer.get(path, { params, auth }).catch(error => { return { error: error?.response?.data }; });
         const { _id, _source } = { ...response?.data };
         response = _source ? { data: { ..._source, id: _id } } : response;
@@ -77,7 +76,6 @@ const crud = async (params = {}) => {
       case 'set':
       case 'update':
         path = path || `/${collection}/_doc/${id}`;
-
         if (path.includes('/_update_by_query')) {
           try {
             response = await indexer.post(path, params, { auth }).catch(error => { return { error: error?.response?.data }; });
@@ -90,7 +88,6 @@ const crud = async (params = {}) => {
           // retry with update / insert
           if (error) {
             path = path.replace(path.includes('_doc') ? '_doc' : '_update', path.includes('_doc') ? '_update' : '_doc');
-
             if (update_only && path.includes('_doc')) {
               const _response = await indexer.get(path, { auth }).catch(error => { return { error: error?.response?.data }; });
               const { _id, _source } = { ..._response?.data };
@@ -105,7 +102,6 @@ const crud = async (params = {}) => {
       case 'query':
       case 'search':
         path = path || `/${collection}/_search`;
-
         const search_data =
           use_raw_data ?
             params :
@@ -128,7 +124,6 @@ const crud = async (params = {}) => {
                         .includes(k)
                       )
                       .map(([k, v]) => {
-                        // overide field from params
                         switch (k) {
                           case 'id':
                             if (!v && id) {
@@ -138,13 +133,11 @@ const crud = async (params = {}) => {
                           default:
                             break;
                         }
-                        // set match query
                         return { match: { [k]: v } };
                       }),
                 },
               },
             };
-
         if (path.endsWith('/_search')) {
           search_data.from = !isNaN(from) ? Number(from) : 0;
           search_data.size = !isNaN(size) ? Number(size) : 10;
@@ -185,7 +178,7 @@ const crud = async (params = {}) => {
     if (response?.data) {
       response = response.data;
     }
-    else if (response?.error) {
+    else if (response?.error && ['get', 'delete', 'remove'].includes(method)) {
       const { error } = { ...response };
       log('debug', 'indexer', 'request to opensearch', { params: _params, error });
       delete response.error;
@@ -202,15 +195,13 @@ const read = async (
   query,
   params = {},
 ) =>
-  await crud(
-    {
-      method: 'query',
-      collection,
-      query,
-      use_raw_data: true,
-      ...params,
-    },
-  );
+  await crud({
+    method: 'query',
+    collection,
+    query,
+    use_raw_data: true,
+    ...params,
+  });
 
 const write = async (
   collection,
@@ -219,16 +210,14 @@ const write = async (
   update_only = false,
   is_update = true,
 ) =>
-  await crud(
-    {
-      method: 'set',
-      collection,
-      id,
-      path: is_update ? `/${collection}/_update/${id}` : undefined,
-      update_only,
-      ...data,
-    },
-  );
+  await crud({
+    method: 'set',
+    collection,
+    id,
+    path: is_update ? `/${collection}/_update/${id}` : undefined,
+    update_only,
+    ...data,
+  });
 
 const remove = async (collection, id) => await crud({ method: 'delete', collection, id });
 
@@ -237,16 +226,14 @@ const deleteByQuery = async (
   query,
   params = {},
 ) =>
-  await crud(
-    {
-      method: 'query',
-      collection,
-      path: `/${collection}/_delete_by_query`,
-      query,
-      use_raw_data: true,
-      ...params,
-    },
-  );
+  await crud({
+    method: 'query',
+    collection,
+    path: `/${collection}/_delete_by_query`,
+    query,
+    use_raw_data: true,
+    ...params,
+  });
 
 module.exports = {
   crud,
