@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 
+const { recoverEvents } = require('../gmp');
 const { write } = require('../../../services/index');
 const { TX_COLLECTION, CONFIRM_TYPES, VOTE_TYPES, getChainKey, getChainData, getAssetsList } = require('../../../utils/config');
 const { equalsIgnoreCase, toArray, capitalize, toJson, toHex, normalizeQuote } = require('../../../utils');
@@ -335,6 +336,13 @@ module.exports = async (lcd_response = {}, params = {}) => {
         if (!index_poll) {
           await require('./batch')(lcd_response);
         }
+      }
+      // Cosmos GMP
+      if (
+        toArray(logs).filter(l => toArray(l.events).findIndex(e => ['ContractCallWithToken', 'ContractCall'].findIndex(event => e.type?.includes(`${event}Submitted`)) > -1) > -1).length > 0 ||
+        toArray(messages).findIndex(m => m['@type']?.includes('RouteMessage')) > -1
+      ) {
+        await recoverEvents(txhash, height);
       }
       lcd_response.tx_response.raw_log = JSON.stringify(logs);
     }
