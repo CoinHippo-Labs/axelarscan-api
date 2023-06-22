@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 
-const { recoverEvents } = require('../gmp');
+const { recoverEvents } = require('../../gmp');
 const { write } = require('../../../services/index');
 const { TX_COLLECTION, CONFIRM_TYPES, VOTE_TYPES, getChainKey, getChainData, getAssetsList } = require('../../../utils/config');
 const { equalsIgnoreCase, toArray, capitalize, toJson, toHex, normalizeQuote } = require('../../../utils');
