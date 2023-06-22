@@ -373,7 +373,7 @@ mainnet:
       name: "Axelar"
       short_name: "AXELAR"
       image: "/logos/chains/axelarnet.svg"
-      color: "#cbcaca"
+      color: "#abaaaa"
       explorer:
         name: "Axelarscan"
         url: "https://axelarscan.io"
@@ -1695,7 +1695,7 @@ testnet:
       name: "Axelar"
       short_name: "AXELAR"
       image: "/logos/chains/axelarnet.svg"
-      color: "#cbcaca"
+      color: "#abaaaa"
       explorer:
         name: "Axelarscan"
         url: "https://testnet.axelarscan.io"
@@ -2271,6 +2271,8 @@ testnet:
       prefix_chain_ids:
         - "bombay-"
 
+
+
 stagenet:
   evm:
     ethereum-2:
@@ -2299,3 +2301,31 @@ stagenet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+  cosmos:
+    axelarnet:
+      chain_name: "Axelarnet"
+      endpoints:
+        lcd:
+          - "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Axelar"
+        symbol: "AXL"
+        decimals: 6
+      name: "Axelar"
+      short_name: "AXELAR"
+      image: "/logos/chains/axelarnet.svg"
+      color: "#abaaaa"
+      explorer:
+        name: "Axelarscan"
+        url: "https://stagenet.axelarscan.io"
+        icon: "/logos/explorers/axelarscan.svg"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "axelar"
+      prefix_chain_ids:
+        - "axelar-"

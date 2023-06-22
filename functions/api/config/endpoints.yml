@@ -24,6 +24,8 @@ testnet:
     api: "https://api.mintscan.io/v1/axelar-testnet"
     chain_id: "axelar-testnet-lisbon-3"
 
+
+
 stagenet:
   rpc: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"
   lcd: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"

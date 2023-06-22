@@ -62,6 +62,8 @@ testnet:
     vesting_start: "2022-12-27"
     vesting_until: "2026-12-27"
 
+
+
 stagenet:
   max_supply: 1000000000
   initial_unlocked_percent: 0
