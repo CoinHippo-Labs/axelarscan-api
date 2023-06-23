@@ -26,7 +26,8 @@ AURORA:
   coingecko_id: "aurora-near"
   decimals: 18
 ARB:
-  redirect: "arbitrum"
+  coingecko_id: "arbitrum"
+  decimals: 18
 aETH:
   redirect: "ETH"
 CELO:
