@@ -104,7 +104,6 @@ module.exports = async (params = {}) => {
                             if (depositAddress) {
                               const asset_data = getAssetsList().find(a => equalsIgnoreCase(a.addresses?.[id]?.address, to));
                               let _amount;
-
                               if (!asset_data) {
                                 _amount = _.head(
                                   toArray(logs)
@@ -122,7 +121,6 @@ module.exports = async (params = {}) => {
                                     })
                                 );
                               }
-
                               const token_address = asset_data?.addresses?.[id]?.address;
                               const denom = asset_data?.denom;
                               const amount = BigInt(`0x${_amount || data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString();
@@ -140,16 +138,13 @@ module.exports = async (params = {}) => {
                                 },
                                 { size: 1 },
                               );
-
                               let unwrap = _.head(response?.data);
                               if (unwrap?.tx_hash_unwrap) {
                                 const { tx_hash_unwrap, destination_chain } = { ...unwrap };
                                 const provider = getProvider(destination_chain);
-
                                 if (provider) {
                                   const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
                                   const { blockNumber, from } = { ...transaction_data?.transaction };
-
                                   if (blockNumber) {
                                     const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
                                     unwrap = {
@@ -181,7 +176,6 @@ module.exports = async (params = {}) => {
                               response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: depositAddress } }, { size: 1 });
                               let link = normalizeLink(_.head(response?.data));
                               link = await updateLink(link, send);
-
                               const transfer_data = {
                                 send,
                                 link: link || undefined,
@@ -247,16 +241,13 @@ module.exports = async (params = {}) => {
                               },
                               { size: 1 },
                             );
-
                             let unwrap = _.head(response?.data);
                             if (unwrap?.tx_hash_unwrap) {
                               const { tx_hash_unwrap, destination_chain } = { ...unwrap };
                               const provider = getProvider(destination_chain);
-
                               if (provider) {
                                 const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
                                 const { blockNumber, from } = { ...transaction_data?.transaction };
-
                                 if (blockNumber) {
                                   const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
                                   unwrap = {
@@ -378,16 +369,13 @@ module.exports = async (params = {}) => {
                 },
                 { size: 1 },
               );
-
               d.unwrap = _.head(response?.data);
               if (d.unwrap?.tx_hash_unwrap) {
                 const { tx_hash_unwrap, destination_chain } = { ...d.unwrap };
                 const provider = getProvider(destination_chain);
-
                 if (provider) {
                   const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
                   const { blockNumber, from } = { ...transaction_data?.transaction };
-
                   if (blockNumber) {
                     const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
                     d.unwrap = {
@@ -445,7 +433,6 @@ module.exports = async (params = {}) => {
                     late,
                   } = { ...poll_data };
                   const { type } = { ...vote_confirmation };
-
                   d.vote = {
                     txhash: vote_confirmation.id,
                     height,
@@ -571,7 +558,6 @@ module.exports = async (params = {}) => {
                       default:
                         break;
                     }
-
                     const fromBlock = height + i;
                     const toBlock = fromBlock;
                     const response = await searchTransactions({ type, fromBlock, toBlock, size: 100 });

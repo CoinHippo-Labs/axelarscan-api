@@ -25,14 +25,14 @@ module.exports = data => toArray(data).map(d => {
     ibc_send ?
       ibc_send.failed_txhash && !ibc_send.ack_txhash ?
         'ibc_failed' :
-        ibc_send.recv_txhash || unwrap ?
+        ibc_send.recv_txhash || unwrap?.tx_hash_unwrap ?
           'executed' :
           'ibc_sent' :
-      command?.executed || unwrap ?
+      command?.executed || unwrap?.tx_hash_unwrap ?
         'executed' :
          command ?
           'batch_signed' :
-          axelar_transfer || unwrap ?
+          axelar_transfer || unwrap?.tx_hash_unwrap ?
             'executed' :
             vote ?
               'voted' :
