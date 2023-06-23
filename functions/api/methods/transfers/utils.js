@@ -8,7 +8,7 @@ const { getTokensPrice } = require('../tokens');
 const { write } = require('../../services/index');
 const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
 const { toBigNumber } = require('../../utils/number');
-const { equalsIgnoreCase, toArray. parseRequestError } = require('../../utils');
+const { equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
 
 const getReceiptLogIndex = (receipt, logIndex) => {
   const { logs } = { ...receipt };
