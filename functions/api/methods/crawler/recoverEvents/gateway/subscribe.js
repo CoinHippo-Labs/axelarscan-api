@@ -71,19 +71,7 @@ const getPastEvents = async (chain_data, filters, options, retry_time = 0) => {
     if (address) {
       const contract = new Contract(address, abi, provider);
       const { fromBlock, toBlock } = { ...options };
-
-      log(
-        'info',
-        service_name,
-        'get past gateway events',
-        {
-          chain,
-          contract_address: address,
-          filters,
-          options,
-          retry_time,
-        },
-      );
+      log('info', service_name, 'get past gateway events', { chain, contract_address: address, filters, options, retry_time });
 
       // query events
       const events = await contract.queryFilter(filters, fromBlock, toBlock).catch(error => { return { error }; });
@@ -95,21 +83,7 @@ const getPastEvents = async (chain_data, filters, options, retry_time = 0) => {
       }
       else {
         const { message } = { ...events.error };
-
-        log(
-          'warn',
-          service_name,
-          'get past gateway events',
-          {
-            chain,
-            contract_address: address,
-            filters,
-            options,
-            retry_time,
-            error: message,
-          },
-        );
-
+        log('warn', service_name, 'get past gateway events', { chain, contract_address: address, filters, options, retry_time, error: message });
         if (retry_time < 3) {
           await sleep(1.5 * 1000);
           return await getPastEvents(chain_data, filters, options, retry_time + 1);
