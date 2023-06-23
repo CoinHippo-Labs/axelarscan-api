@@ -169,8 +169,8 @@ module.exports = async (lcd_response = {}, created_at) => {
   await write(BATCH_COLLECTION, batch_id, lcd_response);
 
   for (const entry of Object.entries(updated_transfers_data)) {
-    const [d, data] = entry;
-    await write(TRANSFER_COLLECTION, id, data, true);
+    const [_id, data] = entry;
+    await write(TRANSFER_COLLECTION, _id, data, true);
   }
   return lcd_response;
 };
