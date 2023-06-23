@@ -21,7 +21,7 @@ module.exports = async data => {
               switch (status) {
                 case 'BATCHED_COMMANDS_STATUS_SIGNED':
                 case 'BATCHED_COMMANDS_STATUS_SIGNING':
-                  if (moment().diff(moment(ms), 'days', true) < MAX_CREATED_AT_TIME_DIFF_DAYS) {
+                  if (moment().diff(moment(ms), 'days', true) < MAX_CREATED_AT_TIME_DIFF_DAYS && moment().diff(moment(ms), 'seconds', true) > 5) {
                     if (toArray(commands).filter(c => !c.executed).length > 0 || toArray(commands).filter(c => 'executed' in c).length < 1) {
                       const updated_batch = await lcd(`/axelar/evm/v1beta1/batched_commands/${chain}/${batch_id}`, { index: true, created_at });
                       resolve(!_.isEqual(d, updated_batch));

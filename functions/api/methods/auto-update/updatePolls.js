@@ -9,7 +9,6 @@ module.exports = async () => {
   // const response = await searchPolls({ status: 'to_recover', size: 5 });
   // const { data } = { ...response };
   // const { prefix_address } = { ...getChainData('axelarnet') };
-
   // let heights = _.uniq(toArray(toArray(data).map(d => _.min(toArray(_.concat(d.height, Object.entries(d).filter(([k, v]) => k.startsWith(`${prefix_address}1`) && v?.height).map(([k, v]) => v.height)))))));
   // heights = _.orderBy(_.uniq(heights.flatMap(h => _.range(-1, 3).map(i => h + i))), [], ['desc']);
 

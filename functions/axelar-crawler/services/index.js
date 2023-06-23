@@ -3,6 +3,7 @@ const txSubscriber = require('./subscriber/tx');
 const reindex = require('./reindex');
 const archive = require('./archive');
 const updatePolls = require('./updatePolls');
+const updateBatches = require('./updateBatches');
 const updateTVL = require('./updateTVL');
 const updateWraps = require('./updateWraps');
 const updateUnwraps = require('./updateUnwraps');
@@ -20,6 +21,7 @@ module.exports = context => {
   if (context || !enable) {
     archive(context);
     // updatePolls(context);
+    updateBatches(context);
     // updateTVL(context);
     updateWraps(context);
     updateUnwraps(context);

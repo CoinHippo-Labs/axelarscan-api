@@ -22,6 +22,8 @@ testnet:
     end_block: 7500000
     num_processes: 2
 
+
+
 stagenet:
   api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com/stagenet"
   ws: "ws://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"

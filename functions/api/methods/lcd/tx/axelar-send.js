@@ -1,90 +1,46 @@
 const _ = require('lodash');
 const moment = require('moment');
 
-const {
-  getTransaction,
-  getBlockTime,
-  normalizeLink,
-  updateLink,
-  updateSend,
-} = require('../../transfers/utils');
-const {
-  read,
-} = require('../../../services/index');
-const {
-  getProvider,
-} = require('../../../utils/chain/evm');
-const {
-  DEPOSIT_ADDRESS_COLLECTION,
-  UNWRAP_COLLECTION,
-} = require('../../../utils/config');
-const {
-  getGranularity,
-} = require('../../../utils/time');
-const {
-  toArray,
-} = require('../../../utils');
+const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../../transfers/utils');
+const { read } = require('../../../services/index');
+const { getProvider } = require('../../../utils/chain/evm');
+const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION } = require('../../../utils/config');
+const { getGranularity } = require('../../../utils/time');
+const { toArray } = require('../../../utils');
 
-module.exports = async (
-  lcd_response = {},
-) => {
-  const {
-    tx,
-    tx_response,
-  } = { ...lcd_response };
-
-  const {
-    messages,
-  } = { ...tx?.body };
-
-  const {
-    txhash,
-    code,
-    height,
-    timestamp,
-  } = { ...tx_response };
+module.exports = async (lcd_response = {}) => {
+  const { tx, tx_response } = { ...lcd_response };
+  const { messages } = { ...tx?.body };
+  const { txhash, code, height, timestamp } = { ...tx_response };
 
   const sender_address = toArray(messages).find(m => m.from_address)?.from_address;
   const recipient_address = toArray(messages).find(m => m.to_address)?.to_address;
   const amount_data = _.head(toArray(messages).find(m => m.amount)?.amount);
 
   if (txhash && !code && recipient_address?.length >= 65 && amount_data?.amount) {
-    const response =
-      await read(
-        UNWRAP_COLLECTION,
-        {
-          bool: {
-            must: [
-              { match: { tx_hash: txhash } },
-              { match: { deposit_address_link: recipient_address } },
-              { match: { source_chain: 'axelarnet' } },
-            ],
-          },
+    const response = await read(
+      UNWRAP_COLLECTION,
+      {
+        bool: {
+          must: [
+            { match: { tx_hash: txhash } },
+            { match: { deposit_address_link: recipient_address } },
+            { match: { source_chain: 'axelarnet' } },
+          ],
         },
-        { size: 1 },
-      );
-
+      },
+      { size: 1 },
+    );
     let unwrap = _.head(response?.data);
 
     if (unwrap?.tx_hash_unwrap) {
-      const {
-        tx_hash_unwrap,
-        destination_chain,
-      } = { ...unwrap };
-
+      const { tx_hash_unwrap, destination_chain } = { ...unwrap };
       const provider = getProvider(destination_chain);
-
       if (provider) {
         const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
-
-        const {
-          blockNumber,
-          from,
-        } = { ...transaction_data?.transaction };
-
+        const { blockNumber, from } = { ...transaction_data?.transaction };
         if (blockNumber) {
           const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
-
           unwrap = {
             ...unwrap,
             height: blockNumber,
@@ -110,7 +66,6 @@ module.exports = async (
     };
 
     const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
-
     let link = normalizeLink(_.head(_response?.data));
     link = await updateLink(link, send);
     await updateSend(send, link, { type: unwrap ? 'unwrap' : 'deposit_address', unwrap: unwrap || undefined });

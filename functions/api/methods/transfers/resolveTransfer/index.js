@@ -9,6 +9,7 @@ const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = 
 const { searchTransactions } = require('../../axelar');
 const indexTransaction = require('../../lcd/tx');
 const { recoverEvents } = require('../../crawler');
+const { searchPolls } = require('../../polls');
 const lcd = require('../../lcd');
 const { get, read, write } = require('../../../services/index');
 const { getProvider } = require('../../../utils/chain/evm');
@@ -511,17 +512,32 @@ module.exports = async (params = {}) => {
               await lcd(`/cosmos/tx/v1beta1/txs/${d.vote.txhash}`, { index: true });
               updated = true;
             }
-            else if (d.status === 'asset_sent' && !d.send?.insufficient_fee && d.send?.recipient_address) {
+            else if (d.status === 'asset_sent' && !d.send?.insufficient_fee) {
               if (['unwrap', 'deposit_address'].includes(d.type)) {
                 let { recipient_address } = { ...d.send };
-                recipient_address = recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
-                if (!recipient_address.startsWith('0x')) {
-                  await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `message.sender='${recipient_address}'` });
-                  await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.sender='${recipient_address}'` });
+                if (recipient_address) {
+                  recipient_address = recipient_address.startsWith('0x') ? getAddress(recipient_address) : recipient_address;
+                  if (!recipient_address.startsWith('0x')) {
+                    await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `message.sender='${recipient_address}'` });
+                    await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.sender='${recipient_address}'` });
+                  }
+                  await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `link.depositAddress='${recipient_address}'` });
+                  if (recipient_address.startsWith('axelar')) {
+                    await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.recipient='${recipient_address}'` });
+                  }
+                  updated = true;
                 }
-                await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `link.depositAddress='${recipient_address}'` });
-                // await lcd('/cosmos/tx/v1beta1/txs', { index: true, index_transfer: true, events: `transfer.recipient='${recipient_address}'` });
-                updated = true;
+              }
+              else if (['wrap', 'send_token'].includes(d.type)) {
+                const { txhash } = { ...d.send };
+                if (txhash) {
+                  const response = await searchPolls({ transactionId: txhash });
+                  const confirmation_txhash = _.head(Object.values({ ..._.head(response?.data) }).filter(v => v.confirmed && v.id).map(v => v.id));
+                  if (confirmation_txhash) {
+                    await lcd(`/cosmos/tx/v1beta1/txs/${confirmation_txhash}`, { index: true, index_transfer: true });
+                    updated = true;
+                  }
+                }
               }
             }
             if (updated) {
@@ -531,7 +547,6 @@ module.exports = async (params = {}) => {
 
             if (getChainData(d.send.destination_chain, 'cosmos')) {
               const height = d.ibc_send?.height || d.vote?.height || d.confirm?.height;
-
               if (['ibc_sent', 'voted', 'deposit_confirmed'].includes(d.status) && height) {
                 if (d.confirm?.txhash && !d.confirm.transfer_id) {
                   await lcd(`/cosmos/tx/v1beta1/txs/${d.confirm.txhash}`, { index: true });
@@ -571,7 +586,7 @@ module.exports = async (params = {}) => {
               if (['batch_signed', 'voted', 'deposit_confirmed'].includes(d.status) && !d.send?.insufficient_fee) {
                 const transfer_id = d.vote?.transfer_id || d.confirm?.transfer_id || d.transfer_id;
                 if (transfer_id) {
-                  const command_id = transfer_id.toString(16).padStart(64, '0');
+                  const command_id = Number(transfer_id).toString(16).padStart(64, '0');
                   const response = await read(
                     BATCH_COLLECTION,
                     {
@@ -593,8 +608,8 @@ module.exports = async (params = {}) => {
                     },
                     { size: 1 },
                   );
-
                   const { batch_id, commands, created_at, status } = { ..._.head(response?.data) };
+
                   if (batch_id) {
                     let { executed, transactionHash, transactionIndex, logIndex, block_timestamp } = { ...toArray(commands).find(c => c.id === command_id) };
                     if (!transactionHash) {
@@ -610,7 +625,6 @@ module.exports = async (params = {}) => {
                         },
                         { size: 1 },
                       );
-
                       const command_event = _.head(response?.data);
                       if (command_event) {
                         transactionHash = command_event.transactionHash;
@@ -622,7 +636,6 @@ module.exports = async (params = {}) => {
                         }
                       }
                     }
-
                     executed = !!(executed || transactionHash);
                     if (!executed) {
                       try {

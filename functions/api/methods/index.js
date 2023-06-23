@@ -15,7 +15,7 @@ const { saveDepositForWrap, saveWrap } = require('./transfers/wrap');
 const { saveDepositForUnwrap, saveUnwrap } = require('./transfers/unwrap');
 const { saveDepositForERC20Transfer, saveERC20Transfer } = require('./transfers/erc20-transfer');
 const { getLatestEventBlock } = require('./crawler');
-const { archive, updatePolls, updateTVL, updateWraps, updateUnwraps, updateERC20Transfers } = require('./auto-update');
+const { archive, updatePolls, updateBatches, updateTVL, updateWraps, updateUnwraps, updateERC20Transfers } = require('./auto-update');
 
 module.exports = {
   crud,
@@ -61,6 +61,7 @@ module.exports = {
   getLatestEventBlock,
   archive,
   updatePolls,
+  updateBatches,
   updateTVL,
   updateWraps,
   updateUnwraps,

@@ -45,6 +45,7 @@ exports.handler = async (event, context, callback) => {
     getLatestEventBlock,
     archive,
     updatePolls,
+    updateBatches,
     updateTVL,
     updateWraps,
     updateUnwraps,
@@ -522,6 +523,13 @@ exports.handler = async (event, context, callback) => {
       case 'updatePolls':
         try {
           await updatePolls();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateBatches':
+        try {
+          await updateBatches();
         } catch (error) {
           output = errorOutput(error);
         }

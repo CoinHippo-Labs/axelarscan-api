@@ -17,7 +17,6 @@ module.exports = async () => {
       new Promise(
         async resolve => {
           const { deposit_address_link, tx_hash_unwrap, source_chain, destination_chain } = { ...d };
-
           if (deposit_address_link && tx_hash_unwrap && source_chain && destination_chain) {
             const provider = getProvider(destination_chain);
             if (provider) {
@@ -38,11 +37,9 @@ module.exports = async () => {
                 { size: 1 },
               );
               const { txhash } = { ..._.head(response?.data)?.send };
-
               if (txhash) {
                 const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
                 const { blockNumber } = { ...transaction_data?.transaction };
-
                 if (blockNumber) {
                   const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
                   await write(

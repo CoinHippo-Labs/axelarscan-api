@@ -178,7 +178,7 @@ const crud = async (params = {}) => {
     if (response?.data) {
       response = response.data;
     }
-    else if (response?.error && ['get', 'delete', 'remove'].includes(method)) {
+    else if (response?.error && !['get', 'delete', 'remove'].includes(method)) {
       const { error } = { ...response };
       log('debug', 'indexer', 'request to opensearch', { params: _params, error });
       delete response.error;

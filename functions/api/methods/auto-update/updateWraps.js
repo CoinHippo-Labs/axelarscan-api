@@ -17,13 +17,11 @@ module.exports = async () => {
       new Promise(
         async resolve => {
           const { tx_hash, tx_hash_wrap, source_chain } = { ...d };
-
           if (tx_hash && tx_hash_wrap && source_chain) {
             const provider = getProvider(source_chain);
             if (provider) {
               const transaction_data = await getTransaction(provider, tx_hash, source_chain);
               const { blockNumber } = { ...transaction_data?.transaction };
-
               if (blockNumber) {
                 const block_timestamp = await getBlockTime(provider, blockNumber, source_chain);
                 await write(
