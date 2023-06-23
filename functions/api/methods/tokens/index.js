@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const { get, write } = require('../../services/index');
 const { TOKEN_COLLECTION, CURRENCY, getAssetData, getTokens } = require('../../utils/config');
-const { toArray } = require('../../utils');
+const { toArray, parseRequestError } = require('../../utils');
 
 // config
 const tokens = getTokens();
@@ -40,10 +40,9 @@ const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY
                 localization: 'false',
               },
             },
-          ).catch(error => { return { error: error?.response?.data }; });
+          ).catch(error => parseRequestError(error));
           const { data, error } = { ...response };
           const { market_data } = { ...data };
-
           if (data && !error) {
             const { current_price } = { ...market_data };
             tokens_data[i] = {
@@ -82,9 +81,8 @@ const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY
               vs_currencies: currency,
             },
           },
-        ).catch(error => { return { error: error?.response?.data }; });
+        ).catch(error => parseRequestError(error));
         const { data, error } = { ...response };
-
         if (data && !error && tokens_data.findIndex(t => !data[t.coingecko_id]?.[currency]) < 0) {
           await write(COLLECTION, cache_id, { data, updated_at: moment().valueOf() });
         }

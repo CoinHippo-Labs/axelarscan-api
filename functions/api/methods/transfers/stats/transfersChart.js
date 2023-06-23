@@ -12,20 +12,17 @@ module.exports = async params => {
     delete params.granularity;
   }
 
-  const response = await searchTransfers(
-    {
-      ...params,
-      status: status || 'confirmed',
-      aggs: {
-        stats: {
-          terms: { field: `send.created_at.${granularity}`, size: 1000 },
-          aggs: { volume: { sum: { field: 'send.value' } } },
-        },
+  const response = await searchTransfers({
+    ...params,
+    status: status || 'confirmed',
+    aggs: {
+      stats: {
+        terms: { field: `send.created_at.${granularity}`, size: 1000 },
+        aggs: { volume: { sum: { field: 'send.value' } } },
       },
-      size: 0,
     },
-  );
-
+    size: 0,
+  });
   const { aggs, total } = { ...response };
   const { stats } = { ...aggs };
   const { buckets } = { ...stats };

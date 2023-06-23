@@ -6,7 +6,6 @@ const { BLOCK_COLLECTION } = require('../../../utils/config');
 
 module.exports = async (params = {}) => {
   let output;
-
   const query = generateQuery(params);
   const _params = generateReadParams(params);
   // search data
@@ -15,6 +14,5 @@ module.exports = async (params = {}) => {
     ...output,
     data: normalizeResult(output?.data),
   };
-
   return output;
 };

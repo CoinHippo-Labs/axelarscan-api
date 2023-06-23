@@ -9,7 +9,6 @@ const { toArray } = require('../../utils');
 module.exports = async (params = {}) => {
   const { asset, chain } = { ...params };
   let { assets, chains } = { ...params };
-
   assets = toArray(assets || asset);
   if (assets.length < 1) {
     assets = Object.keys({ ...getAssets() });
@@ -17,7 +16,6 @@ module.exports = async (params = {}) => {
   else {
     assets = toArray(assets.map(a => getAssetData(a)?.denom));
   }
-
   chains = toArray(chains || chain);
   if (chains.length < 1) {
     chains = getChainsList().filter(c => c.gateway_address || c.chain_type === 'cosmos').map(c => c.id);
@@ -30,7 +28,6 @@ module.exports = async (params = {}) => {
   let data = [];
   for (const asset of assets) {
     const { native_chain, addresses } = { ...getAssetData(asset) };
-
     // cosmos escrow addresses
     const cosmos_escrow_data = Object.fromEntries(
       await Promise.all(
@@ -39,11 +36,9 @@ module.exports = async (params = {}) => {
             async resolve => {
               const { id, prefix_chain_ids } = { ...c };
               const { ibc_denom } = { ...addresses?.[id] };
-
               let ibc_channels;
               let escrow_addresses;
               let source_escrow_addresses;
-
               if (ibc_denom && toArray(prefix_chain_ids).length > 0) {
                 const response = await read(
                   IBC_CHANNEL_COLLECTION,
@@ -59,7 +54,6 @@ module.exports = async (params = {}) => {
                   { size: 500 },
                 );
                 const { data } = { ...response };
-
                 if (toArray(data).length > 0 && toArray(data).filter(d => moment().diff(moment((d.updated_at || 0) * 1000), 'minutes', true) > 240).length < 1) {
                   ibc_channels = toArray(data);
                   escrow_addresses = toArray(ibc_channels.map(d => d.escrow_address));
@@ -74,16 +68,15 @@ module.exports = async (params = {}) => {
     );
 
     // evm escrow address
-    const evm_escrow_address =
-      addresses?.[native_chain] ?
-        getAddress(
-          native_chain === 'axelarnet' ?
-            addresses[native_chain].ibc_denom :
-            `ibc/${toHash(`transfer/${_.last(cosmos_escrow_data[native_chain]?.ibc_channels)?.channel_id}/${getChainData(native_chain)?.chain_type !== 'cosmos' && addresses.axelarnet?.ibc_denom ? addresses.axelarnet.ibc_denom : asset}`)}`,
-          getChainData('axelarnet')?.prefix_address,
-          32,
-        ) :
-        undefined;
+    const evm_escrow_address = addresses?.[native_chain] ?
+      getAddress(
+        native_chain === 'axelarnet' ?
+          addresses[native_chain].ibc_denom :
+          `ibc/${toHash(`transfer/${_.last(cosmos_escrow_data[native_chain]?.ibc_channels)?.channel_id}/${getChainData(native_chain)?.chain_type !== 'cosmos' && addresses.axelarnet?.ibc_denom ? addresses.axelarnet.ibc_denom : asset}`)}`,
+        getChainData('axelarnet')?.prefix_address,
+        32,
+      ) :
+      undefined;
 
     data.push({ asset, cosmos_escrow_data, evm_escrow_address });
   }

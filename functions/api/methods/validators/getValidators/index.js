@@ -16,7 +16,6 @@ const NUM_UPTIME_BLOCKS = 10000;
 
 module.exports = async params => {
   let validators_data;
-
   let { includes } = { ...params };
   includes = toArray(includes || ['uptimes', 'slash_infos', 'broadcasters', 'status']);
   const { prefix_address } = { ...getChainData('axelarnet') };
@@ -25,7 +24,6 @@ module.exports = async params => {
   while (page_key) {
     const response = await lcd('/cosmos/staking/v1beta1/validators', { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
     const { validators, pagination } = { ...response };
-
     validators_data = _.orderBy(
       _.uniqBy(
         _.concat(
@@ -64,7 +62,6 @@ module.exports = async params => {
       ),
       ['description.moniker'], ['asc'],
     );
-
     page_key = pagination?.next_key;
   }
 
@@ -76,20 +73,16 @@ module.exports = async params => {
             const response = await rpc('/status');
             let { latest_block_height } = { ...response };
             latest_block_height = Number(latest_block_height);
-
-            const _response = await searchUptimes(
-              {
-                fromBlock: latest_block_height - NUM_UPTIME_BLOCKS,
-                aggs: {
-                  uptimes: {
-                    terms: { field: 'validators.keyword', size: validators_data.length },
-                  },
+            const _response = await searchUptimes({
+              fromBlock: latest_block_height - NUM_UPTIME_BLOCKS,
+              aggs: {
+                uptimes: {
+                  terms: { field: 'validators.keyword', size: validators_data.length },
                 },
-                size: 0,
               },
-            );
+              size: 0,
+            });
             const { data, total } = { ..._response };
-
             if (data && total > 0) {
               validators_data = validators_data.map(d => {
                 const { consensus_address } = { ...d };
@@ -103,11 +96,9 @@ module.exports = async params => {
         case 'slash_infos':
           try {
             page_key = true;
-
             while (page_key) {
               const response = await lcd('/cosmos/slashing/v1beta1/signing_infos', { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
               const { info, pagination } = { ...response };
-
               if (info) {
                 validators_data = validators_data.map(d => {
                   const { consensus_address } = { ...d };
@@ -126,7 +117,6 @@ module.exports = async params => {
                   return d;
                 });
               }
-
               page_key = pagination?.next_key;
             }
           } catch (error) {}

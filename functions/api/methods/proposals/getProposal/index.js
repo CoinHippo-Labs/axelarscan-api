@@ -25,7 +25,6 @@ module.exports = async params => {
   const { plan } = { ...content };
   const { height } = { ...plan };
   const { data } = { ...await getVotes(params) };
-
   return {
     proposal_id: Number(proposal_id),
     type: _.last(split(content?.['@type'], 'normal', '.'))?.replace('Proposal', ''),

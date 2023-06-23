@@ -47,7 +47,6 @@ module.exports = async (params = {}) => {
     const lcd_response = await lcd(`/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`);
     const { tx_hashes, source_chain } = { ...lcd_response };
     tx_hash = _.head(tx_hashes);
-
     if (tx_hash) {
       params.tx_hash = tx_hash;
     }
@@ -85,11 +84,9 @@ module.exports = async (params = {}) => {
         return [id, value];
       })
     );
-
     const _id = fields.filter(f => f.is_key && params[f.id]).map(f => params[f.id].toLowerCase()).join('_');
     const response = await write(UNWRAP_COLLECTION, _id, { ...data, updated_at: moment().valueOf() });
     const { result } = { ...response };
-
     const { tx_hash, deposit_address_link } = { ...data };
     if (tx_hash) {
       const response = await read(
@@ -111,7 +108,6 @@ module.exports = async (params = {}) => {
         await write(TRANSFER_COLLECTION, _id, { ...transfer_data, unwrap: data, type: 'unwrap' }, true);
       }
     }
-
     return {
       error: false,
       code: 200,

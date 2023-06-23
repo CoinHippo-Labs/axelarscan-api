@@ -6,7 +6,6 @@ const { ERC20_TRANSFER_COLLECTION } = require('../../../../utils/config');
 
 module.exports = async (params = {}) => {
   let output;
-
   const query = generateQuery(params);
   const _params = generateReadParams(params);
   // search data
@@ -14,6 +13,5 @@ module.exports = async (params = {}) => {
   if (await updateERC20Transfers(ERC20_TRANSFER_COLLECTION, output?.data, params)) {
     output = await search(ERC20_TRANSFER_COLLECTION, query, _params, 0.5 * 1000);
   }
-
   return output;
 };

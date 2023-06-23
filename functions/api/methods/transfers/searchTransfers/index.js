@@ -7,7 +7,6 @@ const { TRANSFER_COLLECTION } = require('../../../utils/config');
 
 module.exports = async (params = {}) => {
   let output;
-
   const query = await generateQuery(params);
   const _params = generateReadParams(params);
   // search data
@@ -19,6 +18,5 @@ module.exports = async (params = {}) => {
     ...output,
     data: addFieldsToResult(output?.data),
   };
-
   return output;
 };

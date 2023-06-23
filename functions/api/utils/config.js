@@ -21,7 +21,6 @@ const getContracts = (environment = ENVIRONMENT) => contracts?.[environment];
 const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = false) => {
   chain_types = toArray(chain_types);
   const _chains = chains?.[environment];
-
   return (
     Object.fromEntries(
       Object.entries({ ..._chains })
@@ -32,7 +31,6 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
             const { private_rpc } = { ...endpoints };
             let { rpc } = { ...endpoints };
             const { url } = { ...explorer };
-
             if (private_rpc) {
               if (for_crawler) {
                 rpc = _.uniq(toArray(_.concat(toArray(private_rpc), toArray(private_rpc).length < 1 && toArray(rpc))));
@@ -44,18 +42,15 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
             let provider_params;
             let gateway_address;
             let no_inflation;
-
             switch (k) {
               case 'evm':
-                provider_params = [
-                  {
-                    chainId: toBeHex(chain_id),
-                    chainName: `${name} ${capitalize(environment)}`,
-                    rpcUrls: toArray(rpc),
-                    nativeCurrency: native_token,
-                    blockExplorerUrls: [url],
-                  },
-                ];
+                provider_params = [{
+                  chainId: toBeHex(chain_id),
+                  chainName: `${name} ${capitalize(environment)}`,
+                  rpcUrls: toArray(rpc),
+                  nativeCurrency: native_token,
+                  blockExplorerUrls: [url],
+                }];
                 gateway_address = getContracts(environment)?.gateway_contracts?.[_k]?.address;
                 no_inflation = !!(!maintainer_id || deprecated || !gateway_address);
                 no_tvl = deprecated;
@@ -63,7 +58,6 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
               default:
                 break;
             }
-
             _v = {
               ..._v,
               id: _k,

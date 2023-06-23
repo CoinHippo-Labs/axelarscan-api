@@ -8,7 +8,6 @@ const { equalsIgnoreCase, toArray } = require('../../utils');
 
 module.exports = async (params = {}, size = 100, max_page = 100) => {
   let { fromBlock, toBlock } = { ...params };
-
   if (!(fromBlock || toBlock)) {
     const status = await rpc('/status');
     const { latest_block_height } = { ...status };
@@ -18,16 +17,8 @@ module.exports = async (params = {}, size = 100, max_page = 100) => {
 
   let polls;
   let voters;
-
   if (fromBlock <= toBlock) {
-    const _params = {
-      status: 'not_pending',
-      fromBlock,
-      toBlock,
-      from: 0,
-      size,
-    };
-
+    const _params = { status: 'not_pending', fromBlock, toBlock, from: 0, size };
     const response = await searchPolls(_params);
     const { total } = { ...response };
     let { data } = { ...response };

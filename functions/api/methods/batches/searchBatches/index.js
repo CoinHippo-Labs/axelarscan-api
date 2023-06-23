@@ -7,7 +7,6 @@ const { BATCH_COLLECTION } = require('../../../utils/config');
 
 module.exports = async (params = {}) => {
   let output;
-
   const query = generateQuery(params);
   const _params = generateReadParams(params);
   // search data
@@ -16,6 +15,5 @@ module.exports = async (params = {}) => {
     output = await search(BATCH_COLLECTION, query, _params, 0.5 * 1000);
   }
   output = normalizeResult(output);
-
   return output;
 };

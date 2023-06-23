@@ -9,11 +9,9 @@ module.exports = async params => {
   const { address } = { ...params };
   let data;
   let page_key = true;
-
   while (page_key) {
     const response = await lcd(`/cosmos/bank/v1beta1/balances/${address}`, { 'pagination.key': page_key && typeof page_key === 'string' ? page_key : undefined });
     const { balances, pagination } = { ...response };
-
     data = _.uniqBy(
       _.concat(
         toArray(data),
@@ -29,10 +27,8 @@ module.exports = async params => {
       ),
       'denom',
     );
-
     page_key = pagination?.next_key;
   }
-
   return {
     data: toArray(data),
     total: toArray(data).length,

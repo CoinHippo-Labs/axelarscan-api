@@ -9,7 +9,7 @@ const { saveBatch, updateTransfer } = require('./batch');
 const { saveIBCChannels } = require('./ibc');
 const { get, write } = require('../../services/index');
 const { LCD_CACHE_COLLECTION, getEndpoints, getLCD } = require('../../utils/config');
-const { toArray, toJson } = require('../../utils');
+const { toArray, toJson, parseRequestError } = require('../../utils');
 
 const endpoints = getEndpoints();
 
@@ -39,7 +39,7 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
 
     // cache miss
     if (!output) {
-      const response = await lcd.get(path, { params }).catch(error => { return { error: error?.response?.data }; });
+      const response = await lcd.get(path, { params }).catch(error => parseRequestError(error));
       const { error } = { ...response };
       let { data } = { ...response };
 
@@ -55,7 +55,7 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
 
             if (mintscan) {
               const path = `/block/${chain_id}/${height}`;
-              const response = await mintscan.get(path).catch(error => { return { error: error?.response?.data }; });
+              const response = await mintscan.get(path).catch(error => parseRequestError(error));
               const { txs } = { ..._.head(response?.data) };
               if (txs) {
                 data = {

@@ -8,7 +8,6 @@ const { POLL_COLLECTION } = require('../../../utils/config');
 
 module.exports = async (params = {}) => {
   let output;
-
   const query = await generateQuery(params);
   const _params = generateReadParams(params);
   // search data
@@ -21,6 +20,5 @@ module.exports = async (params = {}) => {
     data: addFieldsToResult(output?.data),
   };
   output = normalizeResult(output);
-
   return output;
 };

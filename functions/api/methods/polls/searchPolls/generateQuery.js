@@ -6,7 +6,6 @@ const { toArray } = require('../../../utils');
 
 module.exports = async params => {
   const { query, voter } = { ...params };
-
   if (voter) {
     params.voter = voter.toLowerCase();
     const response = await read(
@@ -25,7 +24,6 @@ module.exports = async params => {
     params.height = params.height || transaction_data?.height;
     params.operator_address = params.operator_address || _.head(toArray(transaction_data?.tx?.body?.messages).map(m => m.sender));
   }
-
   return {
     bool: {
       must: toArray(

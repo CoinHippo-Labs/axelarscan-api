@@ -7,7 +7,6 @@ const getOthersChainIds = chain => {
   const chains = Object.keys(getChains());
   const id = find(chain, chains);
   const [_id, version] = split(chain, 'lower', '-');
-
   return (
     _.concat(
       chains.filter(c => !equalsIgnoreCase(c, id) && c.startsWith(id)),

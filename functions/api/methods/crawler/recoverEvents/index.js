@@ -47,7 +47,6 @@ module.exports = async params => {
 
         if (blockNumber) {
           const { gateway_contracts } = { ...contracts };
-
           // set chain data
           chain_data = {
             ...chain_data,

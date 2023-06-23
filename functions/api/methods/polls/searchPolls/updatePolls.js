@@ -6,11 +6,9 @@ const MIN_VOTE_PER_POLL_TO_FAILED = 20;
 
 module.exports = async (collection, data, params) => {
   let updated;
-
   if (collection && toArray(data).length > 0) {
     const { status } = { ...params };
     const { prefix_address } = { ...getChainData('axelarnet') };
-
     updated = toArray(
       await Promise.all(
         toArray(data).map(d =>
@@ -36,6 +34,5 @@ module.exports = async (collection, data, params) => {
       )
     ).length > 0;
   }
-
   return updated;
 };

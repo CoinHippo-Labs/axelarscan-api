@@ -10,7 +10,6 @@ const getProvider = (chain, _rpcs) => {
   const { chain_id, deprecated, endpoints } = { ...getChainData(chain, 'evm') };
   const { rpc } = { ...endpoints };
   const rpcs = toArray(_rpcs || rpc);
-
   if (rpcs.length > 0 && !deprecated) {
     try {
       return (

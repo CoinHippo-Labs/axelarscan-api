@@ -3,7 +3,6 @@ const { toArray } = require('../../../../utils');
 
 module.exports = async (collection, data, params) => {
   let updated;
-
   if (collection && toArray(data).length > 0) {
     const { status } = { ...params };
     updated = toArray(
@@ -27,6 +26,5 @@ module.exports = async (collection, data, params) => {
       )
     ).length > 0;
   }
-
   return updated;
 };

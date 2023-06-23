@@ -5,7 +5,7 @@ const _ = require('lodash');
 const { read, write } = require('../../../services/index');
 const { getProvider } = require('../../../utils/chain/evm');
 const { BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainData, getAssets, getLCD } = require('../../../utils/config');
-const { equalsIgnoreCase, toArray } = require('../../../utils');
+const { equalsIgnoreCase, toArray, parseRequestError } = require('../../../utils');
 
 const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 const IBurnableMintableCappedERC20 = require('../../../data/contracts/interfaces/IBurnableMintableCappedERC20.json');
@@ -32,22 +32,19 @@ module.exports = async (path = '', lcd_response = {}) => {
   for (const command_id of toArray(command_ids)) {
     const index = commands.findIndex(c => equalsIgnoreCase(c.id, command_id));
     let command = commands[index];
-
     if (!command) {
       const lcd = getLCD() && axios.create({ baseURL: getLCD(), timeout: 15000, headers: { 'Accept-Encoding': 'gzip' } });
-      const response = await lcd.get('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } }).catch(error => { return { error: error?.response?.data }; });
+      const response = await lcd.get('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } }).catch(error => parseRequestError(error));
       const { error, data } = { ...response };
 
       if (!error && data) {
         command = data;
       }
     }
-
     if (command) {
       const { params } = { ...command };
       let { executed, deposit_address } = { ...command };
       const { salt } = { ...params };
-
       if (!executed) {
         try {
           if (gateway) {
@@ -55,7 +52,6 @@ module.exports = async (path = '', lcd_response = {}) => {
           }
         } catch (error) {}
       }
-
       if (!deposit_address && salt && (command_ids.length < MAX_COMMANDS_PER_BATCH_TO_PROCESS_SALT || _commands.filter(c => c.salt && !c.deposit_address).length < MAX_COMMANDS_PER_BATCH_TO_PROCESS_SALT || Math.random(0, 1) < 0.33)) {
         try {
           const asset_data = getAssets().find(a => !equalsIgnoreCase(a.native_chain, chain) && a.addresses?.[chain]?.address);
@@ -67,7 +63,6 @@ module.exports = async (path = '', lcd_response = {}) => {
           }
         } catch (error) {}
       }
-
       command = {
         ...command,
         executed,

@@ -2,7 +2,7 @@ const axios = require('axios');
 const _ = require('lodash');
 
 const { normalizeObject, transferCollections } = require('./utils');
-const { log, equalsIgnoreCase, toArray } = require('../../utils');
+const { log, equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
 
 const service_name = 'index';
 
@@ -36,7 +36,6 @@ const crud = async (params = {}) => {
   use_raw_data = typeof use_raw_data === 'boolean' ? use_raw_data : typeof use_raw_data !== 'string' || equalsIgnoreCase(use_raw_data, 'true');
   update_only = typeof update_only === 'boolean' ? update_only : typeof update_only !== 'string' || equalsIgnoreCase(update_only, 'true');
   track_total_hits = typeof track_total_hits === 'boolean' ? track_total_hits : typeof track_total_hits !== 'string' || equalsIgnoreCase(track_total_hits, 'true');
-
   if (!isNaN(height)) {
     height = Number(height);
   }
@@ -69,7 +68,7 @@ const crud = async (params = {}) => {
     switch (method) {
       case 'get':
         path = path || `/${collection}/_doc/${id}`;
-        response = await indexer.get(path, { params, auth }).catch(error => { return { error: error?.response?.data }; });
+        response = await indexer.get(path, { params, auth }).catch(error => parseRequestError(error));
         const { _id, _source } = { ...response?.data };
         response = _source ? { data: { ..._source, id: _id } } : response;
         break;
@@ -78,24 +77,24 @@ const crud = async (params = {}) => {
         path = path || `/${collection}/_doc/${id}`;
         if (path.includes('/_update_by_query')) {
           try {
-            response = await indexer.post(path, params, { auth }).catch(error => { return { error: error?.response?.data }; });
+            response = await indexer.post(path, params, { auth }).catch(error => parseRequestError(error));
           } catch (error) {}
         }
         else {
-          response = await (path.includes('_update') ? indexer.post(path, { doc: params }, { auth }) : indexer.put(path, params, { auth })).catch(error => { return { error: error?.response?.data }; });
+          response = await (path.includes('_update') ? indexer.post(path, { doc: params }, { auth }) : indexer.put(path, params, { auth })).catch(error => parseRequestError(error));
           const { error } = { ...response };
 
           // retry with update / insert
           if (error) {
             path = path.replace(path.includes('_doc') ? '_doc' : '_update', path.includes('_doc') ? '_update' : '_doc');
             if (update_only && path.includes('_doc')) {
-              const _response = await indexer.get(path, { auth }).catch(error => { return { error: error?.response?.data }; });
+              const _response = await indexer.get(path, { auth }).catch(error => parseRequestError(error));
               const { _id, _source } = { ..._response?.data };
               if (_source) {
                 path = path.replace('_doc', '_update');
               }
             }
-            response = await (path.includes('_update') ? indexer.post(path, { doc: params }, { auth }) : indexer.put(path, params, { auth })).catch(error => { return { error: error?.response?.data }; });
+            response = await (path.includes('_update') ? indexer.post(path, { doc: params }, { auth }) : indexer.put(path, params, { auth })).catch(error => parseRequestError(error));
           }
         }
         break;
@@ -145,7 +144,7 @@ const crud = async (params = {}) => {
           search_data.track_total_hits = track_total_hits;
         }
 
-        response = await indexer.post(path, search_data, { auth }).catch(error => { return { error: error?.response?.data }; });
+        response = await indexer.post(path, search_data, { auth }).catch(error => parseRequestError(error));
         const { hits, aggregations } = { ...response?.data };
 
         response =
@@ -169,7 +168,7 @@ const crud = async (params = {}) => {
       case 'delete':
       case 'remove':
         path = path || `/${collection}/_doc/${id}`;
-        response = await indexer.delete(path, { params, auth }).catch(error => { return { error: error?.response?.data }; });
+        response = await indexer.delete(path, { params, auth }).catch(error => parseRequestError(error));
         break;
       default:
         break;

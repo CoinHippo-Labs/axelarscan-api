@@ -60,14 +60,12 @@ module.exports = async (params = {}) => {
           const { block_timestamp, returnValues } = { ...event };
           const { sender, destinationChain, destinationAddress, symbol } = { ...returnValues };
           let { amount } = { ...returnValues };
-
           if (block_timestamp) {
             event = {
               ...event,
               created_at: getGranularity(moment(block_timestamp * 1000).utc()),
             };
           }
-
           const { denom, decimals, addresses } = { ...getAssetData(symbol) };
           if (denom && decimals) {
             amount = Number(formatUnits(toBigNumber(amount || '0'), decimals));
@@ -86,7 +84,6 @@ module.exports = async (params = {}) => {
               new Promise(
                 async resolve => {
                   let transfer_data;
-
                   switch (c) {
                     case WRAP_COLLECTION:
                       try {
@@ -125,7 +122,6 @@ module.exports = async (params = {}) => {
                     default:
                       break;
                   }
-
                   const { tx_hash } = { ...transfer_data };
                   if (tx_hash) {
                     const data = await getTransaction(provider, tx_hash, chain);
@@ -198,24 +194,20 @@ module.exports = async (params = {}) => {
 
           const { block_timestamp, returnValues } = { ...event };
           let { commandId } = { ...returnValues };
-
           if (commandId) {
             if (commandId.startsWith('0x')) {
               commandId = commandId.substring(2);
             }
-
             const response = await read(BATCH_COLLECTION, { match: { 'commands.id': commandId } }, { size: 1 });
             const batch = _.head(response?.data);
             const { batch_id } = { ...batch };
             let { status, commands } = { ...batch };
-
             const transaction_data = {
               transactionHash,
               transactionIndex,
               logIndex,
               block_timestamp,
             };
-
             await write(
               COMMAND_EVENT_COLLECTION,
               toArray([chain, commandId], 'lower').join('_'),
@@ -246,7 +238,7 @@ module.exports = async (params = {}) => {
                         must: [
                           { match: { chain } },
                         ],
-                        should: toArray(commands).filter(c => !c.transactionHash).map(c => {return { match: { command_id: c.id } }; }),
+                        should: toArray(commands).filter(c => !c.transactionHash).map(c => { return { match: { command_id: c.id } }; }),
                         minimum_should_match: 1,
                       },
                     },

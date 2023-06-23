@@ -8,7 +8,7 @@ const { getTokensPrice } = require('../tokens');
 const { write } = require('../../services/index');
 const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
 const { toBigNumber } = require('../../utils/number');
-const { equalsIgnoreCase, toArray } = require('../../utils');
+const { equalsIgnoreCase, toArray. parseRequestError } = require('../../utils');
 
 const getReceiptLogIndex = (receipt, logIndex) => {
   const { logs } = { ...receipt };
@@ -32,7 +32,6 @@ const setReceiptLogIndexToData = (data, logIndex) => {
 
 const getTransaction = async (provider, txHash, chain, logIndex) => {
   let output;
-
   if (provider && txHash) {
     output = { chain };
     try {
@@ -57,10 +56,9 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
                         for (const url of toArray(chain_data?.endpoints?.rpc)) {
                           try {
                             const rpc = axios.create({ baseURL: url });
-                            const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: [txHash], id: 0 }).catch(error => { return { error: error?.response?.data }; });
+                            const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: [txHash], id: 0 }).catch(error => parseRequestError(error));
                             const { data } = { ...response };
                             const { result } = { ...data };
-
                             if (result) {
                               v = Object.fromEntries(
                                 Object.entries({ ...result }).map(([k, v]) => {
@@ -111,10 +109,9 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
                         for (const url of toArray(chain_data?.endpoints?.rpc)) {
                           try {
                             const rpc = axios.create({ baseURL: url });
-                            const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getTransactionReceipt', params: [txHash], id: 0 }).catch(error => { return { error: error?.response?.data }; });
+                            const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getTransactionReceipt', params: [txHash], id: 0 }).catch(error => parseRequestError(error));
                             const { data } = { ...response };
                             const { result } = { ...data };
-
                             if (result) {
                               v = Object.fromEntries(
                                 Object.entries({ ...result }).map(([k, v]) => {
@@ -174,7 +171,6 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
       output = setReceiptLogIndexToData(output, logIndex);
     } catch (error) {}
   }
-
   return output;
 };
 
@@ -189,7 +185,6 @@ const setTransactionIdToData = data => {
 
 const getBlockTime = async (provider, blockNumber, chain) => {
   let output;
-
   if (provider && blockNumber) {
     try {
       const block = await provider.getBlock(blockNumber);
@@ -198,13 +193,12 @@ const getBlockTime = async (provider, blockNumber, chain) => {
         output = timestamp;
       }
     } catch (error) {}
-
     if (!output) {
       const chain_data = getChainData(chain, 'evm');
       for (const url of toArray(chain_data?.endpoints?.rpc)) {
         try {
           const rpc = axios.create({ baseURL: url });
-          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: [toBeHex(blockNumber).replace('0x0', '0x'), false], id: 0 }).catch(error => { return { error: error?.response?.data }; });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: [toBeHex(blockNumber).replace('0x0', '0x'), false], id: 0 }).catch(error => parseRequestError(error));
           const { data } = { ...response };
           const { timestamp } = { ...data?.result };
           if (timestamp) {
@@ -215,7 +209,6 @@ const getBlockTime = async (provider, blockNumber, chain) => {
       }
     }
   }
-
   return output;
 };
 
@@ -346,7 +339,7 @@ const updateSend = async (send, link, data, update_only = false) => {
                     amount: `${parseUnits((send.amount || 0).toString(), decimals).toString()}${send.denom}`,
                   },
                 },
-              ).catch(error => { return { error: error?.response?.data }; });
+              ).catch(error => parseRequestError(error));
               const { amount } = { ...response?.data?.fee };
               if (amount) {
                 send.fee = Number(formatUnits(amount, decimals));

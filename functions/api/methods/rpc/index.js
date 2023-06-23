@@ -3,19 +3,17 @@ const moment = require('moment');
 
 const { decodeEvents } = require('./utils');
 const { getRPC, getLCD } = require('../../utils/config');
-const { toArray, toJson } = require('../../utils');
+const { toArray, toJson, parseRequestError } = require('../../utils');
 
 const NUM_BLOCKS_AVG_BLOCK_TIME = 100;
 
 module.exports = async (path = '', params = {}) => {
   let output;
-
   const rpc = getRPC() && axios.create({ baseURL: getRPC(), timeout: 5000 });
   if (rpc) {
-    const response = await rpc.get(path, { params }).catch(error => { return { data: { result: null, error: error?.response?.data } }; });
+    const response = await rpc.get(path, { params }).catch(error => { return { data: { result: null, ...parseRequestError(error) } }; });
     let { data } = { ...response };
     const { result } = { ...data };
-
     if (result) {
       const { sync_info, height, txs_results, begin_block_events, end_block_events } = { ...result };
       switch (path) {
@@ -24,13 +22,11 @@ module.exports = async (path = '', params = {}) => {
             data = sync_info;
             const { latest_block_time } = { ...data };
             let { latest_block_height } = { ...data };
-
             if (params.avg_block_time && latest_block_height && NUM_BLOCKS_AVG_BLOCK_TIME) {
               const lcd = getLCD() && axios.create({ baseURL: getLCD(), timeout: 5000, headers: { 'Accept-Encoding': 'gzip' } });
-
               if (lcd) {
                 latest_block_height = Number(latest_block_height);
-                const response = await lcd.get(`/cosmos/base/tendermint/v1beta1/blocks/${latest_block_height - NUM_BLOCKS_AVG_BLOCK_TIME}`).catch(error => { return { error: error?.response?.data }; });
+                const response = await lcd.get(`/cosmos/base/tendermint/v1beta1/blocks/${latest_block_height - NUM_BLOCKS_AVG_BLOCK_TIME}`).catch(error => parseRequestError(error));
                 const { time } = { ...response?.data?.block?.header };
                 if (time) {
                   data.avg_block_time = moment(latest_block_time).diff(moment(time), 'seconds') / NUM_BLOCKS_AVG_BLOCK_TIME;
@@ -63,6 +59,5 @@ module.exports = async (path = '', params = {}) => {
     }
     output = data;
   }
-
   return output;
 };

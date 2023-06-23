@@ -73,7 +73,6 @@ module.exports = async (params = {}) => {
       } = { ...d };
       const { native_chain, symbol, addresses } = { ...getAssetData(asset) };
       const { chain_type } = { ...getChainData(native_chain) };
-
       const app_urls = app && [`${app}/tvl`, `${app}/transfers/search?asset=${asset}&fromTime=${moment().subtract(24, 'hours').valueOf()}&toTime=${moment().valueOf()}&sortBy=value`];
       return {
         asset,
@@ -100,46 +99,43 @@ module.exports = async (params = {}) => {
             ),
           } :
           {
-            chains:
-              Object.entries({ ...tvl })
-                .filter(([k, v]) => v?.is_abnormal_supply)
-                .map(([k, v]) => {
-                  const {
-                    percent_diff_supply,
-                    contract_data,
-                    denom_data,
-                    gateway_address,
-                    gateway_balance,
-                    ibc_channels,
-                    escrow_addresses,
-                    escrow_balance,
-                    source_escrow_addresses,
-                    source_escrow_balance,
-                    url,
-                  } = { ...v };
-                  let { supply } = { ...v };
-
-                  if (k === native_chain && k !== 'axelarnet') {
-                    const { total } = { ...tvl?.axelarnet };
-                    supply = typeof total === 'number' ? total : supply;
-                  }
-
-                  return {
-                    chain: k,
-                    percent_diff_supply,
-                    contract_data,
-                    denom_data,
-                    gateway_address,
-                    gateway_balance,
-                    ibc_channels,
-                    escrow_addresses,
-                    escrow_balance,
-                    source_escrow_addresses,
-                    source_escrow_balance,
-                    supply,
-                    link: url,
-                  };
-                }),
+            chains: Object.entries({ ...tvl })
+              .filter(([k, v]) => v?.is_abnormal_supply)
+              .map(([k, v]) => {
+                const {
+                  percent_diff_supply,
+                  contract_data,
+                  denom_data,
+                  gateway_address,
+                  gateway_balance,
+                  ibc_channels,
+                  escrow_addresses,
+                  escrow_balance,
+                  source_escrow_addresses,
+                  source_escrow_balance,
+                  url,
+                } = { ...v };
+                let { supply } = { ...v };
+                if (k === native_chain && k !== 'axelarnet') {
+                  const { total } = { ...tvl?.axelarnet };
+                  supply = typeof total === 'number' ? total : supply;
+                }
+                return {
+                  chain: k,
+                  percent_diff_supply,
+                  contract_data,
+                  denom_data,
+                  gateway_address,
+                  gateway_balance,
+                  ibc_channels,
+                  escrow_addresses,
+                  escrow_balance,
+                  source_escrow_addresses,
+                  source_escrow_balance,
+                  supply,
+                  link: url,
+                };
+              }),
             links: _.uniq(
               toArray(
                 _.concat(
@@ -160,7 +156,6 @@ module.exports = async (params = {}) => {
 
     const evm_details = [native_on_evm_total_status, native_on_evm_escrow_status].findIndex(s => s !== 'ok') > -1 ? details.filter(d => d.native_on === 'evm') : undefined;
     const cosmos_details = [native_on_cosmos_evm_escrow_status, native_on_cosmos_escrow_status].findIndex(s => s !== 'ok') > -1 ? details.filter(d => d.native_on === 'cosmos') : undefined;
-
     summary = toArray(_.concat(evm_details, cosmos_details)).map(d => d.symbol).join(', ');
     links = _.uniq(details.flatMap(d => d.links));
 

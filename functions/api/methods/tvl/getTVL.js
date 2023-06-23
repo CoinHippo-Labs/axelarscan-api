@@ -13,7 +13,6 @@ const { toHash, getAddress } = require('../../utils/address');
 const { toArray } = require('../../utils');
 
 const { percent_diff_escrow_supply_threshold, percent_diff_total_supply_threshold } = { ...getTVL() };
-
 const CACHE_AGE_SECONDS = 60 * 60;
 const IBC_CHANNELS_UPDATE_INTERVAL_SECONDS = 240 * 60;
 
@@ -22,7 +21,6 @@ module.exports = async (params = {}) => {
 
   const { asset, chain, force_update } = { ...params };
   let { assets, chains } = { ...params };
-
   assets = toArray(assets || asset);
   if (assets.length < 1) {
     assets = Object.keys({ ...getAssets() });
@@ -30,7 +28,6 @@ module.exports = async (params = {}) => {
   else {
     assets = toArray(assets.map(a => getAssetData(a)?.denom));
   }
-
   chains = toArray(chains || chain);
   if (chains.length < 1) {
     chains = getChainsList().filter(c => (c.gateway_address || c.chain_type === 'cosmos') && !c.no_tvl).map(c => c.id);
@@ -70,7 +67,6 @@ module.exports = async (params = {}) => {
         { size: assets.length },
       );
       const { data } = { ...response };
-
       if (toArray(data).length > 0) {
         return {
           ...response,
@@ -99,11 +95,9 @@ module.exports = async (params = {}) => {
   const axelarnet_lcd_url = _.head(axelarnet.endpoints?.lcd);
 
   const data = [];
-
   for (const asset of assets) {
     const asset_data = getAssetData(asset);
     const { native_chain, addresses } = { ...asset_data };
-
     const is_native_on_evm = getChainsList('evm').findIndex(c => c.id === native_chain) > -1;
     const is_native_on_cosmos = getChainsList('cosmos').findIndex(c => c.id === native_chain) > -1;
     const is_native_on_axelarnet = native_chain === 'axelarnet';
@@ -127,7 +121,6 @@ module.exports = async (params = {}) => {
                     const contract_data = { ...asset_data, ...addresses?.[id] };
                     delete contract_data.addresses;
                     const { address } = { ...contract_data };
-
                     if (address && provider) {
                       const gateway_balance = await getEVMBalance(gateway_address, contract_data, provider, id);
                       const supply = !is_native ? await getTokenSupply(contract_data, provider, id) : 0;
@@ -148,12 +141,10 @@ module.exports = async (params = {}) => {
                     const denom_data = { ...asset_data, ...addresses?.[id], denom: addresses?.axelarnet?.ibc_denom };
                     delete denom_data.addresses;
                     const { denom, ibc_denom } = { ...denom_data };
-
                     if (ibc_denom && lcd) {
                       let ibc_channels;
                       let escrow_addresses;
                       let source_escrow_addresses;
-
                       if (ibc_denom && toArray(prefix_chain_ids).length > 0 && id !== 'axelarnet') {
                         for (let i = 0; i < 2; i++) {
                           const response = await read(
@@ -170,7 +161,6 @@ module.exports = async (params = {}) => {
                             { size: 500 },
                           );
                           const { data } = { ...response };
-
                           if (toArray(data).length > 0 && toArray(data).filter(d => moment().diff(moment((d.updated_at || 0) * 1000), 'seconds', true) > IBC_CHANNELS_UPDATE_INTERVAL_SECONDS).length < 1) {
                             ibc_channels = data;
                             escrow_addresses = toArray(toArray(ibc_channels).map(d => d.escrow_address));
@@ -210,7 +200,6 @@ module.exports = async (params = {}) => {
                       const is_native_on_cosmos = is_native && id !== 'axelarnet';
                       const is_not_native_on_axelarnet = !is_native && id === 'axelarnet';
                       const lcd_url = _.head(endpoints?.lcd);
-
                       const supply = is_native ? id !== 'axelarnet' ? source_escrow_balance : 0 : toArray(escrow_addresses).length > 0 ? await getIBCSupply(denom_data, id) : 0;
                       const total_supply = is_native_on_cosmos ? await getIBCSupply(denom_data, 'axelarnet') : 0;
                       const percent_diff_supply = is_native_on_cosmos ? total_supply > 0 && source_escrow_balance > 0 ? Math.abs(source_escrow_balance - total_supply) * 100 / source_escrow_balance : null : supply > 0 && escrow_balance > 0 ? Math.abs(escrow_balance - supply) * 100 / escrow_balance : null;
@@ -237,20 +226,16 @@ module.exports = async (params = {}) => {
                                 null,
                         escrow_addresses_urls: toArray(
                           is_native_on_cosmos ?
-                            _.reverse(_.cloneDeep(toArray(source_escrow_addresses))).flatMap(a =>
-                              [
-                                url && address_path && `${url}${address_path.replace('{address}', a)}`,
-                                ibc_denom && `${lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(ibc_denom)}`,
-                                `${lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
-                              ]
-                            ) :
-                            _.reverse(_.cloneDeep(toArray(escrow_addresses))).flatMap(a =>
-                              [
-                                axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', a)}`,
-                                denom && `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom)}`,
-                                `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
-                              ]
-                            )
+                            _.reverse(_.cloneDeep(toArray(source_escrow_addresses))).flatMap(a => [
+                              url && address_path && `${url}${address_path.replace('{address}', a)}`,
+                              ibc_denom && `${lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(ibc_denom)}`,
+                              `${lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
+                            ]) :
+                            _.reverse(_.cloneDeep(toArray(escrow_addresses))).flatMap(a => [
+                              axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', a)}`,
+                              denom && `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${a}/by_denom?denom=${encodeURIComponent(denom)}`,
+                              `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${a}`,
+                            ])
                         ),
                         supply_urls: toArray(!is_native_on_cosmos && toArray(escrow_addresses).length > 0 && [ibc_denom && `${lcd_url}/cosmos/bank/v1beta1/supply/${encodeURIComponent(ibc_denom)}`, `${lcd_url}/cosmos/bank/v1beta1/supply`]),
                         success: typeof (is_not_native_on_axelarnet ? total : supply) === 'number' || !ibc_denom,

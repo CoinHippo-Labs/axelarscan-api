@@ -13,7 +13,6 @@ const { toArray } = require('../../../utils');
 
 module.exports = async (collection, data, params) => {
   let updated;
-
   if (collection) {
     const { txHash, status } = { ...params };
     if (txHash && toArray(data).length < 1) {
@@ -110,6 +109,5 @@ module.exports = async (collection, data, params) => {
       ).length > 0;
     }
   }
-
   return updated;
 };

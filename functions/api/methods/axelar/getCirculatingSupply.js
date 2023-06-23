@@ -36,18 +36,16 @@ module.exports = async (params = {}) => {
   const team = calculateVesting(supply?.team);
 
   const circulating_supply = inflation_rewards + initial_unlocked + community_sale?.unlocked + community_programs?.unlocked + company_operations?.unlocked + backers?.unlocked + team?.unlocked;
-  return (
-    debug ?
-      {
-        circulating_supply,
-        inflation_rewards,
-        initial_unlocked,
-        community_sale,
-        community_programs,
-        company_operations,
-        backers,
-        team,
-      } :
-      circulating_supply
-  );
+  return debug ?
+    {
+      circulating_supply,
+      inflation_rewards,
+      initial_unlocked,
+      community_sale,
+      community_programs,
+      company_operations,
+      backers,
+      team,
+    } :
+    circulating_supply;
 };
