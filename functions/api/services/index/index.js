@@ -101,42 +101,42 @@ const crud = async (params = {}) => {
       case 'query':
       case 'search':
         path = path || `/${collection}/_search`;
-        const search_data =
-          use_raw_data ?
-            params :
-            {
-              query: {
-                bool: {
-                  // set query for each field
-                  must:
-                    Object.entries({ ...params })
-                      .filter(([k, v]) =>
-                        ![
-                          'query',
-                          'aggs',
-                          'from',
-                          'size',
-                          'sort',
-                          'fields',
-                          '_source',
-                        ]
-                        .includes(k)
-                      )
-                      .map(([k, v]) => {
-                        switch (k) {
-                          case 'id':
-                            if (!v && id) {
-                              v = id;
-                            }
-                            break;
-                          default:
-                            break;
-                        }
-                        return { match: { [k]: v } };
-                      }),
-                },
+        const search_data = use_raw_data ?
+          params :
+          {
+            query: {
+              bool: {
+                // set query for each field
+                must:
+                  Object.entries({ ...params })
+                    .filter(([k, v]) =>
+                      ![
+                        'query',
+                        'aggs',
+                        'from',
+                        'size',
+                        'sort',
+                        'fields',
+                        '_source',
+                      ]
+                      .includes(k)
+                    )
+                    .map(([k, v]) => {
+                      switch (k) {
+                        case 'id':
+                          if (!v && id) {
+                            v = id;
+                          }
+                          break;
+                        default:
+                          break;
+                      }
+                      return { match: { [k]: v } };
+                    }),
               },
-            };
+            },
+          };
+
         if (path.endsWith('/_search')) {
           search_data.from = !isNaN(from) ? Number(from) : 0;
           search_data.size = !isNaN(size) ? Number(size) : 10;
@@ -146,24 +146,22 @@ const crud = async (params = {}) => {
 
         response = await indexer.post(path, search_data, { auth }).catch(error => parseRequestError(error));
         const { hits, aggregations } = { ...response?.data };
-
-        response =
-          hits?.hits || aggregations ?
-            {
-              data: {
-                data: toArray(hits?.hits).map(d => {
-                  const { _id, _source, fields } = { ...d };
-                  return {
-                    ..._source,
-                    ...fields,
-                    id: _id,
-                  };
-                }),
-                total: hits?.total?.value,
-                aggs: aggregations,
-              },
-            } :
-            response;
+        response = hits?.hits || aggregations ?
+          {
+            data: {
+              data: toArray(hits?.hits).map(d => {
+                const { _id, _source, fields } = { ...d };
+                return {
+                  ..._source,
+                  ...fields,
+                  id: _id,
+                };
+              }),
+              total: hits?.total?.value,
+              aggs: aggregations,
+            },
+          } :
+          response;
         break;
       case 'delete':
       case 'remove':
@@ -177,9 +175,11 @@ const crud = async (params = {}) => {
     if (response?.data) {
       response = response.data;
     }
-    else if (response?.error && !['get', 'delete', 'remove'].includes(method)) {
-      const { error } = { ...response };
-      log('debug', 'indexer', 'request to opensearch', { params: _params, error });
+    else if (response?.error) {
+      if (!['get', 'delete', 'remove'].includes(method)) {
+        const { error } = { ...response };
+        log('debug', 'indexer', 'request to opensearch', { params: _params, error });
+      }
       delete response.error;
     }
   }
