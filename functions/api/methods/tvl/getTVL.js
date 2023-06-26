@@ -180,7 +180,6 @@ module.exports = async (params = {}) => {
                           )
                         )
                       );
-
                       const source_escrow_balance = _.sum(
                         await Promise.all(
                           toArray(source_escrow_addresses).map(escrow_address =>
@@ -212,14 +211,13 @@ module.exports = async (params = {}) => {
                         total,
                         percent_diff_supply,
                         is_abnormal_supply: percent_diff_supply > percent_diff_escrow_supply_threshold,
-                        url:
-                          url && address_path && toArray(source_escrow_addresses).length > 0 && is_native_on_cosmos ?
-                            `${url}${address_path.replace('{address}', _.last(source_escrow_addresses))}` :
-                            url && asset_path && ibc_denom?.includes('/') ?
-                              `${url}${asset_path.replace('{ibc_denom}', Buffer.from(_.last(toArray(ibc_denom, 'normal', '/'))).toString('base64'))}` :
-                              axelarnet.explorer?.url && axelarnet.explorer.address_path && toArray(escrow_addresses).length > 0 ?
-                                `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
-                                null,
+                        url: url && address_path && toArray(source_escrow_addresses).length > 0 && is_native_on_cosmos ?
+                          `${url}${address_path.replace('{address}', _.last(source_escrow_addresses))}` :
+                          url && asset_path && ibc_denom?.includes('/') ?
+                            `${url}${asset_path.replace('{ibc_denom}', Buffer.from(_.last(toArray(ibc_denom, 'normal', '/'))).toString('base64'))}` :
+                            axelarnet.explorer?.url && axelarnet.explorer.address_path && toArray(escrow_addresses).length > 0 ?
+                              `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
+                              null,
                         escrow_addresses_urls: toArray(
                           is_native_on_cosmos ?
                             _.reverse(_.cloneDeep(toArray(source_escrow_addresses))).flatMap(a => [
