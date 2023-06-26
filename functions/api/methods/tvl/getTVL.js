@@ -44,7 +44,6 @@ module.exports = async (params = {}) => {
   // set cache_id on querying single asset on every chains
   const cache_id = assets.length === 1 && has_all_chains && _.head(assets);
   let cache;
-
   if (!force_update) {
     // query cache
     if (cache_id) {
@@ -249,13 +248,12 @@ module.exports = async (params = {}) => {
         )
       )).filter(([k, v]) => v)
     );
-
     tvl = Object.fromEntries(
       Object.entries(tvl).map(([k, v]) => {
         const { total } = { ...v };
         let { supply } = { ...v };
         if (getChainData(k)?.chain_type === 'cosmos') {
-          supply = k === 'axelarnet' ? is_native_on_evm ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos').map(([k, v]) => v.supply))) : is_native_on_cosmos > -1 ? total ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply))) : 0 : supply : supply;
+          supply = k === 'axelarnet' ? is_native_on_evm ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos').map(([k, v]) => v.supply))) : is_native_on_cosmos ? total ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply))) : 0 : supply : supply;
         }
         return [k, { ...v, supply }];
       })
@@ -264,7 +262,7 @@ module.exports = async (params = {}) => {
     const total_on_evm = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply)));
     const total_on_cosmos = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos' && k !== native_chain).map(([k, v]) => v[has_all_cosmos_chains ? is_native_on_cosmos ? 'supply' : 'total' : 'escrow_balance'])));
     const total = is_native_on_axelarnet ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => is_native_on_evm ? d.gateway_balance : d.total)));
-    const evm_escrow_address = is_native_on_cosmos > -1 ? getAddress(is_native_on_axelarnet ? asset : `ibc/${toHash(`transfer/${_.last(tvl[native_chain]?.ibc_channels)?.channel_id}/${asset}`)}`, axelarnet.prefix_address, 32) : undefined;
+    const evm_escrow_address = is_native_on_cosmos ? getAddress(is_native_on_axelarnet ? asset : `ibc/${toHash(`transfer/${_.last(tvl[native_chain]?.ibc_channels)?.channel_id}/${asset}`)}`, axelarnet.prefix_address, 32) : undefined;
     const evm_escrow_balance = evm_escrow_address && await getCosmosBalance(evm_escrow_address, { ...asset_data, ...addresses?.axelarnet }, 'axelarnet');
     const evm_escrow_address_urls = evm_escrow_address && toArray([axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`, `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`]);
     const percent_diff_supply = evm_escrow_address ? evm_escrow_balance > 0 && total_on_evm > 0 ? Math.abs(evm_escrow_balance - total_on_evm) * 100 / evm_escrow_balance : null : total > 0 && total_on_evm >= 0 && total_on_cosmos >= 0 && total_on_evm + total_on_cosmos > 0 ? Math.abs(total - (total_on_evm + total_on_cosmos)) * 100 / total : null;
