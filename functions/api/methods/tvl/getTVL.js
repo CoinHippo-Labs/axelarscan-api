@@ -106,11 +106,9 @@ module.exports = async (params = {}) => {
             async resolve => {
               const { id, endpoints, explorer, gateway_address, prefix_chain_ids, chain_type } = { ...c };
               const { url, address_path, contract_path, asset_path } = { ...explorer };
-
               let result;
               const lcd = lcds[id];
               const is_native = id === native_chain;
-
               switch (chain_type) {
                 case 'evm':
                   try {
@@ -259,7 +257,7 @@ module.exports = async (params = {}) => {
 
     const total_on_evm = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply)));
     const total_on_cosmos = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos' && k !== native_chain).map(([k, v]) => v[has_all_cosmos_chains ? is_native_on_cosmos ? 'supply' : 'total' : 'escrow_balance'])));
-    const total = is_native_on_axelarnet ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => is_native_on_evm ? d.gateway_balance : d.total)));
+    const total = is_native_on_axelarnet || is_native_on_cosmos ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => is_native_on_evm ? d.gateway_balance : d.total)));
     const evm_escrow_address = is_native_on_cosmos ? getAddress(is_native_on_axelarnet ? asset : `ibc/${toHash(`transfer/${_.last(tvl[native_chain]?.ibc_channels)?.channel_id}/${asset}`)}`, axelarnet.prefix_address, 32) : undefined;
     const evm_escrow_balance = evm_escrow_address && await getCosmosBalance(evm_escrow_address, { ...asset_data, ...addresses?.axelarnet }, 'axelarnet');
     const evm_escrow_address_urls = evm_escrow_address && toArray([axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`, `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`]);
