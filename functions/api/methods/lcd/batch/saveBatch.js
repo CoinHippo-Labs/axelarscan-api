@@ -21,7 +21,7 @@ module.exports = async (path = '', lcd_response = {}) => {
   const chain_data = getChainData(chain, 'evm');
   chain = chain_data?.id || chain;
   const { gateway_address } = { ...chain_data };
-  const provider = getProvider(chain);
+  let provider = gateway_address && getProvider(chain);
   const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
 
   const response = await read(BATCH_COLLECTION, { match_phrase: { batch_id } }, { size: 1 });
@@ -54,12 +54,15 @@ module.exports = async (path = '', lcd_response = {}) => {
       }
       if (!deposit_address && salt && (command_ids.length < MAX_COMMANDS_PER_BATCH_TO_PROCESS_SALT || _commands.filter(c => c.salt && !c.deposit_address).length < MAX_COMMANDS_PER_BATCH_TO_PROCESS_SALT || Math.random(0, 1) < 0.33)) {
         try {
-          const asset_data = getAssets().find(a => !equalsIgnoreCase(a.native_chain, chain) && a.addresses?.[chain]?.address);
-          const { addresses } = { ...asset_data };
-          const { address } = { ...addresses?.[chain] };
-          const erc20 = address && new Contract(address, IBurnableMintableCappedERC20.abi, provider);
-          if (erc20) {
-            deposit_address = await erc20.depositAddress(salt);
+          provider = provider || getProvider(chain);
+          if (provider) {
+            const asset_data = getAssets().find(a => !equalsIgnoreCase(a.native_chain, chain) && a.addresses?.[chain]?.address);
+            const { addresses } = { ...asset_data };
+            const { address } = { ...addresses?.[chain] };
+            const erc20 = address && new Contract(address, IBurnableMintableCappedERC20.abi, provider);
+            if (erc20) {
+              deposit_address = await erc20.depositAddress(salt);
+            }
           }
         } catch (error) {}
       }

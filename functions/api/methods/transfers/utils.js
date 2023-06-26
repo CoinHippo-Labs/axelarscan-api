@@ -6,6 +6,7 @@ const moment = require('moment');
 const { generateId } = require('./analytics/preprocessing');
 const { getTokensPrice } = require('../tokens');
 const { write } = require('../../services/index');
+const { getProvider } = require('../../utils/chain/evm');
 const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
 const { toBigNumber } = require('../../utils/number');
 const { equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
@@ -30,9 +31,9 @@ const setReceiptLogIndexToData = (data, logIndex) => {
   return data;
 };
 
-const getTransaction = async (provider, txHash, chain, logIndex) => {
+const getTransaction = async (txHash, chain, logIndex) => {
   let output;
-  if (provider && txHash) {
+  if (txHash && chain) {
     output = { chain };
     try {
       output = {
@@ -45,66 +46,57 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
                   let v;
                   switch (k) {
                     case 'transaction':
-                      try {
-                        const _v = await provider.getTransaction(txHash);
-                        v = {
-                          ..._v,
-                          chainId: Number(_v.chainId),
-                        };
-                      } catch (error) {
-                        const chain_data = getChainData(chain, 'evm');
-                        for (const url of toArray(chain_data?.endpoints?.rpc)) {
-                          try {
-                            const rpc = axios.create({ baseURL: url });
-                            const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: [txHash], id: 0 }).catch(error => parseRequestError(error));
-                            const { data } = { ...response };
-                            const { result } = { ...data };
-                            if (result) {
-                              v = Object.fromEntries(
-                                Object.entries({ ...result }).map(([k, v]) => {
-                                  switch (k) {
-                                    case 'chainId':
-                                    case 'nonce':
-                                    case 'blockNumber':
-                                    case 'transactionIndex':
-                                    case 'value':
-                                    case 'type':
-                                    case 'v':
-                                      v = Number(toBigNumber(v));
-                                      break;
-                                    case 'gas':
-                                    case 'maxFeePerGas':
-                                    case 'maxPriorityFeePerGas':
-                                      v = toBigNumber(v);
-                                      break;
-                                    default:
-                                      break;
-                                  }
-                                  return [k, v];
-                                })
-                              );
-                              break;
-                            }
-                          } catch (error) {}
-                        }
+                      const chain_data = getChainData(chain, 'evm');
+                      for (const url of toArray(chain_data?.endpoints?.rpc)) {
+                        try {
+                          const rpc = axios.create({ baseURL: url });
+                          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: [txHash], id: 0 }).catch(error => parseRequestError(error));
+                          const { data } = { ...response };
+                          const { result } = { ...data };
+                          if (result) {
+                            v = Object.fromEntries(
+                              Object.entries({ ...result }).map(([k, v]) => {
+                                switch (k) {
+                                  case 'chainId':
+                                  case 'nonce':
+                                  case 'blockNumber':
+                                  case 'transactionIndex':
+                                  case 'value':
+                                  case 'type':
+                                  case 'v':
+                                    v = Number(toBigNumber(v));
+                                    break;
+                                  case 'gas':
+                                  case 'maxFeePerGas':
+                                  case 'maxPriorityFeePerGas':
+                                    v = toBigNumber(v);
+                                    break;
+                                  default:
+                                    break;
+                                }
+                                return [k, v];
+                              })
+                            );
+                            break;
+                          }
+                        } catch (error) {}
+                      }
+                      if (!v) {
+                        try {
+                          const provider = getProvider(chain);
+                          if (provider) {
+                            const _v = await provider.getTransaction(txHash);
+                            v = {
+                              ..._v,
+                              chainId: Number(_v.chainId),
+                            };
+                          }
+                        } catch (error) {}
                       }
                       break;
                     case 'receipt':
-                      try {
-                        const _v = await provider.getTransactionReceipt(txHash);
-                        v = {
-                          ..._v,
-                          transactionIndex: typeof _v.transactionIndex === 'number' ? _v.transactionIndex : _v.index,
-                          confirmations: await _v.confirmations(),
-                          logs: toArray(_v.logs).map(l => {
-                            delete l.provider;
-                            l.logIndex = typeof l.logIndex === 'number' ? l.logIndex : l.index;
-                            delete l.index;
-                            return { ...l };
-                          }),
-                        };
-                        delete v.index;
-                      } catch (error) {
+                      const getTransactionReceipt = async () => {
+                        let v;
                         const chain_data = getChainData(chain, 'evm');
                         for (const url of toArray(chain_data?.endpoints?.rpc)) {
                           try {
@@ -125,6 +117,9 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
                                     case 'cumulativeGasUsed':
                                     case 'gasUsed':
                                     case 'effectiveGasPrice':
+                                    case 'l1GasUsed':
+                                    case 'l1GasPrice':
+                                    case 'l1Fee':
                                       v = toBigNumber(v);
                                       break;
                                     case 'logs':
@@ -146,6 +141,7 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
                                           ),
                                         };
                                       });
+                                      break;
                                     default:
                                       break;
                                   }
@@ -156,6 +152,36 @@ const getTransaction = async (provider, txHash, chain, logIndex) => {
                             }
                           } catch (error) {}
                         }
+                        return v;
+                      };
+
+                      v = await getTransactionReceipt();
+                      if (!v) {
+                        try {
+                          switch (chain) {
+                            case 'optimism':
+                              break;
+                            default:
+                              const provider = getProvider(chain);
+                              if (provider) {
+                                const _v = await provider.getTransactionReceipt(txHash);
+                                v = {
+                                  ..._v,
+                                  transactionHash: _v.transactionHash || _v.hash,
+                                  transactionIndex: typeof _v.transactionIndex === 'number' ? _v.transactionIndex : _v.index,
+                                  confirmations: await _v.confirmations(),
+                                  logs: toArray(_v.logs).map(l => {
+                                    delete l.provider;
+                                    l.logIndex = typeof l.logIndex === 'number' ? l.logIndex : l.index;
+                                    delete l.index;
+                                    return { ...l };
+                                  }),
+                                };
+                                delete v.index;
+                              }
+                              break;
+                          }
+                        } catch (error) {}
                       }
                       break;
                     default:
@@ -183,30 +209,33 @@ const setTransactionIdToData = data => {
   return data;
 };
 
-const getBlockTime = async (provider, blockNumber, chain) => {
+const getBlockTime = async (blockNumber, chain) => {
   let output;
-  if (provider && blockNumber) {
-    try {
-      const block = await provider.getBlock(blockNumber);
-      const { timestamp } = { ...block };
-      if (timestamp) {
-        output = timestamp;
-      }
-    } catch (error) {}
+  if (blockNumber && chain) {
+    const chain_data = getChainData(chain, 'evm');
+    for (const url of toArray(chain_data?.endpoints?.rpc)) {
+      try {
+        const rpc = axios.create({ baseURL: url });
+        const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: [toBeHex(blockNumber).replace('0x0', '0x'), false], id: 0 }).catch(error => parseRequestError(error));
+        const { data } = { ...response };
+        const { timestamp } = { ...data?.result };
+        if (timestamp) {
+          output = parseInt(toBigNumber(timestamp));
+          break;
+        }
+      } catch (error) {}
+    }
     if (!output) {
-      const chain_data = getChainData(chain, 'evm');
-      for (const url of toArray(chain_data?.endpoints?.rpc)) {
-        try {
-          const rpc = axios.create({ baseURL: url });
-          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: [toBeHex(blockNumber).replace('0x0', '0x'), false], id: 0 }).catch(error => parseRequestError(error));
-          const { data } = { ...response };
-          const { timestamp } = { ...data?.result };
+      try {
+        const provider = getProvider(chain);
+        if (provider) {
+          const block = await provider.getBlock(blockNumber);
+          const { timestamp } = { ...block };
           if (timestamp) {
-            output = parseInt(toBigNumber(timestamp));
-            break;
+            output = timestamp;
           }
-        } catch (error) {}
-      }
+        }
+      } catch (error) {}  
     }
   }
   return output;

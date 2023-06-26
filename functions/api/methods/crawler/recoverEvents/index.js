@@ -37,16 +37,16 @@ module.exports = async params => {
         };
       }
       else {
-        const provider = getProvider(chain);
         // get block number by transaction hash
         if (!blockNumber) {
-          const response = await getTransaction(provider, txHash, chain);
+          const response = await getTransaction(txHash, chain);
           const { transaction, receipt } = { ...response };
           blockNumber = receipt?.blockNumber || transaction?.blockNumber;
         }
 
         if (blockNumber) {
           const { gateway_contracts } = { ...contracts };
+          const provider = getProvider(chain);
           // set chain data
           chain_data = {
             ...chain_data,

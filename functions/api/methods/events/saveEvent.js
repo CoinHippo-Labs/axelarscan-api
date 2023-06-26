@@ -5,7 +5,6 @@ const moment = require('moment');
 const { getTransaction, getBlockTime, updateLink, updateSend } = require('../transfers/utils');
 const { getTokensPrice } = require('../tokens');
 const { read, write } = require('../../services/index');
-const { getProvider } = require('../../utils/chain/evm');
 const { WRAP_COLLECTION, ERC20_TRANSFER_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getContracts, getChainKey, getAssetData } = require('../../utils/config');
 const { getGranularity } = require('../../utils/time');
 const { toBigNumber } = require('../../utils/number');
@@ -17,20 +16,12 @@ module.exports = async (params = {}) => {
   const { contractAddress } = { ...params };
   let { event, chain } = { ...params };
   chain = chain?.toLowerCase();
-  const provider = getProvider(chain);
 
   if (!(event && chain && contractAddress)) {
     output = {
       error: true,
       code: 400,
       message: 'parameters not valid',
-    };
-  }
-  else if (!provider) {
-    output = {
-      error: true,
-      code: 400,
-      message: 'chain not valid',
     };
   }
   else if (!equalsIgnoreCase(getContracts().gateway_contracts[chain]?.address, contractAddress)) {
@@ -52,8 +43,8 @@ module.exports = async (params = {}) => {
       case 'TokenSent':
         try {
           event = {
-            ...await getTransaction(provider, transactionHash, chain),
-            block_timestamp: await getBlockTime(provider, blockNumber, chain),
+            ...await getTransaction(transactionHash, chain),
+            block_timestamp: await getBlockTime(blockNumber, chain),
             ...event,
           };
 
@@ -124,10 +115,10 @@ module.exports = async (params = {}) => {
                   }
                   const { tx_hash } = { ...transfer_data };
                   if (tx_hash) {
-                    const data = await getTransaction(provider, tx_hash, chain);
+                    const data = await getTransaction(tx_hash, chain);
                     const { blockNumber, from } = { ...data?.transaction };
                     if (blockNumber) {
-                      const block_timestamp = await getBlockTime(provider, blockNumber, chain);
+                      const block_timestamp = await getBlockTime(blockNumber, chain);
                       transfer_data = {
                         ...transfer_data,
                         txhash: tx_hash,
@@ -187,8 +178,8 @@ module.exports = async (params = {}) => {
       case 'Executed':
         try {
           event = {
-            ...await getTransaction(provider, transactionHash, chain),
-            block_timestamp: await getBlockTime(provider, blockNumber, chain),
+            ...await getTransaction(transactionHash, chain),
+            block_timestamp: await getBlockTime(blockNumber, chain),
             ...event,
           };
 

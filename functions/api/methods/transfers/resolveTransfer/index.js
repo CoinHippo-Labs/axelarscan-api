@@ -74,117 +74,110 @@ module.exports = async (params = {}) => {
                         const { id } = { ...c };
                         let exist = false;
                         let transfer_data;
-                        const provider = getProvider(id);
+                        const transaction_data = await getTransaction(txHash, id);
+                        const { transaction, receipt } = { ...transaction_data };
+                        const { blockNumber, from, to, input, data } = { ...transaction };
+                        const { logs } = { ...receipt };
 
-                        if (provider) {
-                          const transaction_data = await getTransaction(provider, txHash, id);
-                          const { transaction, receipt } = { ...transaction_data };
-                          const { blockNumber, from, to, input, data } = { ...transaction };
-                          const { logs } = { ...receipt };
+                        if (blockNumber) {
+                          const block_timestamp = await getBlockTime(blockNumber, id);
+                          if (block_timestamp) {
+                            created_at = block_timestamp * 1000;
+                          }
 
-                          if (blockNumber) {
-                            const block_timestamp = await getBlockTime(provider, blockNumber, id);
-                            if (block_timestamp) {
-                              created_at = block_timestamp * 1000;
+                          const topics = _.reverse(_.cloneDeep(toArray(logs)).flatMap(l => toArray(l.topics))).filter(t => t.startsWith('0x000000000000000000000000')).map(t => t.replace('0x000000000000000000000000', '0x'));
+                          const response = await read(
+                            DEPOSIT_ADDRESS_COLLECTION,
+                            {
+                              bool: {
+                                should: topics.map(t => { return { match: { deposit_address: t } }; }),
+                                minimum_should_match: 1,
+                              },
+                            },
+                            { size: 1 },
+                          );
+                          depositAddress = _.head(response?.data)?.deposit_address || depositAddress;
+
+                          if (depositAddress) {
+                            const asset_data = getAssetsList().find(a => equalsIgnoreCase(a.addresses?.[id]?.address, to));
+                            let _amount;
+                            if (!asset_data) {
+                              _amount = _.head(
+                                toArray(logs)
+                                  .filter(l => getAssetsList().findIndex(a => equalsIgnoreCase(l.address, a.addresses?.[id]?.address)) > -1)
+                                  .map(l => l.data)
+                                  .filter(d => d.length >= 64)
+                                  .map(d => d.substring(d.length - 64).replace('0x', '').replace(/^0+/, '') || ZeroAddress.replace('0x', ''))
+                                  .filter(d => {
+                                    try {
+                                      d = BigInt(`0x${d}`);
+                                      return true;
+                                    } catch (error) {
+                                      return false;
+                                    }
+                                  })
+                              );
                             }
+                            const token_address = asset_data?.addresses?.[id]?.address;
+                            const denom = asset_data?.denom;
+                            const amount = BigInt(`0x${_amount || data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString();
 
-                            const topics = _.reverse(_.cloneDeep(toArray(logs)).flatMap(l => toArray(l.topics))).filter(t => t.startsWith('0x000000000000000000000000')).map(t => t.replace('0x000000000000000000000000', '0x'));
-                            const response = await read(
-                              DEPOSIT_ADDRESS_COLLECTION,
+                            let response = await read(
+                              UNWRAP_COLLECTION,
                               {
                                 bool: {
-                                  should: topics.map(t => { return { match: { deposit_address: t } }; }),
-                                  minimum_should_match: 1,
+                                  must: [
+                                    { match: { tx_hash: txHash } },
+                                    { match: { deposit_address_link: depositAddress } },
+                                    { match: { source_chain: id } },
+                                  ],
                                 },
                               },
                               { size: 1 },
                             );
-                            depositAddress = _.head(response?.data)?.deposit_address || depositAddress;
-
-                            if (depositAddress) {
-                              const asset_data = getAssetsList().find(a => equalsIgnoreCase(a.addresses?.[id]?.address, to));
-                              let _amount;
-                              if (!asset_data) {
-                                _amount = _.head(
-                                  toArray(logs)
-                                    .filter(l => getAssetsList().findIndex(a => equalsIgnoreCase(l.address, a.addresses?.[id]?.address)) > -1)
-                                    .map(l => l.data)
-                                    .filter(d => d.length >= 64)
-                                    .map(d => d.substring(d.length - 64).replace('0x', '').replace(/^0+/, '') || ZeroAddress.replace('0x', ''))
-                                    .filter(d => {
-                                      try {
-                                        d = BigInt(`0x${d}`);
-                                        return true;
-                                      } catch (error) {
-                                        return false;
-                                      }
-                                    })
-                                );
+                            let unwrap = _.head(response?.data);
+                            if (unwrap?.tx_hash_unwrap) {
+                              const { tx_hash_unwrap, destination_chain } = { ...unwrap };
+                              const transaction_data = await getTransaction(tx_hash_unwrap, destination_chain);
+                              const { blockNumber, from } = { ...transaction_data?.transaction };
+                              if (blockNumber) {
+                                const block_timestamp = await getBlockTime(blockNumber, destination_chain);
+                                unwrap = {
+                                  ...unwrap,
+                                  height: blockNumber,
+                                  type: 'evm',
+                                  created_at: getGranularity(moment(block_timestamp * 1000).utc()),
+                                  sender_address: from,
+                                };
                               }
-                              const token_address = asset_data?.addresses?.[id]?.address;
-                              const denom = asset_data?.denom;
-                              const amount = BigInt(`0x${_amount || data?.substring(10 + 64) || input?.substring(10 + 64) || '0'}`).toString();
-
-                              let response = await read(
-                                UNWRAP_COLLECTION,
-                                {
-                                  bool: {
-                                    must: [
-                                      { match: { tx_hash: txHash } },
-                                      { match: { deposit_address_link: depositAddress } },
-                                      { match: { source_chain: id } },
-                                    ],
-                                  },
-                                },
-                                { size: 1 },
-                              );
-                              let unwrap = _.head(response?.data);
-                              if (unwrap?.tx_hash_unwrap) {
-                                const { tx_hash_unwrap, destination_chain } = { ...unwrap };
-                                const provider = getProvider(destination_chain);
-                                if (provider) {
-                                  const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
-                                  const { blockNumber, from } = { ...transaction_data?.transaction };
-                                  if (blockNumber) {
-                                    const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
-                                    unwrap = {
-                                      ...unwrap,
-                                      height: blockNumber,
-                                      type: 'evm',
-                                      created_at: getGranularity(moment(block_timestamp * 1000).utc()),
-                                      sender_address: from,
-                                    };
-                                  }
-                                }
-                              }
-
-                              const send = {
-                                txhash: txHash,
-                                height: blockNumber,
-                                status: 'success',
-                                type: 'evm',
-                                created_at: getGranularity(created_at),
-                                source_chain: id,
-                                destination_chain,
-                                sender_address: from,
-                                recipient_address: depositAddress,
-                                token_address,
-                                denom,
-                                amount,
-                              };
-
-                              response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: depositAddress } }, { size: 1 });
-                              let link = normalizeLink(_.head(response?.data));
-                              link = await updateLink(link, send);
-                              const transfer_data = {
-                                send,
-                                link: link || undefined,
-                                type: unwrap ? 'unwrap' : 'deposit_address',
-                                unwrap: unwrap || undefined,
-                              };
-                              await updateSend(send, link, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
-                              exist = true;
                             }
+
+                            const send = {
+                              txhash: txHash,
+                              height: blockNumber,
+                              status: 'success',
+                              type: 'evm',
+                              created_at: getGranularity(created_at),
+                              source_chain: id,
+                              destination_chain,
+                              sender_address: from,
+                              recipient_address: depositAddress,
+                              token_address,
+                              denom,
+                              amount,
+                            };
+
+                            response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: depositAddress } }, { size: 1 });
+                            let link = normalizeLink(_.head(response?.data));
+                            link = await updateLink(link, send);
+                            const transfer_data = {
+                              send,
+                              link: link || undefined,
+                              type: unwrap ? 'unwrap' : 'deposit_address',
+                              unwrap: unwrap || undefined,
+                            };
+                            await updateSend(send, link, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
+                            exist = true;
                           }
                         }
 
@@ -244,20 +237,17 @@ module.exports = async (params = {}) => {
                             let unwrap = _.head(response?.data);
                             if (unwrap?.tx_hash_unwrap) {
                               const { tx_hash_unwrap, destination_chain } = { ...unwrap };
-                              const provider = getProvider(destination_chain);
-                              if (provider) {
-                                const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
-                                const { blockNumber, from } = { ...transaction_data?.transaction };
-                                if (blockNumber) {
-                                  const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
-                                  unwrap = {
-                                    ...unwrap,
-                                    height: blockNumber,
-                                    type: 'evm',
-                                    created_at: getGranularity(moment(block_timestamp * 1000).utc()),
-                                    sender_address: from,
-                                  };
-                                }
+                              const transaction_data = await getTransaction(tx_hash_unwrap, destination_chain);
+                              const { blockNumber, from } = { ...transaction_data?.transaction };
+                              if (blockNumber) {
+                                const block_timestamp = await getBlockTime(blockNumber, destination_chain);
+                                unwrap = {
+                                  ...unwrap,
+                                  height: blockNumber,
+                                  type: 'evm',
+                                  created_at: getGranularity(moment(block_timestamp * 1000).utc()),
+                                  sender_address: from,
+                                };
                               }
                             }
 
@@ -372,21 +362,18 @@ module.exports = async (params = {}) => {
               d.unwrap = _.head(response?.data);
               if (d.unwrap?.tx_hash_unwrap) {
                 const { tx_hash_unwrap, destination_chain } = { ...d.unwrap };
-                const provider = getProvider(destination_chain);
-                if (provider) {
-                  const transaction_data = await getTransaction(provider, tx_hash_unwrap, destination_chain);
-                  const { blockNumber, from } = { ...transaction_data?.transaction };
-                  if (blockNumber) {
-                    const block_timestamp = await getBlockTime(provider, blockNumber, destination_chain);
-                    d.unwrap = {
-                      ...d.unwrap,
-                      height: blockNumber,
-                      type: 'evm',
-                      created_at: getGranularity(moment(block_timestamp * 1000).utc()),
-                      sender_address: from,
-                    };
-                    _updated = true;
-                  }
+                const transaction_data = await getTransaction(tx_hash_unwrap, destination_chain);
+                const { blockNumber, from } = { ...transaction_data?.transaction };
+                if (blockNumber) {
+                  const block_timestamp = await getBlockTime(blockNumber, destination_chain);
+                  d.unwrap = {
+                    ...d.unwrap,
+                    height: blockNumber,
+                    type: 'evm',
+                    created_at: getGranularity(moment(block_timestamp * 1000).utc()),
+                    sender_address: from,
+                  };
+                  _updated = true;
                 }
               }
             }

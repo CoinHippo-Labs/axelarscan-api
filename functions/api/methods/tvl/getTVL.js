@@ -6,7 +6,6 @@ const { getTokenSupply, getEVMBalance, getIBCSupply, getCosmosBalance } = requir
 const _lcd = require('../lcd');
 const { get, read, write } = require('../../services/index');
 const { getTokensPrice } = require('../tokens');
-const { getProvider } = require('../../utils/chain/evm');
 const { getLCDs } = require('../../utils/chain/cosmos');
 const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssets, getAssetData, getTVL } = require('../../utils/config');
 const { toHash, getAddress } = require('../../utils/address');
@@ -89,7 +88,6 @@ module.exports = async (params = {}) => {
     }
   }
 
-  const providers = Object.fromEntries(evm_chains_data.map(c => [c.id, getProvider(c.id)]).filter(([k, v]) => v));
   const lcds = Object.fromEntries(cosmos_chains_data.map(c => [c.id, getLCDs(c.id)]).filter(([k, v]) => v));
   const axelarnet = getChainData('axelarnet');
   const axelarnet_lcd_url = _.head(axelarnet.endpoints?.lcd);
@@ -111,7 +109,6 @@ module.exports = async (params = {}) => {
               const { url, address_path, contract_path, asset_path } = { ...explorer };
 
               let result;
-              const provider = providers[id];
               const lcd = lcds[id];
               const is_native = id === native_chain;
 
@@ -121,9 +118,9 @@ module.exports = async (params = {}) => {
                     const contract_data = { ...asset_data, ...addresses?.[id] };
                     delete contract_data.addresses;
                     const { address } = { ...contract_data };
-                    if (address && provider) {
-                      const gateway_balance = await getEVMBalance(gateway_address, contract_data, provider, id);
-                      const supply = !is_native ? await getTokenSupply(contract_data, provider, id) : 0;
+                    if (address) {
+                      const gateway_balance = await getEVMBalance(gateway_address, contract_data, id);
+                      const supply = !is_native ? await getTokenSupply(contract_data, id) : 0;
                       result = {
                         contract_data,
                         gateway_address,

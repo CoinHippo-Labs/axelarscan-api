@@ -1,15 +1,16 @@
 const { Contract, ZeroAddress, formatUnits, keccak256, toUtf8Bytes } = require('ethers');
 const axios = require('axios');
 
+const { getProvider } = require('../../utils/chain/evm');
 const { getLCDs } = require('../../utils/chain/cosmos');
 const { getChainData } = require('../../utils/config');
 const { toBigNumber } = require('../../utils/number');
 const { equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
 
-const getTokenSupply = async (contract_data, provider, chain) => {
+const getTokenSupply = async (contract_data, chain) => {
   let supply;
   const { address, decimals } = { ...contract_data };
-  if (address && provider) {
+  if (address) {
     const chain_data = getChainData(chain, 'evm');
     for (const url of toArray(chain_data?.endpoints?.rpc)) {
       try {
@@ -25,18 +26,21 @@ const getTokenSupply = async (contract_data, provider, chain) => {
     }
     if (!supply) {
       try {
-        const contract = new Contract(address, ['function totalSupply() view returns (uint256)'], provider);
-        supply = await contract.totalSupply();
+        const provider = getProvider(chain);
+        if (provider) {
+          const contract = new Contract(address, ['function totalSupply() view returns (uint256)'], provider);
+          supply = await contract.totalSupply();
+        }
       } catch (error) {}
     }
   }
   return Number(formatUnits(supply || '0', decimals || 18));
 };
 
-const getEVMBalance = async (wallet_address, contract_data, provider, chain) => {
+const getEVMBalance = async (wallet_address, contract_data, chain) => {
   let balance;
   const { address, decimals } = { ...contract_data };
-  if (wallet_address && address && provider) {
+  if (wallet_address && address) {
     const chain_data = getChainData(chain, 'evm');
 
     for (const url of toArray(chain_data?.endpoints?.rpc)) {
@@ -53,12 +57,15 @@ const getEVMBalance = async (wallet_address, contract_data, provider, chain) => 
     }
     if (!balance) {
       try {
-        if (address === ZeroAddress) {
-          balance = await provider.getBalance(wallet_address);
-        }
-        else {
-          const contract = new Contract(address, ['function balanceOf(address owner) view returns (uint256)'], provider);
-          balance = await contract.balanceOf(wallet_address);
+        const provider = getProvider(chain);
+        if (provider) {
+          if (address === ZeroAddress) {
+            balance = await provider.getBalance(wallet_address);
+          }
+          else {
+            const contract = new Contract(address, ['function balanceOf(address owner) view returns (uint256)'], provider);
+            balance = await contract.balanceOf(wallet_address);
+          }
         }
       } catch (error) {}
     }

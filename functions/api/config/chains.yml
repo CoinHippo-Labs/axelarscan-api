@@ -74,7 +74,7 @@ mainnet:
           - "https://polygon.blockpi.network/v1/rpc/public"
           - "https://polygon-mainnet.public.blastapi.io"
           - "https://1rpc.io/matic"
-          - "https://rpc.ankr.com/polygon"
+          # - "https://rpc.ankr.com/polygon"
       native_token:
         name: "Polygon"
         symbol: "MATIC"
@@ -128,7 +128,7 @@ mainnet:
           - "https://rpc.ftm.tools"
           - "https://rpc.fantom.network"
           - "https://fantom.blockpi.network/v1/rpc/public"
-          - "https://fantom-mainnet.public.blastapi.io"
+          # - "https://fantom-mainnet.public.blastapi.io"
           - "https://1rpc.io/ftm"
           - "https://rpc.ankr.com/fantom"
       native_token:
@@ -156,7 +156,7 @@ mainnet:
         rpc:
           - "https://rpc.api.moonbeam.network"
           - "https://moonbeam.public.blastapi.io"
-          - "https://1rpc.io/glmr"
+          # - "https://1rpc.io/glmr"
           - "https://rpc.ankr.com/moonbeam"
       native_token:
         name: "Moonbeam"
@@ -206,10 +206,10 @@ mainnet:
       endpoints:
         rpc:
           - "https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          - "https://arbitrum.blockpi.network/v1/rpc/public"
-          - "https://arb1.arbitrum.io/rpc"
-          - "https://1rpc.io/arb"
-          - "https://rpc.ankr.com/arbitrum"
+          # - "https://arbitrum.blockpi.network/v1/rpc/public"
+          # - "https://arb1.arbitrum.io/rpc"
+          # - "https://1rpc.io/arb"
+          # - "https://rpc.ankr.com/arbitrum"
       native_token:
         name: "Ethereum"
         symbol: "ETH"
@@ -1386,8 +1386,8 @@ testnet:
       endpoints:
         rpc:
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          - "https://matic-mumbai.chainstacklabs.com"
-          - "https://polygon-testnet.public.blastapi.io"
+          # - "https://matic-mumbai.chainstacklabs.com"
+          # - "https://polygon-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon_mumbai"
       native_token:
         name: "Polygon"
@@ -1514,7 +1514,7 @@ testnet:
       maintainer_id: "arbitrum"
       endpoints:
         rpc:
-          - "https://goerli-rollup.arbitrum.io/rpc"
+          # - "https://goerli-rollup.arbitrum.io/rpc"
           - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
       native_token:
         name: "Ethereum"

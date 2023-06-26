@@ -32,8 +32,7 @@ module.exports = async (lcd_response = {}, created_at) => {
   const updated_transfers_data = {};
   if (status === 'BATCHED_COMMANDS_STATUS_SIGNED' && command_ids) {
     const { gateway_address } = { ...getChainData(chain, 'evm') };
-    const provider = getProvider(chain);
-    const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
+    const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, getProvider(chain));
 
     if (gateway) {
       let command = {
