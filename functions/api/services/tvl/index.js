@@ -642,7 +642,7 @@ module.exports = async (
                       total - _.sum(Object.values(cosmos_tvl).map(_v => _v?.supply || 0)) :
                       (ibc || []).findIndex(i => i?.is_native) > -1 ?
                         total ?
-                          total - _.sum(Object.values(evm_tvl).map(_v => _v?.supply ||  0)) :
+                          total - _.sum(Object.values(evm_tvl).map(_v => _v?.supply || 0)) :
                           0 :
                         supply :
                     supply,
@@ -675,7 +675,7 @@ module.exports = async (
       );
 
     const total =
-      (ibc || []).findIndex(i => i?.is_native && i.chain_id === axelarnet.id) > -1 ?
+      (ibc || []).findIndex(i => i?.is_native/* && i.chain_id === axelarnet.id*/) > -1 ?
         total_on_evm + total_on_cosmos :
         _.sum(
           Object.values(tvl)
