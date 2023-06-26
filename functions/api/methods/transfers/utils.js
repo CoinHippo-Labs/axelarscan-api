@@ -271,8 +271,8 @@ const normalizeLink = link => {
 const updateLink = async (link, send) => {
   if (link) {
     link = normalizeLink(link);
-    const { deposit_address, asset } = { ...link };
-    let { original_source_chain, source_chain, sender_address, denom, price } = { ...link };
+    const { deposit_address, recipient_address, asset } = { ...link };
+    let { original_source_chain, source_chain, original_destination_chain, destination_chain, sender_address, denom, price } = { ...link };
 
     let updated = false;
     if (send && !equalsIgnoreCase(sender_address, send.sender_address)) {
@@ -297,6 +297,17 @@ const updateLink = async (link, send) => {
       if (!original_source_chain?.startsWith(source_chain)) {
         original_source_chain = source_chain;
         link.original_source_chain = original_source_chain;
+        updated = true;
+      }
+    }
+
+    if (!destination_chain && recipient_address) {
+      destination_chain = getChainKey(getChainsList('cosmos').find(c => recipient_address.startsWith(c.prefix_address))?.id || send?.destination_chain);
+      updated = updated || link.destination_chain !== destination_chain;
+      link.destination_chain = destination_chain;
+      if (!original_destination_chain?.startsWith(destination_chain)) {
+        original_destination_chain = destination_chain;
+        link.original_destination_chain = original_destination_chain;
         updated = true;
       }
     }
