@@ -4,7 +4,6 @@ const { log, sleep } = require('../../../utils');
 module.exports = context => {
   const api = getAPI();
   const ws = getWS();
-
   if (api && ws) {
     const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler-block`;
     const subscribe = () => {
@@ -19,9 +18,7 @@ module.exports = context => {
                   jsonrpc: '2.0',
                   method: 'subscribe',
                   id: '0',
-                  params: {
-                    query: `tm.event='NewBlock'`,
-                  },
+                  params: { query: `tm.event='NewBlock'` },
                 };
                 log('debug', service_name, 'connect ws', data);
                 ws.send(JSON.stringify(data));
@@ -52,7 +49,6 @@ module.exports = context => {
         );
       });
     };
-
     subscribe();
   }
 };
