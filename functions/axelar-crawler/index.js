@@ -1,6 +1,5 @@
 exports.handler = async (event, context, callback) => {
   require('./services')(context);
-
   if (context) {
     // hold lambda function to not exit before timeout
     const { sleep } = require('./utils');

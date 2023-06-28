@@ -13,7 +13,7 @@ module.exports = async (txHash, blockNumber) => {
     log('info', service_name, 'recoverEvents', { params });
     const response =  await api.post('/', params).catch(error => parseRequestError(error));
     output = response?.data;
-    log('debug', service_name, 'recoverEvents', { output, params });
+    // log('debug', service_name, 'recoverEvents', { output, params });
   }
   return output;
 };

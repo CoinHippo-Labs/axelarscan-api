@@ -1,5 +1,5 @@
 const { getAPI, getWS } = require('../../../utils/config');
-const { log, sleep } = require('../../../utils');
+const { log, sleep, parseRequestError } = require('../../../utils');
 
 module.exports = context => {
   const api = getAPI();
@@ -38,7 +38,7 @@ module.exports = context => {
                   const { height } = { ...data?.result?.data?.value?.block?.header };
                   if (height) {
                     log('info', service_name, 'get block', { height });
-                    await api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } }).catch(error => { return { error: error?.response?.data }; });
+                    await api.get('/', { params: { index: true, method: 'lcd', path: `/cosmos/base/tendermint/v1beta1/blocks/${height}` } }).catch(error => parseRequestError(error));
                   }
                 } catch (error) {}
                 break;

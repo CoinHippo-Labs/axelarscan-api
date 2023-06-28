@@ -1,11 +1,6 @@
 const moment = require('moment');
 
-const log = (
-  level = 'info',
-  from,
-  message,
-  data = {},
-) => {
+const log = (level = 'info', from, message, data = {}) => {
   // terminal colors
   const LIGHT_BLUE = '\033[0;94m',
     LIGHT_YELLOW = '\033[0;93m',
@@ -19,41 +14,10 @@ const log = (
   try {
     // normalize level
     level = level.toLowerCase();
-
     // generate log message
-    const log_message =
-      ['local', 'test'].includes(from) || from?.includes('local') ?
-        `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${
-          level === 'error' ?
-            `${RED}ERR` :
-            level === 'warn' ?
-              `${YELLOW}WARN` :
-              level === 'debug' ?
-                `${GREEN}DBG` :
-                `${GREEN}INF`
-        }${NO_COLOR} ${LIGHT_BLUE}[${from?.toUpperCase()}]${NO_COLOR} ${LIGHT_YELLOW}${message}${NO_COLOR} ${
-          typeof data === 'string' ?
-            data :
-            typeof data === 'object' ?
-              JSON.stringify(data, null, 2) :
-              data
-        }` :
-        `${
-          level === 'error' ?
-            'ERR' :
-            level === 'warn' ?
-              'WARN' :
-              level === 'debug' ?
-                'DBG' :
-                'INF'
-        } [${from?.toUpperCase()}] ${message}\n${
-          typeof data === 'string' ?
-            data :
-            typeof data === 'object' ?
-              JSON.stringify(data, null, 2) :
-              data
-        }`;
-
+    const log_message = ['local', 'test'].includes(from) || from?.includes('local') ?
+      `${GRAY}${moment().format('YYYY-MM-DDTHH:mm:ssZ')}${NO_COLOR} ${level === 'error' ? `${RED}ERR` : level === 'warn' ? `${YELLOW}WARN` : level === 'debug' ? `${GREEN}DBG` : `${GREEN}INF`}${NO_COLOR} ${LIGHT_BLUE}[${from?.toUpperCase()}]${NO_COLOR} ${LIGHT_YELLOW}${message}${NO_COLOR} ${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}` :
+      `${level === 'error' ? 'ERR' : level === 'warn' ? 'WARN' : level === 'debug' ? 'DBG' : 'INF'} [${from?.toUpperCase()}] ${message}\n${typeof data === 'string' ? data : typeof data === 'object' ? JSON.stringify(data, null, 2) : data}`;
     switch (level) {
       case 'error':
         console.error(log_message);
@@ -116,10 +80,13 @@ const toArray = (
     x.map(v => toCase(v, to_case)).filter(v => !filter_blank || v) :
     split(x, to_case, delimiter, filter_blank);
 
+const parseRequestError = error => { return { error: error?.response?.data } };
+
 module.exports = {
   log,
   sleep,
   equalsIgnoreCase,
   split,
   toArray,
+  parseRequestError,
 };

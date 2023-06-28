@@ -6,7 +6,6 @@ const { log, sleep } = require('../../utils');
 
 const environment = process.env.ENVIRONMENT || 'testnet';
 const service_name = 'gateway-subscriber';
-
 const { past_events_block_per_request, max_query_events_block } = { ...getConfig() };
 const events_name = GATEWAY_EVENTS;
 
@@ -144,9 +143,7 @@ const sync = async (chain_data, filters) => {
         options.toBlock = latest_block;
         synced = true;
       }
-
       await getPastEvents(chain_data, filters, options);
-
       // update latest block
       if (!synced) {
         try {

@@ -37,30 +37,24 @@ const args = require('command-line-args')([
 const { environment, chain, block } = { ...args };
 const fromBlock = block?.[0];
 const toBlock = block?.[1];
-
 const { past_events_block_per_request } = { ...getConfig(environment) };
 
 const sync = async () => {
   const chains_data = await getChains(environment);
   const chain_data = await getChainData(chain, chains_data, environment);
-
   if (chain_data) {
     const gateway_data = await getGateway(chain, undefined, environment);
     const { address } = { ...gateway_data };
-
     if (address) {
       const provider = await getProvider(chain, chains_data, environment);
-
       if (provider) {
         chain_data.provider = provider;
         chain_data.gateway = {
           ...gateway_data,
           abi: IAxelarGateway.abi,
         };
-
         const gateway = new Contract(address, IAxelarGateway.abi, provider);
         const filters = [gateway.filters.TokenSent(), gateway.filters.Executed()];
-
         /********************************************************
          * function to fetch past events emitted from contracts *
          ********************************************************/
@@ -93,11 +87,9 @@ const sync = async () => {
             await gatewaySubscriber.getPastEvents(chain_data, filters, options);
           }
         };
-
         run();
       }
     }
   }
 };
-
 sync();

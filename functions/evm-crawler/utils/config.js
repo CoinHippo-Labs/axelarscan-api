@@ -1,23 +1,18 @@
 const axios = require('axios');
 const config = require('config-yml');
 
-const { equalsIgnoreCase, toArray } = require('./');
+const { equalsIgnoreCase, toArray, parseRequestError } = require('./');
 
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
-const getConfig = (env = ENVIRONMENT) => {
-  return {
-    ...config?.[env],
-  };
-};
-
+const getConfig = (env = ENVIRONMENT) => { return { ...config?.[env] }; };
 const getAPI = (timeout = 30000, env = ENVIRONMENT) => getConfig(env).api && axios.create({ baseURL: getConfig(env).api, timeout });
 
 const getChains = async (env = ENVIRONMENT) => {
   let output;
   const api = getAPI(undefined, env);
   if (api) {
-    const response = await api.get('/', { params: { method: 'getChains', for_crawler: true } }).catch(error => { return { error: error?.response?.data }; });
+    const response = await api.get('/', { params: { method: 'getChains', for_crawler: true } }).catch(error => parseRequestError(error));
     const { data } = { ...response };
     output = toArray(data);
   }
@@ -41,7 +36,7 @@ const getContracts = async (env = ENVIRONMENT) => {
   let output;
   const api = getAPI(undefined, env);
   if (api) {
-    const response = await api.get('/', { params: { method: 'getContracts' } }).catch(error => { return { error: error?.response?.data }; });
+    const response = await api.get('/', { params: { method: 'getContracts' } }).catch(error => parseRequestError(error));
     const { data } = { ...response };
     output = data;
   }

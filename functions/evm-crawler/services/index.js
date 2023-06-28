@@ -25,6 +25,5 @@ module.exports = async context => {
       )
     )
   );
-
   subscribeGateway(_chains_data, context);
 };

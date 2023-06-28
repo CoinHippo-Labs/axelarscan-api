@@ -10,7 +10,6 @@ const getProvider = async (chain, chains_data, env) => {
   const { chain_id, deprecated, endpoints } = { ...await getChainData(chain, chains_data, env) };
   const { rpc } = { ...endpoints };
   const rpcs = toArray(rpc);
-
   if (rpcs.length > 0 && !deprecated) {
     try {
       return (
