@@ -14,7 +14,7 @@ const lcd = require('../../lcd');
 const { get, read, write } = require('../../../services/index');
 const { getProvider } = require('../../../utils/chain/evm');
 const { getLCDs } = require('../../../utils/chain/cosmos');
-const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
+const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, WRAP_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
 const { sleep, equalsIgnoreCase, toArray, includesStringList } = require('../../../utils');
 
@@ -178,6 +178,26 @@ module.exports = async (params = {}) => {
                             };
                             await updateSend(send, link, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
                             exist = true;
+                          }
+                          else {
+                            const response = await read(
+                              WRAP_COLLECTION,
+                              {
+                                bool: {
+                                  must: [
+                                    { match: { tx_hash: txHash } },
+                                    { match: { source_chain: id } },
+                                  ],
+                                },
+                              },
+                              { size: 1 },
+                            );
+                            const wrap = _.head(response?.data);
+                            const { tx_hash_wrap, source_chain } = { ...wrap };
+                            if (tx_hash_wrap && source_chain) {
+                              const { events } = { ...await recoverEvents({ txHash: tx_hash_wrap, chain: source_chain }) };
+                              exist = toArray(events).length > 0;
+                            }
                           }
                         }
 
