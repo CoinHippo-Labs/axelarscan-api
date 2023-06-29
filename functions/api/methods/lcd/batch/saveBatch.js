@@ -103,10 +103,11 @@ module.exports = async (path = '', lcd_response = {}) => {
         if (c.id && !c.transactionHash) {
           const command_event = toArray(command_events).find(_c => equalsIgnoreCase(_c.command_id, c.id));
           if (command_event) {
-            const { transactionHash, transactionIndex, logIndex, block_timestamp } = { ...command_event };
+            const { transactionHash, transactionIndex, logIndex, blockNumber, block_timestamp } = { ...command_event };
             c.transactionHash = transactionHash;
             c.transactionIndex = transactionIndex;
             c.logIndex = logIndex;
+            c.blockNumber = blockNumber;
             c.block_timestamp = block_timestamp;
             if (transactionHash) {
               c.executed = true;

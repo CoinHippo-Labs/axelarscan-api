@@ -11,7 +11,7 @@ module.exports = async (params = {}) => {
   const _params = generateReadParams(params);
   // search data
   output = await search(BATCH_COLLECTION, query, _params);
-  if (await updateBatches(output?.data)) {
+  if (await updateBatches(output?.data, params)) {
     output = await search(BATCH_COLLECTION, query, _params, 0.5 * 1000);
   }
   output = normalizeResult(output);

@@ -570,7 +570,7 @@ exports.handler = async (event, context, callback) => {
   }
 
   // log result
-  if (['search', 'update'].findIndex(s => method?.startsWith(s)) < 0) {
+  if (['crud', 'rpc', 'lcd', 'get', 'search', 'archive', 'update'].findIndex(s => method?.startsWith(s)) < 0) {
     log('debug', service_name, 'send output', output);
   }
 

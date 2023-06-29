@@ -72,8 +72,7 @@ module.exports = async (lcd_response = {}, created_at) => {
 
           if (transfer_data) {
             const index = commands.findIndex(c => c?.id === command_id);
-            let { executed, transactionHash, transactionIndex, logIndex, block_timestamp } = { ...transfer_data.command };
-
+            let { executed, transactionHash, transactionIndex, logIndex, blockNumber, block_timestamp } = { ...transfer_data.command };
             executed = !!(executed || transactionHash || commands[index]?.executed);
             if (!executed) {
               try {
@@ -99,14 +98,13 @@ module.exports = async (lcd_response = {}, created_at) => {
                 },
                 { size: 1 },
               );
-
               const command_event = _.head(response?.data);
               if (command_event) {
                 transactionHash = command_event.transactionHash;
                 transactionIndex = command_event.transactionIndex;
                 logIndex = command_event.logIndex;
+                blockNumber = command_event.blockNumber;
                 block_timestamp = command_event.block_timestamp;
-
                 if (transactionHash) {
                   executed = true;
                 }
@@ -117,6 +115,7 @@ module.exports = async (lcd_response = {}, created_at) => {
                     transactionHash,
                     transactionIndex,
                     logIndex,
+                    blockNumber,
                     block_timestamp,
                   };
                 }
@@ -129,16 +128,15 @@ module.exports = async (lcd_response = {}, created_at) => {
               transactionHash,
               transactionIndex,
               logIndex,
+              blockNumber,
               block_timestamp,
             };
 
             for (const d of data) {
               const { send } = { ...d };
               const { txhash, sender_address, source_chain } = { ...send };
-
               send.source_chain = getChainKey(getChainsList('cosmos').filter(c => c.id !== 'axelarnet').find(c => sender_address?.startsWith(c.prefix_address))?.id || source_chain);
               d.send = send;
-
               const _id = generateId(d);
               if (_id) {
                 updated_transfers_data[_id] = {

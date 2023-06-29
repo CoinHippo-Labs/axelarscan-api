@@ -117,6 +117,15 @@ module.exports = params => {
                       },
                     };
                     break;
+                  case 'has_block':
+                    obj = {
+                      bool: {
+                        must: [
+                          { exists: { field: 'commands.blockNumber' } },
+                        ],
+                      },
+                    };
+                    break;
                   case 'signed':
                   case 'signing':
                   case 'aborted':

@@ -95,7 +95,7 @@ module.exports = async (lcd_response = {}) => {
               const { batch_id, commands, created_at } = { ..._.head(response?.data) };
 
               if (batch_id) {
-                let { executed, transactionHash, transactionIndex, logIndex, block_timestamp } = { ...toArray(commands).find(c => c.id === command_id) };
+                let { executed, transactionHash, transactionIndex, logIndex, blockNumber, block_timestamp } = { ...toArray(commands).find(c => c.id === command_id) };
                 if (!transactionHash) {
                   const response = await read(
                     COMMAND_EVENT_COLLECTION,
@@ -114,6 +114,7 @@ module.exports = async (lcd_response = {}) => {
                     transactionHash = command_event.transactionHash;
                     transactionIndex = command_event.transactionIndex;
                     logIndex = command_event.logIndex;
+                    blockNumber = command_event.blockNumber;
                     block_timestamp = command_event.block_timestamp;
                     if (transactionHash) {
                       executed = true;
@@ -139,6 +140,7 @@ module.exports = async (lcd_response = {}) => {
                   transactionHash,
                   transactionIndex,
                   logIndex,
+                  blockNumber,
                   block_timestamp,
                 };
               }

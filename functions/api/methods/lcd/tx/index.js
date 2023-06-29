@@ -314,7 +314,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
         if (!index_poll) {
           updated = await require('./axelar-transfer')(lcd_response);
         }
-      }   
+      }
       // ConfirmTransferKey & ConfirmGatewayTx
       if (['ConfirmTransferKey', 'ConfirmGatewayTx'].findIndex(s => toArray(messages).findIndex(m => m['@type']?.includes(s)) > -1) > -1) {
         if (!index_transfer) {
