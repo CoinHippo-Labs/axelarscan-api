@@ -14,7 +14,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 provider "archive" {}
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "policy" {
 }
 
 data "aws_iam_role" "role" {
-  name = "${var.iam_role}"
+  name = var.iam_role
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
@@ -71,7 +71,7 @@ resource "aws_lambda_function" "api" {
       LOG_LEVEL                  = var.log_level
     }
   }
-  kms_key_arn      = ""
+  kms_key_arn = ""
 }
 
 resource "aws_lambda_provisioned_concurrency_config" "config" {
@@ -88,8 +88,8 @@ resource "aws_apigatewayv2_api" "api" {
     allow_headers = ["*"]
     allow_methods = ["*"]
   }
-  route_key     = "ANY /${aws_lambda_function.api.function_name}"
-  target        = aws_lambda_function.api.arn
+  route_key = "ANY /${aws_lambda_function.api.function_name}"
+  target    = aws_lambda_function.api.arn
 }
 
 resource "aws_apigatewayv2_route" "route_default" {
@@ -108,6 +108,20 @@ resource "aws_apigatewayv2_route" "route_function" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /{function}"
   target    = "integrations/${var.api_gateway_integration_id}"
+}
+
+data "aws_acm_certificate" "gmp_axelarscan_io" {
+  domain   = "*.api.axelarscan.io"
+  statuses = ["ISSUED"]
+}
+
+resource "aws_apigatewayv2_domain_name" "stagenet" {
+  domain_name = "testnet.api.axelarscan.io"
+  domain_name_configuration {
+    certificate_arn = data.aws_acm_certificate.gmp_axelarscan_io.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
 }
 
 data "archive_file" "zip_axelar_crawler" {
@@ -133,7 +147,7 @@ resource "aws_lambda_function" "axelar_crawler" {
       LOG_LEVEL        = var.log_level
     }
   }
-  kms_key_arn      = ""
+  kms_key_arn = ""
 }
 
 resource "aws_cloudwatch_event_rule" "schedule_axelar_crawler" {
@@ -170,7 +184,7 @@ resource "aws_lambda_function" "evm_crawler" {
       LOG_LEVEL        = var.log_level
     }
   }
-  kms_key_arn      = ""
+  kms_key_arn = ""
 }
 
 resource "aws_cloudwatch_event_rule" "schedule_evm_crawler" {
