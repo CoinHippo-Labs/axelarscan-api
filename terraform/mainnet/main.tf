@@ -116,7 +116,7 @@ data "aws_acm_certificate" "gmp_axelarscan_io" {
 }
 
 resource "aws_apigatewayv2_domain_name" "stagenet" {
-  domain_name = "mainnet.api.axelarscan.io"
+  domain_name = "api.axelarscan.io"
   domain_name_configuration {
     certificate_arn = data.aws_acm_certificate.gmp_axelarscan_io.arn
     endpoint_type   = "REGIONAL"
