@@ -179,6 +179,26 @@ resource "aws_apigatewayv2_stage" "lambda" {
   name        = "stagenet"
 }
 
+data "aws_acm_certificate" "api_axelarscan_io" {
+  domain   = "*.api.axelarscan.io"
+  statuses = ["ISSUED"]
+}
+
+resource "aws_apigatewayv2_domain_name" "stagenet" {
+  domain_name = "stagenet.api.axelarscan.io"
+  domain_name_configuration {
+    certificate_arn = data.aws_acm_certificate.api_axelarscan_io.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+}
+
+resource "aws_apigatewayv2_api_mapping" "stagenet" {
+  api_id      = aws_apigatewayv2_api.api.id
+  stage       = aws_apigatewayv2_stage.lambda.id
+  domain_name = aws_apigatewayv2_domain_name.stagenet.domain_name
+}
+
 data "archive_file" "zip_axelar_crawler" {
   type        = "zip"
   source_dir  = "../../functions/axelar-crawler"

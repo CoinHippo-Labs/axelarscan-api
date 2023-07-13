@@ -110,6 +110,20 @@ resource "aws_apigatewayv2_route" "route_function" {
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
+data "aws_acm_certificate" "gmp_axelarscan_io" {
+  domain   = "*.api.axelarscan.io"
+  statuses = ["ISSUED"]
+}
+
+resource "aws_apigatewayv2_domain_name" "stagenet" {
+  domain_name = "api.axelarscan.io"
+  domain_name_configuration {
+    certificate_arn = data.aws_acm_certificate.gmp_axelarscan_io.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+}
+
 data "archive_file" "zip_axelar_crawler" {
   type        = "zip"
   source_dir  = "../../functions/axelar-crawler"
