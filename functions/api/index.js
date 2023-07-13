@@ -1,624 +1,578 @@
-exports.handler = async (
-  event,
-  context,
-  callback,
-) => {
-  const config = require('config-yml');
+exports.handler = async (event, context, callback) => {
+  const moment = require('moment');
 
-  const rpc = require('./services/rpc');
-  const lcd = require('./services/lcd');
   const {
     crud,
-  } = require('./services/index');
-  const assets_price = require('./services/assets-price');
-  const coingecko = require('./services/coingecko');
-  const ens = require('./services/ens');
-  const {
-    transfers,
+    rpc,
+    lcd,
+    getTokensPrice,
+    getCirculatingSupply,
+    getTotalSupply,
+    getInflation,
+    getChainMaintainers,
+    getEscrowAddresses,
+    searchBlocks,
+    searchTransactions,
+    getBalances,
+    getDelegations,
+    getRedelegations,
+    getUnbondings,
+    searchPolls,
+    searchUptimes,
+    searchHeartbeats,
+    getValidators,
+    getValidatorsVotes,
+    getProposals,
+    getProposal,
+    searchBatches,
+    searchDepositAddresses,
     transfersStats,
-    transfersStatsChart,
-    cumulativeVolume,
-    totalVolume,
-    getTransfersStatus,
+    transfersChart,
+    transfersCumulativeVolume,
+    transfersTotalVolume,
+    transfersTopUsers,
+    searchTransfers,
+    resolveTransfer,
+    getTVL,
+    getTVLAlert,
+    saveEvent,
     saveDepositForWrap,
     saveWrap,
     saveDepositForUnwrap,
     saveUnwrap,
     saveDepositForERC20Transfer,
     saveERC20Transfer,
-  } = require('./services/transfers');
-  const tvl = require('./services/tvl');
-  const {
-    saveEvent,
     getLatestEventBlock,
-    recoverEvents,
-  } = require('./services/gateway');
-  const {
-    sleep,
-    equals_ignore_case,
-    get_params,
-  } = require('./utils');
+    archive,
+    updatePolls,
+    updateBatches,
+    updateTVL,
+    updateWraps,
+    updateUnwraps,
+    updateERC20Transfers,
+  } = require('./methods');
+  const { getParams, errorOutput, finalizeOutput } = require('./utils/io');
+  const { getContracts, getChainsList, getAssetsList } = require('./utils/config');
+  const { log } = require('./utils');
 
-  const environment = process.env.ENVIRONMENT || config?.environment;
-
-  const evm_chains_data = require('./data')?.chains?.[environment]?.evm || [];
-  const cosmos_chains_data = require('./data')?.chains?.[environment]?.cosmos || [];
-  const assets_data = require('./data')?.assets?.[environment] || [];
-
+  const service_name = 'api';
   // parse function event to req
   const req = {
     url: (event.routeKey || '').replace('ANY ', ''),
     method: event.requestContext?.http?.method,
     headers: event.headers,
-    params: {
-      ...event.pathParameters,
-    },
-    query: {
-      ...event.queryStringParameters,
-    },
-    body: {
-      ...(event.body && JSON.parse(event.body)),
-    },
+    params: { ...event.pathParameters },
+    query: { ...event.queryStringParameters },
+    body: { ...(event.body && JSON.parse(event.body)) },
   };
 
-  // setup query parameters
-  const params = get_params(req);
+  let output;
+  // create params from req
+  const params = getParams(req, service_name);
+  const { collection } = { ...params };
+  let { method } = { ...params };
 
-  let response;
-
-  switch (req.url) {
+  switch(req.url) {
     case '/':
-      const {
-        collection,
-      } = { ...params };
-      let {
-        path,
-        cache,
-        cache_timeout,
-      } = { ...params };
-
-      const _module =
-        (params.module || '')
-          .trim()
-          .toLowerCase();
-
-      path =
-        path ||
-        '';
-
-      cache =
-        typeof cache === 'boolean' ?
-          cache :
-          typeof cache === 'string' &&
-          equals_ignore_case(
-            cache,
-            'true',
-          );
-
-      cache_timeout =
-        !isNaN(cache_timeout) ?
-          Number(cache_timeout) :
-          undefined;
-
-      delete params.module;
-      delete params.path;
-      delete params.cache;
-      delete params.cache_timeout;
-
-      switch (_module) {
-        case 'rpc':
-          try {
-            response =
-              await rpc(
-                path,
-                params,
-              );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'lcd':
-          try {
-            response =
-              await lcd(
-                path,
-                params,
-                cache,
-                cache_timeout,
-              );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
+      switch (params.module) {
         case 'index':
-          try {
-            response = await crud(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
+          method = 'crud';
           break;
         case 'assets':
-          try {
-            response = await assets_price(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'coingecko':
-          try {
-            response =
-              await coingecko(
-                path,
-                params,
-              );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'ens':
-          try {
-            response =
-              await ens(
-                path,
-                params,
-              );
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
+          method = 'getTokensPrice';
           break;
         case 'data':
           switch (collection) {
             case 'chains':
-              response = require('./data')?.chains?.[environment];
+              method = 'getChains';
               break;
             case 'evm_chains':
-              response = evm_chains_data;
+              method = 'getEVMChains';
               break;
             case 'cosmos_chains':
-              response = cosmos_chains_data;
+              method = 'getCosmosChains';
               break;
             case 'assets':
-              response = assets_data;
+              method = 'getAssets';
+              break;
+            default:
               break;
           }
           break;
         default:
+          method = method || params.module;
           break;
       }
       break;
     case '/cross-chain/{function}':
-      switch (req.params.function?.toLowerCase()) {
-        case 'transfers':
-          try {
-            response = await transfers(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'transfers-status':
-          try {
-            response = await getTransfersStatus(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'transfers-stats':
-          try {
-            response = await transfersStats(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'transfers-chart':
-          try {
-            response = await transfersStatsChart(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'cumulative-volume':
-          try {
-            response = await cumulativeVolume(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'total-volume':
-          try {
-            response = await totalVolume(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'save-deposit-for-wrap':
-          try {
-            response = await saveDepositForWrap(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'save-wrap':
-          try {
-            response = await saveWrap(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'save-deposit-for-unwrap':
-          try {
-            response = await saveDepositForUnwrap(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'save-unwrap':
-          try {
-            response = await saveUnwrap(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'save-deposit-for-erc20-transfer':
-          try {
-            response = await saveDepositForERC20Transfer(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'save-erc20-transfer':
-          try {
-            response = await saveERC20Transfer(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'chains':
-          response = {
-            ...require('./data')?.chains?.[environment],
-          };
-          break;
-        case 'assets':
-          response =
-            assets_data.map(a =>
-              Object.fromEntries(
-                Object.entries({ ...a })
-                  .filter(([k, v]) =>
-                    !['coingecko_id'].includes(k)
-                  )
-              )
-            );
-          break;
-        case 'tvl':
-          try {
-            response = await tvl(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        default:
-          break;
-      }
-      break;
     case '/{function}':
-      switch (req.params.function?.toLowerCase()) {
-        case 'evm-polls':
-          try {
-            response = await require('./services/evm-polls')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'validators-evm-votes':
-          try {
-            response = await require('./services/validators-evm-votes')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'heartbeats':
-          try {
-            response = await require('./services/heartbeats')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'inflation':
-          try {
-            response = await require('./services/inflation')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'batches':
-          try {
-            response = await require('./services/batches')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'chain-maintainers':
-          try {
-            response = await require('./services/chain-maintainers')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'wraps':
-          try {
-            response = await require('./services/wraps')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'unwraps':
-          try {
-            response = await require('./services/unwraps')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'erc20-transfers':
-          try {
-            response = await require('./services/erc20Transfers')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'addresses':
-          try {
-            response = await require('./services/addresses')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'escrow-addresses':
-          try {
-            response = await require('./services/escrow-addresses')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
+      switch (req.params.function) {
         case 'circulating-supply':
-          try {
-            response = await require('./services/circulating-supply')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
+          method = 'getCirculatingSupply';
           break;
         case 'total-supply':
-          try {
-            response = await require('./services/total-supply')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
+          method = 'getTotalSupply';
+          break;
+        case 'inflation':
+          method = 'getInflation';
+          break;
+        case 'chain-maintainers':
+          method = 'getChainMaintainers';
+          break;
+        case 'escrow-addresses':
+          method = 'getEscrowAddresses';
+          break;
+        case 'heartbeats':
+          method = 'getHeartbeats';
+          break;
+        case 'evm-polls':
+          method = 'getPolls';
+          break;
+        case 'validators-evm-votes':
+          method = 'getValidatorsVotes';
+          break;
+        case 'batches':
+          method = 'searchBatches';
+          break;
+        case 'transfers-stats':
+          method = 'transfersStats';
+          break;
+        case 'transfers-chart':
+          method = 'transfersChart';
+          break;
+        case 'cumulative-volume':
+          method = 'transfersCumulativeVolume';
+          break;
+        case 'total-volume':
+          method = 'transfersTotalVolume';
+          break;
+        case 'transfers':
+          method = 'searchTransfers';
+          break;
+        case 'transfers-status':
+          method = 'resolveTransfer';
+          break;
+        case 'tvl':
+          method = 'getTVL';
+          break;
+        case 'chains':
+          method = 'getChains';
+          break;
+        case 'assets':
+          method = 'getAssets';
+          break;
+        case 'save-deposit-for-wrap':
+          method = 'saveDepositForWrap';
+          break;
+        case 'save-wrap':
+          method = 'saveWrap';
+          break;
+        case 'save-deposit-for-unwrap':
+          method = 'saveDepositForUnwrap';
+          break;
+        case 'save-unwrap':
+          method = 'saveUnwrap';
+          break;
+        case 'save-deposit-for-erc20-transfer':
+          method = 'saveDepositForERC20Transfer';
+          break;
+        case 'save-erc20-transfer':
+          method = 'saveERC20Transfer';
           break;
         case 'tvl-alert':
-          try {
-            response = await require('./services/tvl/alert')(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        default:
-          break;
-      }
-      break;
-    // internal
-    case '/gateway/{function}':
-      switch (req.params.function?.toLowerCase()) {
-        case 'save-event':
-          try {
-            response = await saveEvent(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'latest-event-block':
-          try {
-            response = await getLatestEventBlock(params);
-          } catch (error) {
-            response = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
-          break;
-        case 'recover-events':
-          try {
-            const {
-              chain,
-              txHash,
-              blockNumber,
-              toBlockNumber,
-            } = { ...params };
-
-            const chains_config = {
-              ...config?.[environment]?.gateway?.chains,
-            };
-
-            const contracts_config = {
-              ...config?.[environment]?.gateway?.contracts,
-            };
-
-            output =
-              await recoverEvents(
-                chains_config,
-                contracts_config,
-                chain,
-                txHash,
-                blockNumber,
-                toBlockNumber,
-              );
-          } catch (error) {
-            output = {
-              error: true,
-              code: 400,
-              message: error?.message,
-            };
-          }
+          method = 'getTVLAlert';
           break;
         default:
           break;
       }
       break;
     default:
-      if (!req.url) {
-        const remain_ms_to_exit = ((['mainnet'].includes(environment) ? 60 : 0) + 2) * 1000;
-
-        // archive data from indexer
-        require('./services/archiver')();
-
-        // update tvl cache
-        response = await require('./services/tvl/updater')(context);
-
-        // hold lambda function to not exit before timeout
-        while (context.getRemainingTimeInMillis() > remain_ms_to_exit) {
-          await sleep(1 * 1000);
-        }
-      }
       break;
   }
 
-  if (response?.error?.config) {
-    delete response.error.config;
+  if (method) {
+    // for calculate time spent
+    const start_time = moment();
+    if (!['crud'].includes(method)) {
+      delete params.method;
+    }
+
+    switch (method) {
+      case 'crud':
+        try {
+          output = await crud(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'rpc':
+        try {
+          const { path } = { ...params };
+          delete params.path;
+          output = await rpc(path, params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'lcd':
+        try {
+          const { path } = { ...params };
+          delete params.path;
+          output = await lcd(path, params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTokensPrice':
+        try {
+          const { symbols, timestamp } = { ...params };
+          output = await getTokensPrice(symbols, timestamp);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getContracts':
+        output = getContracts();
+        break;
+      case 'getChains':
+        output = getChainsList([], undefined, params?.for_crawler);
+        break;
+      case 'getEVMChains':
+        output = getChainsList('evm');
+        break;
+      case 'getCosmosChains':
+        output = getChainsList('cosmos');
+        break;
+      case 'getAssets':
+        output = getAssetsList();
+        break;
+      case 'getCirculatingSupply':
+        try {
+          output = await getCirculatingSupply(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTotalSupply':
+        try {
+          output = await getTotalSupply(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getInflation':
+        try {
+          output = await getInflation(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getChainMaintainers':
+        try {
+          output = await getChainMaintainers(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getEscrowAddresses':
+        try {
+          output = await getEscrowAddresses(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getBlocks':
+      case 'searchBlocks':
+        try {
+          output = await searchBlocks(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTransactions':
+      case 'searchTransactions':
+        try {
+          output = await searchTransactions(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getUptimes':
+      case 'searchUptimes':
+        try {
+          output = await searchUptimes(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getHeartbeats':
+      case 'searchHeartbeats':
+        try {
+          output = await searchHeartbeats(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getBalances':
+        try {
+          output = await getBalances(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getDelegations':
+        try {
+          output = await getDelegations(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getRedelegations':
+        try {
+          output = await getRedelegations(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getUnbondings':
+        try {
+          output = await getUnbondings(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getPolls':
+      case 'searchPolls':
+        try {
+          output = await searchPolls(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getValidators':
+        try {
+          output = await getValidators(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getValidatorsVotes':
+        try {
+          output = await getValidatorsVotes(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getProposals':
+        try {
+          output = await getProposals();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getProposal':
+        try {
+          output = await getProposal(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getBatches':
+      case 'searchBatches':
+        try {
+          output = await searchBatches(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'transfersStats':
+        try {
+          output = await transfersStats(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'transfersChart':
+        try {
+          output = await transfersChart(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'transfersCumulativeVolume':
+        try {
+          output = await transfersCumulativeVolume(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'transfersTotalVolume':
+        try {
+          output = await transfersTotalVolume(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'transfersTopUsers':
+        try {
+          output = await transfersTopUsers(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'searchTransfers':
+        try {
+          output = await searchTransfers(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'resolveTransfer':
+        try {
+          output = await resolveTransfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getDepositAddresses':
+      case 'searchDepositAddresses':
+        try {
+          output = await searchDepositAddresses(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTVL':
+        try {
+          output = await getTVL(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveEvent':
+        try {
+          output = await saveEvent(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveDepositForWrap':
+        try {
+          output = await saveDepositForWrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveWrap':
+        try {
+          output = await saveWrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveDepositForUnwrap':
+        try {
+          output = await saveDepositForUnwrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveUnwrap':
+        try {
+          output = await saveUnwrap(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveDepositForERC20Transfer':
+        try {
+          output = await saveDepositForERC20Transfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'saveERC20Transfer':
+        try {
+          output = await saveERC20Transfer(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getLatestEventBlock':
+        try {
+          const { chain } = { ...params };
+          output = await getLatestEventBlock(chain);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTVLAlert':
+        try {
+          output = await getTVLAlert(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'archive':
+        try {
+          await archive();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updatePolls':
+        try {
+          await updatePolls();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateBatches':
+        try {
+          await updateBatches();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateTVL':
+        try {
+          await updateTVL(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateWraps':
+        try {
+          await updateWraps();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateUnwraps':
+        try {
+          await updateUnwraps();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'updateERC20Transfers':
+        try {
+          await updateERC20Transfers();
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      default:
+        break;
+    }
+
+    output = finalizeOutput(output, { ...params, method }, start_time);
   }
 
-  return response;
+  // log result
+  if (['crud', 'rpc', 'lcd', 'get', 'search', 'archive', 'update'].findIndex(s => method?.startsWith(s)) < 0) {
+    log('debug', service_name, 'send output', output);
+  }
+
+  return output;
 };

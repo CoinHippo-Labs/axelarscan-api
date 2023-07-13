@@ -1,0 +1,22 @@
+#########################
+# General Configuration #
+#########################
+
+mainnet:
+  api: "https://api.axelarscan.io"
+  past_events_block_per_request: 100 # [1-500]
+  max_query_events_block: 1000
+
+
+
+testnet:
+  api: "https://testnet.api.axelarscan.io"
+  past_events_block_per_request: 100 # [1-500]
+  max_query_events_block: 1000
+
+
+
+stagenet:
+  api: "https://stagenet.api.axelarscan.io"
+  past_events_block_per_request: 100 # [1-500]
+  max_query_events_block: 1000

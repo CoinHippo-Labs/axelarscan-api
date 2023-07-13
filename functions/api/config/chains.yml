@@ -1,0 +1,2331 @@
+########################
+# Chains Configuration #
+########################
+
+mainnet:
+  evm:
+    ethereum:
+      chain_id: 1
+      chain_name: "Ethereum"
+      maintainer_id: "ethereum"
+      endpoints:
+        rpc:
+          - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://eth-mainnet.public.blastapi.io"
+          - "https://1rpc.io/eth"
+          - "https://rpc.ankr.com/eth"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ethereum"
+      short_name: "ETH"
+      image: "/logos/chains/ethereum.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    binance:
+      chain_id: 56
+      chain_name: "binance"
+      maintainer_id: "binance"
+      endpoints:
+        rpc:
+          - "https://bsc-dataseed.binance.org"
+          - "https://bsc-dataseed1.ninicoin.io"
+          - "https://bsc-dataseed1.defibit.io"
+          - "https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3"
+          - "https://bsc-mainnet.public.blastapi.io"
+          - "https://1rpc.io/bnb"
+          - "https://bscrpc.com"
+          - "https://rpc.ankr.com/bsc"
+      native_token:
+        name: "BNB"
+        symbol: "BNB"
+        decimals: 18
+      name: "BNB Chain"
+      short_name: "BNB"
+      image: "/logos/chains/binance.png"
+      color: "#e8b30b"
+      explorer:
+        name: "BscScan"
+        url: "https://bscscan.com"
+        icon: "/logos/explorers/bscscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    polygon:
+      chain_id: 137
+      chain_name: "Polygon"
+      maintainer_id: "polygon"
+      endpoints:
+        rpc:
+          - "https://polygon-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://matic-mainnet.chainstacklabs.com"
+          - "https://poly-rpc.gateway.pokt.network"
+          - "https://polygon.blockpi.network/v1/rpc/public"
+          - "https://polygon-mainnet.public.blastapi.io"
+          - "https://1rpc.io/matic"
+          # - "https://rpc.ankr.com/polygon"
+      native_token:
+        name: "Polygon"
+        symbol: "MATIC"
+        decimals: 18
+      name: "Polygon"
+      short_name: "POLYGON"
+      image: "/logos/chains/polygon.svg"
+      color: "#8247e5"
+      explorer:
+        name: "Polygonscan"
+        url: "https://polygonscan.com"
+        icon: "/logos/explorers/polygonscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    avalanche:
+      chain_id: 43114
+      chain_name: "Avalanche"
+      maintainer_id: "avalanche"
+      endpoints:
+        rpc:
+          - "https://avalanche.blockpi.network/v1/rpc/public"
+          - "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc"
+          - "https://1rpc.io/avax/c"
+          - "https://rpc.ankr.com/avalanche"
+      native_token:
+        name: "Avalanche"
+        symbol: "AVAX"
+        decimals: 18
+      name: "Avalanche"
+      short_name: "AVAX"
+      image: "/logos/chains/avalanche.svg"
+      color: "#e84143"
+      explorer:
+        name: "Snowtrace"
+        url: "https://snowtrace.io"
+        icon: "/logos/explorers/snowtrace.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    fantom:
+      chain_id: 250
+      chain_name: "Fantom"
+      maintainer_id: "fantom"
+      endpoints:
+        rpc:
+          - "https://rpc.ftm.tools"
+          - "https://rpc.fantom.network"
+          - "https://fantom.blockpi.network/v1/rpc/public"
+          # - "https://fantom-mainnet.public.blastapi.io"
+          - "https://1rpc.io/ftm"
+          - "https://rpc.ankr.com/fantom"
+      native_token:
+        name: "Fantom"
+        symbol: "FTM"
+        decimals: 18
+      name: "Fantom"
+      short_name: "FTM"
+      image: "/logos/chains/fantom.svg"
+      color: "#1869ff"
+      explorer:
+        name: "FTMScan"
+        url: "https://ftmscan.com"
+        icon: "/logos/explorers/ftmscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    moonbeam:
+      chain_id: 1284
+      chain_name: "Moonbeam"
+      maintainer_id: "moonbeam"
+      endpoints:
+        rpc:
+          - "https://rpc.api.moonbeam.network"
+          - "https://moonbeam.public.blastapi.io"
+          # - "https://1rpc.io/glmr"
+          - "https://rpc.ankr.com/moonbeam"
+      native_token:
+        name: "Moonbeam"
+        symbol: "GLMR"
+        decimals: 18
+      name: "Moonbeam"
+      short_name: "MOONBEAM"
+      image: "/logos/chains/moonbeam.svg"
+      color: "#53cbc8"
+      explorer:
+        name: "Moonscan"
+        url: "https://moonscan.io"
+        icon: "/logos/explorers/moonbeam.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    aurora:
+      chain_id: 1313161554
+      chain_name: "aurora"
+      maintainer_id: "aurora"
+      endpoints:
+        rpc:
+          - "https://mainnet.aurora.dev"
+      native_token:
+        name: "Ethereum"
+        symbol: "aETH"
+        decimals: 18
+      name: "Aurora"
+      short_name: "AURORA"
+      image: "/logos/chains/aurora.svg"
+      color: "#88d060"
+      explorer:
+        name: "Aurora"
+        url: "https://explorer.aurora.dev"
+        icon: "/logos/explorers/aurorascan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    arbitrum:
+      chain_id: 42161
+      chain_name: "arbitrum"
+      maintainer_id: "arbitrum"
+      endpoints:
+        rpc:
+          - "https://arbitrum-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          # - "https://arbitrum.blockpi.network/v1/rpc/public"
+          # - "https://arb1.arbitrum.io/rpc"
+          # - "https://1rpc.io/arb"
+          # - "https://rpc.ankr.com/arbitrum"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Arbitrum"
+      short_name: "ARB"
+      image: "/logos/chains/arbitrum.svg"
+      color: "#28a0f0"
+      explorer:
+        name: "Arbiscan"
+        url: "https://arbiscan.io"
+        icon: "/logos/explorers/arbiscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    optimism:
+      chain_id: 10
+      chain_name: "optimism"
+      maintainer_id: "optimism"
+      endpoints:
+        rpc:
+          - "https://optimism-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://optimism.blockpi.network/v1/rpc/public"
+          - "https://optimism-mainnet.public.blastapi.io"
+          - "https://1rpc.io/op"
+          - "https://rpc.ankr.com/optimism"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Optimism"
+      short_name: "OP"
+      image: "/logos/chains/optimism.svg"
+      color: "#dc2626"
+      explorer:
+        name: "Etherscan"
+        url: "https://optimistic.etherscan.io"
+        icon: "/logos/explorers/optimism.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    base:
+      chain_id: 8453
+      chain_name: "base"
+      maintainer_id: "base"
+      endpoints:
+        rpc:
+          - ""
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Base"
+      short_name: "BASE"
+      image: "/logos/chains/base.svg"
+      color: "#0052fe"
+      explorer:
+        name: "Basescan"
+        url: "https://basescan.org"
+        icon: "/logos/explorers/basescan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    celo:
+      chain_id: 42220
+      chain_name: "celo"
+      maintainer_id: "celo"
+      endpoints:
+        rpc:
+          - "https://forno.celo.org"
+          - "https://1rpc.io/celo"
+          - "https://rpc.ankr.com/celo"
+      native_token:
+        name: "Celo"
+        symbol: "CELO"
+        decimals: 18
+      name: "Celo"
+      short_name: "CELO"
+      image: "/logos/chains/celo.svg"
+      color: "#35d07f"
+      explorer:
+        name: "Celoscan"
+        url: "https://celoscan.io"
+        icon: "/logos/explorers/celoscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    kava:
+      chain_id: 2222
+      chain_name: "kava"
+      maintainer_id: "kava"
+      endpoints:
+        rpc:
+          - "https://evm.data.axelar.kava.io"
+          - "https://evm.kava.io"
+          - "https://evm2.kava.io"
+      native_token:
+        name: "Kava"
+        symbol: "KAVA"
+        decimals: 18
+      name: "Kava"
+      short_name: "KAVA"
+      image: "/logos/chains/kava.svg"
+      color: "#ff433e"
+      explorer:
+        name: "Kava"
+        url: "https://explorer.kava.io"
+        icon: "/logos/explorers/kava.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    filecoin:
+      chain_id: 314
+      chain_name: "filecoin"
+      maintainer_id: "filecoin"
+      endpoints:
+        rpc:
+          - "https://rpc.ankr.com/filecoin"
+          - "https://api.node.glif.io"
+      native_token:
+        name: "Filecoin"
+        symbol: "FIL"
+        decimals: 18
+      name: "Filecoin"
+      short_name: "FIL"
+      image: "/logos/chains/filecoin.svg"
+      color: "#0090ff"
+      explorer:
+        name: "Filecoin"
+        url: "https://filfox.info"
+        icon: "/logos/explorers/filecoin.png"
+        block_path: "/tipset/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+  cosmos:
+    axelarnet:
+      chain_name: "Axelarnet"
+      endpoints:
+        lcd:
+          - "https://lcd-axelar.imperator.co"
+          - "https://axelar-rest.chainode.tech"
+          - "https://axelar-lcd.qubelabs.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Axelar"
+        symbol: "AXL"
+        decimals: 6
+      name: "Axelar"
+      short_name: "AXELAR"
+      image: "/logos/chains/axelarnet.svg"
+      color: "#abaaaa"
+      explorer:
+        name: "Axelarscan"
+        url: "https://axelarscan.io"
+        icon: "/logos/explorers/axelarscan.svg"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "axelar"
+      prefix_chain_ids:
+        - "axelar-"
+    osmosis:
+      chain_name: "osmosis"
+      endpoints:
+        lcd:
+          - "https://api-osmosis-ia.cosmosia.notional.ventures"
+          - "https://lcd.osmosis.zone"
+          - "https://lcd-osmosis.blockapsis.com"
+          - "https://rest-osmosis.ecostake.com"
+          - "https://api.osmosis.interbloc.org"
+          - "https://osmosis-api.polkachu.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Osmosis"
+        symbol: "OSMO"
+        decimals: 6
+      name: "Osmosis"
+      short_name: "OSMO"
+      image: "/logos/chains/osmosis.svg"
+      color: "#d705cc"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/osmosis"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "osmo"
+      prefix_chain_ids:
+        - "osmosis-"
+    cosmoshub:
+      chain_name: "cosmoshub"
+      endpoints:
+        lcd:
+          - "https://api-cosmoshub-ia.cosmosia.notional.ventures"
+          - "https://cosmos-api.polkachu.com"
+          - "https://cosmos-api.cyphercore.io"
+          - "https://lcd-cosmoshub.blockapsis.com"
+          - "https://lcd.cosmos.dragonstake.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Cosmos"
+        symbol: "ATOM"
+        decimals: 6
+      name: "Cosmos"
+      short_name: "COSMOS"
+      image: "/logos/chains/cosmoshub.svg"
+      color: "#2e3148"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/cosmos"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "cosmos"
+      prefix_chain_ids:
+        - "cosmoshub-"
+    juno:
+      chain_name: "juno"
+      endpoints:
+        lcd:
+          - "https://api-juno-ia.cosmosia.notional.ventures"
+          - "https://juno-api.polkachu.com"
+          - "https://lcd-juno.itastakers.com"
+          - "https://lcd-cosmoshub.blockapsis.com"
+          - "https://api.juno.interbloc.org"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Juno"
+        symbol: "JUNO"
+        decimals: 6
+      name: "Juno"
+      short_name: "JUNO"
+      image: "/logos/chains/juno.svg"
+      color: "#f0827d"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/juno"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "juno"
+      prefix_chain_ids:
+        - "juno-"
+    emoney:
+      chain_name: "e-money"
+      endpoints:
+        lcd:
+          - "https://api-emoney-ia.cosmosia.notional.ventures"
+          - "https://emoney.validator.network/api"
+          - "https://api.emoney.freak12techno.io"
+          - "https://e-money-api.ibs.team"
+          - "https://api.emoney.bh.rocks"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "e-Money"
+        symbol: "NGM"
+        decimals: 6
+      name: "e-Money"
+      short_name: "E-MONEY"
+      image: "/logos/chains/emoney.svg"
+      color: "#002e33"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/emoney"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "emoney"
+      prefix_chain_ids:
+        - "emoney-"
+    injective:
+      chain_name: "injective"
+      endpoints:
+        lcd:
+          - "https://api-injective-ia.cosmosia.notional.ventures"
+          - "https://injective-api.polkachu.com"
+          - "https://public.lcd.injective.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Injective"
+        symbol: "INJ"
+        decimals: 6
+      name: "Injective"
+      short_name: "INJ"
+      image: "/logos/chains/injective.svg"
+      color: "#00a3ba"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/injective"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "inj"
+      prefix_chain_ids:
+        - "injective-"
+    crescent:
+      chain_name: "crescent"
+      endpoints:
+        lcd:
+          - "https://crescent-api.polkachu.com"
+          - "https://mainnet.crescent.network:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Crescent"
+        symbol: "CRE"
+        decimals: 6
+      name: "Crescent"
+      short_name: "CRE"
+      image: "/logos/chains/crescent.svg"
+      color: "#bf7c5e"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/crescent"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "cre"
+      prefix_chain_ids:
+        - "crescent-"
+    kujira:
+      chain_name: "kujira"
+      endpoints:
+        lcd:
+          - "https://api-kujira-ia.cosmosia.notional.ventures"
+          - "https://kujira-api.polkachu.com"
+          - "https://lcd.kaiyo.kujira.setten.io"
+          - "https://kujira-api.lavenderfive.com"
+          - "https://rest-kujira.ecostake.com"
+          - "https://kujira-lcd.wildsage.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Kujira"
+        symbol: "KUJI"
+        decimals: 6
+      name: "Kujira"
+      short_name: "KUJI"
+      image: "/logos/chains/kujira.svg"
+      color: "#8b1227"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/kujira"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "kujira"
+      prefix_chain_ids:
+        - "kaiyo-"
+    secret-snip:
+      chain_name: "secret-snip"
+      endpoints:
+        lcd:
+          - "https://lcd.secret.express"
+          - "https://secretnetwork-lcd.stakely.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Secret"
+        symbol: "SCRT"
+        decimals: 6
+      name: "Secret-SNIP"
+      short_name: "SCRT-SNIP"
+      image: "/logos/chains/secret.svg"
+      color: "#000000"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/secret"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "secret"
+      prefix_chain_ids:
+        - "secret-"
+    secret:
+      chain_name: "secret"
+      endpoints:
+        lcd:
+          - "https://lcd.secret.express"
+          - "https://secretnetwork-lcd.stakely.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Secret"
+        symbol: "SCRT"
+        decimals: 6
+      name: "Secret"
+      short_name: "SCRT"
+      image: "/logos/chains/secret.svg"
+      color: "#000000"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/secret"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "secret"
+      prefix_chain_ids:
+        - "secret-"
+    sei:
+      chain_name: "sei"
+      endpoints:
+        lcd:
+          - "https://sei-api.polkachu.com"
+          - "https://sei-rest.brocha.in"
+          - "https://rest-sei.rhinostake.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Sei"
+        symbol: "SEI"
+        decimals: 6
+      name: "Sei"
+      short_name: "SEI"
+      image: "/logos/chains/sei.svg"
+      color: "#b5354f"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/sei"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "sei"
+      prefix_chain_ids:
+        - "pacific-"
+    stargaze:
+      chain_name: "stargaze"
+      endpoints:
+        lcd:
+          - "https://api-stargaze-ia.cosmosia.notional.ventures"
+          - "https://stargaze-api.polkachu.com"
+          - "https://api-stargaze.ezstaking.dev"
+          - "https://stargaze-api.ibs.team"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Stargaze"
+        symbol: "STARS"
+        decimals: 6
+      name: "Stargaze"
+      short_name: "STARS"
+      image: "/logos/chains/stargaze.svg"
+      color: "#c2df78"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/stargaze"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "stars"
+      prefix_chain_ids:
+        - "stargaze-"
+    assetmantle:
+      chain_name: "assetmantle"
+      endpoints:
+        lcd:
+          - "https://api-assetmantle-ia.cosmosia.notional.ventures"
+          - "https://assetmantle-api.polkachu.com"
+          - "https://rest.assetmantle.one"
+          - "https://rest-assetmantle.ecostake.com"
+          - "https://api.assetmantle.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "AssetMantle"
+        symbol: "MNTL"
+        decimals: 6
+      name: "AssetMantle"
+      short_name: "MNTL"
+      image: "/logos/chains/assetmantle.svg"
+      color: "#f5c15b"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/asset-mantle"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "mantle"
+      prefix_chain_ids:
+        - "mantle-"
+    fetch:
+      chain_name: "fetch"
+      endpoints:
+        lcd:
+          - "https://rest-fetchhub.fetch.ai"
+          - "https://api-fetchhub-ia.cosmosia.notional.ventures"
+          - "https://fetch-api.polkachu.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Fetch.ai"
+        symbol: "FET"
+        decimals: 6
+      name: "Fetch.ai"
+      short_name: "FET"
+      image: "/logos/chains/fetch.png"
+      color: "#1e2744"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/fetchai"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "fetch"
+      prefix_chain_ids:
+        - "fetchhub-"
+    ki:
+      chain_name: "ki"
+      endpoints:
+        lcd:
+          - "https://api-mainnet.blockchain.ki"
+          - "https://api.kichain.chaintools.tech"
+          - "https://kichain-api.polkachu.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "KI"
+        symbol: "KI"
+        decimals: 6
+      name: "KI"
+      short_name: "KI"
+      image: "/logos/chains/kichain.svg"
+      color: "#2a4bfb"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/ki-chain"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "ki"
+      prefix_chain_ids:
+        - "kichain-"
+    evmos:
+      chain_name: "evmos"
+      endpoints:
+        lcd:
+          - "https://api-evmos-ia.cosmosia.notional.ventures"
+          - "https://evmos-api.polkachu.com"
+          - "https://evmos-api.lavenderfive.com"
+          - "https://lcd.evmos.bh.rocks"
+          - "https://api.evmos.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Evmos"
+        symbol: "EVMOS"
+        decimals: 6
+      name: "Evmos"
+      short_name: "EVMOS"
+      image: "/logos/chains/evmos.png"
+      color: "#ed4e32"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/evmos"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "evmos"
+      prefix_chain_ids:
+        - "evmos_"
+    aura:
+      chain_name: "aura"
+      endpoints:
+        lcd:
+          - "https://lcd.aura.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Aura"
+        symbol: "AURA"
+        decimals: 6
+      name: "Aura"
+      short_name: "AURA"
+      image: "/logos/chains/aura.svg"
+      color: "#7bdddc"
+      explorer:
+        name: "Aurascan"
+        url: "https://aurascan.io"
+        icon: "/logos/explorers/aura.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "aura"
+      prefix_chain_ids:
+        - "xstaxy-"
+    comdex:
+      chain_name: "comdex"
+      endpoints:
+        lcd:
+          - "https://comdex-api.polkachu.com"
+          - "https://api-comdex.zenchainlabs.io"
+          - "https://api.comdex.chaintools.tech"
+          - "https://rest.comdex.one"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Comdex"
+        symbol: "CMDX"
+        decimals: 6
+      name: "Comdex"
+      short_name: "CMDX"
+      image: "/logos/chains/comdex.png"
+      color: "#fe424f"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/comdex"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "comdex"
+      prefix_chain_ids:
+        - "comdex-"
+    persistence:
+      chain_name: "persistence"
+      endpoints:
+        lcd:
+          - "https://rest.core.persistence.one"
+          - "https://api-persistent-ia.cosmosia.notional.ventures"
+          - "https://api-persistence.starsquid.io"
+          - "https://persistence-api.polkachu.com"
+          - "https://persistence-api.kleomedes.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Persistence"
+        symbol: "XPRT"
+        decimals: 6
+      name: "Persistence"
+      short_name: "XPRT"
+      image: "/logos/chains/persistence.svg"
+      color: "#e50813"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/persistence"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "persistence"
+      prefix_chain_ids:
+        - "core-"
+    regen:
+      chain_name: "regen"
+      endpoints:
+        lcd:
+          - "https://api-regen-ia.cosmosia.notional.ventures"
+          - "https://regen.stakesystems.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Regen"
+        symbol: "REGEN"
+        decimals: 6
+      name: "Regen"
+      short_name: "REGEN"
+      image: "/logos/chains/regen.svg"
+      color: "#4fb573"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/regen"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "regen"
+      prefix_chain_ids:
+        - "regen-"
+    umee:
+      chain_name: "umee"
+      endpoints:
+        lcd:
+          - "https://api-umee-ia.cosmosia.notional.ventures"
+          - "https://umee-api.polkachu.com"
+          - "https://umee-lcd.quantnode.tech"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Umee"
+        symbol: "UMEE"
+        decimals: 6
+      name: "Umee"
+      short_name: "UMEE"
+      image: "/logos/chains/umee.svg"
+      color: "#fda9ff"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/umee"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "umee"
+      prefix_chain_ids:
+        - "umee-"
+    agoric:
+      chain_name: "agoric"
+      endpoints:
+        lcd:
+          - "https://agoric-api.polkachu.com"
+          - "https://api.agoric.nodestake.top"
+          - "https://main.api.agoric.net"
+          - "https://agoric.api.kjnodes.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Agoric"
+        symbol: "BLD"
+        decimals: 6
+      name: "Agoric"
+      short_name: "BLD"
+      image: "/logos/chains/agoric.svg"
+      color: "#bb2d40"
+      explorer:
+        name: "Agoric"
+        url: "https://bigdipper.live/agoric"
+        icon: "/logos/explorers/bigdipper.png"
+        block_path: "/blocks/{block}"
+        address_path: "/accounts/{address}"
+        contract_path: "/accounts/{address}"
+        contract_0_path: "/accounts/{address}"
+        transaction_path: "/transactions/{tx}"
+      prefix_address: "agoric"
+      prefix_chain_ids:
+        - "agoric-"
+    xpla:
+      chain_name: "xpla"
+      endpoints:
+        lcd:
+          - "https://dimension-lcd.xpla.io"
+          - "https://dimension-lcd.xpla.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "XPLA"
+        symbol: "XPLA"
+        decimals: 6
+      name: "XPLA"
+      short_name: "XPLA"
+      image: "/logos/chains/xpla.svg"
+      color: "#04a7f1"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/xpla"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "xpla"
+      prefix_chain_ids:
+        - "dimension_"
+    acre:
+      chain_name: "acre"
+      endpoints:
+        lcd:
+          - "https://api-acre.d-stake.xyz"
+          - "https://lcd-acre.synergynodes.com"
+          - "https://acre-rest.agoranodes.com"
+          - "https://rest.acre.tcnetwork.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Acrechain"
+        symbol: "ACRE"
+        decimals: 6
+      name: "Acrechain"
+      short_name: "ACRE"
+      image: "/logos/chains/acre.svg"
+      color: "#86c032"
+      explorer:
+        name: "Acrechain"
+        url: "https://cosmosrun.info/acre-mainnet"
+        icon: "/logos/explorers/acre.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "acre"
+      prefix_chain_ids:
+        - "acre_"
+    stride:
+      chain_name: "stride"
+      endpoints:
+        lcd:
+          - "https://stride-api.polkachu.com"
+          - "https://stride.api.chandrastation.com"
+          - "https://stride-api.lavenderfive.com"
+          - "https://api.stride.silentvalidator.com"
+          - "https://stride.api.kjnodes.com"
+          - "https://api-stride.pupmos.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Stride"
+        symbol: "STRD"
+        decimals: 6
+      name: "Stride"
+      short_name: "STRD"
+      image: "/logos/chains/stride.svg"
+      color: "#e90f79"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/stride"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "stride"
+      prefix_chain_ids:
+        - "stride-"
+    carbon:
+      chain_name: "carbon"
+      endpoints:
+        lcd:
+          - "https://api.carbon.network"
+          - "https://rest.carbon.blockhunters.org"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Carbon"
+        symbol: "SWTH"
+        decimals: 6
+      name: "Carbon"
+      short_name: "CARBON"
+      image: "/logos/chains/carbon.svg"
+      color: "#74e7e7"
+      explorer:
+        name: "Carbon"
+        url: "https://scan.carbon.network"
+        icon: "/logos/explorers/carbon.png"
+        block_path: "/block/{block}?net=main"
+        address_path: "/account/{address}?net=main"
+        contract_path: "/account/{address}?net=main"
+        contract_0_path: "/account/{address}?net=main"
+        transaction_path: "/transaction/{tx}?net=main"
+      prefix_address: "burnt"
+      prefix_chain_ids:
+        - "carbon-"
+    sommelier:
+      chain_name: "sommelier"
+      endpoints:
+        lcd:
+          - "https://lcd-sommelier.imperator.co"
+          - "https://sommelier-api.polkachu.com"
+          - "https://rest.cosmos.directory/sommelier"
+          - "https://api-sommelier.pupmos.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Sommelier"
+        symbol: "SOMM"
+        decimals: 6
+      name: "Sommelier"
+      short_name: "SOMM"
+      image: "/logos/chains/sommelier.svg"
+      color: "#eb5d54"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/sommelier"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "somm"
+      prefix_chain_ids:
+        - "sommelier-"
+    neutron:
+      chain_name: "neutron"
+      endpoints:
+        lcd:
+          - "https://rest-kralum.neutron-1.neutron.org"
+          - "https://neutron-api.lavenderfive.com"
+          - "https://api.novel.remedy.tm.p2p.org"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Neutron"
+        symbol: "NTRN"
+        decimals: 6
+      name: "Neutron"
+      short_name: "NTRN"
+      image: "/logos/chains/neutron.svg"
+      color: "#131928"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/neutron"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "neutron"
+      prefix_chain_ids:
+        - "neutron-"
+    rebus:
+      chain_name: "rebus"
+      endpoints:
+        lcd:
+          - "https://api.rebuschain.com:1317"
+          - "https://api.mainnet.rebus.money:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Rebus"
+        symbol: "REBUS"
+        decimals: 6
+      name: "Rebus"
+      short_name: "REBUS"
+      image: "/logos/chains/rebus.svg"
+      color: "#e95075"
+      explorer:
+        name: "Rebus"
+        url: "https://rebus.explorers.guru"
+        icon: "/logos/explorers/rebus.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "rebus"
+      prefix_chain_ids:
+        - "reb_"
+    terra-2:
+      chain_name: "terra-2"
+      endpoints:
+        lcd:
+          - "https://phoenix-lcd.terra.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Terra"
+        symbol: "LUNA"
+        decimals: 6
+      name: "Terra"
+      short_name: "TERRA"
+      image: "/logos/chains/terra-2.svg"
+      color: "#ffd83d"
+      explorer:
+        name: "Terra"
+        url: "https://finder.terra.money/mainnet"
+        icon: "/logos/explorers/terra.png"
+        block_path: "/blocks/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "terra"
+      prefix_chain_ids:
+        - "phoenix-"
+    terra:
+      chain_name: "terra"
+      endpoints:
+        lcd:
+          - "https://terra-classic-lcd.publicnode.com"
+          - "https://columbus-lcd.terra.dev"
+          - "https://lcd.terra.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Terra"
+        symbol: "LUNA"
+        decimals: 6
+      name: "Terra Classic"
+      short_name: "TERRAC"
+      image: "/logos/chains/terra.png"
+      color: "#ffd83d"
+      explorer:
+        name: "Terra"
+        url: "https://finder.terra.money/classic"
+        icon: "/logos/explorers/terra.png"
+        block_path: "/blocks/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "terra"
+      prefix_chain_ids:
+        - "columbus-"
+
+
+
+testnet:
+  evm:
+    ethereum:
+      chain_id: 3
+      chain_name: "Ethereum"
+      maintainer_id: "ethereum"
+      deprecated: true
+      endpoints:
+        rpc:
+          - "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://rpc.ankr.com/eth_ropsten"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ropsten"
+      short_name: "ETH"
+      image: "/logos/chains/ropsten.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://ropsten.etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    ethereum-2:
+      chain_id: 5
+      chain_name: "ethereum-2"
+      maintainer_id: "ethereum-2"
+      endpoints:
+        rpc:
+          - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://eth-goerli.public.blastapi.io"
+          - "https://rpc.ankr.com/eth_goerli"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ethereum"
+      short_name: "ETH"
+      image: "/logos/chains/ethereum.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://goerli.etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    binance:
+      chain_id: 97
+      chain_name: "binance"
+      maintainer_id: "binance"
+      endpoints:
+        rpc:
+          - "https://data-seed-prebsc-1-s1.binance.org:8545"
+          - "https://data-seed-prebsc-2-s1.binance.org:8545"
+          - "https://data-seed-prebsc-1-s2.binance.org:8545"
+          - "https://bsc-testnet.public.blastapi.io"
+          - "https://rpc.ankr.com/bsc_testnet_chapel"
+      native_token:
+        name: "BNB"
+        symbol: "BNB"
+        decimals: 18
+      name: "BNB Chain"
+      short_name: "BNB"
+      image: "/logos/chains/binance.png"
+      color: "#e8b30b"
+      explorer:
+        name: "BscScan"
+        url: "https://testnet.bscscan.com"
+        icon: "/logos/explorers/bscscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    polygon:
+      chain_id: 80001
+      chain_name: "Polygon"
+      maintainer_id: "polygon"
+      endpoints:
+        rpc:
+          - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          # - "https://matic-mumbai.chainstacklabs.com"
+          # - "https://polygon-testnet.public.blastapi.io"
+          - "https://rpc.ankr.com/polygon_mumbai"
+      native_token:
+        name: "Polygon"
+        symbol: "MATIC"
+        decimals: 18
+      name: "Polygon"
+      short_name: "POLYGON"
+      image: "/logos/chains/polygon.svg"
+      color: "#8247e5"
+      explorer:
+        name: "Polygonscan"
+        url: "https://mumbai.polygonscan.com"
+        icon: "/logos/explorers/polygonscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    avalanche:
+      chain_id: 43113
+      chain_name: "Avalanche"
+      maintainer_id: "avalanche"
+      endpoints:
+        rpc:
+          - "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc"
+          - "https://api.avax-test.network/ext/bc/C/rpc"
+          - "https://rpc.ankr.com/avalanche_fuji"
+      native_token:
+        name: "Avalanche"
+        symbol: "AVAX"
+        decimals: 18
+      name: "Avalanche"
+      short_name: "AVAX"
+      image: "/logos/chains/avalanche.svg"
+      color: "#e84143"
+      explorer:
+        name: "Snowtrace"
+        url: "https://testnet.snowtrace.io"
+        icon: "/logos/explorers/snowtrace.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    fantom:
+      chain_id: 4002
+      chain_name: "Fantom"
+      maintainer_id: "fantom"
+      endpoints:
+        rpc:
+          - "https://fantom-testnet.public.blastapi.io"
+          - "https://rpc.testnet.fantom.network"
+          - "https://rpc.ankr.com/fantom_testnet"
+      native_token:
+        name: "Fantom"
+        symbol: "FTM"
+        decimals: 18
+      name: "Fantom"
+      short_name: "FTM"
+      image: "/logos/chains/fantom.svg"
+      color: "#1869ff"
+      explorer:
+        name: "FTMScan"
+        url: "https://testnet.ftmscan.com"
+        icon: "/logos/explorers/ftmscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    moonbeam:
+      chain_id: 1287
+      chain_name: "Moonbeam"
+      maintainer_id: "moonbeam"
+      endpoints:
+        rpc:
+          - "https://moonbase-alpha.public.blastapi.io"
+          - "https://rpc.api.moonbase.moonbeam.network"
+          - "https://rpc.testnet.moonbeam.network"
+      native_token:
+        name: "Dev"
+        symbol: "DEV"
+        decimals: 18
+      name: "Moonbase"
+      short_name: "MOONBASE"
+      image: "/logos/chains/moonbase.png"
+      color: "#53cbc8"
+      explorer:
+        name: "Moonscan"
+        url: "https://moonbase.moonscan.io"
+        icon: "/logos/explorers/moonbeam.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    aurora:
+      chain_id: 1313161555
+      chain_name: "aurora"
+      maintainer_id: "aurora"
+      endpoints:
+        rpc:
+          - "https://testnet.aurora.dev"
+      native_token:
+        name: "Ethereum"
+        symbol: "aETH"
+        decimals: 18
+      name: "Aurora"
+      short_name: "AURORA"
+      image: "/logos/chains/aurora.svg"
+      color: "#88d060"
+      explorer:
+        name: "Aurora"
+        url: "https://explorer.testnet.aurora.dev"
+        icon: "/logos/explorers/aurorascan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    arbitrum:
+      chain_id: 421613
+      chain_name: "arbitrum"
+      maintainer_id: "arbitrum"
+      endpoints:
+        rpc:
+          # - "https://goerli-rollup.arbitrum.io/rpc"
+          - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Arbitrum"
+      short_name: "ARB"
+      image: "/logos/chains/arbitrum.svg"
+      color: "#28a0f0"
+      explorer:
+        name: "Arbiscan"
+        url: "https://goerli.arbiscan.io"
+        icon: "/logos/explorers/arbiscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    optimism:
+      chain_id: 420
+      chain_name: "optimism"
+      maintainer_id: "optimism"
+      endpoints:
+        rpc:
+          - "https://optimism-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://rpc.ankr.com/optimism_testnet"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Optimism"
+      short_name: "OP"
+      image: "/logos/chains/optimism.svg"
+      color: "#dc2626"
+      explorer:
+        name: "Etherscan"
+        url: "https://goerli-optimism.etherscan.io"
+        icon: "/logos/explorers/optimism.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    base:
+      chain_id: 84531
+      chain_name: "base"
+      maintainer_id: "base"
+      endpoints:
+        rpc:
+          - "https://goerli.base.org"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Base"
+      short_name: "BASE"
+      image: "/logos/chains/base.svg"
+      color: "#0052fe"
+      explorer:
+        name: "Basescan"
+        url: "https://goerli.basescan.org"
+        icon: "/logos/explorers/basescan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    celo:
+      chain_id: 44787
+      chain_name: "celo"
+      maintainer_id: "celo"
+      endpoints:
+        rpc:
+          - "https://alfajores-forno.celo-testnet.org"
+      native_token:
+        name: "Celo"
+        symbol: "CELO"
+        decimals: 18
+      name: "Celo"
+      short_name: "CELO"
+      image: "/logos/chains/celo.svg"
+      color: "#35d07f"
+      explorer:
+        name: "Celoscan"
+        url: "https://alfajores.celoscan.io"
+        icon: "/logos/explorers/celoscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    kava:
+      chain_id: 2221
+      chain_name: "kava"
+      maintainer_id: "kava"
+      endpoints:
+        rpc:
+          - "https://evm.testnet.kava.io"
+      native_token:
+        name: "Kava"
+        symbol: "KAVA"
+        decimals: 18
+      name: "Kava"
+      short_name: "KAVA"
+      image: "/logos/chains/kava.svg"
+      color: "#ff433e"
+      explorer:
+        name: "Kava"
+        url: "https://explorer.testnet.kava.io"
+        icon: "/logos/explorers/kava.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    filecoin:
+      chain_id: 3141
+      chain_name: "filecoin"
+      maintainer_id: "filecoin"
+      endpoints:
+        rpc:
+          - "https://rpc.ankr.com/filecoin_testnet"
+          - "https://api.hyperspace.node.glif.io/rpc/v1"
+      native_token:
+        name: "Filecoin"
+        symbol: "FIL"
+        decimals: 18
+      name: "Filecoin"
+      short_name: "FIL"
+      image: "/logos/chains/filecoin.svg"
+      color: "#0090ff"
+      explorer:
+        name: "Filecoin"
+        url: "https://hyperspace.filfox.info"
+        icon: "/logos/explorers/filecoin.png"
+        block_path: "/tipset/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    linea:
+      chain_id: 59140
+      chain_name: "linea"
+      maintainer_id: "linea"
+      endpoints:
+        rpc:
+          - "https://rpc.goerli.linea.build"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Linea"
+      short_name: "LINEA"
+      image: "/logos/chains/linea.svg"
+      color: "#62dfff"
+      explorer:
+        name: "Linea"
+        url: "https://goerli.lineascan.build"
+        icon: "/logos/explorers/linea.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+  cosmos:
+    axelarnet:
+      chain_name: "Axelarnet"
+      endpoints:
+        lcd:
+          - "https://axelar-testnet-lcd.qubelabs.io"
+          - "https://services.staketab.com/axelar-testnet-1-api"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Axelar"
+        symbol: "AXL"
+        decimals: 6
+      name: "Axelar"
+      short_name: "AXELAR"
+      image: "/logos/chains/axelarnet.svg"
+      color: "#abaaaa"
+      explorer:
+        name: "Axelarscan"
+        url: "https://testnet.axelarscan.io"
+        icon: "/logos/explorers/axelarscan.svg"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "axelar"
+      prefix_chain_ids:
+        - "axelar-"
+    osmosis:
+      chain_name: "osmosis-6"
+      endpoints:
+        lcd:
+          - "https://lcd.osmotest5.osmosis.zone"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Osmosis"
+        symbol: "OSMO"
+        decimals: 6
+      name: "Osmosis"
+      short_name: "OSMO"
+      image: "/logos/chains/osmosis.svg"
+      color: "#d705cc"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/osmosis-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "osmo"
+      prefix_chain_ids:
+        - "osmosis-"
+        - "osmo-test-"
+    cosmoshub:
+      chain_name: "cosmoshub"
+      endpoints:
+        lcd:
+          - "https://rest.sentry-01.theta-testnet.polypore.xyz"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Cosmos"
+        symbol: "ATOM"
+        decimals: 6
+      name: "Cosmos"
+      short_name: "COSMOS"
+      image: "/logos/chains/cosmoshub.svg"
+      color: "#2e3148"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/cosmoshub-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "cosmos"
+      prefix_chain_ids:
+        - "theta-testnet-"
+    juno:
+      chain_name: "juno"
+      endpoints:
+        lcd:
+          - "https://api.uni.junonetwork.io"
+          - "https://juno-testnet-api.polkachu.com"
+          - "https://lcd.uni.juno.deuslabs.fi"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Juno"
+        symbol: "JUNO"
+        decimals: 6
+      name: "Juno"
+      short_name: "JUNO"
+      image: "/logos/chains/juno.svg"
+      color: "#f0827d"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/juno-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "juno"
+      prefix_chain_ids:
+        - "uni-"
+    crescent:
+      chain_name: "crescent"
+      endpoints:
+        lcd:
+          - "https://testnet-endpoint.crescent.network/api/crescent"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Crescent"
+        symbol: "CRE"
+        decimals: 6
+      name: "Crescent"
+      short_name: "CRE"
+      image: "/logos/chains/crescent.svg"
+      color: "#bf7c5e"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/crescent-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "cre"
+      prefix_chain_ids:
+        - "mooncat-"
+    kujira:
+      chain_name: "kujira"
+      endpoints:
+        lcd:
+          - "https://kujira-testnet-api.polkachu.com"
+          - "https://test-lcd-kujira.mintthemoon.xyz"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Kujira"
+        symbol: "KUJI"
+        decimals: 6
+      name: "Kujira"
+      short_name: "KUJI"
+      image: "/logos/chains/kujira.svg"
+      color: "#8b1227"
+      explorer:
+        name: "Kujira"
+        url: "https://finder.kujira.app/harpoon-4"
+        icon: "/logos/explorers/kujira.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "kujira"
+      prefix_chain_ids:
+        - "harpoon-"
+    secret:
+      chain_name: "secret"
+      endpoints:
+        lcd:
+          - "https://lcd.testnet.secretsaturn.net"
+          - "https://api.pulsar.scrttestnet.com"
+          - "http://testnet.securesecrets.org:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Secret"
+        symbol: "SCRT"
+        decimals: 6
+      name: "Secret"
+      short_name: "SCRT"
+      image: "/logos/chains/secret.svg"
+      color: "#000000"
+      explorer:
+        name: "Secret"
+        url: "https://secretnodes.com/pulsar"
+        icon: "/logos/explorers/secret.png"
+        block_path: "/blocks/{block}"
+        address_path: "/accounts/{address}"
+        contract_path: "/accounts/{address}"
+        contract_0_path: "/accounts/{address}"
+        transaction_path: "/transactions/{tx}"
+      prefix_address: "secret"
+      prefix_chain_ids:
+        - "pulsar-"
+    sei:
+      chain_name: "sei-2"
+      endpoints:
+        lcd:
+          - "https://rest.atlantic-2.seinetwork.io"
+          - "https://sei-testnet-2-rest.brocha.in"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Sei"
+        symbol: "SEI"
+        decimals: 6
+      name: "Sei"
+      short_name: "SEI"
+      image: "/logos/chains/sei.svg"
+      color: "#b5354f"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/sei-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "sei"
+      prefix_chain_ids:
+        - "atlantic-"
+        - "sei-testnet-"
+    fetch:
+      chain_name: "fetch"
+      endpoints:
+        lcd:
+          - "https://rest-dorado.fetch.ai"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Fetch.ai"
+        symbol: "FET"
+        decimals: 6
+      name: "Fetch.ai"
+      short_name: "FET"
+      image: "/logos/chains/fetch.png"
+      color: "#1e2744"
+      explorer:
+        name: "Fetch"
+        url: "https://explore-dorado.fetch.ai"
+        icon: "/logos/explorers/fetch.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transactions/{tx}"
+      prefix_address: "fetch"
+      prefix_chain_ids:
+        - "dorado-"
+    evmos:
+      chain_name: "evmos"
+      endpoints:
+        lcd:
+          - "https://evmos.test.api.coldyvalidator.net"
+          - "https://evmos-testnet-api.polkachu.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Evmos"
+        symbol: "EVMOS"
+        decimals: 6
+      name: "Evmos"
+      short_name: "EVMOS"
+      image: "/logos/chains/evmos.png"
+      color: "#ed4e32"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/evmos-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "evmos"
+      prefix_chain_ids:
+        - "evmos_"
+    aura:
+      chain_name: "aura"
+      endpoints:
+        lcd:
+          - "https://lcd.serenity.aura.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Aura"
+        symbol: "AURA"
+        decimals: 6
+      name: "Aura"
+      short_name: "AURA"
+      image: "/logos/chains/aura.svg"
+      color: "#7bdddc"
+      explorer:
+        name: "Aurascan"
+        url: "https://euphoria.aurascan.io"
+        icon: "/logos/explorers/aura.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "aura"
+      prefix_chain_ids:
+        - "euphoria-"
+    comdex:
+      chain_name: "comdex-2"
+      endpoints:
+        lcd:
+          - "https://meteor.rest.comdex.one"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Comdex"
+        symbol: "CMDX"
+        decimals: 6
+      name: "Comdex"
+      short_name: "CMDX"
+      image: "/logos/chains/comdex.png"
+      color: "#fe424f"
+      explorer:
+        name: "Comdex"
+        url: "https://meteor-explorer.comdex.one/comdex-testnet"
+        icon: "/logos/explorers/comdex.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "comdex"
+      prefix_chain_ids:
+        - "meteor-"
+    persistence:
+      chain_name: "persistence"
+      endpoints:
+        lcd:
+          - "https://rest.testnet.persistence.one"
+          - "https://persistence-testnet-rpc.allthatnode.com:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Persistence"
+        symbol: "XPRT"
+        decimals: 6
+      name: "Persistence"
+      short_name: "XPRT"
+      image: "/logos/chains/persistence.svg"
+      color: "#e50813"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/persistence-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "persistence"
+      prefix_chain_ids:
+        - "test-core-"
+    xpla:
+      chain_name: "xpla"
+      endpoints:
+        lcd:
+          - "https://cube-lcd.xpla.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "XPLA"
+        symbol: "XPLA"
+        decimals: 6
+      name: "XPLA"
+      short_name: "XPLA"
+      image: "/logos/chains/xpla.svg"
+      color: "#04a7f1"
+      explorer:
+        name: "XPLA"
+        url: "https://explorer.xpla.io/testnet"
+        icon: "/logos/explorers/xpla.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "xpla"
+      prefix_chain_ids:
+        - "cube_"
+    acre:
+      chain_name: "acre"
+      endpoints:
+        lcd:
+          - "https://lcd-testnet2-acre.synergynodes.com"
+          - "https://rest.testnet.acrescan.com"
+          - "https://api-t.acre.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Acrechain"
+        symbol: "ACRE"
+        decimals: 6
+      name: "Acrechain"
+      short_name: "ACRE"
+      image: "/logos/chains/acre.svg"
+      color: "#86c032"
+      explorer:
+        name: "Acrechain"
+        url: "https://explorer.nodestake.top/acre-testnet"
+        icon: "/logos/explorers/acre.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "acre"
+      prefix_chain_ids:
+        - "bamboo_"
+    carbon:
+      chain_name: "carbon"
+      endpoints:
+        lcd:
+          - "https://api.carbon-2.burnt.com/9909089ac2fa57a8f5661976ad0bcb3f0629372e5afa131e2e29e737588e505f"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Carbon"
+        symbol: "SWTH"
+        decimals: 6
+      name: "Carbon"
+      short_name: "CARBON"
+      image: "/logos/chains/carbon.svg"
+      color: "#74e7e7"
+      explorer:
+        name: "Carbon"
+        url: "https://scan.carbon.network"
+        icon: "/logos/explorers/carbon.png"
+        block_path: "/block/{block}?net=test"
+        address_path: "/account/{address}?net=test"
+        contract_path: "/account/{address}?net=test"
+        contract_0_path: "/account/{address}?net=test"
+        transaction_path: "/transaction/{tx}?net=test"
+      prefix_address: "burnt"
+      prefix_chain_ids:
+        - "carbon-"
+    odin:
+      chain_name: "odin"
+      endpoints:
+        lcd:
+          - "https://node.odin-freya-website.odinprotocol.io/a/api"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Odin"
+        symbol: "ODIN"
+        decimals: 6
+      name: "Odin"
+      short_name: "ODIN"
+      image: "/logos/chains/odin.svg"
+      color: "#58bd81"
+      explorer:
+        name: "Odin"
+        url: "https://testnet.odinprotocol.io"
+        icon: "/logos/explorers/odin.png"
+        block_path: "/blocks/{block}"
+        address_path: "/accounts/{address}"
+        contract_path: "/accounts/{address}"
+        contract_0_path: "/accounts/{address}"
+        transaction_path: "/transactions/{tx}"
+      prefix_address: "odin"
+      prefix_chain_ids:
+        - "odin-"
+    neutron:
+      chain_name: "neutron"
+      endpoints:
+        lcd:
+          - "https://rest-palvus.pion-1.ntrn.tech"
+          - "https://cosmo-sand-box.vercel.app/api/rest"
+          - "https://api.baryon.remedy.tm.p2p.org"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Neutron"
+        symbol: "NTRN"
+        decimals: 6
+      name: "Neutron"
+      short_name: "NTRN"
+      image: "/logos/chains/neutron.svg"
+      color: "#131928"
+      explorer:
+        name: "Mintscan"
+        url: "https://testnet.mintscan.io/neutron-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "neutron"
+      prefix_chain_ids:
+        - "pion-"
+    terra-3:
+      chain_name: "terra-3"
+      endpoints:
+        lcd:
+          - "https://pisco-lcd.terra.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Terra"
+        symbol: "LUNA"
+        decimals: 6
+      name: "Terra"
+      short_name: "TERRA"
+      image: "/logos/chains/terra-2.svg"
+      color: "#ffd83d"
+      explorer:
+        name: "Terra"
+        url: "https://finder.terra.money/testnet"
+        icon: "/logos/explorers/terra.png"
+        block_path: "/blocks/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "terra"
+      prefix_chain_ids:
+        - "pisco-"
+    terra-2:
+      chain_name: "terra-2"
+      endpoints:
+        lcd:
+          - "https://pisco-lcd.terra.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Terra"
+        symbol: "LUNA"
+        decimals: 6
+      name: "Terra"
+      short_name: "TERRA"
+      image: "/logos/chains/terra-2.svg"
+      color: "#ffd83d"
+      explorer:
+        name: "Terra"
+        url: "https://finder.terra.money/testnet"
+        icon: "/logos/explorers/terra.png"
+        block_path: "/blocks/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "terra"
+      prefix_chain_ids:
+        - "pisco-"
+    terra:
+      chain_name: "terra"
+      endpoints:
+        lcd:
+          - "https://bombay-lcd.terra.dev"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Terra"
+        symbol: "LUNA"
+        decimals: 6
+      name: "Terra Classic"
+      short_name: "TERRAC"
+      image: "/logos/chains/terra.png"
+      color: "#ffd83d"
+      explorer:
+        name: "Terra"
+        url: "https://finder.terra.money/testnet"
+        icon: "/logos/explorers/terra.png"
+        block_path: "/blocks/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "terra"
+      prefix_chain_ids:
+        - "bombay-"
+
+
+
+stagenet:
+  evm:
+    ethereum-2:
+      chain_id: 5
+      chain_name: "ethereum-2"
+      maintainer_id: "ethereum-2"
+      endpoints:
+        rpc:
+          - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://eth-goerli.public.blastapi.io"
+          - "https://rpc.ankr.com/eth_goerli"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ethereum"
+      short_name: "ETH"
+      image: "/logos/chains/ethereum.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://goerli.etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+  cosmos:
+    axelarnet:
+      chain_name: "Axelarnet"
+      endpoints:
+        lcd:
+          - "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Axelar"
+        symbol: "AXL"
+        decimals: 6
+      name: "Axelar"
+      short_name: "AXELAR"
+      image: "/logos/chains/axelarnet.svg"
+      color: "#abaaaa"
+      explorer:
+        name: "Axelarscan"
+        url: "https://stagenet.axelarscan.io"
+        icon: "/logos/explorers/axelarscan.svg"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "axelar"
+      prefix_chain_ids:
+        - "axelar-"
