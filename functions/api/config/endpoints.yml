@@ -29,5 +29,8 @@ testnet:
 stagenet:
   rpc: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"
   lcd: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
+  api: "https://stagenet.api.axelarscan.io"
+  gmp_api: "https://stagenet.api.gmp.axelarscan.io"
+  app: "https://stagenet.axelarscan.io"
   mintscan:
     chain_id: "axelar-stagenet-1"

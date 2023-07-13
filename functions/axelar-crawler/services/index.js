@@ -22,7 +22,7 @@ module.exports = context => {
     archive(context);
     updatePolls(context);
     updateBatches(context);
-    // updateTVL(context);
+    updateTVL(context);
     updateWraps(context);
     updateUnwraps(context);
     updateERC20Transfers(context);
