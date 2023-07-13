@@ -1,4 +1,9 @@
 terraform {
+  backend "s3" {
+    bucket = "axelar-terraform"
+    key    = "services/axelarscan-api/mainnet/terraform.tfstate"
+    region = "us-east-2"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -10,16 +15,15 @@ terraform {
 
 provider "aws" {
   region  = var.aws_region
-  profile = var.aws_profile
 }
 
 provider "archive" {}
 
-data "archive_file" "zip" {
+data "archive_file" "zip_api" {
   type        = "zip"
   source_dir  = "../../functions/api"
-  excludes    = ["package-lock.json", "yarn.lock"]
-  output_path = "${var.package_name}.zip"
+  excludes    = ["yarn.lock", ".env.example", ".env", "test"]
+  output_path = "${var.project_name}-api.zip"
 }
 
 data "aws_iam_policy_document" "policy" {
@@ -34,164 +38,61 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
-resource "aws_iam_role" "role" {
-  name               = "${var.package_name}-${var.environment}-role-lambda"
-  assume_role_policy = data.aws_iam_policy_document.policy.json
+data "aws_iam_role" "role" {
+  name = "${var.iam_role}"
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
-  name       = "${var.package_name}-${var.environment}-attachment"
-  roles      = [aws_iam_role.role.name]
+  name       = "${var.project_name}-attachment"
+  roles      = [data.aws_iam_role.role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_opensearch_domain" "domain" {
-  domain_name     = "${var.package_name}-general-${var.environment}"
-  engine_version  = "OpenSearch_2.5"
-  cluster_config {
-    instance_type            = "m6g.4xlarge.search"
-    instance_count           = 1
-    dedicated_master_enabled = false
-    zone_awareness_enabled   = false
-    warm_enabled             = false
-  }
-  ebs_options {
-    ebs_enabled = true
-    volume_type = "gp2"
-    volume_size = 448
-  }
-  encrypt_at_rest {
-    enabled = true
-  }
-  node_to_node_encryption {
-    enabled = true
-  }
-  domain_endpoint_options {
-    enforce_https       = true
-    tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
-  }
-  advanced_security_options {
-    enabled                        = true
-    internal_user_database_enabled = true
-    master_user_options {
-      master_user_name     = var.indexer_username
-      master_user_password = var.indexer_password
-    }
-  }
-}
-
-resource "aws_opensearch_domain_policy" "main" {
-  domain_name = aws_opensearch_domain.domain.domain_name
-  access_policies = <<POLICIES
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": ["es:*"],
-      "Principal": {
-        "AWS" : ["*"]
-      },
-      "Effect": "Allow",
-      "Resource": "${aws_opensearch_domain.domain.arn}/*"
-    }
-  ]
-}
-POLICIES
-}
-
-resource "aws_opensearch_domain" "domain_transfers" {
-  domain_name     = "${var.package_name}-transfers-${var.environment}"
-  engine_version  = "OpenSearch_2.5"
-  cluster_config {
-    instance_type            = "m6g.2xlarge.search"
-    instance_count           = 1
-    dedicated_master_enabled = false
-    zone_awareness_enabled   = false
-    warm_enabled             = false
-  }
-  ebs_options {
-    ebs_enabled = true
-    volume_type = "gp2"
-    volume_size = 64
-  }
-  encrypt_at_rest {
-    enabled = true
-  }
-  node_to_node_encryption {
-    enabled = true
-  }
-  domain_endpoint_options {
-    enforce_https       = true
-    tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
-  }
-  advanced_security_options {
-    enabled                        = true
-    internal_user_database_enabled = true
-    master_user_options {
-      master_user_name     = var.transfers_indexer_username
-      master_user_password = var.transfers_indexer_password
-    }
-  }
-}
-
-resource "aws_opensearch_domain_policy" "main_transfers" {
-  domain_name = aws_opensearch_domain.domain_transfers.domain_name
-  access_policies = <<POLICIES
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": ["es:*"],
-      "Principal": {
-        "AWS" : ["*"]
-      },
-      "Effect": "Allow",
-      "Resource": "${aws_opensearch_domain.domain_transfers.arn}/*"
-    }
-  ]
-}
-POLICIES
-}
-
-resource "aws_lambda_function" "function" {
-  function_name    = "${var.package_name}-${var.environment}"
-  filename         = data.archive_file.zip.output_path
-  source_code_hash = data.archive_file.zip.output_base64sha256
-  role             = aws_iam_role.role.arn
+resource "aws_lambda_function" "api" {
+  function_name    = "${var.project_name}-${var.environment}"
+  filename         = data.archive_file.zip_api.output_path
+  source_code_hash = data.archive_file.zip_api.output_base64sha256
+  role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
-  timeout          = 240
+  timeout          = 30
   memory_size      = 512
+  publish          = true
   environment {
     variables = {
       NODE_NO_WARNINGS           = 1
       ENVIRONMENT                = var.environment
-      INDEXER_URL                = "https://${aws_opensearch_domain.domain.endpoint}"
-      INDEXER_USERNAME           = var.indexer_username
-      INDEXER_PASSWORD           = var.indexer_password
-      TRANSFERS_INDEXER_URL      = "https://${aws_opensearch_domain.domain_transfers.endpoint}"
+      GENERAL_INDEXER_URL        = var.general_indexer_url
+      GENERAL_INDEXER_USERNAME   = var.general_indexer_username
+      GENERAL_INDEXER_PASSWORD   = var.general_indexer_password
+      TRANSFERS_INDEXER_URL      = var.transfers_indexer_url
       TRANSFERS_INDEXER_USERNAME = var.transfers_indexer_username
       TRANSFERS_INDEXER_PASSWORD = var.transfers_indexer_password
       LOG_LEVEL                  = var.log_level
-      PRIVATE_RPCS_AVALANCHE     = var.private_rpcs_avalanche
     }
   }
   kms_key_arn      = ""
 }
 
+resource "aws_lambda_provisioned_concurrency_config" "config" {
+  function_name                     = aws_lambda_function.api.function_name
+  provisioned_concurrent_executions = 100
+  qualifier                         = aws_lambda_function.api.version
+}
+
 resource "aws_apigatewayv2_api" "api" {
-  name          = "${var.package_name}-${var.environment}-api"
+  name          = "${var.project_name}-${var.environment}-api"
   protocol_type = "HTTP"
   cors_configuration {
     allow_origins = ["*"]
     allow_headers = ["*"]
     allow_methods = ["*"]
   }
-  route_key     = "ANY /${aws_lambda_function.function.function_name}"
-  target        = aws_lambda_function.function.arn
+  route_key     = "ANY /${aws_lambda_function.api.function_name}"
+  target        = aws_lambda_function.api.arn
 }
 
-resource "aws_apigatewayv2_route" "route" {
+resource "aws_apigatewayv2_route" "route_default" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /"
   target    = "integrations/${var.api_gateway_integration_id}"
@@ -203,39 +104,42 @@ resource "aws_apigatewayv2_route" "route_cross-chain" {
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
-resource "aws_apigatewayv2_route" "route_functions" {
+resource "aws_apigatewayv2_route" "route_function" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /{function}"
   target    = "integrations/${var.api_gateway_integration_id}"
 }
 
-resource "aws_cloudwatch_event_rule" "schedule" {
-  name                = "${var.package_name}-${var.environment}-rule"
-  schedule_expression = "cron(*/3 * * * ? *)"
+data "aws_acm_certificate" "gmp_axelarscan_io" {
+  domain   = "*.api.axelarscan.io"
+  statuses = ["ISSUED"]
 }
 
-resource "aws_cloudwatch_event_target" "target" {
-  rule      = aws_cloudwatch_event_rule.schedule.name
-  target_id = aws_lambda_function.function.id
-  arn       = aws_lambda_function.function.arn
+resource "aws_apigatewayv2_domain_name" "stagenet" {
+  domain_name = "api.axelarscan.io"
+  domain_name_configuration {
+    certificate_arn = data.aws_acm_certificate.gmp_axelarscan_io.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
 }
 
-data "archive_file" "zip_crawler" {
+data "archive_file" "zip_axelar_crawler" {
   type        = "zip"
-  source_dir  = "../../functions/crawler"
-  excludes    = ["package-lock.json", "yarn.lock"]
-  output_path = "${var.package_name}-crawler.zip"
+  source_dir  = "../../functions/axelar-crawler"
+  excludes    = ["yarn.lock", ".env.example", ".env", "local.js"]
+  output_path = "${var.project_name}-axelar-crawler.zip"
 }
 
-resource "aws_lambda_function" "crawler" {
-  function_name    = "${var.package_name}-crawler-${var.environment}"
-  filename         = data.archive_file.zip_crawler.output_path
-  source_code_hash = data.archive_file.zip_crawler.output_base64sha256
-  role             = aws_iam_role.role.arn
+resource "aws_lambda_function" "axelar_crawler" {
+  function_name    = "${var.project_name}-axelar-crawler-${var.environment}"
+  filename         = data.archive_file.zip_axelar_crawler.output_path
+  source_code_hash = data.archive_file.zip_axelar_crawler.output_base64sha256
+  role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs14.x"
-  timeout          = 630
-  memory_size      = 1024
+  timeout          = 900
+  memory_size      = 1536
   environment {
     variables = {
       NODE_NO_WARNINGS = 1
@@ -246,19 +150,50 @@ resource "aws_lambda_function" "crawler" {
   kms_key_arn      = ""
 }
 
-resource "aws_apigatewayv2_route" "route_gateway" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "ANY /gateway/{function}"
-  target    = "integrations/${var.api_gateway_integration_id}"
-}
-
-resource "aws_cloudwatch_event_rule" "schedule_crawler" {
-  name                = "${var.package_name}-crawler-${var.environment}-rule"
+resource "aws_cloudwatch_event_rule" "schedule_axelar_crawler" {
+  name                = "${var.project_name}-axelar-crawler-${var.environment}-rule"
   schedule_expression = "cron(*/10 * * * ? *)"
 }
 
-resource "aws_cloudwatch_event_target" "target_crawler" {
-  rule      = aws_cloudwatch_event_rule.schedule_crawler.name
-  target_id = aws_lambda_function.crawler.id
-  arn       = aws_lambda_function.crawler.arn
+resource "aws_cloudwatch_event_target" "target_axelar_crawler" {
+  rule      = aws_cloudwatch_event_rule.schedule_axelar_crawler.name
+  target_id = aws_lambda_function.axelar_crawler.id
+  arn       = aws_lambda_function.axelar_crawler.arn
+}
+
+data "archive_file" "zip_evm_crawler" {
+  type        = "zip"
+  source_dir  = "../../functions/evm-crawler"
+  excludes    = ["yarn.lock", ".env.example", ".env", "local.js", "sync.js"]
+  output_path = "${var.project_name}-evm-crawler.zip"
+}
+
+resource "aws_lambda_function" "evm_crawler" {
+  function_name    = "${var.project_name}-evm-crawler-${var.environment}"
+  filename         = data.archive_file.zip_evm_crawler.output_path
+  source_code_hash = data.archive_file.zip_evm_crawler.output_base64sha256
+  role             = data.aws_iam_role.role.arn
+  handler          = "index.handler"
+  runtime          = "nodejs14.x"
+  timeout          = 630
+  memory_size      = 1536
+  environment {
+    variables = {
+      NODE_NO_WARNINGS = 1
+      ENVIRONMENT      = var.environment
+      LOG_LEVEL        = var.log_level
+    }
+  }
+  kms_key_arn      = ""
+}
+
+resource "aws_cloudwatch_event_rule" "schedule_evm_crawler" {
+  name                = "${var.project_name}-evm-crawler-${var.environment}-rule"
+  schedule_expression = "cron(*/10 * * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "target_evm_crawler" {
+  rule      = aws_cloudwatch_event_rule.schedule_evm_crawler.name
+  target_id = aws_lambda_function.evm_crawler.id
+  arn       = aws_lambda_function.evm_crawler.arn
 }
