@@ -261,7 +261,7 @@ mainnet:
       maintainer_id: "base"
       endpoints:
         rpc:
-          - ""
+          - "https://developer-access-mainnet.base.org"
       native_token:
         name: "Ethereum"
         symbol: "ETH"
