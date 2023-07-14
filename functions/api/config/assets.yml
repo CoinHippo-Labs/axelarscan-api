@@ -866,6 +866,9 @@ mainnet:
     addresses:
       ethereum:
         address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      arbitrum:
+        address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
+        symbol: "axlETH"
       celo:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
