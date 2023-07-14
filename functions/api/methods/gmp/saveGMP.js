@@ -11,7 +11,7 @@ module.exports = async (event, chain) => {
   if (api && event && chain) {
     const params = { method: 'saveGMP', ...(typeof event === 'object' ? event : { event }), chain };
     log('info', service_name, 'saveGMP', { params });
-    const response =  await api.post('/', params).catch(error => parseRequestError(error));
+    const response = await api.post('/', params).catch(error => parseRequestError(error));
     output = response?.data;
     log('debug', service_name, 'saveGMP', { output, params });
   }

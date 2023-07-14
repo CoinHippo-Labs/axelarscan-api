@@ -11,7 +11,7 @@ module.exports = async (txHash, blockNumber) => {
   if (api) {
     const params = { method: 'recoverEvents', chain: 'axelarnet', txHash, blockNumber };
     log('info', service_name, 'recoverEvents', { params });
-    const response =  await api.post('/', params).catch(error => parseRequestError(error));
+    const response = await api.post('/', params).catch(error => parseRequestError(error));
     output = response?.data;
     // log('debug', service_name, 'recoverEvents', { output, params });
   }

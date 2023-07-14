@@ -17,7 +17,7 @@ module.exports = async (params = {}) => {
 
   const response = await read(TVL_COLLECTION, { range: { updated_at: { gt: moment().subtract(MAX_INTERVAL_UPDATE_SECONDS, 'seconds').unix() } } }, { size: 100 });
   let { data } = { ...response };
-  const { updated_at } =  { ..._.head(data) };
+  const { updated_at } = { ..._.head(data) };
 
   data = _.orderBy(
     toArray(toArray(data).map(d => _.head(d.data))).map(d => {
