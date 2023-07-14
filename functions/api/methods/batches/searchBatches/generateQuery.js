@@ -71,7 +71,7 @@ module.exports = params => {
                 break;
               case 'sourceTransactionHash':
                 if (v) {
-                  obj = { match: { 'commands.sourceTxHash': v } };
+                  obj = { match: { 'commands.params.sourceTxHash': v } };
                 }
                 break;
               case 'status':
@@ -121,7 +121,7 @@ module.exports = params => {
                     obj = {
                       bool: {
                         must: [
-                          { exists: { field: 'commands.blockNumber' } },
+                          { exists: { field: 'blockNumber' } },
                         ],
                       },
                     };
