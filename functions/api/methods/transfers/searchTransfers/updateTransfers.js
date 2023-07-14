@@ -92,7 +92,8 @@ module.exports = async (collection, data, params) => {
                     (d.send.destination_chain === 'axelarnet' && !d.send.insufficient_fee && !axelar_transfer) ||
                     (getChainData(d.send.source_chain, 'evm') ? (vote?.success || vote?.status === 'success') && !vote.transfer_id : !confirm) ||
                     (unwrap && !unwrap.tx_hash_unwrap && (!d.command?.created_at?.ms || moment().diff(moment(d.command.created_at.ms), 'minutes') > 5)) ||
-                    (getChainData(d.send.source_chain, 'evm') && !d.send.insufficient_fee && !vote && (command || ibc_send || axelar_transfer || (['wrap', 'send_token'].includes(d.type) && (!d.send?.created_at?.ms || moment().diff(moment(d.send.created_at.ms), 'minutes') > 5))))
+                    (getChainData(d.send.source_chain, 'evm') && !d.send.insufficient_fee && !vote && (command || ibc_send || axelar_transfer || (['wrap', 'send_token'].includes(d.type) && (!d.send?.created_at?.ms || moment().diff(moment(d.send.created_at.ms), 'minutes') > 5)))) ||
+                    (getChainData(d.send.source_chain, 'evm') && !d.send.insufficient_fee && !vote && confirm && moment().diff(moment(confirm.created_at?.ms), 'minutes') > 5)
                   ) {
                     _updated = !_.isEqual(_.head(addFieldsToResult(d)), _.head(await resolveTransfer({ txHash: txhash, sourceChain: d.send.source_chain })));
                     wrote = true;

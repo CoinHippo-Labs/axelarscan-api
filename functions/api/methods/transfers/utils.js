@@ -250,22 +250,19 @@ const setBlockNumberToData = data => {
 };
 
 const normalizeLink = link => {
-  let _link;
   if (link) {
-    const { original_sender_chain, original_recipient_chain, sender_chain, recipient_chain } = { ..._.cloneDeep(link) };
-    _link = {
-      ...link,
-      original_source_chain: original_sender_chain,
-      original_destination_chain: original_recipient_chain,
-      source_chain: sender_chain,
-      destination_chain: recipient_chain,
-    };
-    delete _link.original_sender_chain;
-    delete _link.original_recipient_chain;
-    delete _link.sender_chain;
-    delete _link.recipient_chain;
+    link = _.cloneDeep(link);
+    const { original_sender_chain, original_recipient_chain, sender_chain, recipient_chain } = { ...link };
+    link.original_source_chain = link.original_source_chain || original_sender_chain;
+    link.original_destination_chain = link.original_destination_chain || original_recipient_chain;
+    link.source_chain = link.source_chain || sender_chain;
+    link.destination_chain = link.destination_chain || recipient_chain;
+    delete link.original_sender_chain;
+    delete link.original_recipient_chain;
+    delete link.sender_chain;
+    delete link.recipient_chain;
   }
-  return _link;
+  return link;
 };
 
 const updateLink = async (link, send) => {
