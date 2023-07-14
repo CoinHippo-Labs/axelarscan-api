@@ -14,8 +14,8 @@ const { toArray } = require('../../../utils');
 module.exports = async (collection, data, params) => {
   let updated;
   if (collection) {
-    const { txHash, status } = { ...params };
-    if (txHash && toArray(data).length < 1) {
+    const { txHash, status, size } = { ...params };
+    if (txHash && toArray(data).length < 1 && size !== 0) {
       updated = toArray(
         await Promise.all(
           getChainsList('evm')
