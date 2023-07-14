@@ -400,7 +400,7 @@ module.exports = async (params = {}) => {
 
             d.type = d.unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : type || 'deposit_address';
 
-            if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer)) {
+            if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer || d.unwrap)) {
               const response = await read(
                 POLL_COLLECTION,
                 {
@@ -587,7 +587,7 @@ module.exports = async (params = {}) => {
               }
             }
             else if (getChainData(d.send.destination_chain, 'evm')) {
-              if (['batch_signed', 'voted', 'deposit_confirmed'].includes(d.status) && !d.send?.insufficient_fee) {
+              if ((['batch_signed', 'voted', 'deposit_confirmed'].includes(d.status) || (d.status === 'executed' && !d.command)) && !d.send?.insufficient_fee) {
                 const transfer_id = d.vote?.transfer_id || d.confirm?.transfer_id || d.transfer_id;
                 if (transfer_id) {
                   const command_id = Number(transfer_id).toString(16).padStart(64, '0');
