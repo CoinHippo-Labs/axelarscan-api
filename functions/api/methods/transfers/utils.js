@@ -250,22 +250,22 @@ const setBlockNumberToData = data => {
 };
 
 const normalizeLink = link => {
+  let _link;
   if (link) {
-    link = _.cloneDeep(link);
-    const { original_sender_chain, original_recipient_chain, sender_chain, recipient_chain } = { ...link };
-    link = {
+    const { original_sender_chain, original_recipient_chain, sender_chain, recipient_chain } = { ..._.cloneDeep(link) };
+    _link = {
       ...link,
       original_source_chain: original_sender_chain,
       original_destination_chain: original_recipient_chain,
       source_chain: sender_chain,
       destination_chain: recipient_chain,
     };
-    delete link.original_sender_chain;
-    delete link.original_recipient_chain;
-    delete link.sender_chain;
-    delete link.recipient_chain;
+    delete _link.original_sender_chain;
+    delete _link.original_recipient_chain;
+    delete _link.sender_chain;
+    delete _link.recipient_chain;
   }
-  return link;
+  return _link;
 };
 
 const updateLink = async (link, send) => {
@@ -324,7 +324,7 @@ const updateLink = async (link, send) => {
     }
 
     if (deposit_address && updated) {
-      const _id = `${deposit_address}`.toLowerCase();
+      const _id = deposit_address;
       await write(DEPOSIT_ADDRESS_COLLECTION, _id, link);
     }
   }

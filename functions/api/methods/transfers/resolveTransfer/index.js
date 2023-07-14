@@ -465,9 +465,20 @@ module.exports = async (params = {}) => {
             }
 
             if (['unwrap', 'deposit_address', 'send_token'].includes(d.type)) {
-              if (typeof link?.price !== 'number') {
-                if (!link) {
-                  const response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
+              if (typeof link?.price !== 'number' || !link?.destination_chain) {
+                if (!link?.destination_chain) {
+                  const response = await read(
+                    DEPOSIT_ADDRESS_COLLECTION,
+                    {
+                      bool: {
+                        must: [
+                          { match: { deposit_address: recipient_address } },
+                          { exists: { field: 'recipient_chain' } },
+                        ],
+                      },
+                    },
+                    { size: 1 },
+                  );
                   d.link = normalizeLink(_.head(response?.data));
                 }
                 if (d.link) {
