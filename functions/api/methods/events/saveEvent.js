@@ -193,6 +193,7 @@ module.exports = async (params = {}) => {
             const batch = _.head(response?.data);
             const { batch_id } = { ...batch };
             let { status, commands } = { ...batch };
+            const commands_without_hash = toArray(commands).filter(c => !c.transactionHash);
             const transaction_data = {
               transactionHash,
               transactionIndex,
@@ -221,7 +222,7 @@ module.exports = async (params = {}) => {
                 };
 
                 let command_events;
-                if (toArray(commands).findIndex(c => !c.transactionHash) > -1) {
+                if (commands_without_hash.length > 0) {
                   const _response = await read(
                     COMMAND_EVENT_COLLECTION,
                     {
@@ -229,7 +230,7 @@ module.exports = async (params = {}) => {
                         must: [
                           { match: { chain } },
                         ],
-                        should: toArray(commands).filter(c => !c.transactionHash).map(c => { return { match: { command_id: c.id } }; }),
+                        should: commands_without_hash.map(c => { return { match: { command_id: c.id } }; }),
                         minimum_should_match: 1,
                       },
                     },

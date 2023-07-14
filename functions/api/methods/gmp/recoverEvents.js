@@ -8,7 +8,7 @@ const service_name = 'gmp';
 module.exports = async (txHash, blockNumber) => {
   let output;
   const api = getGMP() && axios.create({ baseURL: getGMP() });
-  if (api && event && chain) {
+  if (api) {
     const params = { method: 'recoverEvents', chain: 'axelarnet', txHash, blockNumber };
     log('info', service_name, 'recoverEvents', { params });
     const response =  await api.post('/', params).catch(error => parseRequestError(error));

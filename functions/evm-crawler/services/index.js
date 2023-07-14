@@ -13,14 +13,14 @@ module.exports = async context => {
       new Promise(
         async resolve => {
           const { id } = { ...c };
-          return {
+          resolve({
             ...c,
             provider: await getProvider(id, chains_data),
             gateway: {
               ...await getGateway(id, contracts_data),
               abi: IAxelarGateway.abi,
             },
-          };
+          });
         }
       )
     )
