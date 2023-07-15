@@ -349,6 +349,7 @@ module.exports = async (params = {}) => {
           const {
             send,
             link,
+            confirm,
             vote,
             command,
             ibc_send,
@@ -400,7 +401,7 @@ module.exports = async (params = {}) => {
 
             d.type = d.unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : type || 'deposit_address';
 
-            if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer || d.unwrap)) {
+            if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer || d.unwrap || (confirm && moment().diff(moment(confirm.created_at?.ms), 'minutes') > 5))) {
               const response = await read(
                 POLL_COLLECTION,
                 {
