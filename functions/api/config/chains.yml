@@ -356,6 +356,30 @@ mainnet:
         contract_path: "/address/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    linea:
+      chain_id: 59144
+      chain_name: "linea"
+      maintainer_id: "linea"
+      endpoints:
+        rpc:
+          - "https://linea-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Linea"
+      short_name: "LINEA"
+      image: "/logos/chains/linea.svg"
+      color: "#62dfff"
+      explorer:
+        name: "Linea"
+        url: "https://explorer.linea.build"
+        icon: "/logos/explorers/linea.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_name: "Axelarnet"
