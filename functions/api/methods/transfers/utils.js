@@ -373,7 +373,7 @@ const updateSend = async (send, link, data, update_only = false) => {
                   params: {
                     source_chain: send.original_source_chain,
                     destination_chain: send.original_destination_chain,
-                    amount: `${parseUnits((send.amount || 0).toString(), decimals).toString()}${send.denom}`,
+                    amount: `${parseUnits((send.amount || 0).toString(), decimals).toString()}${_.head(asset_data.denoms) || send.denom}`,
                   },
                 },
               ).catch(error => parseRequestError(error));
