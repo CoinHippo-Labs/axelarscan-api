@@ -364,6 +364,7 @@ module.exports = async (lcd_response = {}) => {
           id: poll_id,
           height,
           created_at: getGranularity(created_at),
+          initiated_txhash: txhash,
           sender_chain: source_chain,
           transaction_id,
           participants: participants || undefined,

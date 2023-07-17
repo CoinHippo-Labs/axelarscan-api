@@ -10,7 +10,7 @@ module.exports = async (lcd_response = {}) => {
 
   const { tx, tx_response } = { ...lcd_response };
   const { messages } = { ...tx?.body };
-  const { height, timestamp, logs } = { ...tx_response };
+  const { txhash, height, timestamp, logs } = { ...tx_response };
 
   if (messages && logs) {
     updated = (await Promise.all(
@@ -29,6 +29,7 @@ module.exports = async (lcd_response = {}) => {
                   id: poll_id,
                   height: Number(height),
                   created_at: getGranularity(moment(timestamp).utc()),
+                  initiated_txhash: txhash,
                   sender_chain: getChainKey(chain),
                   transaction_id: toHex(tx_id),
                   participants: participants || undefined,
