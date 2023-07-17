@@ -36,7 +36,6 @@ module.exports = async (path = '', lcd_response = {}) => {
       const lcd = getLCD() && axios.create({ baseURL: getLCD(), timeout: 15000, headers: { 'Accept-Encoding': 'gzip' } });
       const response = await lcd.get('/axelar/evm/v1beta1/command_request', { params: { chain, id: command_id } }).catch(error => parseRequestError(error));
       const { error, data } = { ...response };
-
       if (!error && data) {
         command = data;
       }
@@ -72,7 +71,6 @@ module.exports = async (path = '', lcd_response = {}) => {
         deposit_address,
       };
     }
-
     if (index > -1) {
       commands[index] = command;
     }
