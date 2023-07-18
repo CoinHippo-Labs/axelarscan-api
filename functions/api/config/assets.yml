@@ -2744,6 +2744,41 @@ mainnet:
         address: "0xc5b001DC33727F8F26880B184090D3E252470D45"
       axelarnet:
         ibc_denom: "ern-wei"
+  lqdr-wei:
+    denom: "lqdr-wei"
+    native_chain: "arbitrum"
+    name: "LiquidDriver"
+    symbol: "LQDR"
+    decimals: 18
+    image: "/logos/assets/lqdr.svg"
+    coingecko_id: "liquiddriver"
+    addresses:
+      ethereum:
+        address: "0x98504C8afa7c74c87a0641a7bb0F7968d4e8F471"
+        symbol: "axlLQDR"
+      binance:
+        address: "0x4b6B3d425F82248996D77EcC3F3df1E500aaC1db"
+        symbol: "axlLQDR"
+      polygon:
+        address: "0x0294D8eB7857D43FEb1210Db72456d41481f9Ede"
+        symbol: "axlLQDR"
+      avalanche:
+        address: "0x873ebFf537F58e96899f6EbA33dC07151Bc5818b"
+        symbol: "axlLQDR"
+      fantom:
+        address: "0x4b6B3d425F82248996D77EcC3F3df1E500aaC1db"
+        symbol: "axlLQDR"
+      arbitrum:
+        address: "0x816E21c33fa5F8440EBcDF6e01D39314541BEA72"
+      optimism:
+        address: "0x332c72dd7E77070740F01d2d35851c461585D5d0"
+        symbol: "axlLQDR"
+      kava:
+        address: "0x332c72dd7E77070740F01d2d35851c461585D5d0"
+        symbol: "axlLQDR"
+      axelarnet:
+        ibc_denom: "lqdr-wei"
+        symbol: "axlLQDR"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"

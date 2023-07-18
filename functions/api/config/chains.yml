@@ -92,6 +92,30 @@ mainnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    polygon-zkevm:
+      chain_id: 1101
+      chain_name: "polygon-zkevm"
+      maintainer_id: "polygon-zkevm"
+      endpoints:
+        rpc:
+          - "https://zkevm-rpc.com"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Polygon zkEVM"
+      short_name: "POLY ZK"
+      image: "/logos/chains/polygon-zkevm.svg"
+      color: "#8247e5"
+      explorer:
+        name: "Polygonscan"
+        url: "https://zkevm.polygonscan.com"
+        icon: "/logos/explorers/polygonscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     avalanche:
       chain_id: 43114
       chain_name: "Avalanche"
@@ -1431,6 +1455,30 @@ testnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    polygon-zkevm:
+      chain_id: 1442
+      chain_name: "polygon-zkevm"
+      maintainer_id: "polygon-zkevm"
+      endpoints:
+        rpc:
+          - "https://rpc.public.zkevm-test.net"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Polygon zkEVM"
+      short_name: "POLY ZK"
+      image: "/logos/chains/polygon-zkevm.svg"
+      color: "#8247e5"
+      explorer:
+        name: "Polygonscan"
+        url: "https://testnet-zkevm.polygonscan.com"
+        icon: "/logos/explorers/polygonscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     avalanche:
       chain_id: 43113
       chain_name: "Avalanche"
@@ -1660,6 +1708,31 @@ testnet:
       chain_id: 3141
       chain_name: "filecoin"
       maintainer_id: "filecoin"
+      endpoints:
+        rpc:
+          - "https://rpc.ankr.com/filecoin_testnet"
+          - "https://api.hyperspace.node.glif.io/rpc/v1"
+      native_token:
+        name: "Filecoin"
+        symbol: "FIL"
+        decimals: 18
+      name: "Filecoin"
+      short_name: "FIL"
+      image: "/logos/chains/filecoin.svg"
+      color: "#0090ff"
+      explorer:
+        name: "Filecoin"
+        url: "https://hyperspace.filfox.info"
+        icon: "/logos/explorers/filecoin.png"
+        block_path: "/tipset/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    filecoin-2:
+      chain_id: 314159
+      chain_name: "filecoin-2"
+      maintainer_id: "filecoin-2"
       endpoints:
         rpc:
           - "https://rpc.ankr.com/filecoin_testnet"
