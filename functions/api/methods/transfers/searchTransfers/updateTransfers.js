@@ -73,7 +73,7 @@ module.exports = async (collection, data, params) => {
                     d.time_spent = getTimeSpent(d);
                     _updated = true;
                   }
-                  if (status === 'to_fix_value' && link && typeof price !== 'number') {
+                  if (['to_fix_value', 'to_fix_fee_value'].includes(status) && link && typeof price !== 'number') {
                     d.link = normalizeLink(link);
                     d.link = await updateLink(d.link, send);
                     d.send = await updateSend(d.send, d.link, d);

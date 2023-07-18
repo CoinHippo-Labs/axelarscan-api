@@ -389,6 +389,9 @@ const updateSend = async (send, link, data, update_only = false) => {
       if (typeof send.amount === 'number' && typeof link.price === 'number') {
         send.value = send.amount * link.price;
       }
+      if (typeof send.fee === 'number' && typeof link.price === 'number') {
+        send.fee_value = send.fee * link.price;
+      }
       if (typeof send.amount === 'number' && typeof send.fee === 'number') {
         if (send.amount <= send.fee) {
           send.insufficient_fee = true;

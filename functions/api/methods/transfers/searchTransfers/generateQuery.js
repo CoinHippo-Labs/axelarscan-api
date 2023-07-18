@@ -391,6 +391,20 @@ module.exports = params => {
                       },
                     };
                     break;
+                  case 'to_fix_fee_value':
+                    obj = {
+                      bool: {
+                        must: [
+                          { exists: { field: 'send.txhash' } },
+                          { exists: { field: 'send.amount' } },
+                          { exists: { field: 'send.fee' } },
+                        ],
+                        must_not: [
+                          { exists: { field: 'send.fee_value' } },
+                        ],
+                      },
+                    };
+                    break;
                   default:
                     break;
                 }
