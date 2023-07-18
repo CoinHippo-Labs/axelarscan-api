@@ -333,6 +333,11 @@ axlWMAI:
 ERN:
   coingecko_id: "ethos-reserve-note"
   decimals: 18
+LQDR:
+  coingecko_id: "liquiddriver"
+  decimals: 18
+axlLQDR:
+  redirect: "LQDR"
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6

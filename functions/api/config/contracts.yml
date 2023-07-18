@@ -10,6 +10,8 @@ mainnet:
       address: "0x304acf330bbE08d1e512eefaa92F6a57871fD895"
     polygon:
       address: "0x6f015F16De9fC8791b234eF68D486d2bF203FBA8"
+    polygon-zkevm:
+      address: "0x6f015F16De9fC8791b234eF68D486d2bF203FBA8"
     avalanche:
       address: "0x5029C0EFf6C34351a0CEc334542cDb22c7928f78"
     fantom:
@@ -45,6 +47,8 @@ testnet:
       address: "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0"
     polygon:
       address: "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B"
+    polygon-zkevm:
+      address: "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B"
     avalanche:
       address: "0xC249632c2D40b9001FE907806902f63038B737Ab"
     fantom:
@@ -64,6 +68,8 @@ testnet:
     kava:
       address: "0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c"
     filecoin:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    filecoin-2:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     linea:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
