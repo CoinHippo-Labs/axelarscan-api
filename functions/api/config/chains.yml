@@ -1710,7 +1710,6 @@ testnet:
       maintainer_id: "filecoin"
       endpoints:
         rpc:
-          - "https://rpc.ankr.com/filecoin_testnet"
           - "https://api.hyperspace.node.glif.io/rpc/v1"
       native_token:
         name: "Filecoin"
