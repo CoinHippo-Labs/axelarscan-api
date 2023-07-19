@@ -126,6 +126,9 @@ NTRN:
 REBUS:
   coingecko_id: "rebus"
   decimals: 6
+IXO:
+  coingecko_id: "ixo"
+  decimals: 6
 LUNA:
   coingecko_id: "terra-luna-2"
   decimals: 6
