@@ -2,7 +2,7 @@ const { read } = require('../../services/index');
 const { TX_COLLECTION } = require('../../utils/config');
 const { toArray } = require('../../utils');
 
-module.exports = async (size = 250) => {
+module.exports = async (size = 300) => {
   const response = await read(
     TX_COLLECTION,
     {
