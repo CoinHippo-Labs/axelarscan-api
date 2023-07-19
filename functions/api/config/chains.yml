@@ -2286,6 +2286,33 @@ testnet:
       prefix_address: "neutron"
       prefix_chain_ids:
         - "pion-"
+    impacthub:
+      chain_name: "impacthub"
+      endpoints:
+        lcd:
+          - "https://testnet.ixo.earth/rest"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "IXO"
+        symbol: "IXO"
+        decimals: 6
+      name: "ImpactHub"
+      short_name: "IXO"
+      image: "/logos/chains/impacthub.svg"
+      color: "#012d42"
+      explorer:
+        name: "ImpactHub"
+        url: ""
+        icon: "/logos/explorers/impacthub.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/address/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "ixo"
+      prefix_chain_ids:
+        - "pandora-"
     terra-3:
       chain_name: "terra-3"
       endpoints:
