@@ -1561,7 +1561,6 @@ testnet:
       chain_id: 1313161555
       chain_name: "aurora"
       maintainer_id: "aurora"
-      deprecated: true
       endpoints:
         rpc:
           - "https://testnet.aurora.dev"
