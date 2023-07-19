@@ -406,7 +406,7 @@ const updateSend = async (send, link, data, update_only = false) => {
       }
     }
 
-    const _id = generateId({ send });
+    const _id = data?.id || generateId({ send });
     if (_id) {
       const { sender_address } = { ...send };
       const { prefix_address } = { ...getChainData(send.source_chain) };
