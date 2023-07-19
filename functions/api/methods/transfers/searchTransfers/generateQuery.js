@@ -398,6 +398,7 @@ module.exports = params => {
                           { exists: { field: 'send.txhash' } },
                           { exists: { field: 'send.amount' } },
                           { exists: { field: 'send.fee' } },
+                          { exists: { field: 'link.price' } },
                         ],
                         must_not: [
                           { exists: { field: 'send.fee_value' } },
