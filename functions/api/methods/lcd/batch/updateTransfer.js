@@ -1,15 +1,12 @@
-const { Contract } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
 
+const { isCommandExecuted } = require('../../transfers/utils');
 const { generateId } = require('../../transfers/analytics/preprocessing');
 const { getTimeSpent } = require('../../transfers/analytics/analyzing');
 const { read, write } = require('../../../services/index');
-const { getProvider } = require('../../../utils/chain/evm');
 const { TRANSFER_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainKey, getChainData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-
-const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
 module.exports = async (lcd_response = {}, created_at) => {
   const { id, command_ids, status, chain, commands } = { ...lcd_response };
@@ -32,9 +29,7 @@ module.exports = async (lcd_response = {}, created_at) => {
   const updated_transfers_data = {};
   if (status === 'BATCHED_COMMANDS_STATUS_SIGNED' && command_ids) {
     const { gateway_address } = { ...getChainData(chain, 'evm') };
-    const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, getProvider(chain));
-
-    if (gateway) {
+    if (gateway_address) {
       let command = {
         chain,
         batch_id,
@@ -75,14 +70,12 @@ module.exports = async (lcd_response = {}, created_at) => {
             let { executed, transactionHash, transactionIndex, logIndex, blockNumber, block_timestamp } = { ...transfer_data.command };
             executed = !!(executed || transactionHash || commands[index]?.executed);
             if (!executed) {
-              try {
-                executed = await gateway.isCommandExecuted(`0x${command_id}`);
-                if (executed) {
-                  if (index > -1) {
-                    commands[index].executed = executed;
-                  }
+              executed = await isCommandExecuted(command_id, chain);
+              if (executed) {
+                if (index > -1) {
+                  commands[index].executed = executed;
                 }
-              } catch (error) {}
+              }
             }
 
             if (!transactionHash) {

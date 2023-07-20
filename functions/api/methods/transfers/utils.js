@@ -1,4 +1,4 @@
-const { formatUnits, parseUnits, toBeHex } = require('ethers');
+const { Contract, formatUnits, parseUnits, toBeHex } = require('ethers');
 const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
@@ -10,6 +10,48 @@ const { getProvider } = require('../../utils/chain/evm');
 const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
 const { toBigNumber } = require('../../utils/number');
 const { equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
+
+const IAxelarGateway = require('../../data/contracts/interfaces/IAxelarGateway.json');
+
+const isCommandExecuted = async (commandId, chain) => {
+  let output;
+  if (commandId && chain) {
+    const { endpoints, gateway_address } = { ...getChainData(chain, 'evm') };
+    if (gateway_address) {
+      for (const url of toArray(endpoints?.rpc)) {
+        try {
+          const rpc = axios.create({ baseURL: url });
+          const response = await rpc.post('', { jsonrpc: '2.0', method: 'eth_call', params: [{ to: gateway_address, data: `0xd26ff210${commandId}` }, 'latest'], id: 0 }).catch(error => parseRequestError(error));
+          const { data } = { ...response };
+          const { result } = { ...data };
+          switch (toBigNumber(result)) {
+            case '1':
+              output = true;
+              break;
+            case '0':
+              output = false;
+              break;
+            default:
+              break;
+          }
+          if (typeof output === 'boolean') {
+            break;
+          }
+        } catch (error) {}
+      }
+      if (typeof output !== 'boolean') {
+        try {
+          const provider = getProvider(chain);
+          if (provider) {
+            const gateway = new Contract(gateway_address, IAxelarGateway.abi, provider);
+            output = await gateway.isCommandExecuted(`0x${commandId}`);
+          }
+        } catch (error) {}
+      }
+    }
+  }
+  return output;
+};
 
 const getReceiptLogIndex = (receipt, logIndex) => {
   const { logs } = { ...receipt };
@@ -419,6 +461,7 @@ const updateSend = async (send, link, data, update_only = false) => {
 };
 
 module.exports = {
+  isCommandExecuted,
   getReceiptLogIndex,
   setReceiptLogIndexToData,
   getTransaction,
