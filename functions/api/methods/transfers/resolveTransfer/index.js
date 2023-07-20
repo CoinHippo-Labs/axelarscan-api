@@ -1,24 +1,21 @@
-const { Contract, ZeroAddress, getAddress } = require('ethers');
+const { ZeroAddress, getAddress } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
 
 const { generateId } = require('../analytics/preprocessing');
 const { getTimeSpent } = require('../analytics/analyzing');
 const addFieldsToResult = require('../searchTransfers/addFieldsToResult'); 
-const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../utils');
+const { isCommandExecuted, getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../utils');
 const { searchTransactions } = require('../../axelar');
 const indexTransaction = require('../../lcd/tx');
 const { recoverEvents } = require('../../crawler');
 const { searchPolls } = require('../../polls');
 const lcd = require('../../lcd');
 const { get, read, write } = require('../../../services/index');
-const { getProvider } = require('../../../utils/chain/evm');
 const { getLCDs } = require('../../../utils/chain/cosmos');
 const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, WRAP_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
 const { sleep, equalsIgnoreCase, toArray, includesStringList } = require('../../../utils');
-
-const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
 module.exports = async (params = {}) => {
   let output;
@@ -645,12 +642,7 @@ module.exports = async (params = {}) => {
                     }
                     executed = !!(executed || transactionHash);
                     if (!executed) {
-                      try {
-                        const { gateway_address } = { ...getChainData(d.send.destination_chain, 'evm') };
-                        const provider = getProvider(d.send.destination_chain);
-                        const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
-                        executed = await gateway.isCommandExecuted(`0x${command_id}`);
-                      } catch (error) {}
+                      executed = await isCommandExecuted(command_id, d.send.destination_chain);
                     }
 
                     if (status === 'BATCHED_COMMANDS_STATUS_SIGNED' || executed) {

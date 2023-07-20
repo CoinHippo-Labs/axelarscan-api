@@ -1,16 +1,13 @@
-const { Contract, ZeroAddress } = require('ethers');
+const { ZeroAddress } = require('ethers');
 const _ = require('lodash');
 const moment = require('moment');
 
 const { getTimeSpent } = require('../../transfers/analytics/analyzing');
-const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../../transfers/utils');
+const { isCommandExecuted, getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../../transfers/utils');
 const { get, read, write } = require('../../../services/index');
-const { getProvider } = require('../../../utils/chain/evm');
-const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, CONFIRM_TYPES, getChainsList, getChainKey, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
+const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, CONFIRM_TYPES, getChainsList, getChainKey, getAssetsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
 const { equalsIgnoreCase, toArray, toJson, toHex, normalizeQuote } = require('../../../utils');
-
-const IAxelarGateway = require('../../../data/contracts/interfaces/IAxelarGateway.json');
 
 module.exports = async (lcd_response = {}) => {
   const { tx, tx_response } = { ...lcd_response };
@@ -123,12 +120,7 @@ module.exports = async (lcd_response = {}) => {
                 }
                 executed = !!(executed || transactionHash);
                 if (!executed) {
-                  try {
-                    const { gateway_address } = { ...getChainData(destination_chain, 'evm') };
-                    const provider = getProvider(destination_chain);
-                    const gateway = gateway_address && new Contract(gateway_address, IAxelarGateway.abi, provider);
-                    executed = await gateway.isCommandExecuted(`0x${command_id}`);
-                  } catch (error) {}
+                  executed = await isCommandExecuted(command_id, destination_chain);
                 }
                 command = {
                   chain: destination_chain,
