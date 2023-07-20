@@ -48,7 +48,7 @@ testnet:
     polygon:
       address: "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B"
     polygon-zkevm:
-      address: "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B"
+      address: "0x999117D44220F33e0441fbAb2A5aDB8FF485c54D"
     avalanche:
       address: "0xC249632c2D40b9001FE907806902f63038B737Ab"
     fantom:
@@ -70,7 +70,7 @@ testnet:
     filecoin:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     filecoin-2:
-      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+      address: "0x999117D44220F33e0441fbAb2A5aDB8FF485c54D"
     linea:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
 
