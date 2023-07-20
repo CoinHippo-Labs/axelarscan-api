@@ -152,6 +152,9 @@ module.exports = async (params = {}) => {
                               }
                             }
 
+                            response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: depositAddress } }, { size: 1 });
+                            let link = normalizeLink(_.head(response?.data));
+
                             const send = {
                               txhash: txHash,
                               height: blockNumber,
@@ -159,7 +162,7 @@ module.exports = async (params = {}) => {
                               type: 'evm',
                               created_at: getGranularity(created_at),
                               source_chain: id,
-                              destination_chain,
+                              destination_chain: unwrap?.destination_chain || link?.destination_chain || link?.recipient_chain,
                               sender_address: from,
                               recipient_address: depositAddress,
                               token_address,
@@ -167,8 +170,6 @@ module.exports = async (params = {}) => {
                               amount,
                             };
 
-                            response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: depositAddress } }, { size: 1 });
-                            let link = normalizeLink(_.head(response?.data));
                             link = await updateLink(link, send);
                             const transfer_data = {
                               send,
