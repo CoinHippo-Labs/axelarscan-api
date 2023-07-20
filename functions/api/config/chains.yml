@@ -1733,18 +1733,18 @@ testnet:
       endpoints:
         rpc:
           - "https://rpc.ankr.com/filecoin_testnet"
-          - "https://api.hyperspace.node.glif.io/rpc/v1"
+          - "https://api.calibration.node.glif.io/rpc/v1"
       native_token:
         name: "Filecoin"
         symbol: "FIL"
         decimals: 18
-      name: "Filecoin"
+      name: "Filecoin Calibration"
       short_name: "FIL"
       image: "/logos/chains/filecoin.svg"
       color: "#0090ff"
       explorer:
         name: "Filecoin"
-        url: "https://hyperspace.filfox.info"
+        url: "https://calibration.filfox.info"
         icon: "/logos/explorers/filecoin.png"
         block_path: "/tipset/{block}"
         address_path: "/address/{address}"
