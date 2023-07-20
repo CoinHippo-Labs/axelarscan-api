@@ -1,6 +1,7 @@
 const _ = require('lodash');
 
 const { read } = require('../../../services/index');
+const { getOthersChainIds } = require('../../../utils/chain');
 const { TX_COLLECTION } = require('../../../utils/config');
 const { toArray } = require('../../../utils');
 
@@ -63,8 +64,9 @@ module.exports = async params => {
                         return {
                           bool: {
                             must: [
-                              { match: { sender_chain: c } },
+                              { match_phrase: { sender_chain: c } },
                             ],
+                            must_not: getOthersChainIds(c).map(_c => { return { match_phrase: { sender_chain: _c } } }),
                           },
                         };
                       }),
