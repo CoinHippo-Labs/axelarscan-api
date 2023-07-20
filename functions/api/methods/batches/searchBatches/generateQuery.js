@@ -1,3 +1,4 @@
+const { getOthersChainIds } = require('../../../utils/chain');
 const { toArray } = require('../../../utils');
 
 module.exports = params => {
@@ -31,8 +32,9 @@ module.exports = params => {
                         return {
                           bool: {
                             must: [
-                              { match: { chain: c } },
+                              { match_phrase: { chain: c } },
                             ],
+                            must_not: getOthersChainIds(c).map(_c => { return { match_phrase: { chain: _c } } }),
                           },
                         };
                       }),
