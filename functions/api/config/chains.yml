@@ -397,7 +397,7 @@ mainnet:
       color: "#62dfff"
       explorer:
         name: "Linea"
-        url: "https://explorer.linea.build"
+        url: "https://lineascan.build"
         icon: "/logos/explorers/linea.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"

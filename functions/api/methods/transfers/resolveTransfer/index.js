@@ -536,7 +536,7 @@ module.exports = async (params = {}) => {
                 const { txhash } = { ...d.send };
                 if (txhash) {
                   const response = await searchPolls({ transactionId: txhash });
-                  const confirmation_txhash = _.head(Object.values({ ..._.head(response?.data) }).filter(v => v.confirmed && v.id).map(v => v.id));
+                  const confirmation_txhash = _.head(toArray(Object.values({ ..._.head(response?.data) })).filter(v => v.confirmed && v.id).map(v => v.id));
                   if (confirmation_txhash) {
                     await lcd(`/cosmos/tx/v1beta1/txs/${confirmation_txhash}`, { index: true, index_transfer: true });
                     updated = true;

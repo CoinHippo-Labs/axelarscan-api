@@ -29,7 +29,7 @@ module.exports = async context => {
         }
         // log('info', service_name, `end ${method}`, { height });
       }
-      await sleep(3 * 1000);
+      await sleep(12 * 1000);
     }
   }
 };
