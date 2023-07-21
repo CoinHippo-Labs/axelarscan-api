@@ -36,6 +36,9 @@ mainnet:
       optimism:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      base:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       celo:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
@@ -43,6 +46,9 @@ mainnet:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
       filecoin:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
+      linea:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
       axelarnet:
@@ -55,6 +61,8 @@ mainnet:
         ibc_denom: "ibc/0634D0993744740D675AD01E81156EAC945AEAAE17C074918DC7FF52F41B263E"
       kujira:
         ibc_denom: "ibc/C01154C2547F4CB10A985EA78E7CD4BA891C1504360703A37E1D7043F06B5E1F"
+      umee:
+        ibc_denom: "ibc/D1CB2804AA5EB64D503F28E8DF3552F8A4D642802B66EFE50DE432B755F37AE1"
       carbon:
         ibc_denom: "ibc/062588846168EDFECF20F7681F2A0A131A53B9A3C8535BCA8F7D1A268246974B"
   uusdc:
@@ -92,6 +100,9 @@ mainnet:
       optimism:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
+      base:
+        address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
+        symbol: "axlUSDC"
       celo:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
@@ -99,6 +110,9 @@ mainnet:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
       filecoin:
+        address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
+        symbol: "axlUSDC"
+      linea:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
       axelarnet:
@@ -127,6 +141,9 @@ mainnet:
         symbol: "axlUSDC"
       secret:
         ibc_denom: "ibc/CD7B6B7D85FDF5F72A78E806BCFB8060B561EEF27677B111E0A610626056451E"
+        symbol: "axlUSDC"
+      sei:
+        ibc_denom: "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349"
         symbol: "axlUSDC"
       stargaze:
         ibc_denom: "ibc/96274E25174EE93314D8B5636D2D2F70963E207C22F643EC41949A3CBEDA4C72"
@@ -252,6 +269,9 @@ mainnet:
       optimism:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
+      base:
+        address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
+        symbol: "axlUSDT"
       celo:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
@@ -259,6 +279,9 @@ mainnet:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
       filecoin:
+        address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
+        symbol: "axlUSDT"
+      linea:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
       axelarnet:
@@ -378,6 +401,9 @@ mainnet:
       optimism:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
+      base:
+        address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
+        symbol: "axlDAI"
       celo:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
@@ -385,6 +411,9 @@ mainnet:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       filecoin:
+        address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
+        symbol: "axlDAI"
+      linea:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       axelarnet:
@@ -592,6 +621,9 @@ mainnet:
       optimism:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
+      base:
+        address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
+        symbol: "axlFRAX"
       celo:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
@@ -599,6 +631,9 @@ mainnet:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
       filecoin:
+        address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
+        symbol: "axlFRAX"
+      linea:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
       axelarnet:
@@ -762,6 +797,27 @@ mainnet:
     addresses:
       ethereum:
         address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+      binance:
+        address: "0x448d59B4302aB5d2dadf9611bED9457491926c8e"
+        symbol: "axlWBTC"
+      polygon:
+        address: "0x779661872e9C891027099C9E3fd101DCc8B96433"
+        symbol: "axlWBTC"
+      avalanche:
+        address: "0xa6220B4209353dFeF03B6cE410c8F01105515f94"
+        symbol: "axlWBTC"
+      fantom:
+        address: "0x448d59B4302aB5d2dadf9611bED9457491926c8e"
+        symbol: "axlWBTC"
+      arbitrum:
+        address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
+        symbol: "axlWBTC"
+      optimism:
+        address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
+        symbol: "axlWBTC"
+      base:
+        address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
+        symbol: "axlWBTC"
       celo:
         address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
         symbol: "axlWBTC"
@@ -769,6 +825,9 @@ mainnet:
         address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
         symbol: "axlWBTC"
       filecoin:
+        address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
+        symbol: "axlWBTC"
+      linea:
         address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
         symbol: "axlWBTC"
       axelarnet:
@@ -866,7 +925,28 @@ mainnet:
     addresses:
       ethereum:
         address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      binance:
+        address: "0xfe7eDa5F2c56160d406869A8aA4B2F365d544C7B"
+        symbol: "axlETH"
+      polygon:
+        address: "0x1280830F690D0E65195B3c61b028244C3A49f26D"
+        symbol: "axlETH"
+      avalanche:
+        address: "0x42A62eb3Fd2a05eD499117F128de8a3192B49EBB"
+        symbol: "axlETH"
+      fantom:
+        address: "0xfe7eDa5F2c56160d406869A8aA4B2F365d544C7B"
+        symbol: "axlETH"
+      moonbeam:
+        address: "0x85a8B472d116585E2cc10eB1e0e3E3127E1f5D3f"
+        symbol: "axlETH"
       arbitrum:
+        address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
+        symbol: "axlETH"
+      optimism:
+        address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
+        symbol: "axlETH"
+      base:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       celo:
@@ -876,6 +956,9 @@ mainnet:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       filecoin:
+        address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
+        symbol: "axlETH"
+      linea:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       axelarnet:
@@ -1574,6 +1657,12 @@ mainnet:
         symbol: "axlFTM"
       fantom:
         address: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83"
+      base:
+        address: "0x64C09d32E8452CC0453D2EfeED8c9a16421b1ec8"
+        symbol: "axlFTM"
+      linea:
+        address: "0x64C09d32E8452CC0453D2EfeED8c9a16421b1ec8"
+        symbol: "axlFTM"
       axelarnet:
         ibc_denom: "wftm-wei"
         symbol: "axlFTM"
@@ -1846,6 +1935,8 @@ mainnet:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       optimism:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
+      base:
+        address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       celo:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       kava:
@@ -1854,6 +1945,8 @@ mainnet:
         address: "0x60E1773636CF5E4A227d9AC24F20fEca034ee25A"
         symbol: "FIL"
         image: "/logos/assets/fil.svg"
+      linea:
+        address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       axelarnet:
         ibc_denom: "wfil-wei"
         symbol: "axlFIL"
@@ -2630,6 +2723,18 @@ mainnet:
     addresses:
       ethereum:
         address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933"
+      binance:
+        address: "0xE3a4277eFBe777B6B17CB7fFB7fEAf8C92cBE65A"
+        symbol: "axlPEPE"
+      polygon:
+        address: "0x8baE3F5Eb10F39663E57Be19741FD9ccEF0E113a"
+        symbol: "axlPEPE"
+      fantom:
+        address: "0xE3a4277eFBe777B6B17CB7fFB7fEAf8C92cBE65A"
+        symbol: "axlPEPE"
+      arbitrum:
+        address: "0x13DF72A0F6824293F5324123cD356d9C4F827271"
+        symbol: "axlPEPE"
       axelarnet:
         ibc_denom: "pepe-wei"
         symbol: "axlPEPE"
@@ -2707,6 +2812,9 @@ mainnet:
       optimism:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
+      base:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
       celo:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
@@ -2714,6 +2822,9 @@ mainnet:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
       filecoin:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
+      linea:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
       axelarnet:
@@ -2742,6 +2853,10 @@ mainnet:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       optimism:
         address: "0xc5b001DC33727F8F26880B184090D3E252470D45"
+      base:
+        address: "0xa334884bF6b0A066d553D19e507315E839409e62"
+      linea:
+        address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       axelarnet:
         ibc_denom: "ern-wei"
   lqdr-wei:
@@ -2989,7 +3104,11 @@ mainnet:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       optimism:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
+      base:
+        address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       celo:
+        address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
+      linea:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       axelarnet:
         ibc_denom: "ibc/F42AC6E51C46D30F7F39ADCA1A38E29374745771F23AB3250444F09EBBB4A107"
@@ -3020,7 +3139,11 @@ mainnet:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       optimism:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
+      base:
+        address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       celo:
+        address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
+      linea:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       axelarnet:
         ibc_denom: "ibc/CFB9D610B7BB02E8E6FDB0AF87FCADDF97687A3F13E76AC624C500E54335ADAA"
@@ -3212,6 +3335,9 @@ testnet:
       polygon:
         address: "0x9c79782d2B13CAC0Fa2FB00D188104fe6f98E533"
         symbol: "wAXL"
+      polygon-zkevm:
+        address: "0x68C07f87517F7300DdBC1793135362aFbfE65843"
+        symbol: "wAXL"
       avalanche:
         address: "0xa8B51e6517f9A6Ab7b247bF10b71b1A738eD8E50"
         symbol: "wAXL"
@@ -3242,6 +3368,9 @@ testnet:
       filecoin:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      filecoin-2:
+        address: "0x68C07f87517F7300DdBC1793135362aFbfE65843"
+        symbol: "wAXL"
       linea:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
@@ -3266,6 +3395,8 @@ testnet:
         address: "0xc2fA98faB811B785b81c64Ac875b31CC9E40F9D2"
       polygon:
         address: "0x2c852e740B62308c46DD29B982FBb650D063Bd07"
+      polygon-zkevm:
+        address: "0xCb7996d51Ff923b2C6076d42C065a6ca000D32A1"
       avalanche:
         address: "0x57F1c63497AEe0bE305B8852b354CEc793da43bB"
       fantom:
@@ -3286,6 +3417,8 @@ testnet:
         address: "0xAa03872057AD496Bd6f3eE85b85e1e4DABdb1a5d"
       filecoin:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
+      filecoin-2:
+        address: "0xCb7996d51Ff923b2C6076d42C065a6ca000D32A1"
       linea:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
       axelarnet:
@@ -3322,6 +3455,8 @@ testnet:
         ibc_denom: "ibc/035BDC396AA81E38271D2FA5E4799AE159044B90BCF02CCA218EB364829C869E"
       neutron:
         ibc_denom: "ibc/F91EA2C0A23697A1048E08C2F787E3A58AC6F706A1CD2257A504925158CFC0F3"
+      impacthub:
+        ibc_denom: "ibc/D36138944A9A06A5361EB9F9713D2AAC8B9A9ED88AFC9960A0005C17C8A0B447"
       terra-3:
         ibc_denom: "ibc/720B52BDE1E2B84C5898D07C983B085C77EB5ED2D4C0ACD56B882A14777F750C"
   wbtc-satoshi:
@@ -3383,6 +3518,9 @@ testnet:
       polygon:
         address: "0x786D82A436EA836A8669919D605FfeaEFa51744e"
         symbol: "axlETH"
+      polygon-zkevm:
+        address: "0xcCDF43cC00A2d88c3A9D7B0e0BeD39E9B899F723"
+        symbol: "axlETH"
       avalanche:
         address: "0xe840BE8D9aB1ACD5AfC7168b05EC350B7FD18709"
         symbol: "axlETH"
@@ -3403,6 +3541,9 @@ testnet:
         symbol: "axlETH"
       filecoin:
         address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
+        symbol: "axlETH"
+      filecoin-2:
+        address: "0xcCDF43cC00A2d88c3A9D7B0e0BeD39E9B899F723"
         symbol: "axlETH"
       linea:
         address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
@@ -3449,6 +3590,9 @@ testnet:
       odin:
         ibc_denom: "ibc/75C575824692FA642ED57B7B5CB1C11807E8B5D80027095DDA724DC98C6C018A"
         symbol: "axlETH"
+      impacthub:
+        ibc_denom: "ibc/D236A44A8AB79841929225744AA3B4F7766E132654898E72B364FD8B1825FD70"
+        symbol: "axlETH"
       terra-3:
         ibc_denom: "ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F"
         symbol: "axlETH"
@@ -3471,6 +3615,9 @@ testnet:
         address: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
       polygon:
         address: "0x55fDE07dEF3261a41fC59B783D27A6357e8A86Df"
+        symbol: "axlBNB"
+      polygon-zkevm:
+        address: "0x0797715C25C31022c710DEce62A17AAE91281567"
         symbol: "axlBNB"
       avalanche:
         address: "0xd020f566723e8402f925A891605c02ce7AF2477F"
@@ -3501,6 +3648,9 @@ testnet:
         symbol: "axlBNB"
       filecoin:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
+        symbol: "axlBNB"
+      filecoin-2:
+        address: "0x0797715C25C31022c710DEce62A17AAE91281567"
         symbol: "axlBNB"
       linea:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
@@ -3547,6 +3697,9 @@ testnet:
       odin:
         ibc_denom: "ibc/A0D7A4D3545AAF4C23FE0C432503D3EFB13A796B852AEF9B1B92D39AD80BD471"
         symbol: "axlBNB"
+      impacthub:
+        ibc_denom: "ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833"
+        symbol: "axlBNB"
       terra-3:
         ibc_denom: "ibc/8291F71592AEE7C593D5DC05C1B66CD190B2EEA74DF09D2B8BF57BF6C4E8BCAA"
         symbol: "axlBNB"
@@ -3570,6 +3723,9 @@ testnet:
         symbol: "axlMATIC"
       polygon:
         address: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"
+      polygon-zkevm:
+        address: "0x08349ecC52e1Ba8351f2564117f3918BCbF90Ff0"
+        symbol: "axlMATIC"
       avalanche:
         address: "0xB923E2374639D0605388D91CFedAfCeCE03Cfd8f"
         symbol: "axlMATIC"
@@ -3599,6 +3755,9 @@ testnet:
         symbol: "axlMATIC"
       filecoin:
         address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
+        symbol: "axlMATIC"
+      filecoin-2:
+        address: "0x08349ecC52e1Ba8351f2564117f3918BCbF90Ff0"
         symbol: "axlMATIC"
       linea:
         address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
@@ -3648,6 +3807,9 @@ testnet:
       odin:
         ibc_denom: "ibc/E97CB9081D7EB7CAEAE022E448FDEF6D1D0781B63DA4112CAE50285594B2B32C"
         symbol: "axlMATIC"
+      impacthub:
+        ibc_denom: "ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6"
+        symbol: "axlMATIC"
       terra-3:
         ibc_denom: "ibc/8DE781194A674B7129D9EFA838F3E50B5F50212995AA825634BF702E0D037AC3"
         symbol: "axlMATIC"
@@ -3671,6 +3833,9 @@ testnet:
         symbol: "axlAVAX"
       polygon:
         address: "0x6DD60c05FdA1255A44Ffaa9A8200b5b179A578D6"
+        symbol: "axlAVAX"
+      polygon-zkevm:
+        address: "0x0497Cae18E666A7d9cC13715DB0b5c13CE04C177"
         symbol: "axlAVAX"
       avalanche:
         address: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c"
@@ -3700,6 +3865,9 @@ testnet:
         symbol: "axlAVAX"
       filecoin:
         address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
+        symbol: "axlAVAX"
+      filecoin-2:
+        address: "0x0497Cae18E666A7d9cC13715DB0b5c13CE04C177"
         symbol: "axlAVAX"
       linea:
         address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
@@ -3749,6 +3917,9 @@ testnet:
       odin:
         ibc_denom: "ibc/2991B858634D22E4637F772FA5A5F5BFCE3F30EA3ED208E36DD8DC07330490A9"
         symbol: "axlAVAX"
+      impacthub:
+        ibc_denom: "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2"
+        symbol: "axlAVAX"
       terra-3:
         ibc_denom: "ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597"
         symbol: "axlAVAX"
@@ -3772,6 +3943,9 @@ testnet:
         symbol: "axlFTM"
       polygon:
         address: "0x62b6F2A4eE6a4801bfcD2056d19c6d71654D2582"
+        symbol: "axlFTM"
+      polygon-zkevm:
+        address: "0xa82783a70de6a47Fa0f4d664D2998cB5D5C5291C"
         symbol: "axlFTM"
       avalanche:
         address: "0xeF721BaBf08A2eE5BCcfd2f2A34CbF4Dc9A56959"
@@ -3801,6 +3975,9 @@ testnet:
         symbol: "axlFTM"
       filecoin:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
+        symbol: "axlFTM"
+      filecoin-2:
+        address: "0xa82783a70de6a47Fa0f4d664D2998cB5D5C5291C"
         symbol: "axlFTM"
       linea:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
@@ -3850,6 +4027,9 @@ testnet:
       odin:
         ibc_denom: "ibc/BB68A322BA69ED1661EA38363B6A6D06D27AD205896875E78EA225AAF3A65CA6"
         symbol: "axlFTM"
+      impacthub:
+        ibc_denom: "ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2"
+        symbol: "axlFTM"
       terra-3:
         ibc_denom: "ibc/F2D6753B652120212D09EE59075F0D820FCF580620DA8D3DE0349B614ED69A2B"
         symbol: "axlFTM"
@@ -3873,6 +4053,9 @@ testnet:
         symbol: "axlDEV"
       polygon:
         address: "0xb6a2f51C219A66866263Cb18DD41EE6C51B464cB"
+        symbol: "axlDEV"
+      polygon-zkevm:
+        address: "0x3bA33A79504d5A9C398e2C6f284b61F182739aC7"
         symbol: "axlDEV"
       avalanche:
         address: "0xF58537d9061f7257e44442Fb7870A094AAE92B43"
@@ -3902,6 +4085,9 @@ testnet:
         symbol: "axlDEV"
       filecoin:
         address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
+        symbol: "axlDEV"
+      filecoin-2:
+        address: "0x3bA33A79504d5A9C398e2C6f284b61F182739aC7"
         symbol: "axlDEV"
       linea:
         address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
@@ -3950,6 +4136,9 @@ testnet:
         symbol: "axlDEV"
       odin:
         ibc_denom: "ibc/CF03353110E55C2E4D952D0DF4542AE8443CF5FA7023EB572B4A863DFB61EBA2"
+        symbol: "axlDEV"
+      impacthub:
+        ibc_denom: "ibc/1CA16CA6C642FD2C6105872B51C059A108D82072911274BAF2E63EC0827D5074"
         symbol: "axlDEV"
       terra-3:
         ibc_denom: "ibc/4F89D2416F2E2CF9CFE68CE8B77A11A07B4F590B13E410DA86B1A5E6BCBDA24B"
