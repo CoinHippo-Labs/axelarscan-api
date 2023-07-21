@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const { read } = require('../../../services/index');
 const { getOthersChainIds } = require('../../../utils/chain');
@@ -222,6 +223,7 @@ module.exports = async params => {
                                   },
                                 },
                                 { range: { num_recover_time: { lt: 5 } } },
+                                { range: { 'created_at.ms': { gt: moment().subtract(60, 'seconds').valueOf(), lt: moment().add(90, 'seconds').valueOf() } } },
                               ],
                               minimum_should_match: 1,
                             },
