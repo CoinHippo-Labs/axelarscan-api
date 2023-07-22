@@ -7,7 +7,7 @@ const { generateId } = require('./analytics/preprocessing');
 const { getTokensPrice } = require('../tokens');
 const { write } = require('../../services/index');
 const { getProvider } = require('../../utils/chain/evm');
-const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
+const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, TERRA_COLLAPSED_DATE, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
 const { toBigNumber } = require('../../utils/number');
 const { equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
 
@@ -352,7 +352,7 @@ const updateLink = async (link, send) => {
     }
 
     denom = send?.denom || asset || denom;
-    if ((typeof price !== 'number' || price <= 0 || !equalsIgnoreCase(link.denom, denom) || (['uluna', 'uusd'].includes(denom) && moment(send?.created_at?.ms).diff(moment('20220512', 'YYYYMMDD').utc(), 'seconds') > 0 && price > 0.1)) && denom) {
+    if ((typeof price !== 'number' || price <= 0 || !equalsIgnoreCase(link.denom, denom) || (['uluna', 'uusd'].includes(denom) && moment(send?.created_at?.ms).diff(moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc(), 'seconds') > 0 && price > 0.1)) && denom) {
       const response = await getTokensPrice(denom, moment(send?.created_at?.ms).utc());
       if (typeof response === 'number') {
         price = response;
@@ -403,7 +403,7 @@ const updateSend = async (send, link, data, update_only = false) => {
             _decimals === 18 ? _decimals : send.amount.length > 18 ? 18 : _decimals;
             send.amount = Number(formatUnits(send.amount, _decimals));
           }
-          if (['uluna', 'uusd'].includes(send.denom) && moment('20220601', 'YYYYMMDD').utc().diff(moment(send.created_at?.ms), 'seconds') > 0) {
+          if (['uluna', 'uusd'].includes(send.denom) && moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc().diff(moment(send.created_at?.ms), 'seconds') > 0) {
             send.fee = parseFloat((send.amount * 0.001).toFixed(6));
           }
           if (typeof send.fee !== 'number') {

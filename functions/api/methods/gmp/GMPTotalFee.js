@@ -7,7 +7,7 @@ module.exports = async params => {
   let output;
   const api = getGMP() && axios.create({ baseURL: getGMP() });
   if (api) {
-    params = { ...params, method: 'GMPTotalVolume' };
+    params = { ...params, method: 'GMPTotalFee' };
     const response = await api.post('/', params).catch(error => parseRequestError(error));
     output = response?.data;
   }

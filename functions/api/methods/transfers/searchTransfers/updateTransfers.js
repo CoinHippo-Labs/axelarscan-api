@@ -8,7 +8,7 @@ const { getTimeSpent } = require('../analytics/analyzing');
 const { normalizeLink, updateLink, updateSend } = require('../utils');
 const { recoverEvents } = require('../../crawler');
 const { write } = require('../../../services/index');
-const { getChainsList, getChainData } = require('../../../utils/config');
+const { TERRA_COLLAPSED_DATE, getChainsList, getChainData } = require('../../../utils/config');
 const { toArray } = require('../../../utils');
 
 module.exports = async (collection, data, params) => {
@@ -73,14 +73,14 @@ module.exports = async (collection, data, params) => {
                     d.time_spent = getTimeSpent(d);
                     _updated = true;
                   }
-                  if ((status === 'to_fix_value' && link && typeof price !== 'number') || (status === 'to_fix_fee_value' && link && typeof price === 'number') || (['uluna', 'uusd'].includes(denom) && moment(created_at?.ms).diff(moment('20220512', 'YYYYMMDD').utc(), 'seconds') > 0)) {
+                  if ((status === 'to_fix_value' && link && typeof price !== 'number') || (status === 'to_fix_fee_value' && link && typeof price === 'number') || (['uluna', 'uusd'].includes(denom) && moment(created_at?.ms).diff(moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc(), 'seconds') > 0)) {
                     d.link = normalizeLink(link);
                     d.link = await updateLink(d.link, send);
                     d.send = await updateSend(d.send, d.link, d);
                     _updated = true;
                     wrote = true;
                   }
-                  if (['uluna', 'uusd'].includes(denom) && moment('20220601', 'YYYYMMDD').utc().diff(moment(created_at?.ms), 'seconds') > 0 && fee > parseFloat((amount * 0.001).toFixed(6))) {
+                  if (['uluna', 'uusd'].includes(denom) && moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc().diff(moment(created_at?.ms), 'seconds') > 0 && fee > parseFloat((amount * 0.001).toFixed(6))) {
                     d.send = await updateSend(d.send, d.link, d, true);
                     _updated = true;
                     wrote = true;

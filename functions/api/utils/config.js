@@ -130,6 +130,7 @@ module.exports = {
   CONFIRM_TYPES: ['ConfirmDeposit', 'ConfirmERC20Deposit'],
   VOTE_TYPES: ['VoteConfirmDeposit', 'Vote'],
   GATEWAY_EVENTS: ['TokenSent', 'Executed'],
+  TERRA_COLLAPSED_DATE: '20220512',
   getContracts,
   getChains,
   getChainsList,

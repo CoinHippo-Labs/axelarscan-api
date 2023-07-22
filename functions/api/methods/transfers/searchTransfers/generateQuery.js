@@ -3,7 +3,7 @@ const moment = require('moment');
 
 const { getOthersChainIds } = require('../../../utils/chain');
 const { getOthersDenoms } = require('../../../utils/asset');
-const { getChainsList, getAssetData } = require('../../../utils/config');
+const { TERRA_COLLAPSED_DATE, getChainsList, getAssetData } = require('../../../utils/config');
 const { toArray } = require('../../../utils');
 
 module.exports = params => {
@@ -426,7 +426,7 @@ module.exports = params => {
                       bool: {
                         must: [
                           { range: { 'link.price': { gt: 0.1 } } },
-                          { range: { 'send.created_at.ms': { gt: moment('20220512', 'YYYYMMDD').utc().valueOf() } } },
+                          { range: { 'send.created_at.ms': { gt: moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc().valueOf() } } },
                         ],
                         should: [
                           { match: { 'send.denom': 'uluna' } },
