@@ -1,5 +1,7 @@
 const { FixedNumber, formatUnits, isHexString } = require('ethers');
 
+const { toDecimal } = require('./');
+
 const toBigNumber = number => {
   try {
     return number.round(0).toString().replace('.0', '');
@@ -8,7 +10,7 @@ const toBigNumber = number => {
   }
 };
 
-const toFixedNumber = number => FixedNumber.fromString(number?.toString().includes('.') ? number.toString() : toBigNumber(number));
+const toFixedNumber = number => FixedNumber.fromString(number?.toString().includes('.') ? toDecimal(number.toString()) : toBigNumber(number));
 
 const numberFormatUnits = (number, decimals = 6) => {
   try {
