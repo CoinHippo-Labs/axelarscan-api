@@ -403,7 +403,7 @@ const updateSend = async (send, link, data, update_only = false) => {
             _decimals === 18 ? _decimals : send.amount.length > 18 ? 18 : _decimals;
             send.amount = Number(formatUnits(send.amount, _decimals));
           }
-          if (['uluna', 'uusd'].includes(send.denom) && moment('20220501', 'YYYYMMDD').utc().diff(moment(send.created_at?.ms), 'seconds') > 0) {
+          if (['uluna', 'uusd'].includes(send.denom) && moment('20220601', 'YYYYMMDD').utc().diff(moment(send.created_at?.ms), 'seconds') > 0) {
             send.fee = parseFloat((send.amount * 0.001).toFixed(6));
           }
           if (typeof send.fee !== 'number') {
