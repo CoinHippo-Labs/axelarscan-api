@@ -2894,6 +2894,23 @@ mainnet:
       axelarnet:
         ibc_denom: "lqdr-wei"
         symbol: "axlLQDR"
+  wdoge-wei:
+    denom: "wdoge-wei"
+    native_chain: "ethereum"
+    name: "Wrapped DOGE"
+    symbol: "WDOGE"
+    decimals: 18
+    image: "/logos/assets/wdoge.svg"
+    coingecko_id: "dogecoin"
+    addresses:
+      ethereum:
+        address: "0x8aa9381b2544b48c26f3b850F6e07E2c5161EB3e"
+      axelarnet:
+        ibc_denom: "wdoge-wei"
+        symbol: "axlWDOGE"
+      osmosis:
+        ibc_denom: "ibc/C5E95745A3176F1D30356E6EC157ECB50979E5EFEA0AD385FA100E05307446EA"
+        symbol: "axlWDOGE"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
