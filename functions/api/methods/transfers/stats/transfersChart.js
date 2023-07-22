@@ -18,8 +18,10 @@ module.exports = async params => {
     aggs: {
       stats: {
         terms: { field: `send.created_at.${granularity}`, size: 1000 },
-        aggs: { volume: { sum: { field: 'send.value' } } },
-        aggs: { fee: { sum: { field: 'send.fee_value' } } },
+        aggs: {
+          volume: { sum: { field: 'send.value' } },
+          fee: { sum: { field: 'send.fee_value' } },
+        },
       },
     },
     size: 0,
