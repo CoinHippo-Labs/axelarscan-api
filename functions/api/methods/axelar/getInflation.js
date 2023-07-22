@@ -35,7 +35,6 @@ module.exports = async (params = {}) => {
     heartbeatRate,
     numEVMChains,
     unsubmittedVoteRates,
-    numEVMChains,
     inflation: fixDecimals((uptimeRate * tendermintInflationRate) + (heartbeatRate * keyMgmtRelativeInflationRate * tendermintInflationRate) + (externalChainVotingInflationRate * _.sum(Object.values({ ...unsubmittedVoteRates }).map(v => 1 - v))), 6),
   };
 };

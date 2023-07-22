@@ -223,7 +223,7 @@ module.exports = async params => {
                                   },
                                 },
                                 { range: { num_recover_time: { lt: 5 } } },
-                                { range: { 'created_at.ms': { gte: moment().subtract(120, 'seconds').valueOf(), lte: moment().add(120, 'seconds').valueOf() } } },
+                                { range: { 'created_at.ms': { gte: moment().subtract(300, 'seconds').valueOf(), lte: moment().add(300, 'seconds').valueOf() } } },
                               ],
                               minimum_should_match: 1,
                             },
