@@ -19,6 +19,7 @@ module.exports = async params => {
       stats: {
         terms: { field: `send.created_at.${granularity}`, size: 1000 },
         aggs: { volume: { sum: { field: 'send.value' } } },
+        aggs: { fee: { sum: { field: 'send.fee_value' } } },
       },
     },
     size: 0,
@@ -31,10 +32,11 @@ module.exports = async params => {
     output = {
       data: _.orderBy(
         buckets.map(b => {
-          const { key, volume, doc_count } = { ...b };
+          const { key, volume, fee, doc_count } = { ...b };
           return {
             timestamp: key,
             volume: volume?.value || 0,
+            fee: fee?.value || 0,
             num_txs: doc_count,
           };
         }),

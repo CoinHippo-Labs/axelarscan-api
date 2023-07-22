@@ -8,7 +8,8 @@ const { searchPolls } = require('./polls');
 const { searchUptimes, searchHeartbeats, getValidators, getValidatorsVotes } = require('./validators');
 const { getProposals, getProposal } = require('./proposals');
 const { searchBatches } = require('./batches');
-const { searchDepositAddresses, transfersStats, transfersChart, transfersCumulativeVolume, transfersTotalVolume, transfersTopUsers, searchTransfers, resolveTransfer } = require('./transfers');
+const { searchDepositAddresses, transfersStats, transfersChart, transfersCumulativeVolume, transfersTotalVolume, transfersTotalFee, transfersTopUsers, searchTransfers, resolveTransfer } = require('./transfers');
+const { interchainChart, interchainTotalFee } = require('./interchain');
 const { getTVL, getTVLAlert } = require('./tvl');
 const { saveEvent } = require('./events');
 const { saveDepositForWrap, saveWrap } = require('./transfers/wrap');
@@ -46,9 +47,12 @@ module.exports = {
   transfersChart,
   transfersCumulativeVolume,
   transfersTotalVolume,
+  transfersTotalFee,
   transfersTopUsers,
   searchTransfers,
   resolveTransfer,
+  interchainChart,
+  interchainTotalFee,
   getTVL,
   getTVLAlert,
   saveEvent,

@@ -84,6 +84,30 @@ const find = (x, list = []) => list.find(_x => typeof x === 'string' ? equalsIgn
 
 const includesStringList = (x, list = []) => toArray(list).findIndex(s => toArray(x).findIndex(_x => _x.includes(s)) > -1) > -1;
 
+const toDecimal = n => {
+  const sign = Math.sign(n);
+  if (/\d+\.?\d*e[\+\-]*\d+/i.test(n)) {
+    const zero = '0';
+    const parts = String(n).toLowerCase().split('e');
+    const e = parts.pop();
+    let l = Math.abs(e);
+    const direction = e / l;
+    const coeff_array = parts[0].split('.');
+    if (direction === -1) {
+      coeff_array[0] = Math.abs(coeff_array[0]);
+      n = `${zero}.${new Array(l).join(zero)}${coeff_array.join('')}`;
+    }
+    else {
+      const dec = coeff_array[1];
+      if (dec) {
+        l = l - dec.length;
+      }
+      n = `${coeff_array.join('')}${new Array(l + 1).join(zero)}`;
+    }
+  }
+  return sign < 0 ? -n : n;
+};
+
 const capitalize = s => typeof s !== 'string' ? '' : `${s.substr(0, 1).toUpperCase()}${s.substr(1)}`;
 
 const camel = (s, delimiter = '_') => toArray(s, 'normal', delimiter).map((s, i) => i > 0 ? capitalize(s) : s).join('');
@@ -128,6 +152,7 @@ module.exports = {
   toArray,
   find,
   includesStringList,
+  toDecimal,
   capitalize,
   camel,
   toJson,

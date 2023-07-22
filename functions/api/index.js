@@ -30,9 +30,12 @@ exports.handler = async (event, context, callback) => {
     transfersChart,
     transfersCumulativeVolume,
     transfersTotalVolume,
+    transfersTotalFee,
     transfersTopUsers,
     searchTransfers,
     resolveTransfer,
+    interchainChart,
+    interchainTotalFee,
     getTVL,
     getTVLAlert,
     saveEvent,
@@ -385,6 +388,14 @@ exports.handler = async (event, context, callback) => {
           output = errorOutput(error);
         }
         break;
+      case 'getDepositAddresses':
+      case 'searchDepositAddresses':
+        try {
+          output = await searchDepositAddresses(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       case 'transfersStats':
         try {
           output = await transfersStats(params);
@@ -413,6 +424,13 @@ exports.handler = async (event, context, callback) => {
           output = errorOutput(error);
         }
         break;
+      case 'transfersTotalFee':
+        try {
+          output = await transfersTotalFee(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       case 'transfersTopUsers':
         try {
           output = await transfersTopUsers(params);
@@ -434,10 +452,16 @@ exports.handler = async (event, context, callback) => {
           output = errorOutput(error);
         }
         break;
-      case 'getDepositAddresses':
-      case 'searchDepositAddresses':
+      case 'interchainChart':
         try {
-          output = await searchDepositAddresses(params);
+          output = await interchainChart(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'interchainTotalFee':
+        try {
+          output = await interchainTotalFee(params);
         } catch (error) {
           output = errorOutput(error);
         }
