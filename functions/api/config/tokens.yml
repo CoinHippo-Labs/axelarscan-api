@@ -341,6 +341,11 @@ LQDR:
   decimals: 18
 axlLQDR:
   redirect: "LQDR"
+WDOGE:
+  coingecko_id: "dogecoin"
+  decimals: 18
+axlWDOGE:
+  redirect: "WDOGE"
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
