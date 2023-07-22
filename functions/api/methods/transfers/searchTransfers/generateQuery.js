@@ -406,6 +406,20 @@ module.exports = params => {
                       },
                     };
                     break;
+                  case 'to_fix_fee_terra':
+                    obj = {
+                      bool: {
+                        must: [
+                          { range: { 'send.fee_value': { gt: 10000 } } },
+                        ],
+                        should: [
+                          { match: { 'send.denom': 'uluna' } },
+                          { match: { 'send.denom': 'uusd' } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    };
+                    break;
                   default:
                     break;
                 }

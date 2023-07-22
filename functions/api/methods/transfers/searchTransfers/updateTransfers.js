@@ -80,7 +80,7 @@ module.exports = async (collection, data, params) => {
                     _updated = true;
                     wrote = true;
                   }
-                  if (['uluna', 'uusd'].includes(denom) && moment('20220401', 'YYYYMMDD').utc().diff(moment(created_at?.ms), 'seconds') > 0 && fee > parseFloat((amount * 0.001).toFixed(6))) {
+                  if (['uluna', 'uusd'].includes(denom) && moment('20220501', 'YYYYMMDD').utc().diff(moment(created_at?.ms), 'seconds') > 0 && fee > parseFloat((amount * 0.001).toFixed(6))) {
                     d.send = await updateSend(d.send, d.link, d, true);
                     _updated = true;
                     wrote = true;

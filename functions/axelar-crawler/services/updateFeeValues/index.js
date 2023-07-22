@@ -8,7 +8,7 @@ module.exports = async context => {
     const method = 'searchTransfers';
     while (!context || context.getRemainingTimeInMillis() > 300 * 1000) {
       // log('info', service_name, `start ${method}`);
-      await api.get('/', { params: { method, status: 'to_fix_fee_value' } }).catch(error => parseRequestError(error));
+      await api.get('/', { params: { method, status: 'to_fix_fee_terra' } }).catch(error => parseRequestError(error));
       // log('info', service_name, `end ${method}`);
       await sleep(0.5 * 1000);
     }
