@@ -352,7 +352,7 @@ const updateLink = async (link, send) => {
     }
 
     denom = send?.denom || asset || denom;
-    if ((typeof price !== 'number' || price <= 0 || !equalsIgnoreCase(link.denom, denom)) && denom) {
+    if ((typeof price !== 'number' || price <= 0 || !equalsIgnoreCase(link.denom, denom) || (['uluna', 'uusd'].includes(denom) && moment(send?.created_at?.ms).diff(moment('20220512', 'YYYYMMDD').utc(), 'seconds') > 0 && price > 0.1)) && denom) {
       const response = await getTokensPrice(denom, moment(send?.created_at?.ms).utc());
       if (typeof response === 'number') {
         price = response;

@@ -73,7 +73,7 @@ module.exports = async (collection, data, params) => {
                     d.time_spent = getTimeSpent(d);
                     _updated = true;
                   }
-                  if ((status === 'to_fix_value' && link && typeof price !== 'number') || (status === 'to_fix_fee_value' && link && typeof price === 'number')) {
+                  if ((status === 'to_fix_value' && link && typeof price !== 'number') || (status === 'to_fix_fee_value' && link && typeof price === 'number') || (['uluna', 'uusd'].includes(denom) && moment(created_at?.ms).diff(moment('20220512', 'YYYYMMDD').utc(), 'seconds') > 0)) {
                     d.link = normalizeLink(link);
                     d.link = await updateLink(d.link, send);
                     d.send = await updateSend(d.send, d.link, d);

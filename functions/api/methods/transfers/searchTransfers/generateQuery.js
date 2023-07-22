@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const { getOthersChainIds } = require('../../../utils/chain');
 const { getOthersDenoms } = require('../../../utils/asset');
@@ -410,7 +411,22 @@ module.exports = params => {
                     obj = {
                       bool: {
                         must: [
-                          { range: { 'send.fee_value': { gt: 10000 } } },
+                          { range: { 'send.fee_value': { gt: 5000 } } },
+                        ],
+                        should: [
+                          { match: { 'send.denom': 'uluna' } },
+                          { match: { 'send.denom': 'uusd' } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    };
+                    break;
+                  case 'to_fix_terra_price':
+                    obj = {
+                      bool: {
+                        must: [
+                          { range: { 'link.price': { gt: 0.1 } } },
+                          { range: { 'send.created_at.ms': { gt: moment('20220512', 'YYYYMMDD').utc().valueOf() } } },
                         ],
                         should: [
                           { match: { 'send.denom': 'uluna' } },
