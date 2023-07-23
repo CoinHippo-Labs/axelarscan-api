@@ -18,7 +18,7 @@ module.exports = async context => {
       let response = await api.get('/', { params: { method: 'searchPolls' } }).catch(error => parseRequestError(error));
       let heights = getHeights(toArray(response?.data?.data).filter(d => d.success));
       response = await api.get('/', { params: { method: 'searchPolls', status: 'to_recover', size: 15, sort: [{ 'created_at.ms': 'asc' }] } }).catch(error => parseRequestError(error));
-      heights = _.uniq(_.concat(heights, getHeights(response?.data?.data));
+      heights = _.uniq(_.concat(heights, getHeights(response?.data?.data)));
       heights = _.orderBy(_.uniq(heights.flatMap(h => _.range(-1, 6).map(i => h + i))), [], ['desc']);
 
       for (const height of heights) {
