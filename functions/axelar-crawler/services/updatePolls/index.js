@@ -14,10 +14,10 @@ module.exports = async context => {
       // log('info', service_name, `start ${method}`);
       // await api.get('/', { params: { method } }).catch(error => parseRequestError(error));
       // log('info', service_name, `end ${method}`);
-      const response = await api.get('/', { params: { method: 'searchPolls', status: 'to_recover', size: 10 } }).catch(error => parseRequestError(error));
+      const response = await api.get('/', { params: { method: 'searchPolls', status: 'to_recover', size: 15, sort: [{ 'created_at.ms': 'asc' }] } }).catch(error => parseRequestError(error));
       const { data } = { ...response?.data };
       let heights = _.uniq(toArray(toArray(data).map(d => _.min(toArray(_.concat(d.height, Object.entries(d).filter(([k, v]) => k.startsWith(`${prefix_address}1`) && v?.height).map(([k, v]) => v.height)))))));
-      heights = _.orderBy(_.uniq(heights.flatMap(h => _.range(-1, 7).map(i => h + i))), [], ['desc']);
+      heights = _.orderBy(_.uniq(heights.flatMap(h => _.range(-1, 6).map(i => h + i))), [], ['desc']);
 
       for (const height of heights) {
         // log('info', service_name, `start ${method}`, { height });
@@ -29,7 +29,7 @@ module.exports = async context => {
         }
         // log('info', service_name, `end ${method}`, { height });
       }
-      await sleep(12 * 1000);
+      await sleep(10 * 1000);
     }
   }
 };
