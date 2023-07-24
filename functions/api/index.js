@@ -31,11 +31,13 @@ exports.handler = async (event, context, callback) => {
     transfersCumulativeVolume,
     transfersTotalVolume,
     transfersTotalFee,
+    transfersTotalActiveUsers,
     transfersTopUsers,
     searchTransfers,
     resolveTransfer,
     interchainChart,
     interchainTotalFee,
+    interchainTotalActiveUsers,
     getTVL,
     getTVLAlert,
     saveEvent,
@@ -431,6 +433,13 @@ exports.handler = async (event, context, callback) => {
           output = errorOutput(error);
         }
         break;
+      case 'transfersTotalActiveUsers':
+        try {
+          output = await transfersTotalActiveUsers(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
       case 'transfersTopUsers':
         try {
           output = await transfersTopUsers(params);
@@ -462,6 +471,13 @@ exports.handler = async (event, context, callback) => {
       case 'interchainTotalFee':
         try {
           output = await interchainTotalFee(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'interchainTotalActiveUsers':
+        try {
+          output = await interchainTotalActiveUsers(params);
         } catch (error) {
           output = errorOutput(error);
         }

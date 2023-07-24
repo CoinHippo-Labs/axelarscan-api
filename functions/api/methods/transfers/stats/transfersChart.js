@@ -21,6 +21,7 @@ module.exports = async params => {
         aggs: {
           volume: { sum: { field: 'send.value' } },
           fee: { sum: { field: 'send.fee_value' } },
+          users: { cardinality: { field: 'send.sender_address.keyword' } },
         },
       },
     },
@@ -34,11 +35,12 @@ module.exports = async params => {
     output = {
       data: _.orderBy(
         buckets.map(b => {
-          const { key, volume, fee, doc_count } = { ...b };
+          const { key, volume, fee, users, doc_count } = { ...b };
           return {
             timestamp: key,
             volume: volume?.value || 0,
             fee: fee?.value || 0,
+            users: users?.value || 0,
             num_txs: doc_count,
           };
         }),
