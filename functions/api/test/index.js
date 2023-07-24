@@ -19,10 +19,12 @@ const transfersChart = require('./transfersChart');
 const transfersCumulativeVolume = require('./transfersCumulativeVolume');
 const transfersTotalVolume = require('./transfersTotalVolume');
 const transfersTotalFee = require('./transfersTotalFee');
+const transfersTotalActiveUsers = require('./transfersTotalActiveUsers');
 const transfersTopUsers = require('./transfersTopUsers');
 const searchTransfers = require('./searchTransfers');
 const interchainChart = require('./interchainChart');
 const interchainTotalFee = require('./interchainTotalFee');
+const interchainTotalActiveUsers = require('./interchainTotalActiveUsers');
 const getTVL = require('./getTVL');
 const getLatestEventBlock = require('./getLatestEventBlock');
 
@@ -48,10 +50,12 @@ const test = async () => {
   await transfersCumulativeVolume();
   await transfersTotalVolume();
   await transfersTotalFee();
+  await transfersTotalActiveUsers();
   await transfersTopUsers();
   await searchTransfers();
   await interchainChart();
   await interchainTotalFee();
+  await interchainTotalActiveUsers();
   await getTVL();
   await getLatestEventBlock();
 };
