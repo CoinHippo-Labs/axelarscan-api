@@ -129,6 +129,9 @@ REBUS:
 IXO:
   coingecko_id: "ixo"
   decimals: 6
+ARCH:
+  coingecko_id: "archway"
+  decimals: 6
 LUNA:
   coingecko_id: "terra-luna-2"
   decimals: 6
