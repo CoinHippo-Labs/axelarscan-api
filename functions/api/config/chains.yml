@@ -1286,6 +1286,36 @@ mainnet:
       prefix_address: "rebus"
       prefix_chain_ids:
         - "reb_"
+    archway:
+      chain_name: "archway"
+      endpoints:
+        lcd:
+          - "https://api.mainnet.archway.io"
+          - "https://archway-mainnet-archive.allthatnode.com:1317"
+          - "https://m-archway.api.utsa.tech"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Archway"
+        symbol: "ARCH"
+        decimals: 6
+      name: "Archway"
+      short_name: "ARCH"
+      image: "/logos/chains/archway.svg"
+      color: "#fe4d00"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/archway"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/{ibc_denom}?type=ibc"
+      prefix_address: "archway"
+      prefix_chain_ids:
+        - "archway-"
     terra-2:
       chain_name: "terra-2"
       endpoints:
