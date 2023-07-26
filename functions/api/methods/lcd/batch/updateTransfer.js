@@ -55,6 +55,7 @@ module.exports = async (lcd_response = {}, created_at) => {
                 should: [
                   { match: { 'confirm.transfer_id': transfer_id } },
                   { match: { 'vote.transfer_id': transfer_id } },
+                  { match: { 'ibc_send.transfer_id': transfer_id } },
                   { match: { transfer_id } },
                 ],
                 minimum_should_match: 1,
