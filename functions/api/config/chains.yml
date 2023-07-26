@@ -659,8 +659,12 @@ mainnet:
       chain_name: "secret-snip"
       endpoints:
         lcd:
-          - "https://lcd.secret.express"
           - "https://secretnetwork-lcd.stakely.io"
+          - "https://keplr-gateway.scrtlabs.com/lcd"
+          - "https://api.scrt.network"
+          - "https://secret-4.api.trivium.network:1317"
+          - "https://secret-api.lavenderfive.com:443"
+          - "https://scrt-lcd.blockpane.com"
         timeout:
           lcd: 3000
       native_token:
