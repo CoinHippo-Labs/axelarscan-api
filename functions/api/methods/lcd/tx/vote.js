@@ -54,7 +54,7 @@ module.exports = async (lcd_response = {}) => {
                     }
                   }
 
-                  const success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(l => l.log?.includes('already confirmed')) > -1;
+                  let success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(l => l.log?.includes('already confirmed')) > -1;
                   let poll_data;
                   let sender_chain;
                   let vote = true;
@@ -195,6 +195,7 @@ module.exports = async (lcd_response = {}) => {
                   }
 
                   transaction_id = toHex(transaction_id);
+                  success = success || !!confirmation;
 
                   if (voter) {
                     await write(
