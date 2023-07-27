@@ -45,7 +45,7 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
             switch (k) {
               case 'evm':
                 provider_params = [{
-                  chainId: toBeHex(chain_id),
+                  chainId: toBeHex(chain_id).replace('0x0', '0x'),
                   chainName: `${name} ${capitalize(environment)}`,
                   rpcUrls: toArray(rpc),
                   nativeCurrency: native_token,
