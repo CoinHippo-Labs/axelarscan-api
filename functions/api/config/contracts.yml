@@ -11,7 +11,7 @@ mainnet:
     polygon:
       address: "0x6f015F16De9fC8791b234eF68D486d2bF203FBA8"
     polygon-zkevm:
-      address: "0x6f015F16De9fC8791b234eF68D486d2bF203FBA8"
+      address: "" #"0x6f015F16De9fC8791b234eF68D486d2bF203FBA8"
     avalanche:
       address: "0x5029C0EFf6C34351a0CEc334542cDb22c7928f78"
     fantom:
