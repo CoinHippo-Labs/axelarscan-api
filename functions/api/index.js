@@ -57,7 +57,7 @@ exports.handler = async (event, context, callback) => {
     updateERC20Transfers,
   } = require('./methods');
   const { getParams, errorOutput, finalizeOutput } = require('./utils/io');
-  const { getContracts, getChainsList, getAssetsList } = require('./utils/config');
+  const { getContracts, getChainsList, getAssetsList, getRoutes } = require('./utils/config');
   const { log } = require('./utils');
 
   const service_name = 'api';
@@ -485,6 +485,13 @@ exports.handler = async (event, context, callback) => {
       case 'getTVL':
         try {
           output = await getTVL(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getRoutes':
+        try {
+          output = await getRoutes(params);
         } catch (error) {
           output = errorOutput(error);
         }
