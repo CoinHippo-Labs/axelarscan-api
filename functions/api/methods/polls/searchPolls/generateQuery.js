@@ -152,6 +152,7 @@ module.exports = async params => {
                     },
                   };
                 }
+                break;
               case 'status':
                 switch (v) {
                   case 'success':
