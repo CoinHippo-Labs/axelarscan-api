@@ -12,6 +12,7 @@ const {
   tokens,
   tvl,
   supply,
+  routes,
 } = { ...config };
 
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
@@ -107,6 +108,15 @@ const getAssetData = (asset, environment = ENVIRONMENT) => asset && Object.value
 const getTokens = () => tokens;
 const getTVL = (environment = ENVIRONMENT) => tvl?.[environment];
 const getSupply = (environment = ENVIRONMENT) => supply?.[environment];
+const getRoutes = () => Object.entries({ ...routes }).map(([k, v]) => {
+  const { methods, parameters } = { ...v };
+  return {
+    ...v,
+    id: k,
+    methods: _.uniq(toArray(methods || 'post')),
+    parameters: _.uniqBy(toArray(_.concat({ id: 'method', require: true, type: 'string', value: k }, parameters)), 'id'),
+  };
+});
 
 module.exports = {
   TX_COLLECTION: 'txs',
@@ -146,4 +156,5 @@ module.exports = {
   getTokens,
   getTVL,
   getSupply,
+  getRoutes,
 };
