@@ -36,6 +36,7 @@ exports.handler = async (event, context, callback) => {
     searchTransfers,
     resolveTransfer,
     interchainChart,
+    interchainTotalVolume,
     interchainTotalFee,
     interchainTotalActiveUsers,
     getTVL,
@@ -464,6 +465,13 @@ exports.handler = async (event, context, callback) => {
       case 'interchainChart':
         try {
           output = await interchainChart(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'interchainTotalVolume':
+        try {
+          output = await interchainTotalVolume(params);
         } catch (error) {
           output = errorOutput(error);
         }

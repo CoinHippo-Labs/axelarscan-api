@@ -29,6 +29,25 @@ interchainChart:
       value: 1659459600
       override:
         value: 1659459600
+interchainTotalVolume:
+  description: "The API route provides the total volume of the interchain activities through the Axelar network."
+  parameters:
+    -
+      id: "sourceChain"
+      type: "string"
+      value: "polygon"
+    -
+      id: "destinationChain"
+      type: "string"
+      value: "fantom"
+    -
+      id: "fromTime"
+      type: "unixTime"
+      value: 1646240400
+    -
+      id: "toTime"
+      type: "unixTime"
+      value: 1659459600
 interchainTotalFee:
   description: "The API route provides the total fee of the interchain activities through the Axelar network."
   parameters:

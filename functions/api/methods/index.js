@@ -9,7 +9,7 @@ const { searchUptimes, searchHeartbeats, getValidators, getValidatorsVotes } = r
 const { getProposals, getProposal } = require('./proposals');
 const { searchBatches } = require('./batches');
 const { searchDepositAddresses, transfersStats, transfersChart, transfersCumulativeVolume, transfersTotalVolume, transfersTotalFee, transfersTotalActiveUsers, transfersTopUsers, searchTransfers, resolveTransfer } = require('./transfers');
-const { interchainChart, interchainTotalFee, interchainTotalActiveUsers } = require('./interchain');
+const { interchainChart, interchainTotalVolume, interchainTotalFee, interchainTotalActiveUsers } = require('./interchain');
 const { getTVL, getTVLAlert } = require('./tvl');
 const { saveEvent } = require('./events');
 const { saveDepositForWrap, saveWrap } = require('./transfers/wrap');
@@ -53,6 +53,7 @@ module.exports = {
   searchTransfers,
   resolveTransfer,
   interchainChart,
+  interchainTotalVolume,
   interchainTotalFee,
   interchainTotalActiveUsers,
   getTVL,
