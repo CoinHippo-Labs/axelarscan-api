@@ -2911,6 +2911,21 @@ mainnet:
       osmosis:
         ibc_denom: "ibc/C5E95745A3176F1D30356E6EC157ECB50979E5EFEA0AD385FA100E05307446EA"
         symbol: "axlWDOGE"
+  hzn-wei:
+    denom: "hzn-wei"
+    native_chain: "linea"
+    name: "Horizon Protocol"
+    symbol: "HZN"
+    decimals: 18
+    image: "/logos/assets/hzn.svg"
+    coingecko_id: "horizon-protocol"
+    addresses:
+      base:
+        address: "0x081AD949deFe648774C3B8deBe0E4F28a80716dc"
+      linea:
+        address: "0x0B1A02A7309dFbfAD1Cd4adC096582C87e8A3Ac1"
+      axelarnet:
+        ibc_denom: "hzn-wei"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
