@@ -349,6 +349,8 @@ WDOGE:
   decimals: 18
 axlWDOGE:
   redirect: "WDOGE"
+HZN:
+  coingecko_id: "horizon-protocol"
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
