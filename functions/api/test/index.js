@@ -23,6 +23,7 @@ const transfersTotalActiveUsers = require('./transfersTotalActiveUsers');
 const transfersTopUsers = require('./transfersTopUsers');
 const searchTransfers = require('./searchTransfers');
 const interchainChart = require('./interchainChart');
+const interchainTotalVolume = require('./interchainTotalVolume');
 const interchainTotalFee = require('./interchainTotalFee');
 const interchainTotalActiveUsers = require('./interchainTotalActiveUsers');
 const getTVL = require('./getTVL');
@@ -54,6 +55,7 @@ const test = async () => {
   await transfersTopUsers();
   await searchTransfers();
   await interchainChart();
+  await interchainTotalVolume();
   await interchainTotalFee();
   await interchainTotalActiveUsers();
   await getTVL();
