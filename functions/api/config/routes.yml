@@ -393,12 +393,12 @@ getGasPrice:
   parameters:
     -
       id: "sourceChain"
-      required: true
+      require: true
       type: "string"
       value: "avalanche"
     -
       id: "destinationChain"
-      required: true
+      require: true
       type: "string"
       value: "moonbeam"
     -
@@ -417,12 +417,12 @@ getFees:
   parameters:
     -
       id: "sourceChain"
-      required: true
+      require: true
       type: "string"
       value: "avalanche"
     -
       id: "destinationChain"
-      required: true
+      require: true
       type: "string"
       value: "moonbeam"
     -
@@ -836,7 +836,7 @@ getTVL:
   parameters:
     -
       id: "asset"
-      required: true
+      require: true
       type: "string"
       value: "uusdc"
 searchUptimes:
@@ -865,7 +865,7 @@ searchHeartbeats:
   parameters:
     -
       id: "sender"
-      required: true
+      require: true
       type: "string"
       value: "axelar19fu359586zyl88qpmufwycuan4zfcu8m55n577"
     -
