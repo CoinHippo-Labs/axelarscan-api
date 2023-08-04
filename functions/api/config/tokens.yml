@@ -370,7 +370,7 @@ ORBS:
 POLS:
   coingecko_id: "polkastarter"
 RING:
-  coingecko_id: "darwinia-network-native-token"
+  coingecko_id: "onering"
 SONNE:
   coingecko_id: "sonne-finance"
 ZYB:

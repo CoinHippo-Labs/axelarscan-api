@@ -3114,11 +3114,11 @@ mainnet:
   ring-wei:
     denom: "ring-wei"
     native_chain: "fantom"
-    name: "Darwinia Network"
+    name: "OneRing"
     symbol: "RING"
     decimals: 18
     image: "/logos/assets/ring.svg"
-    coingecko_id: "darwinia-network-native-token"
+    coingecko_id: "onering"
     addresses:
       fantom:
         address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
