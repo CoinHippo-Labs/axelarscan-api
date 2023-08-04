@@ -2972,6 +2972,10 @@ mainnet:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
       optimism:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      binance:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      linea:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
       axelarnet:
         ibc_denom: "gdx-wei"
   grain-wei:
@@ -2986,17 +2990,17 @@ mainnet:
       ethereum:
         address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
       binance:
-        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+        address: "0x8F87A7d376821c7B2658a005aAf190Ec778BF37A"
       polygon:
-        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+        address: "0x8429d0AFade80498EAdb9919E41437A14d45A00B"
       avalanche:
-        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+        address: "0x9df4Ac62F9E435DbCD85E06c990a7f0ea32739a9"
       fantom:
-        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+        address: "0x02838746d9E1413E07EE064fcBada57055417f21"
       arbitrum:
-        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+        address: "0x80bB30D62a16e1F2084dEAE84dc293531c3AC3A1"
       optimism:
-        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+        address: "0xfD389Dc9533717239856190F42475d3f263a270d"
       axelarnet:
         ibc_denom: "grain-wei"
   knc-wei:
@@ -3028,7 +3032,7 @@ mainnet:
       optimism:
         address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
         symbol: "axlKNC"
-      lineaz:
+      linea:
         address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
         symbol: "axlKNC"
       axelarnet:
@@ -3119,9 +3123,9 @@ mainnet:
       fantom:
         address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
       arbitrum:
-        address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
+        address: "0xBF05279F9Bf1CE69bBFEd670813b7e431142Afa4"
       optimism:
-        address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
+        address: "0xB0ae108669CEB86E9E98e8fE9e40d98b867855fD"
       axelarnet:
         ibc_denom: "ring-wei"
   sonne-wei:
@@ -3148,9 +3152,9 @@ mainnet:
     image: "/logos/assets/zyb.svg"
     coingecko_id: "zyberswap"
     addresses:
-      optimism:
+      arbitrum:
         address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
-      base:
+      optimism:
         address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
       axelarnet:
         ibc_denom: "zyb-wei"
