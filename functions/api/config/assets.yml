@@ -2966,13 +2966,13 @@ mainnet:
     addresses:
       ethereum:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      binance:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
       polygon:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
       arbitrum:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
       optimism:
-        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
-      binance:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
       linea:
         address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
