@@ -77,3 +77,38 @@ testnet:
 
 
 stagenet:
+  gateway_contracts:
+    ethereum:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    ethereum-2:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    binance:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    polygon:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    polygon-zkevm:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    avalanche:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    fantom:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    moonbeam:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    aurora:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    arbitrum:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    optimism:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    base:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    celo:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    kava:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    filecoin:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    filecoin-2:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    linea:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
