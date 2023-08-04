@@ -2926,6 +2926,234 @@ mainnet:
         address: "0x0B1A02A7309dFbfAD1Cd4adC096582C87e8A3Ac1"
       axelarnet:
         ibc_denom: "hzn-wei"
+  deus-wei:
+    denom: "deus-wei"
+    native_chain: "arbitrum"
+    name: "DEUS Finance"
+    symbol: "DEUS"
+    decimals: 18
+    image: "/logos/assets/deus.svg"
+    coingecko_id: "deus-finance-2"
+    addresses:
+      ethereum:
+        address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
+        symbol: "axlDEUS"
+      binance:
+        address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
+        symbol: "axlDEUS"
+      polygon:
+        address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
+        symbol: "axlDEUS"
+      avalanche:
+        address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
+        symbol: "axlDEUS"
+      arbitrum:
+        address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
+      kava:
+        address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
+        symbol: "axlDEUS"
+      axelarnet:
+        ibc_denom: "deus-wei"
+        symbol: "axlDEUS"
+  gdx-wei:
+    denom: "gdx-wei"
+    native_chain: "arbitrum"
+    name: "Gridex"
+    symbol: "GDX"
+    decimals: 18
+    image: "/logos/assets/gdx.svg"
+    coingecko_id: "gdx-token"
+    addresses:
+      ethereum:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      polygon:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      arbitrum:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      optimism:
+        address: "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d"
+      axelarnet:
+        ibc_denom: "gdx-wei"
+  grain-wei:
+    denom: "grain-wei"
+    native_chain: "ethereum"
+    name: "Granary"
+    symbol: "GRAIN"
+    decimals: 18
+    image: "/logos/assets/grain.svg"
+    coingecko_id: "granary"
+    addresses:
+      ethereum:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      binance:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      polygon:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      avalanche:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      fantom:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      arbitrum:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      optimism:
+        address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
+      axelarnet:
+        ibc_denom: "grain-wei"
+  knc-wei:
+    denom: "knc-wei"
+    native_chain: "ethereum"
+    name: "Kyber Network"
+    symbol: "KNC"
+    decimals: 18
+    image: "/logos/assets/knc.svg"
+    coingecko_id: "kyber-network-crystal"
+    addresses:
+      ethereum:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+      binance:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      polygon:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      avalanche:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      fantom:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      arbitrum:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      optimism:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      lineaz:
+        address: "0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202"
+        symbol: "axlKNC"
+      axelarnet:
+        ibc_denom: "knc-wei"
+        symbol: "axlKNC"
+  oath-wei:
+    denom: "oath-wei"
+    native_chain: "fantom"
+    name: "OATH"
+    symbol: "OATH"
+    decimals: 18
+    image: "/logos/assets/oath.svg"
+    coingecko_id: "oath"
+    addresses:
+      ethereum:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      binance:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      polygon:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      avalanche:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      fantom:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      moonbeam:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      arbitrum:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      optimism:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      base:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      celo:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      kava:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      filecoin:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      linea:
+        address: "0x21Ada0D2aC28C3A5Fa3cD2eE30882dA8812279B6"
+      axelarnet:
+        ibc_denom: "oath-wei"
+  orbs-wei:
+    denom: "orbs-wei"
+    native_chain: "ethereum"
+    name: "Orbs"
+    symbol: "ORBS"
+    decimals: 18
+    image: "/logos/assets/orbs.svg"
+    coingecko_id: "orbs"
+    addresses:
+      ethereum:
+        address: "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA"
+      binance:
+        address: "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA"
+      avalanche:
+        address: "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA"
+      fantom:
+        address: "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA"
+      axelarnet:
+        ibc_denom: "orbs-wei"
+  pols-wei:
+    denom: "pols-wei"
+    native_chain: "ethereum"
+    name: "Polkastarter"
+    symbol: "POLS"
+    decimals: 18
+    image: "/logos/assets/pols.svg"
+    coingecko_id: "polkastarter"
+    addresses:
+      ethereum:
+        address: "0x83e6f1E41cdd28eAcEB20Cb649155049Fac3D5Aa"
+      binance:
+        address: "0x83e6f1E41cdd28eAcEB20Cb649155049Fac3D5Aa"
+      polygon:
+        address: "0x83e6f1E41cdd28eAcEB20Cb649155049Fac3D5Aa"
+      axelarnet:
+        ibc_denom: "pols-wei"
+  ring-wei:
+    denom: "ring-wei"
+    native_chain: "fantom"
+    name: "Darwinia Network"
+    symbol: "RING"
+    decimals: 18
+    image: "/logos/assets/ring.svg"
+    coingecko_id: "darwinia-network-native-token"
+    addresses:
+      fantom:
+        address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
+      arbitrum:
+        address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
+      optimism:
+        address: "0x582423C10c9e83387a96d00A69bA3D11ee47B7b5"
+      axelarnet:
+        ibc_denom: "ring-wei"
+  sonne-wei:
+    denom: "sonne-wei"
+    native_chain: "optimism"
+    name: "Sonne Finance"
+    symbol: "SONNE"
+    decimals: 18
+    image: "/logos/assets/sonne.svg"
+    coingecko_id: "sonne-finance"
+    addresses:
+      optimism:
+        address: "0x1DB2466d9F5e10D7090E7152B68d62703a2245F0"
+      base:
+        address: "0x1DB2466d9F5e10D7090E7152B68d62703a2245F0"
+      axelarnet:
+        ibc_denom: "sonne-wei"
+  zyb-wei:
+    denom: "zyb-wei"
+    native_chain: "arbitrum"
+    name: "Zyberswap"
+    symbol: "ZYB"
+    decimals: 18
+    image: "/logos/assets/zyb.svg"
+    coingecko_id: "zyberswap"
+    addresses:
+      optimism:
+        address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
+      base:
+        address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
+      axelarnet:
+        ibc_denom: "zyb-wei"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"

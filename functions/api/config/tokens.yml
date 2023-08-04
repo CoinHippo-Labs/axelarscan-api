@@ -351,6 +351,30 @@ axlWDOGE:
   redirect: "WDOGE"
 HZN:
   coingecko_id: "horizon-protocol"
+DEUS:
+  coingecko_id: "deus-finance-2"
+axlDEUS:
+  redirect: "DEUS"
+GDX:
+  coingecko_id: "gdx-token"
+GRAIN:
+  coingecko_id: "granary"
+KNC:
+  coingecko_id: "kyber-network-crystal"
+axlKNC:
+  redirect: "KNC"
+OATH:
+  coingecko_id: "oath"
+ORBS:
+  coingecko_id: "orbs"
+POLS:
+  coingecko_id: "polkastarter"
+RING:
+  coingecko_id: "darwinia-network-native-token"
+SONNE:
+  coingecko_id: "sonne-finance"
+ZYB:
+  coingecko_id: "zyberswap"
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
