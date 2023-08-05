@@ -463,7 +463,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "osmo"
       prefix_chain_ids:
         - "osmosis-"
@@ -495,7 +495,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "cosmos"
       prefix_chain_ids:
         - "cosmoshub-"
@@ -527,7 +527,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "juno"
       prefix_chain_ids:
         - "juno-"
@@ -559,7 +559,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "emoney"
       prefix_chain_ids:
         - "emoney-"
@@ -589,7 +589,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "inj"
       prefix_chain_ids:
         - "injective-"
@@ -618,7 +618,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "cre"
       prefix_chain_ids:
         - "crescent-"
@@ -651,7 +651,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "kujira"
       prefix_chain_ids:
         - "kaiyo-"
@@ -684,7 +684,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "secret"
       prefix_chain_ids:
         - "secret-"
@@ -713,7 +713,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "secret"
       prefix_chain_ids:
         - "secret-"
@@ -743,7 +743,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "sei"
       prefix_chain_ids:
         - "pacific-"
@@ -774,7 +774,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "stars"
       prefix_chain_ids:
         - "stargaze-"
@@ -806,7 +806,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "mantle"
       prefix_chain_ids:
         - "mantle-"
@@ -836,7 +836,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "fetch"
       prefix_chain_ids:
         - "fetchhub-"
@@ -866,7 +866,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "ki"
       prefix_chain_ids:
         - "kichain-"
@@ -898,7 +898,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "evmos"
       prefix_chain_ids:
         - "evmos_"
@@ -956,7 +956,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "comdex"
       prefix_chain_ids:
         - "comdex-"
@@ -988,7 +988,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "persistence"
       prefix_chain_ids:
         - "core-"
@@ -1017,7 +1017,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "regen"
       prefix_chain_ids:
         - "regen-"
@@ -1047,7 +1047,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "umee"
       prefix_chain_ids:
         - "umee-"
@@ -1106,7 +1106,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "xpla"
       prefix_chain_ids:
         - "dimension_"
@@ -1169,7 +1169,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "stride"
       prefix_chain_ids:
         - "stride-"
@@ -1228,7 +1228,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "somm"
       prefix_chain_ids:
         - "sommelier-"
@@ -1258,7 +1258,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "neutron"
       prefix_chain_ids:
         - "neutron-"
@@ -1316,7 +1316,7 @@ mainnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "archway"
       prefix_chain_ids:
         - "archway-"
@@ -1864,7 +1864,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "osmo"
       prefix_chain_ids:
         - "osmosis-"
@@ -1893,7 +1893,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "cosmos"
       prefix_chain_ids:
         - "theta-testnet-"
@@ -1923,7 +1923,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "juno"
       prefix_chain_ids:
         - "uni-"
@@ -1951,7 +1951,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "cre"
       prefix_chain_ids:
         - "mooncat-"
@@ -2037,7 +2037,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "sei"
       prefix_chain_ids:
         - "atlantic-"
@@ -2094,7 +2094,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "evmos"
       prefix_chain_ids:
         - "evmos_"
@@ -2177,7 +2177,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "persistence"
       prefix_chain_ids:
         - "test-core-"
@@ -2317,7 +2317,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "neutron"
       prefix_chain_ids:
         - "pion-"
@@ -2917,7 +2917,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "osmo"
       prefix_chain_ids:
         - "osmosis-"
@@ -2946,7 +2946,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "cosmos"
       prefix_chain_ids:
         - "theta-testnet-"
@@ -2976,7 +2976,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "juno"
       prefix_chain_ids:
         - "uni-"
@@ -3004,7 +3004,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "cre"
       prefix_chain_ids:
         - "mooncat-"
@@ -3090,7 +3090,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "sei"
       prefix_chain_ids:
         - "atlantic-"
@@ -3147,7 +3147,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "evmos"
       prefix_chain_ids:
         - "evmos_"
@@ -3230,7 +3230,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "persistence"
       prefix_chain_ids:
         - "test-core-"
@@ -3370,7 +3370,7 @@ stagenet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
-        asset_path: "/assets/{ibc_denom}?type=ibc"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "neutron"
       prefix_chain_ids:
         - "pion-"
