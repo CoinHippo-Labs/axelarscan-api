@@ -3765,6 +3765,7 @@ testnet:
   eth-wei:
     denom: "eth-wei"
     denoms:
+      - "eth-wei"
       - "weth-wei"
       - "eth"
     native_chain: "ethereum-2"
@@ -4478,6 +4479,7 @@ testnet:
   celo-wei:
     denom: "celo-wei"
     denoms:
+      - "celo-wei"
       - "celo"
     native_chain: "celo"
     name: "Celo"
