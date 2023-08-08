@@ -301,7 +301,7 @@ module.exports = async (params = {}) => {
                               const { packet_data } = { ...event_data };
                               if (packet_data) {
                                 const { memo } = { ...packet_data };
-                                const { destination_chain, destination_address } = { ...memo };
+                                const { destination_chain, destination_address } = { ...toJson(memo) };
                                 link = {
                                   type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
                                   sender_chain: send.source_chain,

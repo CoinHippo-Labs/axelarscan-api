@@ -133,7 +133,7 @@ module.exports = async (lcd_response = {}) => {
               if (type === 'send_token') {
                 if (packet_data) {
                   const { memo } = { ...packet_data };
-                  const { destination_chain, destination_address } = { ...memo };
+                  const { destination_chain, destination_address } = { ...toJson(memo) };
                   link = {
                     type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
                     sender_chain: send.source_chain,
