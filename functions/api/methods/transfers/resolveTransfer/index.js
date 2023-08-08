@@ -316,10 +316,10 @@ module.exports = async (params = {}) => {
                             else {
                               const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
                               link = normalizeLink(_.head(_response?.data));
+                              link = await updateLink(link, send);
+                              await updateSend(send, link, { type, unwrap: unwrap || undefined });
+                              exist = true;
                             }
-                            link = await updateLink(link, send);
-                            await updateSend(send, link, { type, unwrap: unwrap || undefined });
-                            exist = true;
                           }
                         }
                       }
