@@ -1,4 +1,4 @@
-const { Contract, formatUnits, parseUnits, toBeHex } = require('ethers');
+const { Contract, formatUnits, toBeHex } = require('ethers');
 const axios = require('axios');
 const _ = require('lodash');
 const moment = require('moment');
@@ -8,7 +8,7 @@ const { getTokensPrice } = require('../tokens');
 const { write } = require('../../services/index');
 const { getProvider } = require('../../utils/chain/evm');
 const { TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, TERRA_COLLAPSED_DATE, getChainsList, getChainKey, getChainData, getLCD, getAssetData } = require('../../utils/config');
-const { toBigNumber } = require('../../utils/number');
+const { toBigNumber, parseUnits } = require('../../utils/number');
 const { equalsIgnoreCase, toArray, parseRequestError } = require('../../utils');
 
 const IAxelarGateway = require('../../data/contracts/interfaces/IAxelarGateway.json');
@@ -414,7 +414,7 @@ const updateSend = async (send, link, data, update_only = false) => {
                   params: {
                     source_chain: send.original_source_chain,
                     destination_chain: send.original_destination_chain,
-                    amount: `${parseUnits((send.amount || 0).toString(), decimals).toString()}${_.head(asset_data.denoms) || send.denom}`,
+                    amount: `${parseUnits(send.amount, decimals)}${_.head(asset_data.denoms) || send.denom}`,
                   },
                 },
               ).catch(error => parseRequestError(error));

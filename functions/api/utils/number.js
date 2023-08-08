@@ -1,6 +1,6 @@
-const { FixedNumber, formatUnits, isHexString } = require('ethers');
+const { FixedNumber, formatUnits, isHexString, parseUnits: _parseUnits } = require('ethers');
 
-const { toDecimal } = require('./');
+const { split, toDecimal } = require('./');
 
 const toBigNumber = number => {
   try {
@@ -22,8 +22,24 @@ const numberFormatUnits = (number, decimals = 6) => {
   }
 };
 
+const parseUnits = (number = 0, decimals = 18) => {
+  try {
+    number = toDecimal(number.toString());
+    if (number.includes('.')) {
+      const [_number, _decimals] = split(number, 'normal', '.');
+      if (typeof _decimals === 'string' && _decimals.length > decimals) {
+        return `${_number}${_decimals.substring(0, _decimals.length)}.${_decimals.substring(_decimals.length)}`;
+      }
+    }
+    return toBigNumber(_parseUnits(number, decimals));
+  } catch (error) {
+    return '0';
+  }
+};
+
 module.exports = {
   toBigNumber,
   toFixedNumber,
   numberFormatUnits,
+  parseUnits,
 };
