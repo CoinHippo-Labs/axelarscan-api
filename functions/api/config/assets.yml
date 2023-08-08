@@ -2855,10 +2855,43 @@ mainnet:
         address: "0xc5b001DC33727F8F26880B184090D3E252470D45"
       base:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
+      kava:
+        address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       linea:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       axelarnet:
         ibc_denom: "ern-wei"
+  stern-wei:
+    denom: "stern-wei"
+    native_chain: "optimism"
+    name: "Staked ERN"
+    symbol: "stERN"
+    decimals: 18
+    image: "/logos/assets/stern.svg"
+    coingecko_id: "ethos-reserve-note"
+    addresses:
+      ethereum:
+        address: "0xeA0cFDC2667bE69ED724c8069d358502fF41cA18"
+      binance:
+        address: "0x34A279Ece38f260a28C8872f416319e9B6Aa428e"
+      polygon:
+        address: "0x281c4746c902A322B9A951F07893AC51a7221Acc"
+      avalanche:
+        address: "0x232Fe66f42ac4d0DF191Ec9f34e30224BBF15C3F"
+      fantom:
+        address: "0x34A279Ece38f260a28C8872f416319e9B6Aa428e"
+      arbitrum:
+        address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
+      optimism:
+        address: "0x3eE6107d9C93955acBb3f39871D32B02F82B78AB"
+      base:
+        address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
+      kava:
+        address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
+      linea:
+        address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
+      axelarnet:
+        ibc_denom: "stern-wei"
   lqdr-wei:
     denom: "lqdr-wei"
     native_chain: "arbitrum"

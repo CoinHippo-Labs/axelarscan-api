@@ -339,6 +339,8 @@ axlWMAI:
 ERN:
   coingecko_id: "ethos-reserve-note"
   decimals: 18
+stERN:
+  redirect: "ERN"
 LQDR:
   coingecko_id: "liquiddriver"
   decimals: 18
