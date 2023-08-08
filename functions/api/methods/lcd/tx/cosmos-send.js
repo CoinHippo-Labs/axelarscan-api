@@ -6,7 +6,7 @@ const { read } = require('../../../services/index');
 const { getLCDs } = require('../../../utils/chain/cosmos');
 const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, getDeposits, getChainsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-const { equalsIgnoreCase, toArray, find, toJson } = require('../../../utils');
+const { equalsIgnoreCase, toArray, find, toJson, normalizeQuote } = require('../../../utils');
 
 module.exports = async (lcd_response = {}) => {
   const { tx, tx_response } = { ...lcd_response };
@@ -130,26 +130,55 @@ module.exports = async (lcd_response = {}) => {
 
               const type = unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address';
               let link;
+              let transfer_id;
               if (type === 'send_token') {
                 if (packet_data) {
                   const { memo } = { ...packet_data };
-                  const { destination_chain, destination_address } = { ...toJson(memo) };
-                  link = {
-                    type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
-                    sender_chain: send.source_chain,
-                    recipient_chain: destination_chain?.toLowerCase(),
-                    sender_address: send.sender_address,
-                    deposit_address: recipient_address,
-                    recipient_address: destination_address,
-                    denom: getAssetData(send.denom)?.denom,
-                  };
+                  const { destination_chain, destination_address, type } = { ...toJson(memo) };
+                  switch (type) {
+                    case 3:
+                      try {
+                        link = {
+                          type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
+                          sender_chain: send.source_chain,
+                          recipient_chain: destination_chain?.toLowerCase(),
+                          sender_address: send.sender_address,
+                          deposit_address: recipient_address,
+                          recipient_address: destination_address,
+                          denom: getAssetData(send.denom)?.denom,
+                        };
+                        const event_data = toArray(logs)
+                          .map(l => {
+                            const { events } = { ...l };
+                            return { ...toArray(events).find(e => e.type.includes('TokenSent')) };
+                          })
+                          .filter(e => toArray(e.attributes).length > 0)
+                          .map(e => {
+                            let { attributes } = { ...e };
+                            attributes = toArray(attributes).filter(a => a.key && a.value);
+                            return Object.fromEntries(
+                              attributes.map(a => {
+                                const { key, value } = { ...a };
+                                return [key, typeof value === 'string' ? normalizeQuote(value) : value];
+                              })
+                            );
+                          })
+                          .find(e => e.transfer_id);
+                        transfer_id = !isNaN(event_data?.transfer_id) ? Number(event_data.transfer_id) : undefined;
+                      } catch (error) {}
+                      break;
+                    default:
+                      break;
+                  }
                 }
               }
               else {
                 const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
                 link = normalizeLink(_.head(_response?.data));
+              }
+              if (link) {
                 link = await updateLink(link, send);
-                await updateSend(send, link, { type, unwrap: unwrap || undefined });
+                await updateSend(send, link, { type, unwrap: unwrap || undefined, transfer_id: transfer_id || undefined });
               }
             }
 

@@ -301,21 +301,31 @@ module.exports = async (params = {}) => {
                               const { packet_data } = { ...event_data };
                               if (packet_data) {
                                 const { memo } = { ...packet_data };
-                                const { destination_chain, destination_address } = { ...toJson(memo) };
-                                link = {
-                                  type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
-                                  sender_chain: send.source_chain,
-                                  recipient_chain: destination_chain?.toLowerCase(),
-                                  sender_address: send.sender_address,
-                                  deposit_address: recipient_address,
-                                  recipient_address: destination_address,
-                                  denom: getAssetData(send.denom)?.denom,
-                                };
+                                const { destination_chain, destination_address, type } = { ...toJson(memo) };
+                                switch (type) {
+                                  case 3:
+                                    try {
+                                      link = {
+                                        type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
+                                        sender_chain: send.source_chain,
+                                        recipient_chain: destination_chain?.toLowerCase(),
+                                        sender_address: send.sender_address,
+                                        deposit_address: recipient_address,
+                                        recipient_address: destination_address,
+                                        denom: getAssetData(send.denom)?.denom,
+                                      };
+                                    } catch (error) {}
+                                    break;
+                                  default:
+                                    break;
+                                }
                               }
                             }
                             else {
                               const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
                               link = normalizeLink(_.head(_response?.data));
+                            }
+                            if (link) {
                               link = await updateLink(link, send);
                               await updateSend(send, link, { type, unwrap: unwrap || undefined });
                               exist = true;
