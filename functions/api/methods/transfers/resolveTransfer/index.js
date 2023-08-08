@@ -285,7 +285,7 @@ module.exports = async (params = {}) => {
                             const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
                             let link = normalizeLink(_.head(_response?.data));
                             link = await updateLink(link, send);
-                            await updateSend(send, link, { type: unwrap ? 'unwrap' : 'deposit_address', unwrap: unwrap || undefined });
+                            await updateSend(send, link, { type: unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address', unwrap: unwrap || undefined });
                             exist = true;
                           }
                         }
@@ -398,6 +398,7 @@ module.exports = async (params = {}) => {
             }
 
             d.type = d.unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : type || 'deposit_address';
+            _updated = _updated || d.type !== type;
 
             if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer || d.unwrap || (confirm && moment().diff(moment(confirm.created_at?.ms), 'minutes') > 5))) {
               const response = await read(
@@ -533,8 +534,8 @@ module.exports = async (params = {}) => {
                 }
               }
               else if (['wrap', 'send_token'].includes(d.type)) {
-                const { txhash } = { ...d.send };
-                if (txhash) {
+                const { txhash, source_chain } = { ...d.send };
+                if (txhash && getChainData(source_chain, 'evm')) {
                   const response = await searchPolls({ transactionId: txhash });
                   const confirmation_txhash = _.head(toArray(Object.values({ ..._.head(response?.data) })).filter(v => v.confirmed && v.id).map(v => v.id));
                   if (confirmation_txhash) {
