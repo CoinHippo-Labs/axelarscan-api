@@ -4,9 +4,9 @@ const moment = require('moment');
 const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../../transfers/utils');
 const { read } = require('../../../services/index');
 const { getLCDs } = require('../../../utils/chain/cosmos');
-const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, getChainsList } = require('../../../utils/config');
+const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, getDeposits, getChainsList } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-const { equalsIgnoreCase, toArray, toJson } = require('../../../utils');
+const { equalsIgnoreCase, toArray, find, toJson } = require('../../../utils');
 
 module.exports = async (lcd_response = {}) => {
   const { tx, tx_response } = { ...lcd_response };
@@ -131,7 +131,7 @@ module.exports = async (lcd_response = {}) => {
               const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
               let link = normalizeLink(_.head(_response?.data));
               link = await updateLink(link, send);
-              await updateSend(send, link, { type: unwrap ? 'unwrap' : 'deposit_address', unwrap: unwrap || undefined });
+              await updateSend(send, link, { type: unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address', unwrap: unwrap || undefined });
             }
 
             tx_hashes.push(txhash);
