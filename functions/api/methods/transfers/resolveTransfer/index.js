@@ -513,7 +513,7 @@ module.exports = async (params = {}) => {
           if (_id) {
             let updated;
             if (['ibc_sent', 'batch_signed', 'voted'].includes(d.status) && !d.send?.insufficient_fee && d.vote?.txhash && d.vote.success && !(d.vote.transfer_id || d.confirm?.transfer_id)) {
-              await lcd(`/cosmos/tx/v1beta1/txs/${d.vote.txhash}`, { index: true });
+              await lcd(`/cosmos/tx/v1beta1/txs/${d.vote.txhash}`, { index: true, index_transfer: true });
               updated = true;
             }
             else if (d.status === 'asset_sent' && !d.send?.insufficient_fee) {
@@ -553,7 +553,7 @@ module.exports = async (params = {}) => {
               const height = d.ibc_send?.height || d.vote?.height || d.confirm?.height;
               if (['ibc_sent', 'voted', 'deposit_confirmed'].includes(d.status) && height) {
                 if (d.confirm?.txhash && !d.confirm.transfer_id) {
-                  await lcd(`/cosmos/tx/v1beta1/txs/${d.confirm.txhash}`, { index: true });
+                  await lcd(`/cosmos/tx/v1beta1/txs/${d.confirm.txhash}`, { index: true, index_transfer: true });
                   await sleep(0.25 * 1000);
                   d = _.head(addFieldsToResult(await get(TRANSFER_COLLECTION, _id)));
                 }

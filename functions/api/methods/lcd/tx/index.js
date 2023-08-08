@@ -342,7 +342,9 @@ module.exports = async (lcd_response = {}, params = {}) => {
         toArray(logs).filter(l => toArray(l.events).findIndex(e => ['ContractCallWithToken', 'ContractCall'].findIndex(event => e.type?.includes(`${event}Submitted`)) > -1) > -1).length > 0 ||
         toArray(messages).findIndex(m => m['@type']?.includes('RouteMessage')) > -1
       ) {
-        await recoverEvents(txhash, height);
+        if (!index_transfer) {
+          await recoverEvents(txhash, height);
+        }
       }
       lcd_response.tx_response.raw_log = JSON.stringify(logs);
     }
