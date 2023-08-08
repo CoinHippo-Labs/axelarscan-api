@@ -8,8 +8,8 @@ const { getTimeSpent } = require('../analytics/analyzing');
 const { normalizeLink, updateLink, updateSend } = require('../utils');
 const { recoverEvents } = require('../../crawler');
 const { write } = require('../../../services/index');
-const { TERRA_COLLAPSED_DATE, getChainsList, getChainData } = require('../../../utils/config');
-const { toArray } = require('../../../utils');
+const { TERRA_COLLAPSED_DATE, getDeposits, getChainsList, getChainData } = require('../../../utils/config');
+const { toArray, find } = require('../../../utils');
 
 module.exports = async (collection, data, params) => {
   let updated;
@@ -52,7 +52,7 @@ module.exports = async (collection, data, params) => {
                   type,
                   time_spent,
                 } = { ...d };
-                const { txhash, height, created_at, denom, amount, fee } = { ...send };
+                const { txhash, height, created_at, recipient_address, denom, amount, fee } = { ...send };
                 const { price } = { ...link };
                 const { total } = { ...time_spent };
 
@@ -67,6 +67,10 @@ module.exports = async (collection, data, params) => {
                   }
                   if ((wrap && type !== 'wrap') || (unwrap && type !== 'unwrap') || (erc20_transfer && type !== 'erc20_transfer')) {
                     d.type = wrap ? 'wrap' : unwrap ? 'unwrap' : erc20_transfer ? 'erc20_transfer' : type;
+                    _updated = true;
+                  }
+                  else if (type !== 'send_token' && find(recipient_address, toArray(getDeposits()?.send_token?.addresses))) {
+                    d.type = 'send_token';
                     _updated = true;
                   }
                   if (!total && (command?.executed || ibc_send?.ack_txhash || unwrap)) {

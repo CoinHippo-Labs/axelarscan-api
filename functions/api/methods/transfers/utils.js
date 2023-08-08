@@ -367,7 +367,6 @@ const updateLink = async (link, send) => {
       await write(DEPOSIT_ADDRESS_COLLECTION, _id, link);
     }
   }
-
   return link;
 };
 

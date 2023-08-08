@@ -13,9 +13,9 @@ const { searchPolls } = require('../../polls');
 const lcd = require('../../lcd');
 const { get, read, write } = require('../../../services/index');
 const { getLCDs } = require('../../../utils/chain/cosmos');
-const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, WRAP_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
+const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, WRAP_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getDeposits, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-const { sleep, equalsIgnoreCase, toArray, includesStringList } = require('../../../utils');
+const { sleep, equalsIgnoreCase, toArray, find, includesStringList } = require('../../../utils');
 
 module.exports = async (params = {}) => {
   let output;
@@ -397,7 +397,7 @@ module.exports = async (params = {}) => {
               }
             }
 
-            d.type = d.unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : type || 'deposit_address';
+            d.type = d.unwrap ? 'unwrap' : wrap ? 'wrap' : erc20_transfer ? 'erc20_transfer' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : type || 'deposit_address';
 
             if (getChainData(source_chain, 'evm') && !vote && (wrap || erc20_transfer || command || ibc_send || axelar_transfer || d.unwrap || (confirm && moment().diff(moment(confirm.created_at?.ms), 'minutes') > 5))) {
               const response = await read(

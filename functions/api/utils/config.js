@@ -7,6 +7,7 @@ const { equalsIgnoreCase, toArray, capitalize, normalizeQuote } = require('./');
 const {
   chains,
   contracts,
+  deposits,
   endpoints,
   assets,
   tokens,
@@ -18,6 +19,8 @@ const {
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
 const getContracts = (environment = ENVIRONMENT) => contracts?.[environment];
+
+const getDeposits = (environment = ENVIRONMENT) => deposits?.[environment];
 
 const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = false) => {
   chain_types = toArray(chain_types);
@@ -142,6 +145,7 @@ module.exports = {
   GATEWAY_EVENTS: ['TokenSent', 'Executed'],
   TERRA_COLLAPSED_DATE: '20220512',
   getContracts,
+  getDeposits,
   getChains,
   getChainsList,
   getChainKey,
