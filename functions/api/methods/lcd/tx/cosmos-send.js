@@ -4,7 +4,7 @@ const moment = require('moment');
 const { getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../../transfers/utils');
 const { read } = require('../../../services/index');
 const { getLCDs } = require('../../../utils/chain/cosmos');
-const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, getDeposits, getChainsList } = require('../../../utils/config');
+const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, getDeposits, getChainsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
 const { equalsIgnoreCase, toArray, find, toJson } = require('../../../utils');
 
@@ -128,10 +128,29 @@ module.exports = async (lcd_response = {}) => {
                 amount: amount_data.amount,
               };
 
-              const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
-              let link = normalizeLink(_.head(_response?.data));
+              const type = unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address';
+              let link;
+              if (type === 'send_token') {
+                if (packet_data) {
+                  const { memo } = { ...packet_data };
+                  const { destination_chain, destination_address } = { ...memo };
+                  link = {
+                    type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
+                    sender_chain: send.source_chain,
+                    recipient_chain: destination_chain?.toLowerCase(),
+                    sender_address: send.sender_address,
+                    deposit_address: recipient_address,
+                    recipient_address: destination_address,
+                    denom: getAssetData(send.denom)?.denom,
+                  };
+                }
+              }
+              else {
+                const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
+                link = normalizeLink(_.head(_response?.data));
+              }
               link = await updateLink(link, send);
-              await updateSend(send, link, { type: unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address', unwrap: unwrap || undefined });
+              await updateSend(send, link, { type, unwrap: unwrap || undefined });
             }
 
             tx_hashes.push(txhash);

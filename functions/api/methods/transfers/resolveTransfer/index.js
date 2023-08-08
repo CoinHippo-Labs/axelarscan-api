@@ -15,7 +15,7 @@ const { get, read, write } = require('../../../services/index');
 const { getLCDs } = require('../../../utils/chain/cosmos');
 const { POLL_COLLECTION, TRANSFER_COLLECTION, DEPOSIT_ADDRESS_COLLECTION, WRAP_COLLECTION, UNWRAP_COLLECTION, BATCH_COLLECTION, COMMAND_EVENT_COLLECTION, getDeposits, getChainsList, getChainData, getAssetsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-const { sleep, equalsIgnoreCase, toArray, find, includesStringList } = require('../../../utils');
+const { sleep, equalsIgnoreCase, toArray, find, includesStringList, toJson } = require('../../../utils');
 
 module.exports = async (params = {}) => {
   let output;
@@ -231,7 +231,7 @@ module.exports = async (params = {}) => {
                         const response = await lcd.query(`/cosmos/tx/v1beta1/txs/${txHash}`);
                         const { tx, tx_response } = { ...response };
                         const { messages } = { ...tx?.body };
-                        const { txhash, code, height, timestamp } = { ...tx_response };
+                        const { txhash, code, height, timestamp, logs } = { ...tx_response };
 
                         if (messages) {
                           const sender_address = toArray(messages).find(m => m.sender)?.sender;
@@ -282,10 +282,43 @@ module.exports = async (params = {}) => {
                               amount: amount_data.amount,
                             };
 
-                            const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
-                            let link = normalizeLink(_.head(_response?.data));
+                            const type = unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address';
+                            let link;
+                            if (type === 'send_token') {
+                              const event_data = toArray(logs)
+                                .map(l => {
+                                  const { events } = { ...l };
+                                  return { ...toArray(events).find(e => equalsIgnoreCase(e.type, 'send_packet')) };
+                                })
+                                .filter(e => toArray(e.attributes).length > 0)
+                                .map(e => {
+                                  let { attributes } = { ...e };
+                                  attributes = toArray(attributes).filter(a => a.key && a.value);
+                                  const packet_data = toJson(attributes.find(a => a.key === 'packet_data')?.value);
+                                  return { ...e, packet_data };
+                                })
+                                .find(e => typeof e.packet_data === 'object' && e.packet_data);
+                              const { packet_data } = { ...event_data };
+                              if (packet_data) {
+                                const { memo } = { ...packet_data };
+                                const { destination_chain, destination_address } = { ...memo };
+                                link = {
+                                  type: destination_address?.startsWith('0x') ? 'evm' : 'axelar',
+                                  sender_chain: send.source_chain,
+                                  recipient_chain: destination_chain?.toLowerCase(),
+                                  sender_address: send.sender_address,
+                                  deposit_address: recipient_address,
+                                  recipient_address: destination_address,
+                                  denom: getAssetData(send.denom)?.denom,
+                                };
+                              }
+                            }
+                            else {
+                              const _response = await read(DEPOSIT_ADDRESS_COLLECTION, { match: { deposit_address: recipient_address } }, { size: 1 });
+                              link = normalizeLink(_.head(_response?.data));
+                            }
                             link = await updateLink(link, send);
-                            await updateSend(send, link, { type: unwrap ? 'unwrap' : find(recipient_address, toArray(getDeposits()?.send_token?.addresses)) ? 'send_token' : 'deposit_address', unwrap: unwrap || undefined });
+                            await updateSend(send, link, { type, unwrap: unwrap || undefined });
                             exist = true;
                           }
                         }
