@@ -132,9 +132,15 @@ IXO:
 ARCH:
   coingecko_id: "archway"
   decimals: 6
+UST:
+  coingecko_id: "terrausd"
+USTC:
+  redirect: "UST"
 LUNA:
-  coingecko_id: "terra-luna-2"
+  coingecko_id: "terra-luna"
   decimals: 6
+LUNAC:
+  redirect: "LUNA"
 wAXL:
   redirect: "AXL"
 WAXL:
@@ -173,7 +179,7 @@ sfrxETH:
 rETH:
   coingecko_id: "rocket-pool-eth"
   decimals: 18
-yieldeth:
+yieldETH:
   coingecko_id: "weth"
   decimals: 18
 WBNB:
@@ -397,3 +403,158 @@ axlSEI:
   redirect: "SEI"
 axlSOMM:
   redirect: "SOMM"
+
+
+
+uaxl:
+  redirect: "AXL"
+uusdc:
+  redirect: "USDC"
+uusdt:
+  redirect: "USDT"
+dai-wei:
+  redirect: "DAI"
+busd-wei:
+  redirect: "BUSD"
+frax-wei:
+  redirect: "FRAX"
+cusd-wei:
+  redirect: "CUSD"
+yieldusd-wei:
+  redirect: "YieldUSD"
+wbtc-satoshi:
+  redirect: "WBTC"
+eth-wei:
+  redirect: "ETH"
+weth-wei:
+  redirect: "WETH"
+steth-wei:
+  redirect: "stETH"
+wsteth-wei:
+  redirect: "wstETH"
+cbeth-wei:
+  redirect: "cbETH"
+frxeth-wei:
+  redirect: "frxETH"
+sfrxeth-wei:
+  redirect: "sfrxETH"
+reth-wei:
+  redirect: "rETH"
+yieldeth-wei:
+  redirect: "yieldETH"
+bnb-wei:
+  redirect: "BNB"
+wbnb-wei:
+  redirect: "WBNB"
+stkbnb-wei:
+  redirect: "stkBNB"
+matic-wei:
+  redirect: "MATIC"
+wmatic-wei:
+  redirect: "WMATIC"
+avax-wei:
+  redirect: "AVAX"
+wavax-wei:
+  redirect: "WAVAX"
+ftm-wei:
+  redirect: "FTM"
+wftm-wei:
+  redirect: "WFTM"
+glmr-wei:
+  redirect: "GLMR"
+wglmr-wei:
+  redirect: "WGLMR"
+dev-wei:
+  redirect: "DEV"
+arb-wei:
+  redirect: "ARB"
+fil-wei:
+  redirect: "FIL"
+wfil-wei:
+  redirect: "WFIL"
+celo-wei:
+  redirect: "CELO"
+link-wei:
+  redirect: "LINK"
+uni-wei:
+  redirect: "UNI"
+aave-wei:
+  redirect: "AAVE"
+mkr-wei:
+  redirect: "MKR"
+shib-wei:
+  redirect: "SHIB"
+ape-wei:
+  redirect: "APE"
+axs-wei:
+  redirect: "AXS"
+rai-wei:
+  redirect: "RAI"
+xcn-wei:
+  redirect: "XCN"
+pepe-wei:
+  redirect: "PEPE"
+mpx-wei:
+  redirect: "MPX"
+wmai-wei:
+  redirect: "WMAI"
+ern-wei:
+  redirect: "ERN"
+stern-wei:
+  redirect: "stERN"
+lqdr-wei:
+  redirect: "LQDR"
+wdoge-wei:
+  redirect: "WDOGE"
+hzn-wei:
+  redirect: "HZN"
+deus-wei:
+  redirect: "DEUS"
+gdx-wei:
+  redirect: "GDX"
+grain-wei:
+  redirect: "GRAIN"
+knc-wei:
+  redirect: "KNC"
+oath-wei:
+  redirect: "OAUTH"
+orbs-wei:
+  redirect: "ORBS"
+pols-wei:
+  redirect: "POLS"
+ring-wei:
+  redirect: "RING"
+sonne-wei:
+  redirect: "SONNE"
+zyb-wei:
+  redirect: "ZYB"
+uosmo:
+  redirect: "OSMO"
+uatom:
+  redirect: "ATOM"
+ujuno:
+  redirect: "JUNO"
+usei:
+  redirect: "SEI"
+ukuji:
+  redirect: "KUJI"
+ungm:
+  redirect: "NGM"
+eeur:
+  redirect: "EEUR"
+uumee:
+  redirect: "UMEE"
+ustrd:
+  redirect: "STRD"
+stuatom:
+  redirect: "stATOM"
+usomm:
+  redirect: "SOMM"
+dot-planck:
+  redirect: "DOT"
+uusd:
+  redirect: "USTC"
+uluna:
+  redirect: "LUNAC"
+uausdc:
+  redirect: "aUSDC"
