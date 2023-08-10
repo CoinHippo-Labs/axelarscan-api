@@ -2266,6 +2266,33 @@ testnet:
       prefix_address: "acre"
       prefix_chain_ids:
         - "bamboo_"
+    burnt-2:
+      chain_name: "burnt-2"
+      endpoints:
+        lcd:
+          - "https://api.xion-testnet-1.burnt.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Xion"
+        symbol: "XION"
+        decimals: 6
+      name: "Burnt"
+      short_name: "BURNT"
+      image: "/logos/chains/carbon.svg"
+      color: "#74e7e7"
+      explorer:
+        name: "Burnt"
+        url: "https://pingpub.xion-testnet-1.burnt.com/xion-testnet-1"
+        icon: "/logos/explorers/carbon.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "xion"
+      prefix_chain_ids:
+        - "xion-"
     carbon:
       chain_name: "carbon"
       endpoints:
@@ -3318,6 +3345,33 @@ stagenet:
       prefix_address: "acre"
       prefix_chain_ids:
         - "bamboo_"
+    burnt-2:
+      chain_name: "burnt-2"
+      endpoints:
+        lcd:
+          - "https://api.xion-testnet-1.burnt.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Xion"
+        symbol: "XION"
+        decimals: 6
+      name: "Burnt"
+      short_name: "BURNT"
+      image: "/logos/chains/carbon.svg"
+      color: "#74e7e7"
+      explorer:
+        name: "Burnt"
+        url: "https://pingpub.xion-testnet-1.burnt.com/xion-testnet-1"
+        icon: "/logos/explorers/carbon.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "xion"
+      prefix_chain_ids:
+        - "xion-"
     carbon:
       chain_name: "carbon"
       endpoints:
