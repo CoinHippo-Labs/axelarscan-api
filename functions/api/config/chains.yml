@@ -1320,6 +1320,36 @@ mainnet:
       prefix_address: "archway"
       prefix_chain_ids:
         - "archway-"
+    provenance:
+      chain_name: "provenance"
+      endpoints:
+        lcd:
+          - "https://api.provenance.io"
+          - "https://api-provenance.takeshi.team"
+          - "https://provenance-api.ibs.team"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Provenance"
+        symbol: "HASH"
+        decimals: 6
+      name: "Provenance"
+      short_name: "HASH"
+      image: "/logos/chains/provenance.svg"
+      color: "#4d7fdb"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/provenance"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
+      prefix_address: "pb"
+      prefix_chain_ids:
+        - "pio-"
     terra-2:
       chain_name: "terra-2"
       endpoints:
@@ -1468,7 +1498,6 @@ testnet:
       endpoints:
         rpc:
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          # - "https://matic-mumbai.chainstacklabs.com"
           # - "https://polygon-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon_mumbai"
       native_token:
@@ -2521,7 +2550,6 @@ stagenet:
       endpoints:
         rpc:
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          # - "https://matic-mumbai.chainstacklabs.com"
           # - "https://polygon-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon_mumbai"
       native_token:

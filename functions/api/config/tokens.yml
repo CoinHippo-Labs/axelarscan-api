@@ -132,6 +132,11 @@ IXO:
 ARCH:
   coingecko_id: "archway"
   decimals: 6
+HASH:
+  coingecko_id: "provenance"
+  default_price:
+    usd: 0.02
+  decimals: 6
 UST:
   coingecko_id: "terrausd"
 USTC:
