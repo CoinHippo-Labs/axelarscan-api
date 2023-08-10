@@ -114,6 +114,9 @@ STRD:
 SWTH:
   coingecko_id: "switcheo"
   decimals: 6
+XION:
+  coingecko_id: "switcheo"
+  decimals: 6
 ODIN:
   coingecko_id: "odin-protocol"
   decimals: 6
