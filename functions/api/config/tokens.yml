@@ -402,6 +402,12 @@ SONNE:
 ZYB:
   coingecko_id: "zyberswap"
   decimals: 18
+VELA:
+  coingecko_id: "vela-token"
+  decimals: 18
+ARX:
+  coingecko_id: "arbitrum-exchange"
+  decimals: 18
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
@@ -547,6 +553,10 @@ sonne-wei:
   redirect: "SONNE"
 zyb-wei:
   redirect: "ZYB"
+vela-wei:
+  redirect: "VELA"
+arx-wei:
+  redirect: "ARX"
 uosmo:
   redirect: "OSMO"
 uatom:
