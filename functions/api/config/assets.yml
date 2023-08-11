@@ -3201,9 +3201,9 @@ mainnet:
     coingecko_id: "vela-token"
     addresses:
       arbitrum:
-        address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
+        address: "0x088cd8f5eF3652623c22D48b1605DCfE860Cd704"
       base:
-        address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
+        address: "0x088cd8f5eF3652623c22D48b1605DCfE860Cd704"
       axelarnet:
         ibc_denom: "vela-wei"
   arx-wei:
@@ -3216,9 +3216,9 @@ mainnet:
     coingecko_id: "arbitrum-exchange"
     addresses:
       arbitrum:
-        address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
+        address: "0xD5954c3084a1cCd70B4dA011E67760B8e78aeE84"
       base:
-        address: "0x3B475F6f2f41853706afc9Fa6a6b8C5dF1a2724c"
+        address: "0xD5954c3084a1cCd70B4dA011E67760B8e78aeE84"
       axelarnet:
         ibc_denom: "arx-wei"
   uosmo:
