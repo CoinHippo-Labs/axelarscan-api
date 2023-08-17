@@ -18,38 +18,37 @@ module.exports = async (lcd_response = {}) => {
   const height = Number(toArray(messages).find(m => equalsIgnoreCase(_.last(toArray(m['@type'], 'normal', '.')), 'MsgAcknowledgement'))?.proof_height?.revision_height || '0') - 1;
 
   if (height) {
-    const events =
-      toArray(logs)
-        .map(l => {
-          const { events } = { ...l };
-          const e = toArray(events).find(e => equalsIgnoreCase(e.type, 'acknowledge_packet'));
-          const _e = toArray(events).find(e => equalsIgnoreCase(_.last(toArray(e.type, 'normal', '.')), 'IBCTransferCompleted'));
-          const id = normalizeQuote(toArray(_e?.attributes).find(a => a.key === 'id')?.value);
-          if (id) {
-            const { attributes } = { ...e };
-            if (toArray(attributes).findIndex(a => a.key === 'packet_sequence') > -1) {
-              attributes.push({ key: 'transfer_id', value: id });
-              return { ...e, attributes };
-            }
-          }
-          return null;
-        })
-        .filter(e => e)
-        .map(e => {
+    const events = toArray(logs)
+      .map(l => {
+        const { events } = { ...l };
+        const e = toArray(events).find(e => equalsIgnoreCase(e.type, 'acknowledge_packet'));
+        const _e = toArray(events).find(e => equalsIgnoreCase(_.last(toArray(e.type, 'normal', '.')), 'IBCTransferCompleted'));
+        const id = normalizeQuote(toArray(_e?.attributes).find(a => a.key === 'id')?.value);
+        if (id) {
           const { attributes } = { ...e };
-          return {
-            id: txhash,
-            height,
-            ...Object.fromEntries(
-              toArray(attributes)
-                .filter(a => a.key && a.value)
-                .map(a => {
-                  const { key, value } = { ...a };
-                  return [key, toJson(value) || (typeof value === 'string' ? normalizeQuote(value) : value)];
-                })
-            ),
-          };
-        });
+          if (toArray(attributes).findIndex(a => a.key === 'packet_sequence') > -1) {
+            attributes.push({ key: 'transfer_id', value: id });
+            return { ...e, attributes };
+          }
+        }
+        return null;
+      })
+      .filter(e => e)
+      .map(e => {
+        const { attributes } = { ...e };
+        return {
+          id: txhash,
+          height,
+          ...Object.fromEntries(
+            toArray(attributes)
+              .filter(a => a.key && a.value)
+              .map(a => {
+                const { key, value } = { ...a };
+                return [key, toJson(value) || (typeof value === 'string' ? normalizeQuote(value) : value)];
+              })
+          ),
+        };
+      });
 
     for (const event of events) {
       const {
@@ -73,31 +72,30 @@ module.exports = async (lcd_response = {}) => {
               { match: { 'ibc_send.packet.packet_src_channel': packet_src_channel } },
               { match: { 'ibc_send.packet.packet_dst_channel': packet_dst_channel } },
             ],
-            should:
-              transfer_id ?
-                [
-                  {
-                    bool: {
-                      should: [
-                        { match: { 'confirm.transfer_id': transfer_id } },
-                        { match: { 'vote.transfer_id': transfer_id } },
-                        { match: { 'ibc_send.transfer_id': transfer_id } },
-                        { match: { transfer_id } },
-                      ],
-                      minimum_should_match: 1,
-                    },
+            should: transfer_id ?
+              [
+                {
+                  bool: {
+                    should: [
+                      { match: { 'confirm.transfer_id': transfer_id } },
+                      { match: { 'vote.transfer_id': transfer_id } },
+                      { match: { 'ibc_send.transfer_id': transfer_id } },
+                      { match: { transfer_id } },
+                    ],
+                    minimum_should_match: 1,
                   },
-                ] :
-                [
-                  { match: { 'ibc_send.ack_txhash': id } },
-                  {
-                    bool: {
-                      must_not: [
-                        { exists: { field: 'ibc_send.ack_txhash' } },
-                      ],
-                    },
+                },
+              ] :
+              [
+                { match: { 'ibc_send.ack_txhash': id } },
+                {
+                  bool: {
+                    must_not: [
+                      { exists: { field: 'ibc_send.ack_txhash' } },
+                    ],
                   },
-                ],
+                },
+              ],
             minimum_should_match: 1,
           },
         },
@@ -114,10 +112,7 @@ module.exports = async (lcd_response = {}) => {
           ack_txhash: id,
           failed_txhash: transfer_id ? null : undefined,
         };
-        transfer_data = {
-          ...transfer_data,
-          ibc_send,
-        };
+        transfer_data = { ...transfer_data, ibc_send };
 
         await write(TRANSFER_COLLECTION, _id, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
         updated = true;
@@ -141,9 +136,16 @@ module.exports = async (lcd_response = {}) => {
                 tx_responses = response.tx_responses;
               }
             }
+            if (toArray(tx_responses).length < 1) {
+              response = await lcd.query(`/cosmos/tx/v1beta1/txs?limit=5&events=tx.height=${height}`);
+              if (response) {
+                txs = response.txs;
+                tx_responses = response.tx_responses;
+              }
+            }
 
-            const transaction_data = toArray(tx_responses).find(t => {
-              const { attributes } = { ..._.head(toArray(t.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')))) };
+            const transaction_data = toArray(tx_responses).find(d => {
+              const { attributes } = { ..._.head(toArray(d.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')))) };
               return packet_sequence === toArray(attributes).find(a => a.key === 'packet_sequence')?.value;
             });
             const { txhash, timestamp } = { ...transaction_data };
@@ -155,10 +157,7 @@ module.exports = async (lcd_response = {}) => {
                 recv_txhash: txhash,
                 received_at: getGranularity(moment(timestamp).utc()),
               };
-              transfer_data = {
-                ...transfer_data,
-                ibc_send,
-              };
+              transfer_data = { ...transfer_data, ibc_send };
               await write(TRANSFER_COLLECTION, _id, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
             }
           }

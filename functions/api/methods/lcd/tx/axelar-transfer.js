@@ -31,15 +31,11 @@ module.exports = async (lcd_response = {}) => {
       .filter(e => e)
       .map(e => {
         const { attributes } = { ...e };
-        return (
-          Object.fromEntries(
-            toArray(attributes)
-              .filter(a => a.key && a.value)
-              .map(a => {
-                const { key, value } = { ...a };
-                return [key, toJson(value) || (typeof value === 'string' ? normalizeQuote(value) : value)];
-              })
-          )
+        return Object.fromEntries(
+          toArray(attributes).filter(a => a.key && a.value).map(a => {
+            const { key, value } = { ...a };
+            return [key, toJson(value) || (typeof value === 'string' ? normalizeQuote(value) : value)];
+          })
         );
       });
 

@@ -14,32 +14,31 @@ module.exports = async (lcd_response = {}) => {
   const { logs } = { ...tx_response };
   const { chain_id } = { ...toArray(messages).find(m => m['@type']?.includes('MsgUpdateClient'))?.header?.signer_header?.header };
 
-  const events =
-    toArray(logs)
-      .map(l => {
-        const { events } = { ...l };
-        return {
-          ...toArray(events).find(e => equalsIgnoreCase(e.type, 'recv_packet')),
-          height: Number(toArray(messages).find(m => _.last(toArray(m['@type'], 'normal', '.')) === 'MsgRecvPacket')?.proof_height?.revision_height || '0') - 1,
-        };
-      })
-      .filter(e => e.height > 0 && toArray(e.attributes).length > 0)
-      .map(e => {
-        let { attributes } = { ...e };
-        attributes = toArray(attributes).filter(a => a.key && a.value);
-        const packet_data = toJson(attributes.find(a => a.key === 'packet_data')?.value);
-        const packet_data_hex = attributes.find(a => a.key === 'packet_data_hex')?.value;
-        const packet_sequence = attributes.find(a => a.key === 'packet_sequence')?.value;
-        const packet_timeout_timestamp = attributes.find(a => a.key === 'packet_timeout_timestamp')?.value;
-        return {
-          ...e,
-          packet_data,
-          packet_data_hex,
-          packet_sequence,
-          packet_timeout_timestamp,
-        };
-      })
-      .filter(e => typeof e.packet_data === 'object' && e.packet_data);
+  const events = toArray(logs)
+    .map(l => {
+      const { events } = { ...l };
+      return {
+        ...toArray(events).find(e => equalsIgnoreCase(e.type, 'recv_packet')),
+        height: Number(toArray(messages).find(m => _.last(toArray(m['@type'], 'normal', '.')) === 'MsgRecvPacket')?.proof_height?.revision_height || '0') - 1,
+      };
+    })
+    .filter(e => e.height > 0 && toArray(e.attributes).length > 0)
+    .map(e => {
+      let { attributes } = { ...e };
+      attributes = toArray(attributes).filter(a => a.key && a.value);
+      const packet_data = toJson(attributes.find(a => a.key === 'packet_data')?.value);
+      const packet_data_hex = attributes.find(a => a.key === 'packet_data_hex')?.value;
+      const packet_sequence = attributes.find(a => a.key === 'packet_sequence')?.value;
+      const packet_timeout_timestamp = attributes.find(a => a.key === 'packet_timeout_timestamp')?.value;
+      return {
+        ...e,
+        packet_data,
+        packet_data_hex,
+        packet_sequence,
+        packet_timeout_timestamp,
+      };
+    })
+    .filter(e => typeof e.packet_data === 'object' && e.packet_data);
 
   const tx_hashes = [];
   let source_chain;
