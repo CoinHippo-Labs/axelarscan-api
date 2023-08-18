@@ -362,6 +362,10 @@ const updateLink = async (link, send) => {
       }
     }
 
+    if (link.denom?.startsWith('ibc/')) {
+      link.denom = getAssetData(link.denom)?.denom || link.denom;
+    }
+
     if (deposit_address && updated) {
       const _id = deposit_address;
       await write(DEPOSIT_ADDRESS_COLLECTION, _id, link);
@@ -445,6 +449,10 @@ const updateSend = async (send, link, data, update_only = false) => {
           send.insufficient_fee = false;
         }
       }
+    }
+
+    if (send.denom?.startsWith('ibc/')) {
+      send.denom = getAssetData(send.denom)?.denom || send.denom;
     }
 
     const _id = data?.id || generateId({ send });
