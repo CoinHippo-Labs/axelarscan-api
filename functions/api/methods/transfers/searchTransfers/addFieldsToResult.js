@@ -1,3 +1,4 @@
+const { getAssetData } = require('../../../utils/config');
 const { toArray } = require('../../../utils');
 
 module.exports = data => toArray(data).map(d => {
@@ -17,30 +18,40 @@ module.exports = data => toArray(data).map(d => {
   const { amount, value, insufficient_fee } = { ...send };
   const { price } = { ...link };
 
-  if (link && typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number' && amount) {
-    d.link.price = value / amount;
+  if (send) {
+    if (send.denom?.startsWith('ibc/')) {
+      d.send.denom = getAssetData(send.denom)?.denom || send.denom;
+    }
   }
 
-  const status =
-    ibc_send ?
-      ibc_send.failed_txhash && !ibc_send.ack_txhash ?
-        'ibc_failed' :
-        ibc_send.recv_txhash || unwrap?.tx_hash_unwrap ?
-          'executed' :
-          'ibc_sent' :
-      command?.executed || unwrap?.tx_hash_unwrap ?
+  if (link) {
+    if (link.denom?.startsWith('ibc/')) {
+      d.link.denom = getAssetData(link.denom)?.denom || link.denom;
+    }
+    if (typeof price !== 'number' && typeof amount === 'number' && typeof value === 'number' && amount) {
+      d.link.price = value / amount;
+    }
+  }
+
+  const status = ibc_send ?
+    ibc_send.failed_txhash && !ibc_send.ack_txhash ?
+      'ibc_failed' :
+      ibc_send.recv_txhash || unwrap?.tx_hash_unwrap ?
         'executed' :
-         command ?
-          'batch_signed' :
-          axelar_transfer || unwrap?.tx_hash_unwrap ?
-            'executed' :
-            vote ?
-              'voted' :
-              confirm ?
-                'deposit_confirmed' :
-                send?.status === 'failed' && !wrap && !erc20_transfer ?
-                  'send_failed' :
-                  'asset_sent';
+        'ibc_sent' :
+    command?.executed || unwrap?.tx_hash_unwrap ?
+      'executed' :
+       command ?
+        'batch_signed' :
+        axelar_transfer || unwrap?.tx_hash_unwrap ?
+          'executed' :
+          vote ?
+            'voted' :
+            confirm ?
+              'deposit_confirmed' :
+              send?.status === 'failed' && !wrap && !erc20_transfer ?
+                'send_failed' :
+                'asset_sent';
 
   let simplified_status;
   switch (status) {
