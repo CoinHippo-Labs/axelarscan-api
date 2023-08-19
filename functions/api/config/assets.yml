@@ -199,6 +199,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F"
         symbol: "axlUSDC"
+      archway:
+        ibc_denom: "ibc/B9E4FD154C92D3A23BEA029906C4C5FF2FE74CB7E3A058290B77197A263CF88B"
+        symbol: "axlUSDC"
       provenance:
         ibc_denom: "ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F"
         symbol: "axlUSDC"
@@ -368,6 +371,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/F2331645B9683116188EF36FC04A809C28BD36B54555E8705A37146D0182F045"
         symbol: "axlUSDT"
+      archway:
+        ibc_denom: "ibc/2801BC8CE5AC116A6D879A8ADB69D775068BD84CCBA04AA3D339F25C5270ABC5"
+        symbol: "axlUSDT"
       provenance:
         ibc_denom: "ibc/F2331645B9683116188EF36FC04A809C28BD36B54555E8705A37146D0182F045"
         symbol: "axlUSDT"
@@ -506,6 +512,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/3914BDEF46F429A26917E4D8D434620EC4817DC6B6E68FB327E190902F1E9242"
         symbol: "axlDAI"
+      archway:
+        ibc_denom: "ibc/172CEB45A4226AF4351EFD23D78D349AD686F1D015AC2152430A352A3362EB64"
+        symbol: "axlDAI"
       provenance:
         ibc_denom: "ibc/3914BDEF46F429A26917E4D8D434620EC4817DC6B6E68FB327E190902F1E9242"
         symbol: "axlDAI"
@@ -600,6 +609,9 @@ mainnet:
         symbol: "axlBUSD"
       rebus:
         ibc_denom: "ibc/65CD60D7E37EF830BC6B6A6DF4E3E3884A96C0905A7D271C48DC0440B1989EC7"
+        symbol: "axlBUSD"
+      archway:
+        ibc_denom: "ibc/799F11B241AAB598261632B890A3B0E678B5918D00ED3ED943E7D7C102621C1F"
         symbol: "axlBUSD"
       terra-2:
         ibc_denom: "ibc/FDDF98401F29AC63212C1742F9EC86D3AA1E1BE94BF9EB2F72B990C490303F42"
@@ -728,6 +740,9 @@ mainnet:
         symbol: "axlFRAX"
       rebus:
         ibc_denom: "ibc/7B11FE7D6385B46B9F3598B298B81A773CB20A8BA12001D87A78580314218364"
+        symbol: "axlFRAX"
+      archway:
+        ibc_denom: "ibc/F17C8EF908BE4D0AE74F236C455E26274185C6DB47037AA6BDF02DA7A8B81052"
         symbol: "axlFRAX"
       terra-2:
         ibc_denom: "ibc/2E435CEEEBA18CCB2719E0182BC5D142A364D6CCE9957DE6E1AC4D62127D2913"
@@ -926,6 +941,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/301DAF9CB0A9E247CD478533EF0E21F48FF8118C4A51F77C8BC3EB70E5566DBC"
         symbol: "axlWBTC"
+      archway:
+        ibc_denom: "ibc/3A2DEEBCD51D0B74FE7CE058D40B0BF4C0E556CE9219E8F25F92CF288FF35F56"
+        symbol: "axlWBTC"
       provenance:
         ibc_denom: "ibc/301DAF9CB0A9E247CD478533EF0E21F48FF8118C4A51F77C8BC3EB70E5566DBC"
         symbol: "axlWBTC"
@@ -1063,6 +1081,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7"
         symbol: "axlETH"
+      archway:
+        ibc_denom: "ibc/13C5990F84FA5D472E1F8BB1BAAEA8774DA5F24128EC02B119107AD21FB52A61"
+        symbol: "axlETH"
       provenance:
         ibc_denom: "ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7"
         symbol: "axlETH"
@@ -1118,54 +1139,90 @@ mainnet:
     addresses:
       ethereum:
         address: "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+      polygon:
+        address: "0xd7Bb095a60D7666D4A6f236423B47DDD6ae6Cfa7"
+        symbol: "axl-wstETH"
+      arbitrum:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      optimism:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
       axelarnet:
         ibc_denom: "wsteth-wei"
+        symbol: "axl-wstETH"
       osmosis:
         ibc_denom: "ibc/B2BD584CD2A0A9CE53D4449667E26160C7D44A9C41AF50F602C201E5B3CCA46C"
+        symbol: "axl-wstETH"
       cosmoshub:
         ibc_denom: "ibc/11F00C6AA654FE1F7D5A8FBDC7D2E04A65B3101B306E82E3C35B35956161FED6"
+        symbol: "axl-wstETH"
       juno:
         ibc_denom: "ibc/D5D1F7B6004D1918CE125862C942F3289DE06E271661C2DD32E3F71479BAF751"
+        symbol: "axl-wstETH"
       injective:
         ibc_denom: "ibc/1E0FC59FB8495BF927B10E9D515661494B1BBEDAA15D80E52FE2BADA64656D16"
+        symbol: "axl-wstETH"
       crescent:
         ibc_denom: "ibc/F5BBAD34906B6ED73EB17652C47F7F34D2FFB8AC06712E0396F2F28E69DB40C0"
+        symbol: "axl-wstETH"
       kujira:
         ibc_denom: "ibc/B572E6F30E7C33D78A50D8B4E973A9C118C30F848DF31A95FAA5E4C7450A8BD0"
+        symbol: "axl-wstETH"
       secret:
         ibc_denom: "ibc/D690CBA4D218BDECACC696182D938F5898D76A1DFAEA4BC9FAAAC93AFBFFAFAB"
+        symbol: "axl-wstETH"
       stargaze:
         ibc_denom: "ibc/02525542CBA0199F7198956A3F518161AFCFBF1BE121A1B9B4D7D5F00EFB14A2"
+        symbol: "axl-wstETH"
       assetmantle:
         ibc_denom: "ibc/489BBCC3D623609BA0DEF32CF79892BC419666EDE50B30804B8FDEC0D5092209"
+        symbol: "axl-wstETH"
       fetch:
         ibc_denom: "ibc/B4B998750D9A3F93352F83A0BC3563867A3D0B66856F53F52A02926A96128680"
+        symbol: "axl-wstETH"
       ki:
         ibc_denom: "ibc/CA24259425AF30865098E84FA22D9DC0CA804A72AC4E088B2604D013E22B7B3D"
+        symbol: "axl-wstETH"
       evmos:
         ibc_denom: "ibc/43BD3A576550CDCD183BC093AEB610B3C2057AD12BA3C27D67AE9F4BCA74F2C8"
+        symbol: "axl-wstETH"
       comdex:
         ibc_denom: "ibc/DE312320E73AA1DECADE6C221DE2558C019F98738A0236BAB0CDCA0978D3108F"
+        symbol: "axl-wstETH"
       persistence:
         ibc_denom: "ibc/0880D9F3F46850497A4E31CA3603CC9D17404A02DB31BB244398093489A4FCEF"
+        symbol: "axl-wstETH"
       regen:
         ibc_denom: "ibc/70A7A29FBC7DF5B8C4B3D7F952B984A42D457A396E42898F605F73253D542911"
+        symbol: "axl-wstETH"
       umee:
         ibc_denom: "ibc/4F7A8F699E3B4E17E2B725CE1000557B2E3E5DAF091212EAAAD90ADD0F4F0BA6"
+        symbol: "axl-wstETH"
       agoric:
         ibc_denom: "ibc/B572E6F30E7C33D78A50D8B4E973A9C118C30F848DF31A95FAA5E4C7450A8BD0"
+        symbol: "axl-wstETH"
       xpla:
         ibc_denom: "ibc/DB4899D8FE95DBF3EDDFC5B70D8263D732867B76CC93A1C6D4B61682CEC2B465"
+        symbol: "axl-wstETH"
       acre:
         ibc_denom: "ibc/38D142F182413E7B44A3EBA2DA1FDBDE2B08BFC44A91DBD21A5D3583D99F47F6"
+        symbol: "axl-wstETH"
       carbon:
         ibc_denom: "ibc/17A3A5E3FCDBBC131DE31690C5708144D6A882652689BA86162EACC23BA04087"
+        symbol: "axl-wstETH"
       sommelier:
         ibc_denom: "ibc/38D142F182413E7B44A3EBA2DA1FDBDE2B08BFC44A91DBD21A5D3583D99F47F6"
+        symbol: "axl-wstETH"
       neutron:
         ibc_denom: "ibc/4D04085167777659C11784A356D6B0D13D5C7F0CE77F7DB1152FE03A2DE2CBF2"
+        symbol: "axl-wstETH"
+      archway:
+        ibc_denom: "ibc/E0735A572BA1EAE93DEFB4C865E28DDCA3D1F7B38C3AEC94BDFDB8A39C664DBF"
+        symbol: "axl-wstETH"
       terra-2:
         ibc_denom: "ibc/57C5ECAE3AAA7382AC93CFE971CA2F9B669323FDF5A5A138B535E4F9EAD185BD"
+        symbol: "axl-wstETH"  
   cbeth-wei:
     denom: "cbeth-wei"
     native_chain: "ethereum"
@@ -1468,6 +1525,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833"
         symbol: "axlBNB"
+      archway:
+        ibc_denom: "ibc/3EB757FA554FC8F6E539A02E23600E6FD42533415EFE5E24480A3F010A04FA68"
+        symbol: "axlBNB"
       terra-2:
         ibc_denom: "ibc/1319C6B38CA613C89D78C2D1461B305038B1085F6855E8CD276FE3F7C9600B4C"
         symbol: "axlBNB"
@@ -1572,6 +1632,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6"
         symbol: "axlMATIC"
+      archway:
+        ibc_denom: "ibc/F6849F4A8B62F2B3B262D4B51D3E0EE4CC6294B046B79D72EC64796A97474127"
+        symbol: "axlMATIC"
       terra-2:
         ibc_denom: "ibc/14E4FD1AB72DE9BF1D6725CBA18373C406CB9A7DA17955299F3F4DC5C6131A4E"
         symbol: "axlMATIC"
@@ -1666,6 +1729,9 @@ mainnet:
         symbol: "axlAVAX"
       rebus:
         ibc_denom: "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2"
+        symbol: "axlAVAX"
+      archway:
+        ibc_denom: "ibc/AF62035CBD6A7896882827CC6063024E9C3B57ABF5F0C37B5DB735BA6D1E1825"
         symbol: "axlAVAX"
       terra-2:
         ibc_denom: "ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B"
@@ -1765,6 +1831,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2"
         symbol: "axlFTM"
+      archway:
+        ibc_denom: "ibc/D161EAA25F518C3AF2E7EB3533940187C60F835B9242E9A96C7B6F83E7E84473"
+        symbol: "axlFTM"
       terra-2:
         ibc_denom: "ibc/19E687E77D1AE3CADBB3DE487277AFEC0E340A84334D6ED3F216EF25A7075746"
         symbol: "axlFTM"
@@ -1853,6 +1922,9 @@ mainnet:
         symbol: "axlGLMR"
       rebus:
         ibc_denom: "ibc/C8D63703F5805CE6A2B20555139CF6ED9CDFA870389648EB08D688B94B0AE2C1"
+        symbol: "axlGLMR"
+      archway:
+        ibc_denom: "ibc/C7DBD7D87B35ACD5BD7878B39A3539D73FC67E81C74C010889C775467E176372"
         symbol: "axlGLMR"
       terra-2:
         ibc_denom: "ibc/D54CE4CD2927F744CDCA844DD0E1A5DF88762274C55CD9AAB13E504A29BE8933"
@@ -2126,6 +2198,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/FC59D6840A41252352263CEA2B832BB86D68D03CBA194263CB9F3C15946796FB"
         symbol: "axlLINK"
+      archway:
+        ibc_denom: "ibc/6D91F37997735DDD85A03C332485078E8F6A8F52CF38A70B8EE4C271FD1D5DA1"
+        symbol: "axlLINK"
       terra-2:
         ibc_denom: "ibc/1FD62537E1FBE67DF7574E0234112B4FE417B20AADC2F574026CB664EA9492C7"
         symbol: "axlLINK"
@@ -2214,6 +2289,9 @@ mainnet:
         symbol: "axlUNI"
       rebus:
         ibc_denom: "ibc/0A88A08F3E9573DB9D8CB74AA3746F6D23C41C3EE7B6CC5AA4695A1DD74FF86B"
+        symbol: "axlUNI"
+      archway:
+        ibc_denom: "ibc/93A73FE9DEE2E0672BEB66534209F5E3E155201DCBD10A58DAD95A3A96C58BE2"
         symbol: "axlUNI"
       terra-2:
         ibc_denom: "ibc/6EFF21F9E65C9101370C38AA53049E4D1FF2B206A7C350B45F0ED3660E57AC75"
@@ -2366,6 +2444,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/31A4E6623063E702FB9CF2E7B616DFCCDE319CA2FC4775CDFF26F29F628E7ACF"
         symbol: "axlMKR"
+      archway:
+        ibc_denom: "ibc/DC9E5E3B14F410DB9396925B2CCF525C1F990FF1B56E4F2E90B76B086D7B7898"
+        symbol: "axlMKR"
       terra-2:
         ibc_denom: "ibc/EF21BC562B7EB4D22BBF467D011E3118B7E3AD6D095000A672A9FCECA5ABCF15"
         symbol: "axlMKR"
@@ -2451,6 +2532,9 @@ mainnet:
         symbol: "axlSHIB"
       rebus:
         ibc_denom: "ibc/43BF3152103ED706E207005E7C433AB3440572C1D444FFE49321A0EF6A8EFC82"
+        symbol: "axlSHIB"
+      archway:
+        ibc_denom: "ibc/C9A055A621F56764EC026BAEEB90038939A6B3CD58D04E0A3C6343443C58C47A"
         symbol: "axlSHIB"
       terra-2:
         ibc_denom: "ibc/62CC85ED0F0C43C453B1A059BF5A147498550C2A7ADDEE6324A0B4E9E371C9C7"
@@ -2673,6 +2757,9 @@ mainnet:
         symbol: "axlRAI"
       rebus:
         ibc_denom: "ibc/4CA23432A78B272A9EB7010CB72A15A199066D239F1B13BB583F3945EB8A315C"
+        symbol: "axlRAI"
+      archway:
+        ibc_denom: "ibc/0E3DA4942633E784F3BD7ADFB4705176A27FE019FC5712A06AD934B943EF173C"
         symbol: "axlRAI"
       terra-2:
         ibc_denom: "ibc/88C5B3E62FD8ECC8825107D86C4AC8CDECDC7B44135DD757D1D83E27203B6C9D"
@@ -3624,6 +3711,9 @@ mainnet:
       rebus:
         ibc_denom: "ibc/B37E4D9FB5B30F3E1E20A4B2DE2A005E584C5C822C44527546556AE2470B4539"
         symbol: "axlDOT"
+      archway:
+        ibc_denom: "ibc/B1561C4EEF4142F23E824F93A93BBB284F3392781ABB920A25B71E6C4767346A"
+        symbol: "axlDOT"
       terra-2:
         ibc_denom: "ibc/5B01781626783C316A22ACBB55ECA8C6C57AA92C1565C69128C192FA36680AFB"
         symbol: "axlDOT"
@@ -3973,6 +4063,35 @@ testnet:
       terra-3:
         ibc_denom: "ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F"
         symbol: "axlETH"
+  wsteth-wei:
+    denom: "wsteth-wei"
+    native_chain: "ethereum"
+    name: "Wrapped stETH"
+    symbol: "wstETH"
+    decimals: 18
+    image: "/logos/assets/wsteth.svg"
+    coingecko_id: "staked-ether"
+    addresses:
+      ethereum:
+        address: "0x6320cD32aA674d2898A68ec82e869385Fc5f7E2f"
+      polygon:
+        address: "0xb48D2ce84900ff4dFFaf53CbE5ea8Ec6195cb67b"
+        symbol: "axl-wstETH"
+      arbitrum:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      optimism:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      axelarnet:
+        ibc_denom: "wsteth-wei"
+        symbol: "axl-wstETH"
+      osmosis:
+        ibc_denom: "ibc/F24CE80D9167C162DB1D4A05C341A934204D996B77D2223AF9ECD376CA886F1D"
+        symbol: "axl-wstETH"
+      neutron:
+        ibc_denom: "ibc/CB610AD37E154A759FBBC7998C0543546DA9C16A8870A8B0211003D2F01AF3BD"
+        symbol: "axl-wstETH"
   bnb-wei:
     denom: "bnb-wei"
     denoms:
