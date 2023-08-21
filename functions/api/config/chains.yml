@@ -11,8 +11,8 @@ mainnet:
       endpoints:
         rpc:
           - "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          - "https://eth-mainnet.public.blastapi.io"
           - "https://1rpc.io/eth"
+          - "https://eth-mainnet.public.blastapi.io"
           - "https://rpc.ankr.com/eth"
       native_token:
         name: "Ethereum"
@@ -41,9 +41,9 @@ mainnet:
           - "https://bsc-dataseed1.ninicoin.io"
           - "https://bsc-dataseed1.defibit.io"
           - "https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3"
-          - "https://bsc-mainnet.public.blastapi.io"
           - "https://1rpc.io/bnb"
           - "https://bscrpc.com"
+          - "https://bsc-mainnet.public.blastapi.io"
           - "https://rpc.ankr.com/bsc"
       native_token:
         name: "BNB"
@@ -71,8 +71,8 @@ mainnet:
           - "https://polygon-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://poly-rpc.gateway.pokt.network"
           - "https://polygon.blockpi.network/v1/rpc/public"
-          - "https://polygon-mainnet.public.blastapi.io"
           - "https://1rpc.io/matic"
+          - "https://polygon-mainnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon"
       native_token:
         name: "Polygon"
@@ -122,8 +122,8 @@ mainnet:
       endpoints:
         rpc:
           - "https://avalanche.blockpi.network/v1/rpc/public"
-          - "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://1rpc.io/avax/c"
+          - "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://rpc.ankr.com/avalanche"
       native_token:
         name: "Avalanche"
@@ -151,7 +151,6 @@ mainnet:
           - "https://rpc.ftm.tools"
           - "https://rpc.fantom.network"
           - "https://fantom.blockpi.network/v1/rpc/public"
-          # - "https://fantom-mainnet.public.blastapi.io"
           - "https://1rpc.io/ftm"
           - "https://rpc.ankr.com/fantom"
       native_token:
@@ -178,8 +177,8 @@ mainnet:
       endpoints:
         rpc:
           - "https://rpc.api.moonbeam.network"
-          - "https://moonbeam.public.blastapi.io"
           # - "https://1rpc.io/glmr"
+          - "https://moonbeam.public.blastapi.io"
           - "https://rpc.ankr.com/moonbeam"
       native_token:
         name: "Moonbeam"
@@ -259,8 +258,8 @@ mainnet:
         rpc:
           - "https://optimism-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
           - "https://optimism.blockpi.network/v1/rpc/public"
-          - "https://optimism-mainnet.public.blastapi.io"
           - "https://1rpc.io/op"
+          - "https://optimism-mainnet.public.blastapi.io"
           - "https://rpc.ankr.com/optimism"
       native_token:
         name: "Ethereum"
@@ -1530,7 +1529,6 @@ testnet:
       endpoints:
         rpc:
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          # - "https://polygon-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon_mumbai"
       native_token:
         name: "Polygon"
@@ -1579,8 +1577,8 @@ testnet:
       maintainer_id: "avalanche"
       endpoints:
         rpc:
-          - "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://api.avax-test.network/ext/bc/C/rpc"
+          - "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://rpc.ankr.com/avalanche_fuji"
       native_token:
         name: "Avalanche"
@@ -1605,8 +1603,8 @@ testnet:
       maintainer_id: "fantom"
       endpoints:
         rpc:
-          - "https://fantom-testnet.public.blastapi.io"
           - "https://rpc.testnet.fantom.network"
+          - "https://fantom-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/fantom_testnet"
       native_token:
         name: "Fantom"
@@ -1631,9 +1629,9 @@ testnet:
       maintainer_id: "moonbeam"
       endpoints:
         rpc:
-          - "https://moonbase-alpha.public.blastapi.io"
           - "https://rpc.api.moonbase.moonbeam.network"
           - "https://rpc.testnet.moonbeam.network"
+          - "https://moonbase-alpha.public.blastapi.io"
       native_token:
         name: "Dev"
         symbol: "DEV"
@@ -2609,7 +2607,6 @@ stagenet:
       endpoints:
         rpc:
           - "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          # - "https://polygon-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon_mumbai"
       native_token:
         name: "Polygon"
@@ -2658,8 +2655,8 @@ stagenet:
       maintainer_id: "avalanche"
       endpoints:
         rpc:
-          - "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://api.avax-test.network/ext/bc/C/rpc"
+          - "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc"
           - "https://rpc.ankr.com/avalanche_fuji"
       native_token:
         name: "Avalanche"
@@ -2684,8 +2681,8 @@ stagenet:
       maintainer_id: "fantom"
       endpoints:
         rpc:
-          - "https://fantom-testnet.public.blastapi.io"
           - "https://rpc.testnet.fantom.network"
+          - "https://fantom-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/fantom_testnet"
       native_token:
         name: "Fantom"
@@ -2710,9 +2707,9 @@ stagenet:
       maintainer_id: "moonbeam"
       endpoints:
         rpc:
-          - "https://moonbase-alpha.public.blastapi.io"
           - "https://rpc.api.moonbase.moonbeam.network"
           - "https://rpc.testnet.moonbeam.network"
+          - "https://moonbase-alpha.public.blastapi.io"
       native_token:
         name: "Dev"
         symbol: "DEV"

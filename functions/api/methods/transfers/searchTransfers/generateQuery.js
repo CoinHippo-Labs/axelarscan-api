@@ -229,6 +229,46 @@ module.exports = params => {
                   };
                 }
                 break;
+              case 'chain':
+                if (v) {
+                  v = toArray(v);
+                  obj = {
+                    should: [
+                      {
+                        bool: {
+                          should: v.map(c => {
+                            return {
+                              bool: {
+                                must: [
+                                  { match_phrase: { 'send.original_source_chain': c } },
+                                ],
+                                must_not: getOthersChainIds(c).flatMap(_c => [{ match_phrase: { 'send.original_source_chain': _c } }, { match_phrase: { 'send.source_chain': _c } }]),
+                              },
+                            };
+                          }),
+                          minimum_should_match: 1,
+                        }
+                      },
+                      {
+                        bool: {
+                          should: v.map(c => {
+                            return {
+                              bool: {
+                                must: [
+                                  { match_phrase: { 'send.original_destination_chain': c } },
+                                ],
+                                must_not: getOthersChainIds(c).flatMap(_c => [{ match_phrase: { 'send.original_destination_chain': _c } }, { match_phrase: { 'send.destination_chain': _c } }]),
+                              },
+                            };
+                          }),
+                          minimum_should_match: 1,
+                        },
+                      },
+                    ],
+                    minimum_should_match: 1,
+                  };
+                }
+                break;
               case 'asset':
               case 'assets':
                 if (v) {
