@@ -11,7 +11,7 @@ const { LCD_CACHE_COLLECTION, getChainData } = require('../../../utils/config');
 const { pubKeyToBech32 } = require('../../../utils/bech32');
 const { getDelegatorAddress } = require('../../../utils/address');
 const { numberFormatUnits } = require('../../../utils/number');
-const { equalsIgnoreCase, toArray } = require('../../../utils');
+const { equalsIgnoreCase, toArray, toJson } = require('../../../utils');
 
 const NUM_UPTIME_BLOCKS = 10000;
 
