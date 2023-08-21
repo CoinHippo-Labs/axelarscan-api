@@ -12,7 +12,6 @@ module.exports = async (params = {}, size = 100, max_page = 100, cache_age_secon
   let output;
 
   let { fromBlock, toBlock } = { ...params };
-
   let cache;
   let cache_hit = false;
   const cache_id = !(fromBlock || toBlock) ? 'getValidatorsVotes' : undefined;
