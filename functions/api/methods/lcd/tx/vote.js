@@ -194,7 +194,7 @@ module.exports = async (lcd_response = {}) => {
                   }
 
                   transaction_id = toHex(transaction_id);
-                  success = success || !!confirmation;
+                  // success = success || !!confirmation;
 
                   if (voter) {
                     await write(
@@ -211,8 +211,8 @@ module.exports = async (lcd_response = {}) => {
                         transfer_id,
                         event: event_name || undefined,
                         confirmation: confirmation || undefined,
-                        success: success || confirmation || undefined,
-                        failed: success || confirmation ? false : failed || undefined,
+                        success: success || undefined,
+                        failed: success ? false : failed || undefined,
                         participants: participants || undefined,
                         confirmation_events: toArray(confirmation_events).length > 0 ? toArray(confirmation_events) : undefined,
                         [voter.toLowerCase()]: {
