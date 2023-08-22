@@ -10,6 +10,7 @@ const getWS = () => ws && new WebSocket(`${ws}/websocket`);
 const getReindex = () => reindex;
 
 module.exports = {
+  ENVIRONMENT,
   getAPI,
   getWS,
   getReindex,

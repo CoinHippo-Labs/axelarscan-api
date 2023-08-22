@@ -56,6 +56,7 @@ const getGateway = async (chain, contracts_data, env = ENVIRONMENT) => {
 };
 
 module.exports = {
+  ENVIRONMENT,
   GATEWAY_EVENTS: ['TokenSent', 'Executed'],
   getConfig,
   getAPI,

@@ -1,9 +1,9 @@
-const { getAPI } = require('../../utils/config');
+const { ENVIRONMENT, getAPI } = require('../../utils/config');
 const { log, toArray, parseRequestError } = require('../../utils');
 
 module.exports = async context => {
   const api = getAPI();
-  if (api && process.env.ENVIRONMENT === 'mainnet') {
+  if (api && ENVIRONMENT === 'mainnet') {
     const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler`;
     const method = 'updateTVL';
     const response = await api.get('/', { params: { method: 'getAssets' } }).catch(error => parseRequestError(error));
