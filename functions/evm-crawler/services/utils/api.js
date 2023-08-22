@@ -1,7 +1,6 @@
-const { getAPI } = require('../../utils/config');
+const { ENVIRONMENT, getAPI } = require('../../utils/config');
 const { log, parseRequestError } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || 'testnet';
 const service_name = 'api';
 
 const getLatestEventBlock = async chain => {
@@ -20,7 +19,7 @@ const getLatestEventBlock = async chain => {
   return output;
 };
 
-const saveEvent = async (event, chain, contractAddress, env = environment) => {
+const saveEvent = async (event, chain, contractAddress, env = ENVIRONMENT) => {
   let output;
   const api = getAPI(undefined, env);
   if (api && event) {

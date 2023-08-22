@@ -1,15 +1,14 @@
 const { Contract } = require('ethers');
 
 const { getLatestEventBlock, saveEvent } = require('../utils/api');
-const { GATEWAY_EVENTS, getConfig } = require('../../utils/config');
+const { ENVIRONMENT, GATEWAY_EVENTS, getConfig } = require('../../utils/config');
 const { log, sleep } = require('../../utils');
 
-const environment = process.env.ENVIRONMENT || 'testnet';
 const service_name = 'gateway-subscriber';
 const { past_events_block_per_request, max_query_events_block } = { ...getConfig() };
 const events_name = GATEWAY_EVENTS;
 
-const onEmit = async (chain_data, data, env = environment) => {
+const onEmit = async (chain_data, data, env = ENVIRONMENT) => {
   if (chain_data && data) {
     try {
       const { id, gateway } = { ...chain_data };

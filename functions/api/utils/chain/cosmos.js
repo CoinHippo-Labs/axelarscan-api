@@ -1,10 +1,7 @@
 const axios = require('axios');
-const _ = require('lodash');
 
 const { getChainData } = require('../config');
 const { toArray, parseRequestError } = require('../');
-
-const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
 const getLCDs = chain => {
   const { deprecated, endpoints } = { ...getChainData(chain, 'cosmos') };
@@ -34,24 +31,6 @@ const getLCDs = chain => {
   return null;
 };
 
-const getAssetsData = async (env = ENVIRONMENT) => {
-  const config = axios.create({ baseURL: `https://axelar-${env}.s3.us-east-2.amazonaws.com/${env}-asset-config.json` });
-  const response = await config.get('').catch(error => parseRequestError(error));
-  return response?.data;
-};
-
-const getSymbol = async (denom, chain, assetsData, env = ENVIRONMENT) => {
-  if (denom && chain && env) {
-    if (!assetsData) {
-      assetsData = await getAssetsData(env);
-    }
-    return assetsData?.[denom]?.chain_aliases?.[_.head(toArray(chain, 'lower', '-'))]?.assetSymbol;
-  }
-  return null;
-};
-
 module.exports = {
   getLCDs,
-  getAssetsData,
-  getSymbol,
 };

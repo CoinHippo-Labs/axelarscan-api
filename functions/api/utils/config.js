@@ -19,9 +19,7 @@ const {
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
 const getContracts = (environment = ENVIRONMENT) => contracts?.[environment];
-
 const getDeposits = (environment = ENVIRONMENT) => deposits?.[environment];
-
 const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = false) => {
   chain_types = toArray(chain_types);
   const _chains = chains?.[environment];
@@ -77,9 +75,7 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
     )
   )
 };
-
 const getChainsList = (chain_types = [], environment = ENVIRONMENT) => Object.values({ ...getChains(chain_types, environment) });
-
 const getChainKey = (chain, chain_types = [], environment = ENVIRONMENT) => {
   let key;
   if (chain) {
@@ -99,7 +95,6 @@ const getChainKey = (chain, chain_types = [], environment = ENVIRONMENT) => {
   }
   return key;
 };
-
 const getChainData = (chain, chain_types = []) => chain && getChains(chain_types)[getChainKey(chain, chain_types)];
 const getEndpoints = (environment = ENVIRONMENT) => endpoints?.[environment];
 const getRPC = () => getEndpoints()?.rpc;
@@ -122,6 +117,7 @@ const getRoutes = () => Object.entries({ ...routes }).map(([k, v]) => {
 });
 
 module.exports = {
+  ENVIRONMENT,
   TX_COLLECTION: 'txs',
   BLOCK_COLLECTION: 'blocks',
   UPTIME_COLLECTION: 'uptimes',
