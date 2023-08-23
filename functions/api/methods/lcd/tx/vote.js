@@ -41,8 +41,8 @@ module.exports = async (lcd_response = {}) => {
                 if (poll_id) {
                   let recipient_chain = getChainKey(toArray(attributes).find(a => a.key === 'destinationChain')?.value);
                   const voter = inner_message.sender;
-                  const unconfirmed = toArray(logs).findIndex(l => l.log?.includes('not enough votes')) > -1 && toArray(events).findIndex(e => e.type?.includes('EVMEventConfirmed')) < 0;
-                  let failed = toArray(logs).findIndex(l => l.log?.includes('failed') && !l.log.includes('already confirmed')) > -1 || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1;
+                  const unconfirmed = toArray(logs).findIndex(d => d.log?.includes('not enough votes')) > -1 && toArray(events).findIndex(e => e.type?.includes('EVMEventConfirmed')) < 0;
+                  let failed = toArray(logs).findIndex(d => d.log?.includes('failed') && !d.log.includes('already confirmed')) > -1 || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1;
 
                   let end_block_events;
                   if (!unconfirmed && !failed && attributes) {
@@ -58,7 +58,7 @@ module.exports = async (lcd_response = {}) => {
                     }
                   }
 
-                  const success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(l => l.log?.includes('already confirmed')) > -1;
+                  const success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(d => d.log?.includes('already confirmed')) > -1;
                   failed = !success && (failed || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1);
                   let poll_data;
                   let sender_chain;
@@ -85,7 +85,7 @@ module.exports = async (lcd_response = {}) => {
                       vote = (Array.isArray(vote_events) ? vote_events : Object.keys({ ...vote_events })).length > 0;
                       const has_status = Array.isArray(vote_events) && toArray(vote_events).findIndex(e => e.status) > -1;
                       confirmation = !!event || toArray(events).findIndex(e => e.type?.includes('EVMEventConfirmed')) > -1 || (vote_event && has_status && toArray(vote_events).findIndex(e => e.status === 'STATUS_COMPLETED') > -1);
-                      late = !vote_event && toArray(logs).findIndex(l => l.log?.includes('failed') && l.log.includes('already confirmed')) > -1 && ((!vote && Array.isArray(vote_events)) || (has_status && toArray(vote_events).findIndex(e => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(e.status)) > -1));
+                      late = !vote_event && toArray(logs).findIndex(d => d.log?.includes('failed') && d.log.includes('already confirmed')) > -1 && ((!vote && Array.isArray(vote_events)) || (has_status && toArray(vote_events).findIndex(e => ['STATUS_UNSPECIFIED', 'STATUS_COMPLETED'].includes(e.status)) > -1));
                       event_name = _.head(Object.entries({ ...toArray(vote_events).find(e => Object.values(e).findIndex(v => typeof v === 'object' && !Array.isArray(v)) > -1) }).filter(([k, v]) => typeof v === 'object' && !Array.isArray(v)).map(([k, v]) => k));
                       poll_data = await get(POLL_COLLECTION, poll_id);
                       if (poll_data) {
@@ -235,7 +235,7 @@ module.exports = async (lcd_response = {}) => {
                     _updated = true;
                   }
 
-                  if (txhash && transaction_id && vote && success && !late && !failed) {
+                  if (txhash && transaction_id && vote && (success || failed) && !late) {
                     const vote_data = {
                       txhash,
                       height,
@@ -301,7 +301,7 @@ module.exports = async (lcd_response = {}) => {
                       default:
                         try {
                           if (deposit_address) {
-                            const { source_chain, destination_chain } = { ...vote_data }
+                            const { source_chain, destination_chain } = { ...vote_data };
                             let { denom, amount } = { ...vote_data };
                             let created_at = vote_data.created_at?.ms;
                             const transaction_data = await getTransaction(transaction_id, source_chain);
@@ -320,8 +320,8 @@ module.exports = async (lcd_response = {}) => {
                               if (!asset_data || !amount) {
                                 _amount = _.head(
                                   toArray(logs)
-                                    .filter(l => getAssetsList().findIndex(a => a.denom === getAssetData(denom)?.denom && equalsIgnoreCase(l.address, a.addresses?.[source_chain]?.address)) > -1)
-                                    .map(l => l.data)
+                                    .filter(d => getAssetsList().findIndex(a => a.denom === getAssetData(denom)?.denom && equalsIgnoreCase(d.address, a.addresses?.[source_chain]?.address)) > -1)
+                                    .map(d => d.data)
                                     .filter(d => d.length >= 64)
                                     .map(d => d.substring(d.length - 64).replace('0x', '').replace(/^0+/, '') || ZeroAddress.replace('0x', ''))
                                     .filter(d => {
