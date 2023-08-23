@@ -42,7 +42,7 @@ module.exports = async (lcd_response = {}) => {
                   let recipient_chain = getChainKey(toArray(attributes).find(a => a.key === 'destinationChain')?.value);
                   const voter = inner_message.sender;
                   const unconfirmed = toArray(logs).findIndex(l => l.log?.includes('not enough votes')) > -1 && toArray(events).findIndex(e => e.type?.includes('EVMEventConfirmed')) < 0;
-                  const failed = toArray(logs).findIndex(l => l.log?.includes('failed') && !l.log.includes('already confirmed')) > -1 || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1;
+                  let failed = toArray(logs).findIndex(l => l.log?.includes('failed') && !l.log.includes('already confirmed')) > -1 || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1;
 
                   let end_block_events;
                   if (!unconfirmed && !failed && attributes) {
@@ -52,9 +52,14 @@ module.exports = async (lcd_response = {}) => {
                     for (const event of completed_events) {
                       events.push(event);
                     }
+                    const failed_events = end_block_events.filter(e => e.type?.includes('EVMEventFailed') && toArray(e.attributes).findIndex(a => ['eventID', 'event_id'].includes(a.key) && equalsIgnoreCase(normalizeQuote(a.value), attributes.find(a => ['eventID', 'event_id'].includes(a.key))?.value)) > -1);
+                    for (const event of failed_events) {
+                      events.push(event);
+                    }
                   }
 
-                  let success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(l => l.log?.includes('already confirmed')) > -1;
+                  const success = toArray(events).findIndex(e => e.type?.includes('EVMEventCompleted')) > -1 || toArray(logs).findIndex(l => l.log?.includes('already confirmed')) > -1;
+                  failed = !success && (failed || toArray(events).findIndex(e => e.type?.includes('EVMEventFailed')) > -1);
                   let poll_data;
                   let sender_chain;
                   let vote = true;
@@ -194,7 +199,6 @@ module.exports = async (lcd_response = {}) => {
                   }
 
                   transaction_id = toHex(transaction_id);
-                  // success = success || !!confirmation;
 
                   if (voter) {
                     await write(
