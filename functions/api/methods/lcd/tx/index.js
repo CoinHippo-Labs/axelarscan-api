@@ -331,6 +331,10 @@ module.exports = async (lcd_response = {}, params = {}) => {
       if (VOTE_TYPES.findIndex(s => toArray(messages).findIndex(m => _.last(toArray(m.inner_message?.['@type'], 'normal', '.'))?.replace('Request', '').includes(s)) > -1) > -1) {
         updated = await require('./vote')(lcd_response);
       }
+      // RetryFailedEvent
+      if (toArray(messages).findIndex(m => m['@type']?.includes('RetryFailedEventRequest')) > -1) {
+        updated = await require('./retry-failed')(lcd_response);
+      }
       // SignCommands
       if (toArray(messages).findIndex(m => m['@type']?.includes('SignCommands')) > -1) {
         if (!index_poll) {
