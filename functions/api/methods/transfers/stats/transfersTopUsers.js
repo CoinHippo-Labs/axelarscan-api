@@ -1,3 +1,4 @@
+const { getAddress } = require('ethers');
 const _ = require('lodash');
 
 const searchTransfers = require('../searchTransfers');
@@ -12,11 +13,7 @@ module.exports = async params => {
     aggs: {
       users: {
         terms: { field: 'send.sender_address.keyword', size: 100 },
-        ...(
-          orderBy === 'volume' ?
-            { aggs: { volume: { sum: { field: 'send.value' } }, volume_sort: { bucket_sort: { sort: [{ volume: { order: 'desc' } }] } } } } :
-            null
-        ),
+        ...(orderBy === 'volume' ? { aggs: { volume: { sum: { field: 'send.value' } }, volume_sort: { bucket_sort: { sort: [{ volume: { order: 'desc' } }] } } } } : null),
       },
     },
     size: 0,
@@ -29,7 +26,11 @@ module.exports = async params => {
     output = {
       data: _.orderBy(
         toArray(buckets).map(d => {
-          const { key, volume, doc_count } = { ...d };
+          const { volume, doc_count } = { ...d };
+          let { key } = { ...d };
+          try {
+            key = key?.startsWith('0x') ? getAddress(key) : key;
+          } catch (error) {}
           return {
             key,
             num_txs: doc_count,
