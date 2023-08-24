@@ -521,9 +521,9 @@ GMPStats:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1649373200
       override:
-        value: 1659373200
+        value: 1649373200
     -
       id: "toTime"
       type: "unixTime"
