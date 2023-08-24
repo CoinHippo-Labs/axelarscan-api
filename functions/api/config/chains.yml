@@ -2434,6 +2434,34 @@ testnet:
       prefix_address: "ixo"
       prefix_chain_ids:
         - "pandora-"
+    teritori:
+      chain_name: "teritori"
+      endpoints:
+        lcd:
+          - "https://teritori-testnet.api.kjnodes.com"
+          - "https://api-t.teritori.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Teritori"
+        symbol: "TORI"
+        decimals: 6
+      name: "Teritori"
+      short_name: "TORI"
+      image: "/logos/chains/teritori.svg"
+      color: "#428fff"
+      explorer:
+        name: "Teritori"
+        url: "https://explorer.kjnodes.com/teritori-testnet"
+        icon: "/logos/explorers/teritori.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "tori"
+      prefix_chain_ids:
+        - "teritori-"
     terra-3:
       chain_name: "terra-3"
       endpoints:
@@ -3512,6 +3540,34 @@ stagenet:
       prefix_address: "ixo"
       prefix_chain_ids:
         - "pandora-"
+    teritori:
+      chain_name: "teritori"
+      endpoints:
+        lcd:
+          - "https://teritori-testnet.api.kjnodes.com"
+          - "https://api-t.teritori.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Teritori"
+        symbol: "TORI"
+        decimals: 6
+      name: "Teritori"
+      short_name: "TORI"
+      image: "/logos/chains/teritori.svg"
+      color: "#428fff"
+      explorer:
+        name: "Teritori"
+        url: "https://explorer.kjnodes.com/teritori-testnet"
+        icon: "/logos/explorers/teritori.png"
+        block_path: "/blocks/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "tori"
+      prefix_chain_ids:
+        - "teritori-"
     terra-3:
       chain_name: "terra-3"
       endpoints:

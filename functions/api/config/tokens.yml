@@ -140,6 +140,9 @@ HASH:
   default_price:
     usd: 0.02
   decimals: 6
+TORI:
+  coingecko_id: "teritori"
+  decimals: 6
 UST:
   coingecko_id: "terrausd"
 USTC:
