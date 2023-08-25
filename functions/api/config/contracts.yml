@@ -26,6 +26,8 @@ mainnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     base:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    mantle:
+      address: "" #0xe432150cce91c13a887f7D836923d5597adD8E31"
     celo:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
@@ -62,6 +64,8 @@ testnet:
     optimism:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     base:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    mantle:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     celo:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
@@ -101,6 +105,8 @@ stagenet:
     optimism:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     base:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    mantle:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     celo:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"

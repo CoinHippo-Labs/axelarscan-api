@@ -302,6 +302,31 @@ mainnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    mantle:
+      chain_id: 5000
+      chain_name: "mantle"
+      maintainer_id: "mantle"
+      endpoints:
+        rpc:
+          - "https://rpc.mantle.xyz"
+          - "https://mantle-mainnet.public.blastapi.io"
+      native_token:
+        name: "Mantle"
+        symbol: "MNT"
+        decimals: 18
+      name: "Mantle"
+      short_name: "MNT"
+      image: "/logos/chains/mantle.svg"
+      color: "#58bd81"
+      explorer:
+        name: "Mantle"
+        url: "https://explorer.mantle.xyz"
+        icon: "/logos/explorers/mantle.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     celo:
       chain_id: 42220
       chain_name: "celo"
@@ -1747,6 +1772,30 @@ testnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    mantle:
+      chain_id: 5001
+      chain_name: "mantle"
+      maintainer_id: "mantle"
+      endpoints:
+        rpc:
+          - "https://rpc.testnet.mantle.xyz"
+      native_token:
+        name: "Mantle"
+        symbol: "MNT"
+        decimals: 18
+      name: "Mantle"
+      short_name: "MNT"
+      image: "/logos/chains/mantle.svg"
+      color: "#58bd81"
+      explorer:
+        name: "Mantle"
+        url: "https://explorer.testnet.mantle.xyz"
+        icon: "/logos/explorers/mantle.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     celo:
       chain_id: 44787
       chain_name: "celo"
@@ -2848,6 +2897,30 @@ stagenet:
         name: "Basescan"
         url: "https://goerli.basescan.org"
         icon: "/logos/explorers/basescan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    mantle:
+      chain_id: 5001
+      chain_name: "mantle"
+      maintainer_id: "mantle"
+      endpoints:
+        rpc:
+          - "https://rpc.testnet.mantle.xyz"
+      native_token:
+        name: "Mantle"
+        symbol: "MNT"
+        decimals: 18
+      name: "Mantle"
+      short_name: "MNT"
+      image: "/logos/chains/mantle.svg"
+      color: "#58bd81"
+      explorer:
+        name: "Mantle"
+        url: "https://explorer.testnet.mantle.xyz"
+        icon: "/logos/explorers/mantle.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
