@@ -28,6 +28,9 @@ AURORA:
 ARB:
   coingecko_id: "arbitrum"
   decimals: 18
+MNT:
+  coingecko_id: "mantle"
+  decimals: 18
 aETH:
   redirect: "ETH"
 CELO:

@@ -202,6 +202,8 @@ const getTransaction = async (txHash, chain, logIndex) => {
                         try {
                           switch (chain) {
                             case 'optimism':
+                            case 'base':
+                            case 'mantle':
                               break;
                             default:
                               const provider = getProvider(chain);
