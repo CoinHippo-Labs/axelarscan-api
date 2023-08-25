@@ -8,7 +8,7 @@ module.exports = async context => {
     const method = 'updateTVL';
     const response = await api.get('/', { params: { method: 'getAssets' } }).catch(error => parseRequestError(error));
     const { data } = { ...response }; 
-    for (const d of data) {
+    for (const d of toArray(data)) {
       const { id } = { ...d };
       // log('info', service_name, `start ${method}`, { id });
       await api.get('/', { params: { method, id } }).catch(error => parseRequestError(error));
