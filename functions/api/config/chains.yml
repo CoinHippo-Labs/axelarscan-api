@@ -317,7 +317,7 @@ mainnet:
       name: "Mantle"
       short_name: "MNT"
       image: "/logos/chains/mantle.svg"
-      color: "#58bd81"
+      color: "#65b3ae"
       explorer:
         name: "Mantle"
         url: "https://explorer.mantle.xyz"
@@ -1786,7 +1786,7 @@ testnet:
       name: "Mantle"
       short_name: "MNT"
       image: "/logos/chains/mantle.svg"
-      color: "#58bd81"
+      color: "#65b3ae"
       explorer:
         name: "Mantle"
         url: "https://explorer.testnet.mantle.xyz"
@@ -2916,7 +2916,7 @@ stagenet:
       name: "Mantle"
       short_name: "MNT"
       image: "/logos/chains/mantle.svg"
-      color: "#58bd81"
+      color: "#65b3ae"
       explorer:
         name: "Mantle"
         url: "https://explorer.testnet.mantle.xyz"
