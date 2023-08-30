@@ -3821,6 +3821,9 @@ testnet:
       base:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      mantle:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       celo:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
@@ -3873,6 +3876,8 @@ testnet:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
       base:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
+      mantle:
+        address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
       celo:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
       kava:
@@ -3921,6 +3926,8 @@ testnet:
         ibc_denom: "ibc/F91EA2C0A23697A1048E08C2F787E3A58AC6F706A1CD2257A504925158CFC0F3"
       impacthub:
         ibc_denom: "ibc/D36138944A9A06A5361EB9F9713D2AAC8B9A9ED88AFC9960A0005C17C8A0B447"
+      teritori:
+        ibc_denom: "ibc/C4046F3A4AA6127655A47764D5CAED8F4B4A0122661801B0AC3CCD1113DA2B5F"
       terra-3:
         ibc_denom: "ibc/720B52BDE1E2B84C5898D07C983B085C77EB5ED2D4C0ACD56B882A14777F750C"
   wbtc-satoshi:
@@ -4007,6 +4014,9 @@ testnet:
       base:
         address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
         symbol: "axlETH"
+      mantle:
+        address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
+        symbol: "axlETH"
       celo:
         address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
         symbol: "axlETH"
@@ -4072,6 +4082,9 @@ testnet:
         symbol: "axlETH"
       impacthub:
         ibc_denom: "ibc/D236A44A8AB79841929225744AA3B4F7766E132654898E72B364FD8B1825FD70"
+        symbol: "axlETH"
+      teritori:
+        ibc_denom: "ibc/1184A13CDB18E5C31B8FE2E749AF6414FA128A3E0C8B7B88611A869F577A67CB"
         symbol: "axlETH"
       terra-3:
         ibc_denom: "ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F"
@@ -4149,6 +4162,9 @@ testnet:
       base:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
         symbol: "axlBNB"
+      mantle:
+        address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
+        symbol: "axlBNB"
       celo:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
         symbol: "axlBNB"
@@ -4215,6 +4231,9 @@ testnet:
       impacthub:
         ibc_denom: "ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833"
         symbol: "axlBNB"
+      teritori:
+        ibc_denom: "ibc/8AFA21187F4D6637FDCD71C1CF622572848100BFF419B6A754271659DD3FB3C2"
+        symbol: "axlBNB"
       terra-3:
         ibc_denom: "ibc/8291F71592AEE7C593D5DC05C1B66CD190B2EEA74DF09D2B8BF57BF6C4E8BCAA"
         symbol: "axlBNB"
@@ -4260,6 +4279,9 @@ testnet:
         address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
         symbol: "axlMATIC"
       base:
+        address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
+        symbol: "axlMATIC"
+      mantle:
         address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
         symbol: "axlMATIC"
       celo:
@@ -4331,6 +4353,9 @@ testnet:
       impacthub:
         ibc_denom: "ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6"
         symbol: "axlMATIC"
+      teritori:
+        ibc_denom: "ibc/2B7CBCD839F156E607AF97DF4696D8DA18B706AF847B43A04DEE06066BC18524"
+        symbol: "axlMATIC"
       terra-3:
         ibc_denom: "ibc/8DE781194A674B7129D9EFA838F3E50B5F50212995AA825634BF702E0D037AC3"
         symbol: "axlMATIC"
@@ -4376,6 +4401,9 @@ testnet:
         address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
         symbol: "axlAVAX"
       base:
+        address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
+        symbol: "axlAVAX"
+      mantle:
         address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
         symbol: "axlAVAX"
       celo:
@@ -4447,6 +4475,9 @@ testnet:
       impacthub:
         ibc_denom: "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2"
         symbol: "axlAVAX"
+      teritori:
+        ibc_denom: "ibc/9469AD908C58A8E5307F2CEC12E449DD4C393CCD01F62D38B05840AB93668212"
+        symbol: "axlAVAX"
       terra-3:
         ibc_denom: "ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597"
         symbol: "axlAVAX"
@@ -4492,6 +4523,9 @@ testnet:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
         symbol: "axlFTM"
       base:
+        address: "0x594D8b81eC765410536ab59E98091700b99508D8"
+        symbol: "axlFTM"
+      mantle:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
         symbol: "axlFTM"
       celo:
@@ -4563,6 +4597,9 @@ testnet:
       impacthub:
         ibc_denom: "ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2"
         symbol: "axlFTM"
+      teritori:
+        ibc_denom: "ibc/B18F7DEB4D9CCADAC3F2CA78903A289B3F02F0A2D28882741B38F9D49E89E171"
+        symbol: "axlFTM"
       terra-3:
         ibc_denom: "ibc/F2D6753B652120212D09EE59075F0D820FCF580620DA8D3DE0349B614ED69A2B"
         symbol: "axlFTM"
@@ -4608,6 +4645,9 @@ testnet:
         address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
         symbol: "axlDEV"
       base:
+        address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
+        symbol: "axlDEV"
+      mantle:
         address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
         symbol: "axlDEV"
       celo:
@@ -4678,6 +4718,9 @@ testnet:
         symbol: "axlDEV"
       impacthub:
         ibc_denom: "ibc/1CA16CA6C642FD2C6105872B51C059A108D82072911274BAF2E63EC0827D5074"
+        symbol: "axlDEV"
+      teritori:
+        ibc_denom: "ibc/4F16908C007312B4B6324E22E6AF1C0D7FCC611FBBB714B0DC20C1307989DB53"
         symbol: "axlDEV"
       terra-3:
         ibc_denom: "ibc/4F89D2416F2E2CF9CFE68CE8B77A11A07B4F590B13E410DA86B1A5E6BCBDA24B"

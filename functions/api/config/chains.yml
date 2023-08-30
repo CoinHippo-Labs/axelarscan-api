@@ -1406,6 +1406,35 @@ mainnet:
       prefix_address: "ixo"
       prefix_chain_ids:
         - "ixo-"
+    migaloo:
+      chain_name: "migaloo"
+      endpoints:
+        lcd:
+          - "https://migaloo-api.lavenderfive.com"
+          - "https://whitewhale-mainnet-lcd.autostake.com:443"
+          - "https://api.teritori.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "White Whale"
+        symbol: "WHALE"
+        decimals: 6
+      name: "White Whale"
+      short_name: "WHALE"
+      image: "/logos/chains/migaloo.svg"
+      color: "#"
+      explorer:
+        name: "Rebus"
+        url: "https://migaloo.explorers.guru"
+        icon: "/logos/explorers/migaloo.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "migaloo"
+      prefix_chain_ids:
+        - "migaloo-"
     terra-2:
       chain_name: "terra-2"
       endpoints:
