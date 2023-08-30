@@ -1422,7 +1422,7 @@ mainnet:
       name: "White Whale"
       short_name: "WHALE"
       image: "/logos/chains/migaloo.svg"
-      color: "#"
+      color: "#3dcd64"
       explorer:
         name: "Rebus"
         url: "https://migaloo.explorers.guru"
