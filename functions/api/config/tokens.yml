@@ -146,6 +146,9 @@ HASH:
 TORI:
   coingecko_id: "teritori"
   decimals: 6
+WHALE:
+  coingecko_id: "white-whale"
+  decimals: 6
 UST:
   coingecko_id: "terrausd"
 USTC:
