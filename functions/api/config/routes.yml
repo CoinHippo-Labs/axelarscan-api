@@ -406,6 +406,9 @@ searchGMP:
       value: 10
       override:
         value: 5
+getDataMapping:
+  is_gmp: true
+  description: "The API route provides GMP data mapping."
 getGasPrice:
   is_gmp: true
   description: "The API route provides a gas price conversion rate for each source and destination chain. It can be used as a part of estimating the gas fee. Please note that a complete method that provides the estimated gas fee is available on the [AxelarJS SDK](https://docs.axelar.dev/dev/axelarjs-sdk/axelar-query-api#estimategasfee)."
