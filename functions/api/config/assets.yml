@@ -39,6 +39,9 @@ mainnet:
       base:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      mantle:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       celo:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
@@ -101,6 +104,9 @@ mainnet:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
       base:
+        address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
+        symbol: "axlUSDC"
+      mantle:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
       celo:
@@ -281,6 +287,9 @@ mainnet:
       base:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
+      mantle:
+        address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
+        symbol: "axlUSDT"
       celo:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
@@ -420,6 +429,9 @@ mainnet:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       base:
+        address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
+        symbol: "axlDAI"
+      mantle:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       celo:
@@ -654,6 +666,9 @@ mainnet:
       base:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
+      mantle:
+        address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
+        symbol: "axlFRAX"
       celo:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
@@ -851,6 +866,9 @@ mainnet:
       base:
         address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
         symbol: "axlWBTC"
+      mantle:
+        address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
+        symbol: "axlWBTC"
       celo:
         address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
         symbol: "axlWBTC"
@@ -989,6 +1007,9 @@ mainnet:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       base:
+        address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
+        symbol: "axlETH"
+      mantle:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       celo:
@@ -1756,6 +1777,9 @@ mainnet:
       base:
         address: "0x64C09d32E8452CC0453D2EfeED8c9a16421b1ec8"
         symbol: "axlFTM"
+      mantle:
+        address: "0x64C09d32E8452CC0453D2EfeED8c9a16421b1ec8"
+        symbol: "axlFTM"
       linea:
         address: "0x64C09d32E8452CC0453D2EfeED8c9a16421b1ec8"
         symbol: "axlFTM"
@@ -2038,6 +2062,8 @@ mainnet:
       optimism:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       base:
+        address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
+      mantle:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       celo:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
@@ -2932,6 +2958,9 @@ mainnet:
       base:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
+      mantle:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
       celo:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
@@ -2972,6 +3001,8 @@ mainnet:
         address: "0xc5b001DC33727F8F26880B184090D3E252470D45"
       base:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
+      mantle:
+        address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       kava:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       linea:
@@ -3002,6 +3033,8 @@ mainnet:
       optimism:
         address: "0x3eE6107d9C93955acBb3f39871D32B02F82B78AB"
       base:
+        address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
+      mantle:
         address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
       kava:
         address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
@@ -3188,6 +3221,9 @@ mainnet:
       base:
         address: "0xB448eC505C924944ca8B2C55EF05c299eE0781df"
         symbol: "axlKNC"
+      mantle:
+        address: "0xB448eC505C924944ca8B2C55EF05c299eE0781df"
+        symbol: "axlKNC"
       celo:
         address: "0xB448eC505C924944ca8B2C55EF05c299eE0781df"
         symbol: "axlKNC"
@@ -3229,6 +3265,8 @@ mainnet:
       optimism:
         address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
       base:
+        address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
+      mantle:
         address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
       celo:
         address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
@@ -3403,6 +3441,12 @@ mainnet:
       optimism:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
+      base:
+        address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
+        symbol: "axlATOM"
+      mantle:
+        address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
+        symbol: "axlATOM"
       celo:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
@@ -3565,6 +3609,8 @@ mainnet:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       base:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
+      mantle:
+        address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       celo:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       linea:
@@ -3599,6 +3645,8 @@ mainnet:
       optimism:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       base:
+        address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
+      mantle:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       celo:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
