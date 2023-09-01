@@ -2921,6 +2921,10 @@ mainnet:
         address: "0x94C6B279b5df54b335aE51866d6E2A56BF5Ef9b7"
       fantom:
         address: "0x66eEd5FF1701E6ed8470DC391F05e27B1d0657eb"
+      base:
+        address: "0xa5325A8EBBbdb12CAF6b76218a7375a71f9f3b41"
+      linea:
+        address: "0xa5325A8EBBbdb12CAF6b76218a7375a71f9f3b41"
       axelarnet:
         ibc_denom: "mpx-wei"
   wmai-wei:
