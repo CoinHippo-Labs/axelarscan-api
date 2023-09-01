@@ -3130,6 +3130,9 @@ mainnet:
       avalanche:
         address: "0xf9617c66cD8a4193A4DE0a101e16D73B71828810"
         symbol: "axlDEUS"
+      fantom:
+        address: "0x912922e25ac79D524734d8eC0C882B035c5b356f"
+        symbol: "axlDEUS"
       arbitrum:
         address: "0xDE5ed76E7c05eC5e4572CfC88d1ACEA165109E44"
       kava:
