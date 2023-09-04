@@ -428,6 +428,30 @@ mainnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    centrifuge:
+      chain_id: 2031
+      chain_name: "centrifuge"
+      maintainer_id: "centrifuge"
+      endpoints:
+        rpc:
+          - ""
+      native_token:
+        name: "Algol"
+        symbol: "ALGL"
+        decimals: 18
+      name: "Centrifuge"
+      short_name: "CFG"
+      image: "/logos/chains/centrifuge.svg"
+      color: "#ffc012"
+      explorer:
+        name: "Centrifuge"
+        url: ""
+        icon: "/logos/explorers/centrifuge.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_name: "Axelarnet"
@@ -1948,6 +1972,30 @@ testnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    centrifuge:
+      chain_id: 2089
+      chain_name: "centrifuge"
+      maintainer_id: "centrifuge"
+      endpoints:
+        rpc:
+          - "https://fullnode.algol.cntrfg.com/rpc"
+      native_token:
+        name: "Algol"
+        symbol: "ALGL"
+        decimals: 18
+      name: "Centrifuge"
+      short_name: "CFG"
+      image: "/logos/chains/centrifuge.svg"
+      color: "#ffc012"
+      explorer:
+        name: "Centrifuge"
+        url: ""
+        icon: "/logos/explorers/centrifuge.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_name: "Axelarnet"
@@ -3073,6 +3121,30 @@ stagenet:
         name: "Linea"
         url: "https://goerli.lineascan.build"
         icon: "/logos/explorers/linea.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    centrifuge:
+      chain_id: 2089
+      chain_name: "centrifuge"
+      maintainer_id: "centrifuge"
+      endpoints:
+        rpc:
+          - "https://fullnode.algol.cntrfg.com/rpc"
+      native_token:
+        name: "Algol"
+        symbol: "ALGL"
+        decimals: 18
+      name: "Centrifuge"
+      short_name: "CFG"
+      image: "/logos/chains/centrifuge.svg"
+      color: "#ffc012"
+      explorer:
+        name: "Centrifuge"
+        url: ""
+        icon: "/logos/explorers/centrifuge.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
