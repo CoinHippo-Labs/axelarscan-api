@@ -36,6 +36,8 @@ mainnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     linea:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    centrifuge:
+      address: "" #"0xe432150cce91c13a887f7D836923d5597adD8E31"
 
 
 
@@ -77,6 +79,8 @@ testnet:
       address: "0x999117D44220F33e0441fbAb2A5aDB8FF485c54D"
     linea:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    centrifuge:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
 
 
 
@@ -117,4 +121,6 @@ stagenet:
     filecoin-2:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     linea:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    centrifuge:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"

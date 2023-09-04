@@ -42,6 +42,11 @@ KAVA:
 FIL:
   coingecko_id: "filecoin"
   decimals: 18
+CFG:
+  coingecko_id: "centrifuge"
+  decimals: 18
+ALGL:
+  redirect: "CFG"
 AXL:
   coingecko_id: "axelar"
   decimals: 6

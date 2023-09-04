@@ -3310,6 +3310,8 @@ mainnet:
         address: "0x43a8cab15D06d3a5fE5854D714C37E7E9246F170"
       arbitrum:
         address: "0xf3C091ed43de9c270593445163a41A876A0bb3dd"
+      kava:
+        address: "0xf3C091ed43de9c270593445163a41A876A0bb3dd"
       axelarnet:
         ibc_denom: "orbs-wei"
   pols-wei:
@@ -4602,6 +4604,9 @@ testnet:
         address: "0xa82783a70de6a47Fa0f4d664D2998cB5D5C5291C"
         symbol: "axlFTM"
       linea:
+        address: "0x594D8b81eC765410536ab59E98091700b99508D8"
+        symbol: "axlFTM"
+      centrifuge:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
         symbol: "axlFTM"
       axelarnet:
