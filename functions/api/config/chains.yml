@@ -1436,7 +1436,6 @@ mainnet:
         lcd:
           - "https://migaloo-api.lavenderfive.com"
           - "https://whitewhale-mainnet-lcd.autostake.com:443"
-          - "https://api.teritori.nodestake.top"
         timeout:
           lcd: 3000
       native_token:
@@ -2588,6 +2587,33 @@ testnet:
       prefix_address: "tori"
       prefix_chain_ids:
         - "teritori-"
+    haqq:
+      chain_name: "haqq"
+      endpoints:
+        lcd:
+          - "https://rest.cosmos.testedge2.haqq.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Islamic"
+        symbol: "ISLM"
+        decimals: 6
+      name: "Haqq"
+      short_name: "HAQQ"
+      image: "/logos/chains/haqq.svg"
+      color: "#ec5728"
+      explorer:
+        name: "Haqq"
+        url: "https://testnet.ping.pub/haqq"
+        icon: "/logos/explorers/haqq.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "haqq"
+      prefix_chain_ids:
+        - "haqq_"
     terra-3:
       chain_name: "terra-3"
       endpoints:
@@ -3742,6 +3768,33 @@ stagenet:
       prefix_address: "tori"
       prefix_chain_ids:
         - "teritori-"
+    haqq:
+      chain_name: "haqq"
+      endpoints:
+        lcd:
+          - "https://rest.cosmos.testedge2.haqq.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Islamic"
+        symbol: "ISLM"
+        decimals: 6
+      name: "Haqq"
+      short_name: "HAQQ"
+      image: "/logos/chains/haqq.svg"
+      color: "#ec5728"
+      explorer:
+        name: "Haqq"
+        url: "https://testnet.ping.pub/haqq"
+        icon: "/logos/explorers/haqq.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "haqq"
+      prefix_chain_ids:
+        - "haqq_"
     terra-3:
       chain_name: "terra-3"
       endpoints:
