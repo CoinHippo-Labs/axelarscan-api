@@ -151,6 +151,11 @@ HASH:
 TORI:
   coingecko_id: "teritori"
   decimals: 6
+ISLM:
+  coingecko_id: "islamiccoin"
+  default_price:
+    usd: 0.02
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
