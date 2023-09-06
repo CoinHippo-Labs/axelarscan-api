@@ -547,6 +547,12 @@ mainnet:
     addresses:
       ethereum:
         address: "0x4Fabb145d64652a948d72533023f6E7A623C7C53"
+      base:
+        address: "0x4D84E25cEa9447581867fE9f2329B972f532Da2c"
+        symbol: "axlBUSD"
+      linea:
+        address: "0x4D84E25cEa9447581867fE9f2329B972f532Da2c"
+        symbol: "axlBUSD"
       axelarnet:
         ibc_denom: "busd-wei"
         symbol: "axlBUSD"
@@ -1587,6 +1593,12 @@ mainnet:
     addresses:
       polygon:
         address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
+      base:
+        address: "0xE3ce47AC96d8502824627d7cBCFDA49414beDa9C"
+        symbol: "axlMATIC"
+      linea:
+        address: "0xE3ce47AC96d8502824627d7cBCFDA49414beDa9C"
+        symbol: "axlMATIC"
       axelarnet:
         ibc_denom: "wmatic-wei"
         symbol: "axlMATIC"
@@ -1681,6 +1693,12 @@ mainnet:
         address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
       fantom:
         address: "0x879e73005C36d9a549fFb9846851fe5d1d91b681"
+        symbol: "axlAVAX"
+      base:
+        address: "0x6E76A241Ae6fcaD51C064Ac70fe6e676502b91c5"
+        symbol: "axlAVAX"
+      linea:
+        address: "0x6E76A241Ae6fcaD51C064Ac70fe6e676502b91c5"
         symbol: "axlAVAX"
       axelarnet:
         ibc_denom: "wavax-wei"
@@ -1970,6 +1988,12 @@ mainnet:
     addresses:
       arbitrum:
         address: "0x912CE59144191C1204E64559FE8253a0e49E6548"
+      base:
+        address: "0x87b6c94c435F6e49789ad34FAf0d048F2D9043a2"
+        symbol: "axlARB"
+      linea:
+        address: "0x87b6c94c435F6e49789ad34FAf0d048F2D9043a2"
+        symbol: "axlARB"
       axelarnet:
         ibc_denom: "arb-wei"
         symbol: "axlARB"
@@ -3469,6 +3493,9 @@ mainnet:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
       filecoin:
+        address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
+        symbol: "axlATOM"
+      linea:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
       axelarnet:
