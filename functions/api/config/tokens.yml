@@ -154,7 +154,7 @@ TORI:
 ISLM:
   coingecko_id: "islamiccoin"
   default_price:
-    usd: 0.02
+    usd: 0.01
   decimals: 6
 WHALE:
   coingecko_id: "white-whale"
@@ -427,6 +427,14 @@ VELA:
 ARX:
   coingecko_id: "arbitrum-exchange"
   decimals: 18
+VEXT:
+  coingecko_id: "veloce-vext"
+  decimals: 18
+OVN:
+  coingecko_id: "overnight"
+  default_price:
+    usd: 0.01
+  decimals: 18
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
@@ -576,6 +584,10 @@ vela-wei:
   redirect: "VELA"
 arx-wei:
   redirect: "ARX"
+vext-wei:
+  redirect: "VEXT"
+ovn-wei:
+  redirect: "OVN"
 uosmo:
   redirect: "OSMO"
 uatom:

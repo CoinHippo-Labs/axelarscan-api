@@ -3430,6 +3430,42 @@ mainnet:
         address: "0xD5954c3084a1cCd70B4dA011E67760B8e78aeE84"
       axelarnet:
         ibc_denom: "arx-wei"
+  vext-wei:
+    denom: "vext-wei"
+    native_chain: "polygon"
+    name: "Veloce"
+    symbol: "VEXT"
+    decimals: 18
+    image: "/logos/assets/vext.svg"
+    coingecko_id: "veloce-vext"
+    addresses:
+      ethereum:
+        address: "0x593Dc8C08387c9F4C8d522B49C76dD18518F4d7e"
+      polygon:
+        address: "0x27842334C55c01DDFE81Bf687425F906816c5141"
+      axelarnet:
+        ibc_denom: "vext-wei"
+  ovn-wei:
+    denom: "ovn-wei"
+    native_chain: "optimism"
+    name: "Overnight"
+    symbol: "OVN"
+    decimals: 18
+    image: "/logos/assets/ovn.svg"
+    coingecko_id: "overnight"
+    addresses:
+      binance:
+        address: "0x259B30C916e440FB79747cD559207FfdaBBae057"
+      arbitrum:
+        address: "0xA3d1a8DEB97B111454B294E2324EfAD13a9d8396"
+      optimism:
+        address: "0x3b08fcd15280e7B5A6e404c4abb87F7C774D1B2e"
+      base:
+        address: "0xA3d1a8DEB97B111454B294E2324EfAD13a9d8396"
+      linea:
+        address: "0xA3d1a8DEB97B111454B294E2324EfAD13a9d8396"
+      axelarnet:
+        ibc_denom: "ovn-wei"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
