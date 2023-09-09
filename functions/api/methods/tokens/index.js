@@ -87,7 +87,7 @@ const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY
           await write(COLLECTION, cache_id, { data, updated_at: moment().valueOf() });
         }
         else {
-          response = cache;
+          response = Object.keys({ ...cache }).length > 0 ? cache : response;
         }
       }
 
