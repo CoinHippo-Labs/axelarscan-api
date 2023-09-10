@@ -454,6 +454,7 @@ mainnet:
         transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
+      chain_id: "axelar-dojo-1"
       chain_name: "Axelarnet"
       endpoints:
         lcd:
@@ -483,6 +484,7 @@ mainnet:
       prefix_chain_ids:
         - "axelar-"
     osmosis:
+      chain_id: "osmosis-1"
       chain_name: "osmosis"
       endpoints:
         lcd:
@@ -516,6 +518,7 @@ mainnet:
       prefix_chain_ids:
         - "osmosis-"
     cosmoshub:
+      chain_id: "cosmoshub-4"
       chain_name: "cosmoshub"
       endpoints:
         lcd:
@@ -548,6 +551,7 @@ mainnet:
       prefix_chain_ids:
         - "cosmoshub-"
     juno:
+      chain_id: "juno-1"
       chain_name: "juno"
       endpoints:
         lcd:
@@ -580,6 +584,7 @@ mainnet:
       prefix_chain_ids:
         - "juno-"
     emoney:
+      chain_id: "emoney-3"
       chain_name: "e-money"
       endpoints:
         lcd:
@@ -612,6 +617,7 @@ mainnet:
       prefix_chain_ids:
         - "emoney-"
     injective:
+      chain_id: "injective-1"
       chain_name: "injective"
       endpoints:
         lcd:
@@ -642,6 +648,7 @@ mainnet:
       prefix_chain_ids:
         - "injective-"
     crescent:
+      chain_id: "crescent-1"
       chain_name: "crescent"
       endpoints:
         lcd:
@@ -671,6 +678,7 @@ mainnet:
       prefix_chain_ids:
         - "crescent-"
     kujira:
+      chain_id: "kaiyo-1"
       chain_name: "kujira"
       endpoints:
         lcd:
@@ -703,6 +711,7 @@ mainnet:
       prefix_chain_ids:
         - "kaiyo-"
     secret-snip:
+      chain_id: "secret-4"
       chain_name: "secret-snip"
       endpoints:
         lcd:
@@ -736,6 +745,7 @@ mainnet:
       prefix_chain_ids:
         - "secret-"
     secret:
+      chain_id: "secret-4"
       chain_name: "secret"
       endpoints:
         lcd:
@@ -765,6 +775,7 @@ mainnet:
       prefix_chain_ids:
         - "secret-"
     sei:
+      chain_id: "pacific-1"
       chain_name: "sei"
       endpoints:
         lcd:
@@ -795,6 +806,7 @@ mainnet:
       prefix_chain_ids:
         - "pacific-"
     stargaze:
+      chain_name: "stargaze-1"
       chain_name: "stargaze"
       endpoints:
         lcd:
@@ -826,6 +838,7 @@ mainnet:
       prefix_chain_ids:
         - "stargaze-"
     assetmantle:
+      chain_id: "mantle-1"
       chain_name: "assetmantle"
       endpoints:
         lcd:
@@ -858,6 +871,7 @@ mainnet:
       prefix_chain_ids:
         - "mantle-"
     fetch:
+      chain_id: "fetchhub-4"
       chain_name: "fetch"
       endpoints:
         lcd:
@@ -888,6 +902,7 @@ mainnet:
       prefix_chain_ids:
         - "fetchhub-"
     ki:
+      chain_id: "kichain-2"
       chain_name: "ki"
       endpoints:
         lcd:
@@ -918,6 +933,7 @@ mainnet:
       prefix_chain_ids:
         - "kichain-"
     evmos:
+      chain_id: "evmos_9001-2"
       chain_name: "evmos"
       endpoints:
         lcd:
@@ -950,6 +966,7 @@ mainnet:
       prefix_chain_ids:
         - "evmos_"
     aura:
+      chain_id: "xstaxy-1"
       chain_name: "aura"
       endpoints:
         lcd:
@@ -977,6 +994,7 @@ mainnet:
       prefix_chain_ids:
         - "xstaxy-"
     comdex:
+      chain_id: "comdex-1"
       chain_name: "comdex"
       endpoints:
         lcd:
@@ -1008,6 +1026,7 @@ mainnet:
       prefix_chain_ids:
         - "comdex-"
     persistence:
+      chain_id: "core-1"
       chain_name: "persistence"
       endpoints:
         lcd:
@@ -1040,6 +1059,7 @@ mainnet:
       prefix_chain_ids:
         - "core-"
     regen:
+      chain_id: "regen-1"
       chain_name: "regen"
       endpoints:
         lcd:
@@ -1069,6 +1089,7 @@ mainnet:
       prefix_chain_ids:
         - "regen-"
     umee:
+      chain_id: "umee-1"
       chain_name: "umee"
       endpoints:
         lcd:
@@ -1099,6 +1120,7 @@ mainnet:
       prefix_chain_ids:
         - "umee-"
     agoric:
+      chain_id: "agoric-3"
       chain_name: "agoric"
       endpoints:
         lcd:
@@ -1129,6 +1151,7 @@ mainnet:
       prefix_chain_ids:
         - "agoric-"
     xpla:
+      chain_id: "dimension_37-1"
       chain_name: "xpla"
       endpoints:
         lcd:
@@ -1158,6 +1181,7 @@ mainnet:
       prefix_chain_ids:
         - "dimension_"
     acre:
+      chain_id: "acre_9052-1"
       chain_name: "acre"
       endpoints:
         lcd:
@@ -1188,6 +1212,7 @@ mainnet:
       prefix_chain_ids:
         - "acre_"
     stride:
+      chain_id: "stride-1"
       chain_name: "stride"
       endpoints:
         lcd:
@@ -1221,6 +1246,7 @@ mainnet:
       prefix_chain_ids:
         - "stride-"
     carbon:
+      chain_id: "carbon-1"
       chain_name: "carbon"
       endpoints:
         lcd:
@@ -1249,6 +1275,7 @@ mainnet:
       prefix_chain_ids:
         - "carbon-"
     sommelier:
+      chain_id: "sommelier-3"
       chain_name: "sommelier"
       endpoints:
         lcd:
@@ -1280,6 +1307,7 @@ mainnet:
       prefix_chain_ids:
         - "sommelier-"
     neutron:
+      chain_id: "neutron-1"
       chain_name: "neutron"
       endpoints:
         lcd:
@@ -1310,6 +1338,7 @@ mainnet:
       prefix_chain_ids:
         - "neutron-"
     rebus:
+      chain_id: "reb_1111-1"
       chain_name: "rebus"
       endpoints:
         lcd:
@@ -1338,6 +1367,7 @@ mainnet:
       prefix_chain_ids:
         - "reb_"
     archway:
+      chain_id: "archway-1"
       chain_name: "archway"
       endpoints:
         lcd:
@@ -1368,6 +1398,7 @@ mainnet:
       prefix_chain_ids:
         - "archway-"
     provenance:
+      chain_id: "pio-mainnet-1"
       chain_name: "provenance"
       endpoints:
         lcd:
@@ -1398,6 +1429,7 @@ mainnet:
       prefix_chain_ids:
         - "pio-"
     ixo:
+      chain_id: "ixo-5"
       chain_name: "ixo"
       endpoints:
         lcd:
@@ -1430,6 +1462,7 @@ mainnet:
       prefix_chain_ids:
         - "ixo-"
     migaloo:
+      chain_id: "migaloo-1"
       chain_name: "migaloo"
       endpoints:
         lcd:
@@ -1458,6 +1491,7 @@ mainnet:
       prefix_chain_ids:
         - "migaloo-"
     terra-2:
+      chain_id: "phoenix-1"
       chain_name: "terra-2"
       endpoints:
         lcd:
@@ -1485,6 +1519,7 @@ mainnet:
       prefix_chain_ids:
         - "phoenix-"
     terra:
+      chain_id: "columbus-5"
       chain_name: "terra"
       endpoints:
         lcd:
@@ -1996,6 +2031,7 @@ testnet:
         transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
+      chain_id: "axelar-testnet-lisbon-3"
       chain_name: "Axelarnet"
       endpoints:
         lcd:
@@ -2024,6 +2060,7 @@ testnet:
       prefix_chain_ids:
         - "axelar-"
     osmosis:
+      chain_id: "osmo-test-5"
       chain_name: "osmosis-6"
       endpoints:
         lcd:
@@ -2053,6 +2090,7 @@ testnet:
         - "osmosis-"
         - "osmo-test-"
     cosmoshub:
+      chain_id: "vega-testnet"
       chain_name: "cosmoshub"
       endpoints:
         lcd:
@@ -2111,6 +2149,7 @@ testnet:
       prefix_chain_ids:
         - "uni-"
     crescent:
+      chain_id: "mooncat-1-1"
       chain_name: "crescent"
       endpoints:
         lcd:
@@ -2139,6 +2178,7 @@ testnet:
       prefix_chain_ids:
         - "mooncat-"
     kujira:
+      chain_id: "harpoon-4"
       chain_name: "kujira"
       endpoints:
         lcd:
@@ -2167,6 +2207,7 @@ testnet:
       prefix_chain_ids:
         - "harpoon-"
     secret:
+      chain_id: "secret-snip-2"
       chain_name: "secret"
       endpoints:
         lcd:
@@ -2196,6 +2237,7 @@ testnet:
       prefix_chain_ids:
         - "pulsar-"
     sei:
+      chain_id: "atlantic-1"
       chain_name: "sei-2"
       endpoints:
         lcd:
@@ -2226,6 +2268,7 @@ testnet:
         - "atlantic-"
         - "sei-testnet-"
     fetch:
+      chain_id: "dorado-1"
       chain_name: "fetch"
       endpoints:
         lcd:
@@ -2253,6 +2296,7 @@ testnet:
       prefix_chain_ids:
         - "dorado-"
     evmos:
+      chain_id: "evmos_9000-4"
       chain_name: "evmos"
       endpoints:
         lcd:
@@ -2282,6 +2326,7 @@ testnet:
       prefix_chain_ids:
         - "evmos_"
     aura:
+      chain_id: "euphoria-2"
       chain_name: "aura"
       endpoints:
         lcd:
@@ -2309,6 +2354,7 @@ testnet:
       prefix_chain_ids:
         - "euphoria-"
     comdex:
+      chain_id: "comdex-test2"
       chain_name: "comdex-2"
       endpoints:
         lcd:
@@ -2336,6 +2382,7 @@ testnet:
       prefix_chain_ids:
         - "meteor-"
     persistence:
+      chain_id: "test-core-1"
       chain_name: "persistence"
       endpoints:
         lcd:
@@ -2365,6 +2412,7 @@ testnet:
       prefix_chain_ids:
         - "test-core-"
     xpla:
+      chain_id: "cube_47-5"
       chain_name: "xpla"
       endpoints:
         lcd:
@@ -2392,6 +2440,7 @@ testnet:
       prefix_chain_ids:
         - "cube_"
     acre:
+      chain_id: "bamboo_9051-2"
       chain_name: "acre"
       endpoints:
         lcd:
@@ -2421,6 +2470,7 @@ testnet:
       prefix_chain_ids:
         - "bamboo_"
     burnt-2:
+      chain_id: "xion-testnet-1"
       chain_name: "burnt-2"
       endpoints:
         lcd:
@@ -2475,6 +2525,7 @@ testnet:
       prefix_chain_ids:
         - "carbon-"
     odin:
+      chain_id: "odin-testnet-havi-1"
       chain_name: "odin"
       endpoints:
         lcd:
@@ -2502,6 +2553,7 @@ testnet:
       prefix_chain_ids:
         - "odin-"
     neutron:
+      chain_id: "pion-1"
       chain_name: "neutron"
       endpoints:
         lcd:
@@ -2532,6 +2584,7 @@ testnet:
       prefix_chain_ids:
         - "pion-"
     impacthub:
+      chain_id: "pandora-8"
       chain_name: "impacthub"
       endpoints:
         lcd:
@@ -2559,6 +2612,7 @@ testnet:
       prefix_chain_ids:
         - "pandora-"
     teritori:
+      chain_id: "teritori-testnet-v3"
       chain_name: "teritori"
       endpoints:
         lcd:
@@ -2587,6 +2641,7 @@ testnet:
       prefix_chain_ids:
         - "teritori-"
     haqq:
+      chain_id: "haqq_54211-3"
       chain_name: "haqq"
       endpoints:
         lcd:
@@ -2614,6 +2669,7 @@ testnet:
       prefix_chain_ids:
         - "haqq_"
     terra-3:
+      chain_id: "pisco-1"
       chain_name: "terra-3"
       endpoints:
         lcd:
@@ -3177,6 +3233,7 @@ stagenet:
         transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
+      chain_id: "axelar-testnet-lisbon-3"
       chain_name: "Axelarnet"
       endpoints:
         lcd:
@@ -3205,6 +3262,7 @@ stagenet:
       prefix_chain_ids:
         - "axelar-"
     osmosis:
+      chain_id: "osmo-test-5"
       chain_name: "osmosis-6"
       endpoints:
         lcd:
@@ -3234,6 +3292,7 @@ stagenet:
         - "osmosis-"
         - "osmo-test-"
     cosmoshub:
+      chain_id: "vega-testnet"
       chain_name: "cosmoshub"
       endpoints:
         lcd:
@@ -3292,6 +3351,7 @@ stagenet:
       prefix_chain_ids:
         - "uni-"
     crescent:
+      chain_id: "mooncat-1-1"
       chain_name: "crescent"
       endpoints:
         lcd:
@@ -3320,6 +3380,7 @@ stagenet:
       prefix_chain_ids:
         - "mooncat-"
     kujira:
+      chain_id: "harpoon-4"
       chain_name: "kujira"
       endpoints:
         lcd:
@@ -3348,6 +3409,7 @@ stagenet:
       prefix_chain_ids:
         - "harpoon-"
     secret:
+      chain_id: "secret-snip-2"
       chain_name: "secret"
       endpoints:
         lcd:
@@ -3377,6 +3439,7 @@ stagenet:
       prefix_chain_ids:
         - "pulsar-"
     sei:
+      chain_id: "atlantic-1"
       chain_name: "sei-2"
       endpoints:
         lcd:
@@ -3407,6 +3470,7 @@ stagenet:
         - "atlantic-"
         - "sei-testnet-"
     fetch:
+      chain_id: "dorado-1"
       chain_name: "fetch"
       endpoints:
         lcd:
@@ -3434,6 +3498,7 @@ stagenet:
       prefix_chain_ids:
         - "dorado-"
     evmos:
+      chain_id: "evmos_9000-4"
       chain_name: "evmos"
       endpoints:
         lcd:
@@ -3463,6 +3528,7 @@ stagenet:
       prefix_chain_ids:
         - "evmos_"
     aura:
+      chain_id: "euphoria-2"
       chain_name: "aura"
       endpoints:
         lcd:
@@ -3490,6 +3556,7 @@ stagenet:
       prefix_chain_ids:
         - "euphoria-"
     comdex:
+      chain_id: "comdex-test2"
       chain_name: "comdex-2"
       endpoints:
         lcd:
@@ -3517,6 +3584,7 @@ stagenet:
       prefix_chain_ids:
         - "meteor-"
     persistence:
+      chain_id: "test-core-1"
       chain_name: "persistence"
       endpoints:
         lcd:
@@ -3546,6 +3614,7 @@ stagenet:
       prefix_chain_ids:
         - "test-core-"
     xpla:
+      chain_id: "cube_47-5"
       chain_name: "xpla"
       endpoints:
         lcd:
@@ -3573,6 +3642,7 @@ stagenet:
       prefix_chain_ids:
         - "cube_"
     acre:
+      chain_id: "bamboo_9051-2"
       chain_name: "acre"
       endpoints:
         lcd:
@@ -3602,6 +3672,7 @@ stagenet:
       prefix_chain_ids:
         - "bamboo_"
     burnt-2:
+      chain_id: "xion-testnet-1"
       chain_name: "burnt-2"
       endpoints:
         lcd:
@@ -3656,6 +3727,7 @@ stagenet:
       prefix_chain_ids:
         - "carbon-"
     odin:
+      chain_id: "odin-testnet-havi-1"
       chain_name: "odin"
       endpoints:
         lcd:
@@ -3683,6 +3755,7 @@ stagenet:
       prefix_chain_ids:
         - "odin-"
     neutron:
+      chain_id: "pion-1"
       chain_name: "neutron"
       endpoints:
         lcd:
@@ -3713,6 +3786,7 @@ stagenet:
       prefix_chain_ids:
         - "pion-"
     impacthub:
+      chain_id: "pandora-8"
       chain_name: "impacthub"
       endpoints:
         lcd:
@@ -3740,6 +3814,7 @@ stagenet:
       prefix_chain_ids:
         - "pandora-"
     teritori:
+      chain_id: "teritori-testnet-v3"
       chain_name: "teritori"
       endpoints:
         lcd:
@@ -3768,6 +3843,7 @@ stagenet:
       prefix_chain_ids:
         - "teritori-"
     haqq:
+      chain_id: "haqq_54211-3"
       chain_name: "haqq"
       endpoints:
         lcd:
@@ -3795,6 +3871,7 @@ stagenet:
       prefix_chain_ids:
         - "haqq_"
     terra-3:
+      chain_id: "pisco-1"
       chain_name: "terra-3"
       endpoints:
         lcd:
