@@ -806,7 +806,7 @@ mainnet:
       prefix_chain_ids:
         - "pacific-"
     stargaze:
-      chain_name: "stargaze-1"
+      chain_id: "stargaze-1"
       chain_name: "stargaze"
       endpoints:
         lcd:
