@@ -194,6 +194,8 @@ axlSTETH:
 wstETH:
   coingecko_id: "staked-ether"
   decimals: 18
+axl-wstETH:
+  redirect: "wstETH"
 cbETH:
   coingecko_id: "coinbase-wrapped-staked-eth"
   decimals: 18
