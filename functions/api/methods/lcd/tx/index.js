@@ -129,6 +129,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
       /* start add addresses field */
       let addresses = [];
       const address_fields = ['voter', 'delegator_address', 'signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress'];
+      const packet_fields = ['packet_data'];
       const { prefix_address } = { ...getChainData('axelarnet') };
 
       if (logs) {
@@ -136,6 +137,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
           _.concat(
             addresses,
             toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => address_fields.includes(a.key)).map(a => a.value))),
+            toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => packet_fields.includes(a.key)).map(a => toJson(a.value)).flatMap(d => Object.entries({ ...d }).filter(([k, v]) => address_fields.includes(k)).map(([k, v]) => v)))),
           )
           .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
           .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
