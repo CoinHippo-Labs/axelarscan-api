@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const indexTransaction = require('./tx');
 const indexTransactions = require('./txs');
-const { saveBlock, saveUptime, addBlockEvents } = require('./block');
+const { saveBlock, saveUptime, saveBlockEvents, addBlockEvents } = require('./block');
 const { saveBatch, updateTransfer } = require('./batch');
 const { saveIBCChannels } = require('./ibc');
 const { get, write } = require('../../services/index');
@@ -105,6 +105,7 @@ module.exports = async (path = '', params = {}, cache_age_seconds = 10) => {
       if (index) {
         output = await saveBlock(output);
         output = await saveUptime(output);
+        output = await saveBlockEvents(output);
       }
       else {
         output = await addBlockEvents(output);
