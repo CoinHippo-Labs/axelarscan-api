@@ -3471,7 +3471,7 @@ mainnet:
     native_chain: "ethereum"
     name: "Euro Coin"
     symbol: "EUROC"
-    decimals: 18
+    decimals: 6
     image: "/logos/assets/euroc.svg"
     coingecko_id: "euro-coin"
     addresses:
