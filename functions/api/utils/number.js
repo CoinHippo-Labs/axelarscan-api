@@ -28,7 +28,7 @@ const parseUnits = (number = 0, decimals = 18) => {
     if (number.includes('.')) {
       const [_number, _decimals] = split(number, 'normal', '.');
       if (typeof _decimals === 'string' && _decimals.length > decimals) {
-        return `${_number}${_decimals.substring(0, _decimals.length)}.${_decimals.substring(_decimals.length)}`;
+        return `${Number(_number)}${_decimals.substring(0, decimals)}`;
       }
     }
     return toBigNumber(_parseUnits(number, decimals));
