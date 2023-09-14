@@ -488,12 +488,12 @@ estimateGasFee:
       id: "sourceChain"
       require: true
       type: "string"
-      value: "avalanche"
+      value: "polygon"
     -
       id: "destinationChain"
       require: true
       type: "string"
-      value: "moonbeam"
+      value: "fantom"
     -
       id: "gasLimit"
       type: "BigNumber"
@@ -517,21 +517,15 @@ estimateGasFee:
       type: "boolean"
       value: false
     -
-      id: "gasLimit"
-      type: "BigNumber"
-      value: "700000"
-      override:
-        value: "700000"
-    -
       id: "sourceTokenSymbol"
       type: "string"
-      value: "AVAX"
+      value: "MATIC"
+      override:
+        value: "axlUSDC"
     -
       id: "sourceTokenAddress"
       type: "string"
       value: "0x0000000000000000000000000000000000000000"
-      override:
-        value: "0x0000000000000000000000000000000000000000"
     -
       id: "sourceContractAddress"
       type: "string"
