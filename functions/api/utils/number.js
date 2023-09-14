@@ -24,11 +24,15 @@ const numberFormatUnits = (number, decimals = 6) => {
 
 const parseUnits = (number = 0, decimals = 18) => {
   try {
-    number = toDecimal(number.toString());
+    number = number.toString();
     if (number.includes('.')) {
       const [_number, _decimals] = split(number, 'normal', '.');
       if (typeof _decimals === 'string' && _decimals.length > decimals) {
-        return `${Number(_number)}${_decimals.substring(0, decimals)}`;
+        let output = `${_number}${_decimals.substring(0, decimals)}`;
+        while (output.length > 1 && output.startsWith('0')) {
+          output = output.substring(1);
+        }
+        return output;
       }
     }
     return toBigNumber(_parseUnits(number, decimals));
