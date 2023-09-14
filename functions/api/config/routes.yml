@@ -345,6 +345,9 @@ searchGMP:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -408,7 +411,7 @@ searchGMP:
         value: 5
 getDataMapping:
   is_gmp: true
-  description: "The API route provides GMP data mapping."
+  description: "The API route offers GMP data mapping. The response includes the type of each data field returned by the 'searchGMP' method."
 getGasPrice:
   is_gmp: true
   description: "The API route provides a gas price conversion rate for each source and destination chain. It can be used as a part of estimating the gas fee. Please note that a complete method that provides the estimated gas fee is available on the [AxelarJS SDK](https://docs.axelar.dev/dev/axelarjs-sdk/axelar-query-api#estimategasfee)."
@@ -487,6 +490,9 @@ GMPStats:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -547,6 +553,9 @@ GMPChart:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -603,6 +612,9 @@ GMPCumulativeVolume:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -655,6 +667,9 @@ GMPTotalVolume:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -707,6 +722,9 @@ GMPTotalFee:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -759,6 +777,9 @@ GMPTotalActiveUsers:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
@@ -811,6 +832,9 @@ GMPTopUsers:
       enums:
         - "callContract"
         - "callContractWithToken"
+        - "sendToken"
+        - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
+        - "StandardizedTokenDeployed"
     -
       id: "sourceChain"
       type: "string"
