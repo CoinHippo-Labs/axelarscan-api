@@ -600,6 +600,10 @@ vext-wei:
   redirect: "VEXT"
 ovn-wei:
   redirect: "OVN"
+ueuroc:
+  redirect: "EUROC"
+bal-wei:
+  redirect: "BAL"
 uosmo:
   redirect: "OSMO"
 uatom:
