@@ -3466,6 +3466,49 @@ mainnet:
         address: "0xA3d1a8DEB97B111454B294E2324EfAD13a9d8396"
       axelarnet:
         ibc_denom: "ovn-wei"
+  ueuroc:
+    denom: "ueuroc"
+    native_chain: "ethereum"
+    name: "Euro Coin"
+    symbol: "EUROC"
+    decimals: 18
+    image: "/logos/assets/euroc.svg"
+    coingecko_id: "euro-coin"
+    addresses:
+      ethereum:
+        address: "0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c"
+        symbol: "axlEUROC"
+      celo:
+        address: "0x061cc5a2C863E0C1Cb404006D559dB18A34C762d"
+        symbol: "axlEUROC"
+      axelarnet:
+        ibc_denom: "ueuroc"
+  bal-wei:
+    denom: "bal-wei"
+    native_chain: "ethereum"
+    name: "Balancer"
+    symbol: "BAL"
+    decimals: 18
+    image: "/logos/assets/bal.svg"
+    coingecko_id: "balancer"
+    addresses:
+      ethereum:
+        address: "0xba100000625a3754423978a60c9317c58a424e3D"
+      polygon:
+        address: "0xA8e417f73D68A239cE7E7FbD73b8081BE419767B"
+        symbol: "axlBAL"
+      arbitrum:
+        address: "0x11C1879227D463b60db18C17c20aE739aE8E961a"
+        symbol: "axlBAL"
+      optimism:
+        address: "0x11C1879227D463b60db18C17c20aE739aE8E961a"
+        symbol: "axlBAL"
+      base:
+        address: "0x11C1879227D463b60db18C17c20aE739aE8E961a"
+        symbol: "axlBAL"
+      axelarnet:
+        ibc_denom: "bal-wei"
+        symbol: "axlBAL"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
@@ -4224,7 +4267,7 @@ testnet:
     image: "/logos/assets/wsteth.svg"
     coingecko_id: "staked-ether"
     addresses:
-      ethereum:
+      ethereum-2:
         address: "0x6320cD32aA674d2898A68ec82e869385Fc5f7E2f"
       polygon:
         address: "0xb48D2ce84900ff4dFFaf53CbE5ea8Ec6195cb67b"

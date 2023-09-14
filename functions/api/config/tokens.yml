@@ -437,6 +437,16 @@ OVN:
   default_price:
     usd: 0.01
   decimals: 18
+EUROC:
+  coingecko_id: "euro-coin"
+  decimals: 6
+axlEUROC:
+  redirect: "EUROC"
+BAL:
+  coingecko_id: "balancer"
+  decimals: 18
+axlBAL:
+  redirect: "BAL"
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
