@@ -480,6 +480,78 @@ getFees:
       id: "amountInUnits"
       type: "BigNumber"
       value: "1000000 (Passing either amount or amountInUnits is acceptable.)"
+estimateGasFee:
+  is_gmp: true
+  description: "The API route estimates the required gas payment when invoking a GMP transaction."
+  parameters:
+    -
+      id: "sourceChain"
+      require: true
+      type: "string"
+      value: "avalanche"
+    -
+      id: "destinationChain"
+      require: true
+      type: "string"
+      value: "moonbeam"
+    -
+      id: "gasLimit"
+      type: "BigNumber"
+      value: "700000"
+      override:
+        value: "700000"
+    -
+      id: "gasMultiplier"
+      type: "number"
+      value: 1.1
+      override:
+        value: "1.1"
+    -
+      id: "minGasPrice"
+      type: "BigNumber"
+      value: "1000000000"
+      override:
+        value: "0"
+    -
+      id: "showDetailedFees"
+      type: "boolean"
+      value: false
+    -
+      id: "gasLimit"
+      type: "BigNumber"
+      value: "700000"
+      override:
+        value: "700000"
+    -
+      id: "sourceTokenSymbol"
+      type: "string"
+      value: "AVAX"
+    -
+      id: "sourceTokenAddress"
+      type: "string"
+      value: "0x0000000000000000000000000000000000000000"
+      override:
+        value: "0x0000000000000000000000000000000000000000"
+    -
+      id: "sourceContractAddress"
+      type: "string"
+      value: "0xce16F69375520ab01377ce7B88f5BA8C48F8D666"
+    -
+      id: "destinationContractAddress"
+      type: "string"
+      value: "0xce16F69375520ab01377ce7B88f5BA8C48F8D666"
+    -
+      id: "symbol"
+      type: "string"
+      value: "axlUSDC (The parameter corresponds to the token being transferred with the call, and its value is the symbol on the source chain, e.g., USDC on Ethereum, axlUSDC on Polygon.)"
+    -
+      id: "amount"
+      type: "number"
+      value: 1
+    -
+      id: "amountInUnits"
+      type: "BigNumber"
+      value: "1000000 (Passing either amount or amountInUnits is acceptable.)"
 GMPStats:
   is_gmp: true
   description: "The API route returns the statistics of the General Message Passing (GMP) calls by each combination of source chain, destination chain, and assets."
