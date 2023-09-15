@@ -148,14 +148,20 @@ module.exports = async (lcd_response = {}) => {
               const { attributes } = { ..._.head(toArray(d.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')))) };
               return packet_sequence === toArray(attributes).find(a => a.key === 'packet_sequence')?.value;
             });
-            const { txhash, timestamp } = { ...transaction_data };
+            const { txhash, timestamp, logs } = { ...transaction_data };
 
             if (txhash) {
+              const { attributes } = { ..._.head(toArray(d.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'write_acknowledgement')))) };
+              const packet_ack = toArray(attributes).find(a => a.key === 'packet_ack')?.value;
+              const { result, error } = { ...toJson(packet_ack) };
+              const failed = result !== 'AQ==' || !!error;
+
               ibc_send = {
                 ...ibc_send,
-                ack_txhash: id,
+                ack_txhash: failed ? null : id,
                 recv_txhash: txhash,
-                received_at: getGranularity(moment(timestamp).utc()),
+                received_at: failed ? undefined : getGranularity(moment(timestamp).utc()),
+                failed_txhash: failed ? id : undefined,
               };
               transfer_data = { ...transfer_data, ibc_send };
               await write(TRANSFER_COLLECTION, _id, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
