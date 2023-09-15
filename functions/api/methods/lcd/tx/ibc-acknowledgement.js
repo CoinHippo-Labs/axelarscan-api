@@ -14,7 +14,7 @@ module.exports = async (lcd_response = {}) => {
 
   const { tx, tx_response } = { ...lcd_response };
   const { messages } = { ...tx?.body };
-  const { txhash, logs } = { ...tx_response };
+  const { txhash, code, logs } = { ...tx_response };
   const height = Number(toArray(messages).find(m => equalsIgnoreCase(_.last(toArray(m['@type'], 'normal', '.')), 'MsgAcknowledgement'))?.proof_height?.revision_height || '0') - 1;
 
   if (height) {
@@ -109,8 +109,8 @@ module.exports = async (lcd_response = {}) => {
         let { ibc_send } = { ...transfer_data };
         ibc_send = {
           ...ibc_send,
-          ack_txhash: id,
-          failed_txhash: transfer_id ? null : undefined,
+          ack_txhash: !code ? id : null,
+          failed_txhash: !code ? transfer_id ? null : undefined : id,
         };
         transfer_data = { ...transfer_data, ibc_send };
 
@@ -121,7 +121,7 @@ module.exports = async (lcd_response = {}) => {
         const { packet_data_hex, packet_sequence } = { ...ibc_send?.packet };
         destination_chain = destination_chain || link?.destination_chain;
 
-        if (height && destination_chain && packet_data_hex) {
+        if (!code && height && destination_chain && packet_data_hex) {
           const chain_data = getChainData(destination_chain, 'cosmos');
           const chain = chain_data?.id;
           const lcd = getLCDs(chain);
