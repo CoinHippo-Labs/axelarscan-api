@@ -1003,6 +1003,7 @@ getChainMaintainers:
   parameters:
     -
       id: "chain"
+      require: true
       type: "string"
       value: "polygon"
 getCirculatingSupply:
