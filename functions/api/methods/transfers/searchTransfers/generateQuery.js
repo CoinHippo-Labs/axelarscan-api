@@ -102,93 +102,6 @@ module.exports = params => {
                   }
                 }
                 break;
-              case 'state':
-                if (v) {
-                  switch (v) {
-                    case 'completed':
-                      obj = {
-                        bool: {
-                          should: [
-                            {
-                              bool: {
-                                must: [
-                                  { exists: { field: 'command' } },
-                                ],
-                                should: getChainsList('evm').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
-                                minimum_should_match: 1,
-                              },
-                            },
-                            {
-                              bool: {
-                                must: [
-                                  { exists: { field: 'ibc_send' } },
-                                ],
-                                should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
-                                minimum_should_match: 1,
-                                must_not: [
-                                  { exists: { field: 'ibc_send.failed_txhash' } },
-                                ],
-                              },
-                            },
-                            {
-                              bool: {
-                                must: [
-                                  { match_phrase: { 'send.original_destination_chain': 'axelarnet' } },
-                                  { exists: { field: 'axelar_transfer' } },
-                                ],
-                              },
-                            },
-                          ],
-                          minimum_should_match: 1,
-                        },
-                      };
-                      break;
-                    case 'pending':
-                      obj = {
-                        bool: {
-                          must_not: [
-                            {
-                              bool: {
-                                should: [
-                                  {
-                                    bool: {
-                                      must: [
-                                        { exists: { field: 'command' } },
-                                      ],
-                                      should: getChainsList('evm').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
-                                      minimum_should_match: 1,
-                                    },
-                                  },
-                                  {
-                                    bool: {
-                                      must: [
-                                        { exists: { field: 'ibc_send' } },
-                                      ],
-                                      should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
-                                      minimum_should_match: 1,
-                                    },
-                                  },
-                                  {
-                                    bool: {
-                                      must: [
-                                        { match_phrase: { 'send.original_destination_chain': 'axelarnet' } },
-                                        { exists: { field: 'axelar_transfer' } },
-                                      ],
-                                    },
-                                  },
-                                ],
-                                minimum_should_match: 1,
-                              },
-                            }
-                          ],
-                        },
-                      };
-                      break;
-                    default:
-                      break;
-                  }
-                }
-                break;
               case 'sourceChain':
                 if (v) {
                   v = toArray(v);
@@ -420,66 +333,199 @@ module.exports = params => {
                 }
                 break;
               case 'status':
-                switch (v) {
-                  case 'to_fix_value':
-                    obj = {
-                      bool: {
-                        must: [
-                          { exists: { field: 'send.txhash' } },
-                          { exists: { field: 'send.amount' } },
-                        ],
-                        must_not: [
-                          { exists: { field: 'send.value' } },
-                        ],
-                      },
-                    };
-                    break;
-                  case 'to_fix_fee_value':
-                    obj = {
-                      bool: {
-                        must: [
-                          { exists: { field: 'send.txhash' } },
-                          { exists: { field: 'send.amount' } },
-                          { exists: { field: 'send.fee' } },
-                          { exists: { field: 'link.price' } },
-                        ],
-                        must_not: [
-                          { exists: { field: 'send.fee_value' } },
-                        ],
-                      },
-                    };
-                    break;
-                  case 'to_fix_fee_terra':
-                    obj = {
-                      bool: {
-                        must: [
-                          { range: { 'send.fee_value': { gt: 5000 } } },
-                        ],
-                        should: [
-                          { match: { 'send.denom': 'uluna' } },
-                          { match: { 'send.denom': 'uusd' } },
-                        ],
-                        minimum_should_match: 1,
-                      },
-                    };
-                    break;
-                  case 'to_fix_terra_price':
-                    obj = {
-                      bool: {
-                        must: [
-                          { range: { 'link.price': { gt: 0.1 } } },
-                          { range: { 'send.created_at.ms': { gt: moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc().valueOf() } } },
-                        ],
-                        should: [
-                          { match: { 'send.denom': 'uluna' } },
-                          { match: { 'send.denom': 'uusd' } },
-                        ],
-                        minimum_should_match: 1,
-                      },
-                    };
-                    break;
-                  default:
-                    break;
+              case 'state':
+                if (v) {
+                  switch (v) {
+                    case 'completed':
+                    case 'success':
+                    case 'executed':
+                      obj = {
+                        bool: {
+                          should: [
+                            {
+                              bool: {
+                                must: [
+                                  { exists: { field: 'command' } },
+                                ],
+                                should: getChainsList('evm').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
+                                minimum_should_match: 1,
+                              },
+                            },
+                            {
+                              bool: {
+                                must: [
+                                  { exists: { field: 'ibc_send' } },
+                                  {
+                                    bool: {
+                                      should: [
+                                        {
+                                          bool: {
+                                            must_not: [
+                                              { exists: { field: 'ibc_send.failed_txhash' } },
+                                            ],
+                                          },
+                                        },
+                                        { match: { 'ibc_send.failed_txhash': null } },
+                                      ],
+                                      minimum_should_match: 1,
+                                    },
+                                  },
+                                ],
+                                should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
+                                minimum_should_match: 1,
+                              },
+                            },
+                            {
+                              bool: {
+                                must: [
+                                  { match_phrase: { 'send.original_destination_chain': 'axelarnet' } },
+                                  { exists: { field: 'axelar_transfer' } },
+                                ],
+                              },
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      };
+                      break;
+                    case 'pending':
+                      obj = {
+                        bool: {
+                          must_not: [
+                            {
+                              bool: {
+                                should: [
+                                  {
+                                    bool: {
+                                      must: [
+                                        { exists: { field: 'command' } },
+                                      ],
+                                      should: getChainsList('evm').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
+                                      minimum_should_match: 1,
+                                    },
+                                  },
+                                  {
+                                    bool: {
+                                      must: [
+                                        { exists: { field: 'ibc_send' } },
+                                      ],
+                                      should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
+                                      minimum_should_match: 1,
+                                    },
+                                  },
+                                  {
+                                    bool: {
+                                      must: [
+                                        { match_phrase: { 'send.original_destination_chain': 'axelarnet' } },
+                                        { exists: { field: 'axelar_transfer' } },
+                                      ],
+                                    },
+                                  },
+                                ],
+                                minimum_should_match: 1,
+                              },
+                            }
+                          ],
+                        },
+                      };
+                      break;
+                    case 'failed':
+                      obj = {
+                        bool: {
+                          should: [
+                            {
+                              bool: {
+                                must: [
+                                  { exists: { field: 'ibc_send' } },
+                                  { exists: { field: 'ibc_send.failed_txhash' } },
+                                  {
+                                    bool: {
+                                      should: [
+                                        {
+                                          bool: {
+                                            must_not: [
+                                              { exists: { field: 'ibc_send.ack_txhash' } },
+                                            ],
+                                          },
+                                        },
+                                        { match: { 'ibc_send.ack_txhash': null } },
+                                      ],
+                                      minimum_should_match: 1,
+                                    },
+                                  },
+                                ],
+                                should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
+                                minimum_should_match: 1,
+                                must_not: [
+                                  { match: { 'ibc_send.failed_txhash': null } },
+                                ],
+                              },
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      };
+                      break;
+                    case 'to_fix_value':
+                      obj = {
+                        bool: {
+                          must: [
+                            { exists: { field: 'send.txhash' } },
+                            { exists: { field: 'send.amount' } },
+                          ],
+                          must_not: [
+                            { exists: { field: 'send.value' } },
+                          ],
+                        },
+                      };
+                      break;
+                    case 'to_fix_fee_value':
+                      obj = {
+                        bool: {
+                          must: [
+                            { exists: { field: 'send.txhash' } },
+                            { exists: { field: 'send.amount' } },
+                            { exists: { field: 'send.fee' } },
+                            { exists: { field: 'link.price' } },
+                          ],
+                          must_not: [
+                            { exists: { field: 'send.fee_value' } },
+                          ],
+                        },
+                      };
+                      break;
+                    case 'to_fix_fee_terra':
+                      obj = {
+                        bool: {
+                          must: [
+                            { range: { 'send.fee_value': { gt: 5000 } } },
+                          ],
+                          should: [
+                            { match: { 'send.denom': 'uluna' } },
+                            { match: { 'send.denom': 'uusd' } },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      };
+                      break;
+                    case 'to_fix_terra_price':
+                      obj = {
+                        bool: {
+                          must: [
+                            { range: { 'link.price': { gt: 0.1 } } },
+                            { range: { 'send.created_at.ms': { gt: moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc().valueOf() } } },
+                          ],
+                          should: [
+                            { match: { 'send.denom': 'uluna' } },
+                            { match: { 'send.denom': 'uusd' } },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      };
+                      break;
+                    default:
+                      break;
+                  }
                 }
                 break;
               case 'fromTime':

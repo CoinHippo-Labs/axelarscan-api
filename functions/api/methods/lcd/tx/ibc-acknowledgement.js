@@ -90,9 +90,17 @@ module.exports = async (lcd_response = {}) => {
                 { match: { 'ibc_send.ack_txhash': id } },
                 {
                   bool: {
-                    must_not: [
-                      { exists: { field: 'ibc_send.ack_txhash' } },
+                    should: [
+                      {
+                        bool: {
+                          must_not: [
+                            { exists: { field: 'ibc_send.ack_txhash' } },
+                          ],
+                        },
+                      },
+                      { match: { 'ibc_send.ack_txhash': null } },
                     ],
+                    minimum_should_match: 1,
                   },
                 },
               ],
@@ -154,7 +162,7 @@ module.exports = async (lcd_response = {}) => {
               const { attributes } = { ..._.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'write_acknowledgement')))) };
               const packet_ack = toArray(attributes).find(a => a.key === 'packet_ack')?.value;
               const { result, error } = { ...toJson(packet_ack) };
-              const failed = result !== 'AQ==' || !!error;
+              const failed = !['AQ==', 'MQ=='].includes(result) || !!error;
 
               ibc_send = {
                 ...ibc_send,
