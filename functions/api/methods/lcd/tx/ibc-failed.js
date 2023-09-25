@@ -44,21 +44,6 @@ module.exports = async (lcd_response = {}) => {
           must: [
             { exists: { field: 'send.txhash' } },
             { match: { 'send.status': 'success' } },
-            {
-              bool: {
-                should: [
-                  {
-                    bool: {
-                      must_not: [
-                        { exists: { field: 'ibc_send.ack_txhash' } },
-                      ],
-                    },
-                  },
-                  { match: { 'ibc_send.ack_txhash': null } },
-                ],
-                minimum_should_match: 1,
-              },
-            },
           ],
           should: [
             { match: { 'confirm.transfer_id': transfer_id } },
@@ -67,6 +52,9 @@ module.exports = async (lcd_response = {}) => {
             { match: { transfer_id } },
           ],
           minimum_should_match: 1,
+          must_not: [
+            { exists: { field: 'ibc_send.ack_txhash' } },
+          ],
         },
       },
       { size: 1, sort: [{ 'send.created_at.ms': 'desc' }] },

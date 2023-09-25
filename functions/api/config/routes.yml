@@ -135,7 +135,6 @@ searchTransfers:
       type: "string"
       enums:
         - "executed"
-        - "pending"
         - "failed"
     -
       id: "fromTime"

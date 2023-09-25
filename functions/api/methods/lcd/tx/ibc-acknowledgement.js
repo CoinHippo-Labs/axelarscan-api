@@ -90,17 +90,9 @@ module.exports = async (lcd_response = {}) => {
                 { match: { 'ibc_send.ack_txhash': id } },
                 {
                   bool: {
-                    should: [
-                      {
-                        bool: {
-                          must_not: [
-                            { exists: { field: 'ibc_send.ack_txhash' } },
-                          ],
-                        },
-                      },
-                      { match: { 'ibc_send.ack_txhash': null } },
+                    must_not: [
+                      { exists: { field: 'ibc_send.ack_txhash' } },
                     ],
-                    minimum_should_match: 1,
                   },
                 },
               ],

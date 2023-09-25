@@ -355,24 +355,12 @@ module.exports = params => {
                               bool: {
                                 must: [
                                   { exists: { field: 'ibc_send' } },
-                                  {
-                                    bool: {
-                                      should: [
-                                        {
-                                          bool: {
-                                            must_not: [
-                                              { exists: { field: 'ibc_send.failed_txhash' } },
-                                            ],
-                                          },
-                                        },
-                                        { match: { 'ibc_send.failed_txhash': null } },
-                                      ],
-                                      minimum_should_match: 1,
-                                    },
-                                  },
                                 ],
                                 should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
                                 minimum_should_match: 1,
+                                must_not: [
+                                  { exists: { field: 'ibc_send.failed_txhash' } },
+                                ],
                               },
                             },
                             {
@@ -439,26 +427,11 @@ module.exports = params => {
                                 must: [
                                   { exists: { field: 'ibc_send' } },
                                   { exists: { field: 'ibc_send.failed_txhash' } },
-                                  {
-                                    bool: {
-                                      should: [
-                                        {
-                                          bool: {
-                                            must_not: [
-                                              { exists: { field: 'ibc_send.ack_txhash' } },
-                                            ],
-                                          },
-                                        },
-                                        { match: { 'ibc_send.ack_txhash': null } },
-                                      ],
-                                      minimum_should_match: 1,
-                                    },
-                                  },
                                 ],
                                 should: getChainsList('cosmos').flatMap(c => { return toArray([{ match_phrase: { 'send.original_destination_chain': c.id } }, { match_phrase: { 'send.original_destination_chain': c.chain_name?.toLowerCase() } }]); }),
                                 minimum_should_match: 1,
                                 must_not: [
-                                  { match: { 'ibc_send.failed_txhash': null } },
+                                  { exists: { field: 'ibc_send.ack_txhash' } },
                                 ],
                               },
                             },
