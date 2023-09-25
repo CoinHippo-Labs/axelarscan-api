@@ -131,6 +131,13 @@ searchTransfers:
       type: "string"
       value: "0xd146c053f9ea51199d273c769c4fae2a8e12d7b3"
     -
+      id: "status"
+      type: "string"
+      enums:
+        - "executed"
+        - "pending"
+        - "failed"
+    -
       id: "fromTime"
       type: "unixTime"
       value: 1659373200

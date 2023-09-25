@@ -430,6 +430,7 @@ module.exports = params => {
                       };
                       break;
                     case 'failed':
+                    case 'error':
                       obj = {
                         bool: {
                           should: [
