@@ -154,8 +154,7 @@ module.exports = async (lcd_response = {}) => {
               const { attributes } = { ..._.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'write_acknowledgement')))) };
               const packet_ack = toArray(attributes).find(a => a.key === 'packet_ack')?.value;
               const { result, error } = { ...toJson(packet_ack) };
-              const failed = !['AQ==', 'MQ=='].includes(result) || !!error;
-
+              const failed = (result && !['AQ==', 'MQ=='].includes(result)) || !!error;
               ibc_send = {
                 ...ibc_send,
                 ack_txhash: failed ? null : id,
