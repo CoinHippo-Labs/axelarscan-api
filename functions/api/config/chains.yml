@@ -2248,13 +2248,11 @@ testnet:
       prefix_chain_ids:
         - "harpoon-"
     secret:
-      chain_id: "secret-snip-2"
+      chain_id: "secret-snip-3"
       chain_name: "secret"
       endpoints:
         lcd:
-          - "https://lcd.testnet.secretsaturn.net"
-          - "https://api.pulsar.scrttestnet.com"
-          - "http://testnet.securesecrets.org:1317"
+          - "https://api.pulsar3.scrttestnet.com"
         timeout:
           lcd: 3000
       native_token:
@@ -2268,13 +2266,13 @@ testnet:
       color: "#000000"
       explorer:
         name: "Secret"
-        url: "https://secretnodes.com/pulsar"
+        url: "https://testnet.ping.pub/secret"
         icon: "/logos/explorers/secret.png"
-        block_path: "/blocks/{block}"
-        address_path: "/accounts/{address}"
-        contract_path: "/accounts/{address}"
-        contract_0_path: "/accounts/{address}"
-        transaction_path: "/transactions/{tx}"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
       prefix_address: "secret"
       prefix_chain_ids:
         - "pulsar-"
@@ -3475,13 +3473,11 @@ stagenet:
       prefix_chain_ids:
         - "harpoon-"
     secret:
-      chain_id: "secret-snip-2"
+      chain_id: "secret-snip-3"
       chain_name: "secret"
       endpoints:
         lcd:
-          - "https://lcd.testnet.secretsaturn.net"
-          - "https://api.pulsar.scrttestnet.com"
-          - "http://testnet.securesecrets.org:1317"
+          - "https://api.pulsar3.scrttestnet.com"
         timeout:
           lcd: 3000
       native_token:
@@ -3495,13 +3491,13 @@ stagenet:
       color: "#000000"
       explorer:
         name: "Secret"
-        url: "https://secretnodes.com/pulsar"
+        url: "https://testnet.ping.pub/secret"
         icon: "/logos/explorers/secret.png"
-        block_path: "/blocks/{block}"
-        address_path: "/accounts/{address}"
-        contract_path: "/accounts/{address}"
-        contract_0_path: "/accounts/{address}"
-        transaction_path: "/transactions/{tx}"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
       prefix_address: "secret"
       prefix_chain_ids:
         - "pulsar-"
