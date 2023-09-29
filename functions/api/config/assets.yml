@@ -3509,6 +3509,15 @@ mainnet:
       axelarnet:
         ibc_denom: "bal-wei"
         symbol: "axlBAL"
+  ktc-wei:
+    denom: "ktc-wei"
+    native_chain: "binance"
+    name: "KTX Finance"
+    symbol: "KTC"
+    decimals: 18
+    image: "/logos/assets/ktc.svg"
+    coingecko_id: "ktx-finance"
+    addresses:
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"

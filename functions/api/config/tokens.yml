@@ -447,6 +447,10 @@ BAL:
   decimals: 18
 axlBAL:
   redirect: "BAL"
+KTC:
+  coingecko_id: "ktx-finance"
+axlKTC:
+  redirect: "KTC"
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
@@ -604,6 +608,8 @@ ueuroc:
   redirect: "EUROC"
 bal-wei:
   redirect: "BAL"
+ktc-wei:
+  redirect: "KTC"
 uosmo:
   redirect: "OSMO"
 uatom:
