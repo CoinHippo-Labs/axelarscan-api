@@ -234,6 +234,8 @@ const deleteByQuery = async (
     ...params,
   });
 
+const getMapping = async collection => await crud({ method: 'get', collection, path: `/${collection}/_mapping` });
+
 module.exports = {
   crud,
   get,
@@ -241,4 +243,5 @@ module.exports = {
   write,
   remove,
   deleteByQuery,
+  getMapping,
 };

@@ -154,6 +154,8 @@ searchTransfers:
       value: 10
       override:
         value: 5
+getTransferDataMapping:
+  description: "The API route offers transfer data mapping. The response includes the type of each data field returned by the 'searchTransfers' method."
 transfersStats:
   description: "The API route returns the statistics of the cross-chain transfers by each combination of source chain, destination chain, and assets."
   parameters:

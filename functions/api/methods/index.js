@@ -8,7 +8,7 @@ const { searchPolls } = require('./polls');
 const { searchUptimes, searchHeartbeats, getValidators, getValidatorsVotes } = require('./validators');
 const { getProposals, getProposal } = require('./proposals');
 const { searchBatches } = require('./batches');
-const { searchDepositAddresses, transfersStats, transfersChart, transfersCumulativeVolume, transfersTotalVolume, transfersTotalFee, transfersTotalActiveUsers, transfersTopUsers, searchTransfers, resolveTransfer } = require('./transfers');
+const { searchDepositAddresses, transfersStats, transfersChart, transfersCumulativeVolume, transfersTotalVolume, transfersTotalFee, transfersTotalActiveUsers, transfersTopUsers, searchTransfers, resolveTransfer, getTransferDataMapping } = require('./transfers');
 const { interchainChart, interchainTotalVolume, interchainTotalFee, interchainTotalActiveUsers } = require('./interchain');
 const { getTVL, getTVLAlert } = require('./tvl');
 const { saveEvent } = require('./events');
@@ -52,6 +52,7 @@ module.exports = {
   transfersTopUsers,
   searchTransfers,
   resolveTransfer,
+  getTransferDataMapping,
   interchainChart,
   interchainTotalVolume,
   interchainTotalFee,
