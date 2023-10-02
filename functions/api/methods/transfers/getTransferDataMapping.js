@@ -5,6 +5,9 @@ module.exports = async () => {
   const COLLECTION = TRANSFER_COLLECTION;
   const response = await getMapping(COLLECTION);
   const { properties } = { ...response?.[COLLECTION]?.mappings };
+  if (properties) {
+    delete properties._data;
+  }
   return properties && {
     ...properties,
     status: { type: 'text' },

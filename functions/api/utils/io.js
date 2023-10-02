@@ -30,7 +30,7 @@ const finalizeOutput = (output, params, start_time = moment()) => {
     };
   }
   // add time spent to output
-  if (output && typeof output === 'object' && !Array.isArray(output)) {
+  if (output && typeof output === 'object' && !Array.isArray(output) && !['getTransferDataMapping'].includes(method)) {
     output = {
       ...output,
       time_spent: moment().diff(start_time),
