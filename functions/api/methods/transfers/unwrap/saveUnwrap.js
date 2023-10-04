@@ -39,7 +39,7 @@ module.exports = async (params = {}) => {
   if (!params.tx_hash && params.tx_hash_msg_update_client) {
     const { tx_hash_msg_update_client } = { ...params };
     let { tx_hash } = { ...params };
-    const lcd_response = await lcd(`/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`);
+    const lcd_response = await lcd(`/cosmos/tx/v1beta1/txs/${tx_hash_msg_update_client}`, { index: true });
     const { tx_hashes, source_chain } = { ...lcd_response };
     tx_hash = _.head(tx_hashes);
     if (tx_hash) {
