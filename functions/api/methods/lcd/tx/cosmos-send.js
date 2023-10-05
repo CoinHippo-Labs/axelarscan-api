@@ -6,7 +6,7 @@ const { read } = require('../../../services/index');
 const { getLCDs } = require('../../../utils/chain/cosmos');
 const { DEPOSIT_ADDRESS_COLLECTION, UNWRAP_COLLECTION, getDeposits, getChainsList, getAssetData } = require('../../../utils/config');
 const { getGranularity } = require('../../../utils/time');
-const { equalsIgnoreCase, toArray, find, toJson, normalizeQuote } = require('../../../utils');
+const { equalsIgnoreCase, split, toArray, find, toJson, normalizeQuote } = require('../../../utils');
 
 module.exports = async (lcd_response = {}) => {
   const { tx, tx_response } = { ...lcd_response };
@@ -74,9 +74,10 @@ module.exports = async (lcd_response = {}) => {
       if (index > -1) {
         const { tx, tx_response } = { tx: toArray(txs)[index], tx_response: toArray(tx_responses)[index] };
         const { messages } = { ...tx?.body };
-        const { txhash, code, height, timestamp, events } = { ...tx_response };
+        const { txhash, code, height, timestamp } = { ...tx_response };
 
         if (messages) {
+          const { events } = { ...toArray(logs).find(l => toArray(l.events).findIndex(e => e.type === 'recv_packet' && packet_sequence === toArray(e.attributes).find(a => a.key === 'packet_sequence')?.value) > -1) };
           const { attributes } = { ...toArray(events).find(e => e.type === 'recv_packet' && packet_sequence === toArray(e.attributes).find(a => a.key === 'packet_sequence')?.value) };
           const { receiver, denom, amount } = { ...toJson(toArray(attributes).find(a => a.key === 'packet_data')?.value) };
 
