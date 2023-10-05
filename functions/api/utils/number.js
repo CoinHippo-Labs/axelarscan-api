@@ -14,10 +14,10 @@ const toFixedNumber = number => FixedNumber.fromString(number?.toString().includ
 
 const numberFormatUnits = (number, decimals = 6) => {
   try {
-    return Number(formatUnits(parseInt(number || '0'), decimals));
+    return Number(formatUnits(parseInt(number || '0').toString(), decimals));
   } catch (error) {
     if (number?.toString().length > 18) {
-      return Number(formatUnits(number, 18));
+      return Number(formatUnits(number.toString(), 18));
     }
   }
 };
