@@ -74,12 +74,15 @@ module.exports = async (lcd_response = {}) => {
       if (index > -1) {
         const { tx, tx_response } = { tx: toArray(txs)[index], tx_response: toArray(tx_responses)[index] };
         const { messages } = { ...tx?.body };
-        const { txhash, code, height, timestamp } = { ...tx_response };
+        const { txhash, code, height, timestamp, events } = { ...tx_response };
 
         if (messages) {
+          const { attributes } = { ...toArray(events).find(e => e.type === 'recv_packet' && packet_sequence === toArray(e.attributes).find(a => a.key === 'packet_sequence')?.value) };
+          const { receiver, denom, amount } = { ...toJson(toArray(attributes).find(a => a.key === 'packet_data')?.value) };
+
           const sender_address = toArray(messages).find(m => m.sender)?.sender;
-          const recipient_address = toArray(messages).find(m => m.receiver)?.receiver;
-          const amount_data = toArray(messages).find(m => m.token)?.token;
+          const recipient_address = toArray(messages).find(m => m.receiver)?.receiver || receiver;
+          const amount_data = toArray(messages).find(m => m.token)?.token || { denom: _.last(split(denom, 'normal', '/')), amount };
 
           if (txhash && !code) {
             if (recipient_address?.length >= 65 && amount_data?.amount) {
