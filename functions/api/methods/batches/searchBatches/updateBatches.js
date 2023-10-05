@@ -99,13 +99,13 @@ module.exports = async (data, params) => {
                       }
                     )
                   )
-                )
+                );
               }
               resolve();
             }
           )
         )
-      )
+      );
     }
   }
   return updated;

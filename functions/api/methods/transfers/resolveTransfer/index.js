@@ -47,11 +47,11 @@ module.exports = async (params = {}) => {
 
       if (txHash.startsWith('0x')) {
         const events = toArray(
-          await Promise.all(
+          (await Promise.all(
             getChainsList('evm')
               .filter(c => !sourceChain || toArray(sourceChain).findIndex(id => equalsIgnoreCase(id, c.id)) > -1)
               .map(c => new Promise(async resolve => resolve(await recoverEvents({ txHash, chain: c.id }))))
-          ).flatMap(d => toArray(d.events))
+          )).flatMap(d => toArray(d.events))
         );
 
         if (events.length > 0) {
