@@ -128,7 +128,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
 
       /* start add addresses field */
       let addresses = [];
-      const address_fields = ['voter', 'delegator_address', 'signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress'];
+      const address_fields = ['voter', 'delegator_address', 'signer', 'sender', 'recipient', 'spender', 'receiver', 'depositAddress', 'deposit_address'];
       const packet_fields = ['packet_data'];
       const { prefix_address } = { ...getChainData('axelarnet') };
 
@@ -139,8 +139,8 @@ module.exports = async (lcd_response = {}, params = {}) => {
             toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => address_fields.includes(a.key)).map(a => a.value))),
             toArray(logs).flatMap(l => toArray(l.events).flatMap(e => toArray(e.attributes).filter(a => packet_fields.includes(a.key)).map(a => toJson(a.value)).flatMap(d => Object.entries({ ...d }).filter(([k, v]) => address_fields.includes(k)).map(([k, v]) => v)))),
           )
-          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
-          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
+          .map(a => (Array.isArray(toJson(a)) ? null : toJson(a)) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
+          .filter(a => typeof a === 'string' && [prefix_address, '0x'].findIndex(p => a.startsWith(p)) > -1)
         );
       }
 
@@ -150,8 +150,8 @@ module.exports = async (lcd_response = {}, params = {}) => {
             addresses,
             toArray(messages).flatMap(m => _.concat(address_fields.map(f => m[f]), address_fields.map(f => m.inner_message?.[f]))),
           )
-          .map(a => toJson(a) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
-          .filter(a => typeof a === 'string' && a.startsWith(prefix_address))
+          .map(a => (Array.isArray(toJson(a)) ? null : toJson(a)) || toHex(typeof a === 'string' ? normalizeQuote(a) : a))
+          .filter(a => typeof a === 'string' && [prefix_address, '0x'].findIndex(p => a.startsWith(p)) > -1)
         );
       }
       transaction_data.addresses = addresses;
