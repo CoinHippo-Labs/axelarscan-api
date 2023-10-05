@@ -6,6 +6,7 @@ const lcd = require('../../lcd');
 const { read, write } = require('../../../services/index');
 const { TRANSFER_COLLECTION, UNWRAP_COLLECTION, getChainKey } = require('../../../utils/config');
 
+const method = 'saveDepositForUnwrap';
 const fields = [
   {
     id: 'deposit_address',
@@ -67,6 +68,8 @@ module.exports = async (params = {}) => {
       error: true,
       code: 400,
       message: 'parameters not valid',
+      method,
+      params,
     };
   }
   else if (fields.findIndex(f => f.is_key) < 0) {
@@ -74,6 +77,7 @@ module.exports = async (params = {}) => {
       error: true,
       code: 500,
       message: 'wrong api configuration',
+      method,
     };
   }
   else {
@@ -85,7 +89,7 @@ module.exports = async (params = {}) => {
       })
     );
     const _id = fields.filter(f => f.is_key && params[f.id]).map(f => params[f.id].toLowerCase()).join('_');
-    const response = await write(UNWRAP_COLLECTION, _id, { ...data, updated_at: moment().valueOf() });
+    const response = await write(UNWRAP_COLLECTION, _id, { ...data, updated_at: moment().valueOf() }, true);
     const { result } = { ...response };
     const { tx_hash, deposit_address_link } = { ...data };
     if (tx_hash) {
@@ -111,7 +115,7 @@ module.exports = async (params = {}) => {
     return {
       error: false,
       code: 200,
-      method: 'saveDepositForUnwrap',
+      method,
       _id,
       data,
       result,
