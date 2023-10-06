@@ -4,6 +4,7 @@ const { recoverEvents } = require('../../crawler');
 const { get, write } = require('../../../services/index');
 const { ERC20_TRANSFER_COLLECTION, getChainKey } = require('../../../utils/config');
 
+const method = 'saveERC20Transfer';
 const fields = [
   {
     id: 'deposit_address',
@@ -42,6 +43,8 @@ module.exports = async (params = {}) => {
       error: true,
       code: 400,
       message: 'parameters not valid',
+      method,
+      params,
     };
   }
   else if (fields.findIndex(f => f.is_key) < 0) {
@@ -49,6 +52,7 @@ module.exports = async (params = {}) => {
       error: true,
       code: 500,
       message: 'wrong api configuration',
+      method,
     };
   }
   else {
@@ -71,7 +75,7 @@ module.exports = async (params = {}) => {
     return {
       error: false,
       code: 200,
-      method: 'saveERC20Transfer',
+      method,
       _id,
       data,
       result,

@@ -3,6 +3,7 @@ const moment = require('moment');
 const { write } = require('../../../services/index');
 const { ERC20_TRANSFER_COLLECTION, getChainKey } = require('../../../utils/config');
 
+const method = 'saveDepositForERC20Transfer';
 const fields = [
   {
     id: 'deposit_address',
@@ -49,6 +50,8 @@ module.exports = async (params = {}) => {
       error: true,
       code: 400,
       message: 'parameters not valid',
+      method,
+      params,
     };
   }
   else if (fields.findIndex(f => f.is_key) < 0) {
@@ -56,6 +59,7 @@ module.exports = async (params = {}) => {
       error: true,
       code: 500,
       message: 'wrong api configuration',
+      method,
     };
   }
   else {
@@ -67,12 +71,12 @@ module.exports = async (params = {}) => {
       })
     );
     const _id = fields.filter(f => f.is_key && params[f.id]).map(f => params[f.id].toLowerCase()).join('_');
-    const response = await write(ERC20_TRANSFER_COLLECTION, _id, { ...data, updated_at: moment().valueOf() });
+    const response = await write(ERC20_TRANSFER_COLLECTION, _id, { ...data, updated_at: moment().valueOf() }, true);
     const { result } = { ...response };
     return {
       error: false,
       code: 200,
-      method: 'saveDepositForERC20Transfer',
+      method,
       _id,
       data,
       result,
