@@ -1295,7 +1295,7 @@ mainnet:
         contract_path: "/account/{address}?net=main"
         contract_0_path: "/account/{address}?net=main"
         transaction_path: "/transaction/{tx}?net=main"
-      prefix_address: "burnt"
+      prefix_address: "swth"
       prefix_chain_ids:
         - "carbon-"
     sommelier:
@@ -2570,7 +2570,7 @@ testnet:
         contract_path: "/account/{address}?net=test"
         contract_0_path: "/account/{address}?net=test"
         transaction_path: "/transaction/{tx}?net=test"
-      prefix_address: "burnt"
+      prefix_address: "swth"
       prefix_chain_ids:
         - "carbon-"
     odin:
@@ -3796,7 +3796,7 @@ stagenet:
         contract_path: "/account/{address}?net=test"
         contract_0_path: "/account/{address}?net=test"
         transaction_path: "/transaction/{tx}?net=test"
-      prefix_address: "burnt"
+      prefix_address: "swth"
       prefix_chain_ids:
         - "carbon-"
     odin:
