@@ -145,8 +145,8 @@ module.exports = async (lcd_response = {}) => {
             }
 
             const transaction_data = toArray(tx_responses).find(d => {
-              const { attributes } = { ..._.head(toArray(d.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')))) };
-              return packet_sequence === toArray(attributes).find(a => a.key === 'packet_sequence')?.value;
+              const _logs = toArray(d.logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'recv_packet')));
+              return _logs.findIndex(l => packet_sequence === toArray(l.attributes).find(a => a.key === 'packet_sequence')?.value) > -1;
             });
             const { txhash, timestamp, logs } = { ...transaction_data };
 
