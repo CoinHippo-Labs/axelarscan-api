@@ -400,6 +400,8 @@ GDX:
 GRAIN:
   coingecko_id: "granary"
   decimals: 18
+axlGRAIN:
+  redirect: "GRAIN"
 KNC:
   coingecko_id: "kyber-network-crystal"
   decimals: 18

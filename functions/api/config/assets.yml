@@ -3211,18 +3211,25 @@ mainnet:
         address: "0xF88Baf18FAB7e330fa0C4F83949E23F52FECECce"
       binance:
         address: "0x8F87A7d376821c7B2658a005aAf190Ec778BF37A"
+        symbol: "axlGRAIN"
       polygon:
         address: "0x8429d0AFade80498EAdb9919E41437A14d45A00B"
+        symbol: "axlGRAIN"
       avalanche:
         address: "0x9df4Ac62F9E435DbCD85E06c990a7f0ea32739a9"
+        symbol: "axlGRAIN"
       fantom:
         address: "0x02838746d9E1413E07EE064fcBada57055417f21"
+        symbol: "axlGRAIN"
       arbitrum:
         address: "0x80bB30D62a16e1F2084dEAE84dc293531c3AC3A1"
+        symbol: "axlGRAIN"
       optimism:
         address: "0xfD389Dc9533717239856190F42475d3f263a270d"
+        symbol: "axlGRAIN"
       axelarnet:
         ibc_denom: "grain-wei"
+        symbol: "axlGRAIN"
   knc-wei:
     denom: "knc-wei"
     native_chain: "ethereum"
@@ -3518,6 +3525,8 @@ mainnet:
     image: "/logos/assets/ktc.svg"
     coingecko_id: "ktx-finance"
     addresses:
+      binance:
+        address: "0x545356d4d69d8cD1213Ee7e339867574738751CA"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
