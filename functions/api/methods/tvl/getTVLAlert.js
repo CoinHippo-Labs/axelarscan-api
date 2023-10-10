@@ -73,7 +73,7 @@ module.exports = async (params = {}) => {
       } = { ...d };
       const { native_chain, symbol, addresses } = { ...getAssetData(asset) };
       const { chain_type } = { ...getChainData(native_chain) };
-      const app_urls = app && [`${app}/tvl`, `${app}/transfers/search?asset=${asset}&fromTime=${moment().subtract(24, 'hours').valueOf()}&toTime=${moment().valueOf()}&sortBy=value`];
+      const app_urls = app && [`${app}/tvl`, `${app}/transfers/search?asset=${asset}&fromTime=${moment().subtract(24, 'hours').unix()}&toTime=${moment().unix()}&sortBy=value`];
       return {
         asset,
         symbol,
