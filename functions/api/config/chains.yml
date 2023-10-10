@@ -452,6 +452,30 @@ mainnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    scroll:
+      chain_id: 534352
+      chain_name: "scroll"
+      maintainer_id: "scroll"
+      endpoints:
+        rpc:
+          - "https://rpc.scroll.io"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Scroll"
+      short_name: "SCROLL"
+      image: "/logos/chains/scroll.svg"
+      color: "#e4b67c"
+      explorer:
+        name: "Scrollscan"
+        url: "https://scrollscan.com"
+        icon: "/logos/explorers/scroll.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_id: "axelar-dojo-1"
