@@ -149,7 +149,7 @@ module.exports = async (lcd_response = {}) => {
             ],
         },
       },
-      { size: 1 },
+      { size: 5 },
     );
     let { data } = { ...response };
 
@@ -193,17 +193,18 @@ module.exports = async (lcd_response = {}) => {
             ],
           },
         },
-        { size: 1, sort: [{ 'send.created_at.ms': 'desc' }] },
+        { size: 5, sort: [{ 'send.created_at.ms': 'desc' }] },
       );
       data = response?.data;
     }
 
-    let transfer_data = _.head(data);
-    const _id = generateId(transfer_data);
-    if (_id && !_.isEqual(transfer_data.ibc_send, ibc_send)) {
-      transfer_data = { ...transfer_data, ibc_send };
-      await write(TRANSFER_COLLECTION, _id, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
-      updated = true;
+    for (let transfer_data of toArray(data)) {
+      const _id = generateId(transfer_data);
+      if (_id && !_.isEqual(transfer_data.ibc_send, ibc_send)) {
+        transfer_data = { ...transfer_data, ibc_send };
+        await write(TRANSFER_COLLECTION, _id, { ...transfer_data, time_spent: getTimeSpent(transfer_data) }, true);
+        updated = true;
+      }
     }
   }
 
