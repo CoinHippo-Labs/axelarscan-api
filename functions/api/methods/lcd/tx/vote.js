@@ -282,7 +282,7 @@ module.exports = async (lcd_response = {}) => {
                           if (confirmation) {
                             await saveGMP(
                               {
-                                event: 'confirm',
+                                event: `confirm${!success && failed ? '_failed' : ''}`,
                                 sourceTransactionHash: transaction_id,
                                 poll_id,
                                 blockNumber: height,
