@@ -469,7 +469,7 @@ mainnet:
       color: "#e4b67c"
       explorer:
         name: "Scrollscan"
-        url: "https://scrollscan.com"
+        url: "https://scrollscan.dev"
         icon: "/logos/explorers/scroll.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
@@ -2087,6 +2087,32 @@ testnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    scroll:
+      chain_id: 534351
+      chain_name: "scroll"
+      maintainer_id: "scroll"
+      endpoints:
+        rpc:
+          - "https://sepolia-rpc.scroll.io"
+          - "https://rpc.ankr.com/scroll_sepolia_testnet"
+          - "https://1rpc.io/scroll/sepolia"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Scroll"
+      short_name: "SCROLL"
+      image: "/logos/chains/scroll.svg"
+      color: "#e4b67c"
+      explorer:
+        name: "Scrollscan"
+        url: "https://sepolia.scrollscan.dev"
+        icon: "/logos/explorers/scroll.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_id: "axelar-testnet-lisbon-3"
@@ -3308,6 +3334,32 @@ stagenet:
         name: "Centrifuge"
         url: ""
         icon: "/logos/explorers/centrifuge.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    scroll:
+      chain_id: 534351
+      chain_name: "scroll"
+      maintainer_id: "scroll"
+      endpoints:
+        rpc:
+          - "https://sepolia-rpc.scroll.io"
+          - "https://rpc.ankr.com/scroll_sepolia_testnet"
+          - "https://1rpc.io/scroll/sepolia"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Scroll"
+      short_name: "SCROLL"
+      image: "/logos/chains/scroll.svg"
+      color: "#e4b67c"
+      explorer:
+        name: "Scrollscan"
+        url: "https://sepolia.scrollscan.dev"
+        icon: "/logos/explorers/scroll.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
