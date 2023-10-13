@@ -383,6 +383,7 @@ mainnet:
       chain_id: 314
       chain_name: "filecoin"
       maintainer_id: "filecoin"
+      no_recover: true
       endpoints:
         rpc:
           - "https://rpc.ankr.com/filecoin"
@@ -432,6 +433,7 @@ mainnet:
       chain_id: 2031
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      no_recover: true
       endpoints:
         rpc:
           - ""
@@ -1848,8 +1850,10 @@ testnet:
       endpoints:
         rpc:
           # - "https://goerli-rollup.arbitrum.io/rpc"
-          - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
-          - "https://arb-goerli.g.alchemy.com/v2/demo"
+          # - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
+          # - "https://arb-goerli.g.alchemy.com/v2/demo"
+          # - "https://arbitrum-goerli.publicnode.com"
+          - "https://arbitrum-goerli.public.blastapi.io"
       native_token:
         name: "Ethereum"
         symbol: "ETH"
@@ -1992,6 +1996,7 @@ testnet:
       chain_id: 3141
       chain_name: "filecoin"
       maintainer_id: "filecoin"
+      no_recover: true
       endpoints:
         rpc:
           - "https://api.hyperspace.node.glif.io/rpc/v1"
@@ -2016,6 +2021,7 @@ testnet:
       chain_id: 314159
       chain_name: "filecoin-2"
       maintainer_id: "filecoin-2"
+      no_recover: true
       endpoints:
         rpc:
           - "https://rpc.ankr.com/filecoin_testnet"
@@ -2067,6 +2073,7 @@ testnet:
       chain_id: 2089
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      no_recover: true
       endpoints:
         rpc:
           - "https://fullnode.algol.cntrfg.com/rpc"
@@ -3100,8 +3107,10 @@ stagenet:
       endpoints:
         rpc:
           # - "https://goerli-rollup.arbitrum.io/rpc"
-          - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
-          - "https://arb-goerli.g.alchemy.com/v2/demo"
+          # - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
+          # - "https://arb-goerli.g.alchemy.com/v2/demo"
+          # - "https://arbitrum-goerli.publicnode.com"
+          - "https://arbitrum-goerli.public.blastapi.io"
       native_token:
         name: "Ethereum"
         symbol: "ETH"
@@ -3244,6 +3253,7 @@ stagenet:
       chain_id: 3141
       chain_name: "filecoin"
       maintainer_id: "filecoin"
+      no_recover: true
       endpoints:
         rpc:
           - "https://api.hyperspace.node.glif.io/rpc/v1"
@@ -3268,6 +3278,7 @@ stagenet:
       chain_id: 314159
       chain_name: "filecoin-2"
       maintainer_id: "filecoin-2"
+      no_recover: true
       endpoints:
         rpc:
           - "https://rpc.ankr.com/filecoin_testnet"
@@ -3319,6 +3330,7 @@ stagenet:
       chain_id: 2089
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      no_recover: true
       endpoints:
         rpc:
           - "https://fullnode.algol.cntrfg.com/rpc"

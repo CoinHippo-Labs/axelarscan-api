@@ -36,7 +36,7 @@ module.exports = async params => {
           message: 'wrong api configuration',
         };
       }
-      else {
+      else if (!chain_data.no_recover) {
         // get block number by transaction hash
         if (!blockNumber) {
           const response = await getTransaction(txHash, chain);

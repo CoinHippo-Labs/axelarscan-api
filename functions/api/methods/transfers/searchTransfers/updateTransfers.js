@@ -9,17 +9,17 @@ const { normalizeLink, updateLink, updateSend } = require('../utils');
 const { recoverEvents } = require('../../crawler');
 const { write } = require('../../../services/index');
 const { TERRA_COLLAPSED_DATE, getDeposits, getChainsList, getChainData } = require('../../../utils/config');
-const { toArray, find } = require('../../../utils');
+const { equalsIgnoreCase, toArray, find } = require('../../../utils');
 
 module.exports = async (collection, data, params) => {
   let updated;
   if (collection) {
-    const { txHash, status, size } = { ...params };
+    const { txHash, sourceChain, status, size } = { ...params };
     if (txHash && toArray(data).length < 1 && size !== 0) {
       updated = toArray(
         await Promise.all(
           getChainsList('evm')
-            .filter(c => c.gateway_address)
+            .filter(c => c.gateway_address && !c.deprecated && (!sourceChain || equalsIgnoreCase(c.id, sourceChain)))
             .map(c => c.id)
             .flatMap(c =>
               new Promise(
