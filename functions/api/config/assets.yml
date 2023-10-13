@@ -4026,6 +4026,9 @@ testnet:
       linea:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      scroll:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       axelarnet:
         ibc_denom: "uaxl"
       osmosis:
@@ -4074,6 +4077,8 @@ testnet:
       filecoin-2:
         address: "0xCb7996d51Ff923b2C6076d42C065a6ca000D32A1"
       linea:
+        address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
+      scroll:
         address: "0x254d06f33bDc5b8ee05b2ea472107E300226659A"
       axelarnet:
         ibc_denom: "uausdc"
@@ -4217,6 +4222,9 @@ testnet:
         address: "0xcCDF43cC00A2d88c3A9D7B0e0BeD39E9B899F723"
         symbol: "axlETH"
       linea:
+        address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
+        symbol: "axlETH"
+      scroll:
         address: "0xeA700DCe55e72C4C08b97AcFc7dF214EC30F4a64"
         symbol: "axlETH"
       axelarnet:
@@ -4367,6 +4375,9 @@ testnet:
       linea:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
         symbol: "axlBNB"
+      scroll:
+        address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
+        symbol: "axlBNB"
       axelarnet:
         ibc_denom: "wbnb-wei"
         symbol: "axlBNB"
@@ -4484,6 +4495,9 @@ testnet:
         address: "0x08349ecC52e1Ba8351f2564117f3918BCbF90Ff0"
         symbol: "axlMATIC"
       linea:
+        address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
+        symbol: "axlMATIC"
+      scroll:
         address: "0x21ba4f6aEdA155DD77Cc33Fb93646910543F0380"
         symbol: "axlMATIC"
       axelarnet:
@@ -4606,6 +4620,9 @@ testnet:
         address: "0x0497Cae18E666A7d9cC13715DB0b5c13CE04C177"
         symbol: "axlAVAX"
       linea:
+        address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
+        symbol: "axlAVAX"
+      scroll:
         address: "0x2a87806561C550ba2dA9677c5323413E6e539740"
         symbol: "axlAVAX"
       axelarnet:
@@ -4733,6 +4750,9 @@ testnet:
       centrifuge:
         address: "0x594D8b81eC765410536ab59E98091700b99508D8"
         symbol: "axlFTM"
+      scroll:
+        address: "0x594D8b81eC765410536ab59E98091700b99508D8"
+        symbol: "axlFTM"
       axelarnet:
         ibc_denom: "wftm-wei"
         symbol: "axlFTM"
@@ -4853,6 +4873,9 @@ testnet:
         address: "0x3bA33A79504d5A9C398e2C6f284b61F182739aC7"
         symbol: "axlDEV"
       linea:
+        address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
+        symbol: "axlDEV"
+      scroll:
         address: "0x4B13D583F45Aa01fb2bE18a7AAfE14DE183B1Ac9"
         symbol: "axlDEV"
       axelarnet:
