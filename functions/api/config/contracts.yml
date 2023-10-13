@@ -83,6 +83,8 @@ testnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     centrifuge:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    scroll:
+      address: "" #"0xe432150cce91c13a887f7D836923d5597adD8E31"
 
 
 
@@ -126,3 +128,5 @@ stagenet:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     centrifuge:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    scroll:
+      address: "" #"0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
