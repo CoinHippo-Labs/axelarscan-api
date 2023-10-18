@@ -79,9 +79,9 @@ module.exports = async (lcd_response = {}) => {
         if (messages) {
           const { events } = { ...toArray(logs).find(l => toArray(l.events).findIndex(e => e.type === 'recv_packet' && packet_sequence === toArray(e.attributes).find(a => a.key === 'packet_sequence')?.value) > -1) };
           const { attributes } = { ...toArray(events).find(e => e.type === 'recv_packet' && packet_sequence === toArray(e.attributes).find(a => a.key === 'packet_sequence')?.value) };
-          const { receiver, denom, amount } = { ...toJson(toArray(attributes).find(a => a.key === 'packet_data')?.value) };
+          const { sender, receiver, denom, amount } = { ...toJson(toArray(attributes).find(a => a.key === 'packet_data')?.value) };
 
-          const sender_address = toArray(messages).find(m => m.sender)?.sender;
+          const sender_address = toArray(messages).find(m => m.sender)?.sender || sender;
           const recipient_address = toArray(messages).find(m => m.receiver)?.receiver || receiver;
           const amount_data = toArray(messages).find(m => m.token)?.token || { denom: _.last(split(denom, 'normal', '/')), amount };
 
