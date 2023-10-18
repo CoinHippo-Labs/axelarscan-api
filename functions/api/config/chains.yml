@@ -471,7 +471,7 @@ mainnet:
       color: "#e4b67c"
       explorer:
         name: "Scrollscan"
-        url: "https://blockscout.scroll.io"
+        url: "https://scrollscan.com"
         icon: "/logos/explorers/scroll.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
@@ -2113,7 +2113,7 @@ testnet:
       color: "#e4b67c"
       explorer:
         name: "Scrollscan"
-        url: "https://sepolia.scrollscan.dev"
+        url: "https://sepolia.scrollscan.com"
         icon: "/logos/explorers/scroll.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
@@ -3370,7 +3370,7 @@ stagenet:
       color: "#e4b67c"
       explorer:
         name: "Scrollscan"
-        url: "https://sepolia.scrollscan.dev"
+        url: "https://sepolia.scrollscan.com"
         icon: "/logos/explorers/scroll.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
