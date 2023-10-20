@@ -1547,6 +1547,38 @@ mainnet:
       prefix_address: "migaloo"
       prefix_chain_ids:
         - "migaloo-"
+    teritori:
+      chain_id: "teritori-1"
+      chain_name: "teritori"
+      endpoints:
+        lcd:
+          - "https://teritori-api.lavenderfive.com:443"
+          - "https://teritori-api.polkachu.com"
+          - "https://api.teritori.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Teritori"
+        symbol: "TORI"
+        denom: "utori"
+        decimals: 6
+      name: "Teritori"
+      short_name: "TORI"
+      image: "/logos/chains/teritori.svg"
+      color: "#428fff"
+      explorer:
+        name: "Teritori"
+        url: "https://www.mintscan.io/teritori"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
+      prefix_address: "tori"
+      prefix_chain_ids:
+        - "teritori-"
     terra-2:
       chain_id: "phoenix-1"
       chain_name: "terra-2"
