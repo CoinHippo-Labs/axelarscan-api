@@ -198,7 +198,7 @@ module.exports = async (lcd_response = {}) => {
                     }
                   }
 
-                  event_name = (['multisig_operatorship_transferred'].includes(event_name) ? _.head(toArray(toArray(confirmation_events).map(e => e.type))) : undefined) || event_name;
+                  event_name = (['multisig_operatorship_transferred'].includes(event_name) ? _.head(toArray(toArray(confirmation_events).map(e => e.type))) : undefined) || (confirmation ? event_name : poll_data?.event_name || event_name);
                   transaction_id = toHex(transaction_id);
 
                   if (voter) {
