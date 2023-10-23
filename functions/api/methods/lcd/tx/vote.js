@@ -157,20 +157,9 @@ module.exports = async (lcd_response = {}) => {
                       end_block_events = toArray(response?.end_block_events);
                     }
 
-                    confirmation_events = end_block_events
-                      .filter(e =>
-                        [
-                          'depositConfirmation',
-                          'eventConfirmation',
-                          'transferKeyConfirmation',
-                          'tokenConfirmation',
-                          'TokenSent',
-                          'ContractCall',
-                        ]
-                        .findIndex(s => e.type?.includes(s)) > -1 &&
-                        toArray(e.attributes).findIndex(a => ['eventID', 'event_id'].includes(a.key) && equalsIgnoreCase(normalizeQuote(a.value), toArray(attributes).find(a => ['eventID', 'event_id'].includes(a.key))?.value)) > -1
-                      )
-                      .map(e => {
+                    confirmation_events = end_block_events.filter(e => ['depositConfirmation', 'eventConfirmation', 'transferKeyConfirmation', 'tokenConfirmation', 'TokenSent', 'ContractCall'].findIndex(s => e.type?.includes(s)) > -1 && toArray(e.attributes).findIndex(a => ['eventID', 'event_id'].includes(a.key) && equalsIgnoreCase(normalizeQuote(a.value), toArray(attributes).find(a => ['eventID', 'event_id'].includes(a.key))?.value)) > -1);
+                    if (confirmation_events.length > 0) {
+                      confirmation_events = confirmation_events.map(e => {
                         const { attributes } = { ...e };
                         let { type } = { ...e };
                         type = _.last(toArray(type, 'normal', '.'));
@@ -184,6 +173,10 @@ module.exports = async (lcd_response = {}) => {
                           ),
                         };
                       });
+                    }
+                    else if (poll_data) {
+                      confirmation_events = toArray(poll_data.confirmation_events); 
+                    }
 
                     const _chain = _.head(toArray(confirmation_events.map(e => e.chain)));
                     const _transaction_id = _.head(toArray(confirmation_events.map(e => e.txID || e.tx_id)).map(id => toHex(typeof id === 'string' ? normalizeQuote(id) : id)));
