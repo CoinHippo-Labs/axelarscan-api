@@ -198,6 +198,7 @@ module.exports = async (lcd_response = {}) => {
                     }
                   }
 
+                  event_name = (['multisig_operatorship_transferred'].includes(event_name) ? _.head(toArray(toArray(confirmation_events).map(e => e.type))) : undefined) || event_name;
                   transaction_id = toHex(transaction_id);
 
                   if (voter) {
@@ -258,6 +259,7 @@ module.exports = async (lcd_response = {}) => {
 
                     switch (event_name) {
                       case 'token_sent':
+                      case 'TokenSent':
                         try {
                           const response = await read(TRANSFER_COLLECTION, { match: { 'send.txhash': transaction_id } }, { size: 1 });
                           const transfer_data = _.head(response?.data);
@@ -278,6 +280,8 @@ module.exports = async (lcd_response = {}) => {
                         break;
                       case 'contract_call':
                       case 'contract_call_with_token':
+                      case 'ContractCall':
+                      case 'ContractCallWithToken':
                         try {
                           if (confirmation) {
                             await saveGMP(
