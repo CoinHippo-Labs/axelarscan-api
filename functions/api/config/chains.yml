@@ -3411,12 +3411,11 @@ stagenet:
         transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
-      chain_id: "axelar-testnet-lisbon-3"
+      chain_id: "axelar-stagenet-1"
       chain_name: "Axelarnet"
       endpoints:
         lcd:
-          - "https://axelar-testnet-lcd.qubelabs.io"
-          - "https://services.staketab.com/axelar-testnet-1-api"
+          - "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
         timeout:
           lcd: 3000
       native_token:
@@ -3430,7 +3429,7 @@ stagenet:
       color: "#abaaaa"
       explorer:
         name: "Axelarscan"
-        url: "https://testnet.axelarscan.io"
+        url: "https://stagenet.axelarscan.io"
         icon: "/logos/explorers/axelarscan.svg"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
