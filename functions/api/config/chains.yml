@@ -2185,7 +2185,7 @@ testnet:
         - "axelar-"
     osmosis:
       chain_id: "osmo-test-5"
-      chain_name: "osmosis-6"
+      chain_name: "osmosis-7"
       endpoints:
         lcd:
           - "https://lcd.osmotest5.osmosis.zone"
@@ -3441,7 +3441,7 @@ stagenet:
         - "axelar-"
     osmosis:
       chain_id: "osmo-test-5"
-      chain_name: "osmosis-6"
+      chain_name: "osmosis-7"
       endpoints:
         lcd:
           - "https://lcd.osmotest5.osmosis.zone"
