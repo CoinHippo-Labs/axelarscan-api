@@ -2723,6 +2723,35 @@ testnet:
       prefix_address: "neutron"
       prefix_chain_ids:
         - "pion-"
+    provenance:
+      chain_id: "pio-testnet-1"
+      chain_name: "provenance"
+      endpoints:
+        lcd:
+          - "https://api.test.provenance.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Provenance"
+        symbol: "HASH"
+        denom: "uhash"
+        decimals: 6
+      name: "Provenance"
+      short_name: "HASH"
+      image: "/logos/chains/provenance.svg"
+      color: "#4d7fdb"
+      explorer:
+        name: "Mintscan"
+        url: "https://explorer.test.provenance.io"
+        icon: "/logos/explorers/provenance.png"
+        block_path: "/block/{block}"
+        address_path: "/accounts/{address}"
+        contract_path: "/accounts/{address}"
+        contract_0_path: "/accounts/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "tp"
+      prefix_chain_ids:
+        - "pio-"
     impacthub:
       chain_id: "pandora-8"
       chain_name: "impacthub"
