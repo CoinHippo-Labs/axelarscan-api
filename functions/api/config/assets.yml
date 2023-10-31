@@ -4165,6 +4165,8 @@ testnet:
         ibc_denom: "ibc/035BDC396AA81E38271D2FA5E4799AE159044B90BCF02CCA218EB364829C869E"
       neutron:
         ibc_denom: "ibc/F91EA2C0A23697A1048E08C2F787E3A58AC6F706A1CD2257A504925158CFC0F3"
+      provenance:
+        ibc_denom: "ibc/F53E48CE45EF24BD633402397B0013E02013E9ABD420FEAB905EAF01B8F15DD0"
       impacthub:
         ibc_denom: "ibc/D36138944A9A06A5361EB9F9713D2AAC8B9A9ED88AFC9960A0005C17C8A0B447"
       teritori:
@@ -4324,6 +4326,9 @@ testnet:
       neutron:
         ibc_denom: "ibc/CC8B40E3F3536D003C6ED7C65421067215453AECE1517A6F0935470C634A036B"
         symbol: "axlETH"
+      provenance:
+        ibc_denom: "ibc/5284F2F6A518924A0CBCA19B428DB5914625DD944B71C50932654D53BAE4F46A"
+        symbol: "axlETH"
       impacthub:
         ibc_denom: "ibc/D236A44A8AB79841929225744AA3B4F7766E132654898E72B364FD8B1825FD70"
         symbol: "axlETH"
@@ -4475,6 +4480,9 @@ testnet:
       neutron:
         ibc_denom: "ibc/E09D271B56568F9C4E4B6A32D877F4E904C35FF3B8A4503AD8547A95F6D9925C"
         symbol: "axlBNB"
+      provenance:
+        ibc_denom: "ibc/A6CB0A8984F9E56A7C29280A5D6E7085CFACA086525E94D59FB838ABF4EB6D00"
+        symbol: "axlBNB"
       impacthub:
         ibc_denom: "ibc/DADB399E742FCEE71853E98225D13E44E90292852CD0033DF5CABAB96F80B833"
         symbol: "axlBNB"
@@ -4600,6 +4608,9 @@ testnet:
       neutron:
         ibc_denom: "ibc/91C6798C23EE6AD5B8336C247371546FFA0026854162612EA4EBC80C62A2841C"
         symbol: "axlMATIC"
+      provenance:
+        ibc_denom: "ibc/7375351C415AB12F9C8CECF25EB8631F8DB3F01E3701C287E3AE94B4F2463A0F"
+        symbol: "axlMATIC"
       impacthub:
         ibc_denom: "ibc/A64467480BBE4CCFC3CF7E25AD1446AA9BDBD4F5BCB9EF6038B83D6964C784E6"
         symbol: "axlMATIC"
@@ -4724,6 +4735,9 @@ testnet:
         symbol: "axlAVAX"
       neutron:
         ibc_denom: "ibc/C74D5A562B2D54AF03198E5BC6693D16EF978EBA0BD3BA22A7098511B43249CA"
+        symbol: "axlAVAX"
+      provenance:
+        ibc_denom: "ibc/102B5C801FC6949F1917F261ECAFCC30715960BF5F2579261F0F4FFB0FB2862D"
         symbol: "axlAVAX"
       impacthub:
         ibc_denom: "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2"
@@ -4853,6 +4867,9 @@ testnet:
       neutron:
         ibc_denom: "ibc/C2BA0743260DDCD9B2E5464860584E2F0826E7C021E19B16A9F5CEF29D225CD3"
         symbol: "axlFTM"
+      provenance:
+        ibc_denom: "ibc/703D72BCB1280219A589353F10E96BE5F742CB903885FF46DEC9770DF3567799"
+        symbol: "axlFTM"
       impacthub:
         ibc_denom: "ibc/E67ADA2204A941CD4743E70771BA08E24885E1ADD6FD140CE1F9E0FEBB68C6B2"
         symbol: "axlFTM"
@@ -4977,6 +4994,9 @@ testnet:
         symbol: "axlDEV"
       neutron:
         ibc_denom: "ibc/25C4852211900E04B162241362DB1F1D9B7939875A038913E56C9FEF66EA9AD6"
+        symbol: "axlDEV"
+      provenance:
+        ibc_denom: "ibc/0C032AE90993A345CCFFDDD163F61AECC09DCCB2257C54CCFF60393FED9602E6"
         symbol: "axlDEV"
       impacthub:
         ibc_denom: "ibc/1CA16CA6C642FD2C6105872B51C059A108D82072911274BAF2E63EC0827D5074"
