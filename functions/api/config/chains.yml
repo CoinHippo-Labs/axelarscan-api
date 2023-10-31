@@ -1567,7 +1567,7 @@ mainnet:
       image: "/logos/chains/teritori.svg"
       color: "#428fff"
       explorer:
-        name: "Teritori"
+        name: "Mintscan"
         url: "https://www.mintscan.io/teritori"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
@@ -1579,6 +1579,70 @@ mainnet:
       prefix_address: "tori"
       prefix_chain_ids:
         - "teritori-"
+    haqq:
+      chain_id: "haqq_11235-1"
+      chain_name: "haqq"
+      endpoints:
+        lcd:
+          - "https://rest.cosmos.haqq.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Islamic"
+        symbol: "ISLM"
+        denom: "uislm"
+        decimals: 6
+      name: "Haqq"
+      short_name: "HAQQ"
+      image: "/logos/chains/haqq.svg"
+      color: "#ec5728"
+      explorer:
+        name: "Haqq"
+        url: "https://ping.pub/haqq"
+        icon: "/logos/explorers/haqq.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "haqq"
+      prefix_chain_ids:
+        - "haqq_"
+    celestia:
+      chain_id: "celestia"
+      chain_name: "celestia"
+      endpoints:
+        lcd:
+          - "https://lcd-celestia.keplr.app"
+          - "https://celestia-api.polkachu.com"
+          - "https://public-celestia-lcd.numia.xyz"
+          - "https://celestia-rest.mesa.newmetric.xyz"
+          - "https://api.lunaroasis.net"
+          - "https://api.celestia.nodestake.top"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Celestia"
+        symbol: "TIA"
+        denom: "utia"
+        decimals: 6
+      name: "Celestia"
+      short_name: "TIA"
+      image: "/logos/chains/celestia.svg"
+      color: "#7b2af9"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/celestia"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
+      prefix_address: "celestia"
+      prefix_chain_ids:
+        - "celestia"
     terra-2:
       chain_id: "phoenix-1"
       chain_name: "terra-2"
@@ -2202,7 +2266,7 @@ testnet:
       color: "#d705cc"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/osmosis-testnet"
+        url: "https://www.mintscan.io/osmosis-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2233,7 +2297,7 @@ testnet:
       color: "#2e3148"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/cosmoshub-testnet"
+        url: "https://www.mintscan.io/cosmoshub-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2264,7 +2328,7 @@ testnet:
       color: "#f0827d"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/juno-testnet"
+        url: "https://www.mintscan.io/juno-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2294,7 +2358,7 @@ testnet:
       color: "#bf7c5e"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/crescent-testnet"
+        url: "https://www.mintscan.io/crescent-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2384,7 +2448,7 @@ testnet:
       color: "#b5354f"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/sei-testnet"
+        url: "https://www.mintscan.io/sei-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2445,7 +2509,7 @@ testnet:
       color: "#ed4e32"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/evmos-testnet"
+        url: "https://www.mintscan.io/evmos-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2534,7 +2598,7 @@ testnet:
       color: "#e50813"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/persistence-testnet"
+        url: "https://www.mintscan.io/persistence-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2712,7 +2776,7 @@ testnet:
       color: "#131928"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/neutron-testnet"
+        url: "https://www.mintscan.io/neutron-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -2858,14 +2922,15 @@ testnet:
       image: "/logos/chains/celestia.svg"
       color: "#7b2af9"
       explorer:
-        name: "Celestia"
-        url: "https://testnet.ping.pub/celestia"
-        icon: "/logos/explorers/celestia.png"
+        name: "Mintscan"
+        url: "https://www.mintscan.io/celestia-testnet"
+        icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
-        transaction_path: "/tx/{tx}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "celestia"
       prefix_chain_ids:
         - "mocha-"
@@ -3516,7 +3581,7 @@ stagenet:
       color: "#d705cc"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/osmosis-testnet"
+        url: "https://www.mintscan.io/osmosis-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -3547,7 +3612,7 @@ stagenet:
       color: "#2e3148"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/cosmoshub-testnet"
+        url: "https://www.mintscan.io/cosmoshub-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -3578,7 +3643,7 @@ stagenet:
       color: "#f0827d"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/juno-testnet"
+        url: "https://www.mintscan.io/juno-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -3608,7 +3673,7 @@ stagenet:
       color: "#bf7c5e"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/crescent-testnet"
+        url: "https://www.mintscan.io/crescent-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -3698,7 +3763,7 @@ stagenet:
       color: "#b5354f"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/sei-testnet"
+        url: "https://www.mintscan.io/sei-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -3759,7 +3824,7 @@ stagenet:
       color: "#ed4e32"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/evmos-testnet"
+        url: "https://www.mintscan.io/evmos-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -3848,7 +3913,7 @@ stagenet:
       color: "#e50813"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/persistence-testnet"
+        url: "https://www.mintscan.io/persistence-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
@@ -4026,7 +4091,7 @@ stagenet:
       color: "#131928"
       explorer:
         name: "Mintscan"
-        url: "https://testnet.mintscan.io/neutron-testnet"
+        url: "https://www.mintscan.io/neutron-testnet"
         icon: "/logos/explorers/mintscan.png"
         block_path: "/block/{block}"
         address_path: "/account/{address}"
