@@ -156,6 +156,9 @@ ISLM:
   default_price:
     usd: 0.01
   decimals: 6
+TIA:
+  coingecko_id: "celestia"
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
