@@ -2931,6 +2931,9 @@ mainnet:
       fantom:
         address: "0xE3a4277eFBe777B6B17CB7fFB7fEAf8C92cBE65A"
         symbol: "axlPEPE"
+      moonbeam:
+        address: "0xd67eB3e8eb74F5Ea6A1A9E87B4a6AE433AD829EC"
+        symbol: "axlPEPE"
       arbitrum:
         address: "0x13DF72A0F6824293F5324123cD356d9C4F827271"
         symbol: "axlPEPE"
@@ -3864,6 +3867,35 @@ mainnet:
         symbol: "axlSOMM"
       sommelier:
         ibc_denom: "usomm"
+  utia:
+    denom: "utia"
+    native_chain: "celestia"
+    name: "Celestia"
+    symbol: "TIA"
+    decimals: 6
+    image: "/logos/assets/tia.svg"
+    coingecko_id: "celestia"
+    addresses:
+      ethereum:
+        address: "0x65e3fA51C4ce0af1B9CD5CBC7C5fDb80a09D431D"
+        symbol: "axlTIA"
+      binance:
+        address: "0x420eEEd09Cbc6e8416decD28857fF3C7D991Fc46"
+        symbol: "axlTIA"
+      arbitrum:
+        address: "0x41b94c5867f7F6217C9a30520Cb3e793B1ee1b97"
+        symbol: "axlTIA"
+      optimism:
+        address: "0x41b94c5867f7F6217C9a30520Cb3e793B1ee1b97"
+        symbol: "axlTIA"
+      base:
+        address: "0x41b94c5867f7F6217C9a30520Cb3e793B1ee1b97"
+        symbol: "axlTIA"
+      axelarnet:
+        ibc_denom: "ibc/F8F36BBEFFD1B311D5D3A7B8E6B3C03DBF707D4E5FE045B18221D8DF12E481C3"
+        symbol: "axlTIA"
+      celestia:
+        ibc_denom: "utia"
   dot-planck:
     denom: "dot-planck"
     native_chain: "moonbeam"
