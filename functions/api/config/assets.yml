@@ -3891,6 +3891,12 @@ mainnet:
       base:
         address: "0x41b94c5867f7F6217C9a30520Cb3e793B1ee1b97"
         symbol: "axlTIA"
+      linea:
+        address: "0x41b94c5867f7F6217C9a30520Cb3e793B1ee1b97"
+        symbol: "axlTIA"
+      scroll:
+        address: "0x41b94c5867f7F6217C9a30520Cb3e793B1ee1b97"
+        symbol: "axlTIA"
       axelarnet:
         ibc_denom: "ibc/F8F36BBEFFD1B311D5D3A7B8E6B3C03DBF707D4E5FE045B18221D8DF12E481C3"
         symbol: "axlTIA"
