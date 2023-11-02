@@ -159,6 +159,8 @@ ISLM:
 TIA:
   coingecko_id: "celestia"
   decimals: 6
+axlTIA:
+  redirect: "TIA"
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
@@ -637,6 +639,8 @@ stuatom:
   redirect: "stATOM"
 usomm:
   redirect: "SOMM"
+utia:
+  redirect: "TIA"
 dot-planck:
   redirect: "DOT"
 uusd:
