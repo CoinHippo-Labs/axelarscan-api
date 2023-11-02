@@ -69,9 +69,9 @@ mainnet:
       endpoints:
         rpc:
           - "https://polygon-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          - "https://poly-rpc.gateway.pokt.network"
+          # - "https://poly-rpc.gateway.pokt.network"
           - "https://polygon.blockpi.network/v1/rpc/public"
-          - "https://1rpc.io/matic"
+          # - "https://1rpc.io/matic"
           - "https://polygon-mainnet.public.blastapi.io"
           - "https://rpc.ankr.com/polygon"
       native_token:
