@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const moment = require('moment');
 
 const { write } = require('../../../services/index');
@@ -31,7 +32,7 @@ module.exports = async (lcd_response = {}) => {
             }
             let _updated;
             if (toArray(poll_mappings).length > 0) {
-              for (const data of poll_mappings) {
+              for (const data of toArray(poll_mappings)) {
                 const { tx_id, poll_id } = { ...data };
                 if (poll_id && tx_id) {
                   await write(
