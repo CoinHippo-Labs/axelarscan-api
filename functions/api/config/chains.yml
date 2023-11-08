@@ -3532,6 +3532,30 @@ stagenet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    immutable-devnet:
+      chain_id: 15003
+      chain_name: "immutable-devnet"
+      maintainer_id: "immutable-devnet"
+      endpoints:
+        rpc:
+          - "https://rpc.dev.immutable.com"
+      native_token:
+        name: "ImmutableX"
+        symbol: "tIMX"
+        decimals: 18
+      name: "Immutable"
+      short_name: "IMX"
+      image: "/logos/chains/immutable.svg"
+      color: "#0d0d0d"
+      explorer:
+        name: "Immutable"
+        url: "https://explorer.testnet.immutable.com"
+        icon: "/logos/explorers/immutable.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_id: "axelar-stagenet-1"

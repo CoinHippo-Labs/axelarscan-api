@@ -130,3 +130,5 @@ stagenet:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     scroll:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    immutable-devnet:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"

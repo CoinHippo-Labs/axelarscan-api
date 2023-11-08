@@ -47,6 +47,11 @@ CFG:
   decimals: 18
 ALGL:
   redirect: "CFG"
+IMX:
+  coingecko_id: "immutable-x"
+  decimals: 18
+TIMX:
+  redirect: "IMX"
 AXL:
   coingecko_id: "axelar"
   decimals: 6
