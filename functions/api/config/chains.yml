@@ -69,7 +69,6 @@ mainnet:
       endpoints:
         rpc:
           - "https://polygon-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-          # - "https://poly-rpc.gateway.pokt.network"
           - "https://polygon.blockpi.network/v1/rpc/public"
           # - "https://1rpc.io/matic"
           - "https://polygon-mainnet.public.blastapi.io"
@@ -2166,13 +2165,13 @@ testnet:
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
     centrifuge:
-      chain_id: 2089
+      chain_id: 2090
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
       no_recover: true
       endpoints:
         rpc:
-          - "https://fullnode.algol.cntrfg.com/rpc"
+          - "https://fullnode.demo.k-f.dev"
       native_token:
         name: "Algol"
         symbol: "ALGL"
@@ -3482,13 +3481,13 @@ stagenet:
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
     centrifuge:
-      chain_id: 2089
+      chain_id: 2090
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
       no_recover: true
       endpoints:
         rpc:
-          - "https://fullnode.algol.cntrfg.com/rpc"
+          - "https://fullnode.demo.k-f.dev"
       native_token:
         name: "Algol"
         symbol: "ALGL"
