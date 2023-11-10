@@ -1759,6 +1759,32 @@ testnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    ethereum-sepolia:
+      chain_id: 11155111
+      chain_name: "ethereum-sepolia"
+      maintainer_id: "ethereum-sepolia"
+      endpoints:
+        rpc:
+          - "https://1rpc.io/sepolia"
+          - "https://ethereum-sepolia.publicnode.com"
+          - "https://endpoints.omniatech.io/v1/eth/sepolia/public"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ethereum"
+      short_name: "ETH"
+      image: "/logos/chains/ethereum.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://sepolia.etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     binance:
       chain_id: 97
       chain_name: "binance"
@@ -3119,6 +3145,32 @@ stagenet:
       explorer:
         name: "Etherscan"
         url: "https://goerli.etherscan.io"
+        icon: "/logos/explorers/etherscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    ethereum-sepolia:
+      chain_id: 11155111
+      chain_name: "ethereum-sepolia"
+      maintainer_id: "ethereum-sepolia"
+      endpoints:
+        rpc:
+          - "https://1rpc.io/sepolia"
+          - "https://ethereum-sepolia.publicnode.com"
+          - "https://endpoints.omniatech.io/v1/eth/sepolia/public"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Ethereum"
+      short_name: "ETH"
+      image: "/logos/chains/ethereum.svg"
+      color: "#c0c2c3"
+      explorer:
+        name: "Etherscan"
+        url: "https://sepolia.etherscan.io"
         icon: "/logos/explorers/etherscan.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"

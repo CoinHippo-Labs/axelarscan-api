@@ -49,6 +49,8 @@ testnet:
       address: "0xBC6fcce7c5487d43830a219CA6E7B83238B41e71"
     ethereum-2:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    ethereum-sepolia:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     binance:
       address: "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0"
     polygon:
@@ -97,6 +99,8 @@ stagenet:
     ethereum:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     ethereum-2:
+      address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
+    ethereum-sepolia:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
     binance:
       address: "0x6aF9C075d8C11b9A2CD66bbA801481b3c7A96488"
