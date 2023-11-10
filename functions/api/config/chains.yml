@@ -1966,6 +1966,31 @@ testnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    arbitrum-sepolia:
+      chain_id: 421614
+      chain_name: "arbitrum-sepolia"
+      maintainer_id: "arbitrum-sepolia"
+      endpoints:
+        rpc:
+          - "https://arbitrum-sepolia.blockpi.network/v1/rpc/public"
+          - "https://sepolia-rollup.arbitrum.io/rpc"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Arbitrum"
+      short_name: "ARB"
+      image: "/logos/chains/arbitrum.svg"
+      color: "#28a0f0"
+      explorer:
+        name: "Arbiscan"
+        url: "https://sepolia.arbiscan.io"
+        icon: "/logos/explorers/arbiscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     optimism:
       chain_id: 420
       chain_name: "optimism"
@@ -2165,9 +2190,34 @@ testnet:
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
     centrifuge:
-      chain_id: 2090
+      chain_id: 2089
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      no_recover: true
+      endpoints:
+        rpc:
+          - "https://fullnode.algol.cntrfg.com/rpc"
+      native_token:
+        name: "Algol"
+        symbol: "ALGL"
+        decimals: 18
+      name: "Centrifuge"
+      short_name: "CFG"
+      image: "/logos/chains/centrifuge.svg"
+      color: "#ffc012"
+      explorer:
+        name: "Centrifuge"
+        url: ""
+        icon: "/logos/explorers/centrifuge.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    centrifuge-2:
+      chain_id: 2090
+      chain_name: "centrifuge-2"
+      maintainer_id: "centrifuge-2"
       no_recover: true
       endpoints:
         rpc:
@@ -3282,6 +3332,31 @@ stagenet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    arbitrum-sepolia:
+      chain_id: 421614
+      chain_name: "arbitrum-sepolia"
+      maintainer_id: "arbitrum-sepolia"
+      endpoints:
+        rpc:
+          - "https://arbitrum-sepolia.blockpi.network/v1/rpc/public"
+          - "https://sepolia-rollup.arbitrum.io/rpc"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Arbitrum"
+      short_name: "ARB"
+      image: "/logos/chains/arbitrum.svg"
+      color: "#28a0f0"
+      explorer:
+        name: "Arbiscan"
+        url: "https://sepolia.arbiscan.io"
+        icon: "/logos/explorers/arbiscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
     optimism:
       chain_id: 420
       chain_name: "optimism"
@@ -3481,9 +3556,34 @@ stagenet:
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
     centrifuge:
-      chain_id: 2090
+      chain_id: 2089
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      no_recover: true
+      endpoints:
+        rpc:
+          - "https://fullnode.algol.cntrfg.com/rpc"
+      native_token:
+        name: "Algol"
+        symbol: "ALGL"
+        decimals: 18
+      name: "Centrifuge"
+      short_name: "CFG"
+      image: "/logos/chains/centrifuge.svg"
+      color: "#ffc012"
+      explorer:
+        name: "Centrifuge"
+        url: ""
+        icon: "/logos/explorers/centrifuge.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    centrifuge-2:
+      chain_id: 2090
+      chain_name: "centrifuge-2"
+      maintainer_id: "centrifuge-2"
       no_recover: true
       endpoints:
         rpc:
