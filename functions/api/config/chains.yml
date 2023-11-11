@@ -1772,7 +1772,7 @@ testnet:
         name: "Ethereum"
         symbol: "ETH"
         decimals: 18
-      name: "Ethereum"
+      name: "Ethereum Sepolia"
       short_name: "ETH"
       image: "/logos/chains/ethereum.svg"
       color: "#c0c2c3"
@@ -2004,7 +2004,7 @@ testnet:
         name: "Ethereum"
         symbol: "ETH"
         decimals: 18
-      name: "Arbitrum"
+      name: "Arbitrum Sepolia"
       short_name: "ARB"
       image: "/logos/chains/arbitrum.svg"
       color: "#28a0f0"
@@ -2219,6 +2219,7 @@ testnet:
       chain_id: 2089
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      deprecated: true
       no_recover: true
       endpoints:
         rpc:
@@ -3164,7 +3165,7 @@ stagenet:
         name: "Ethereum"
         symbol: "ETH"
         decimals: 18
-      name: "Ethereum"
+      name: "Ethereum Sepolia"
       short_name: "ETH"
       image: "/logos/chains/ethereum.svg"
       color: "#c0c2c3"
@@ -3396,7 +3397,7 @@ stagenet:
         name: "Ethereum"
         symbol: "ETH"
         decimals: 18
-      name: "Arbitrum"
+      name: "Arbitrum Sepolia"
       short_name: "ARB"
       image: "/logos/chains/arbitrum.svg"
       color: "#28a0f0"
@@ -3611,6 +3612,7 @@ stagenet:
       chain_id: 2089
       chain_name: "centrifuge"
       maintainer_id: "centrifuge"
+      deprecated: true
       no_recover: true
       endpoints:
         rpc:
