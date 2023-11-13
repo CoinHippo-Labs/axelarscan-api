@@ -50,5 +50,13 @@ module.exports = context => {
       });
     };
     subscribe();
+    if (context) {
+      while (context.getRemainingTimeInMillis() > 2 * 1000) {
+        if (context.getRemainingTimeInMillis() < 5 * 1000) {
+          ws.close();
+        }
+        await sleep(1 * 1000);
+      }
+    }
   }
 };
