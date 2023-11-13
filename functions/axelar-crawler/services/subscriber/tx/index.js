@@ -1,7 +1,7 @@
 const { getAPI, getWS } = require('../../../utils/config');
 const { log, sleep, toArray, parseRequestError } = require('../../../utils');
 
-module.exports = context => {
+module.exports = async context => {
   const api = getAPI();
   const ws = getWS();
   if (api && ws) {
