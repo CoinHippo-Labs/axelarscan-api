@@ -320,6 +320,11 @@ YieldUSD:
   decimals: 18
 axlYieldUSD:
   redirect: "YieldUSD"
+wUSDM:
+  coingecko_id: "mountain-protocol-usdm"
+  default_price:
+    usd: 1.00
+  decimals: 18
 EEUR:
   coingecko_id: "e-money-eur"
   decimals: 18
