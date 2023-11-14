@@ -860,6 +860,25 @@ mainnet:
       axelarnet:
         ibc_denom: "yieldusd-wei"
         symbol: "axlYieldUSD"
+  wusdm-wei:
+    denom: "wusdm-wei"
+    native_chain: "ethereum"
+    name: "Wrapped Mountain Protocol USD"
+    symbol: "wUSDM"
+    decimals: 18
+    image: "/logos/assets/wusdm.svg"
+    coingecko_id: "mountain-protocol-usdm"
+    addresses:
+      ethereum:
+        address: "0x57F5E098CaD7A3D1Eed53991D4d66C45C9AF7812"
+      celo:
+        address: "0xa2B9e3a4c575aA54224dd202F2739F596Ea1ce7e"
+      axelarnet:
+        ibc_denom: "wusdm-wei"
+      osmosis:
+        ibc_denom: "ibc/E79C3DAA6E5E0180F61F30C1515B8933F1E9092E81020222080C405D1716C533"
+      sei:
+        ibc_denom: "ibc/E7824AC1CB5AF191E4EE6265D3BB269FFBFC86112BA7765CC755B187EF0B1A50"
   wbtc-satoshi:
     denom: "wbtc-satoshi"
     native_chain: "ethereum"
@@ -1192,13 +1211,31 @@ mainnet:
     addresses:
       ethereum:
         address: "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+      binance:
+        address: "0xb306669D6C024B3deA4ff3A35D50844289b2DCFC"
+        symbol: "axl-wstETH"
       polygon:
         address: "0xd7Bb095a60D7666D4A6f236423B47DDD6ae6Cfa7"
+        symbol: "axl-wstETH"
+      avalanche:
+        address: "0x74c6b86A89fE77B48952Bc3a9Db74a307B202e97"
         symbol: "axl-wstETH"
       arbitrum:
         address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
         symbol: "axl-wstETH"
       optimism:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      base:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      mantle:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      linea:
+        address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
+        symbol: "axl-wstETH"
+      scroll:
         address: "0x9cfB13E6c11054ac9fcB92BA89644F30775436e4"
         symbol: "axl-wstETH"
       axelarnet:
@@ -1221,6 +1258,9 @@ mainnet:
         symbol: "axl-wstETH"
       kujira:
         ibc_denom: "ibc/B572E6F30E7C33D78A50D8B4E973A9C118C30F848DF31A95FAA5E4C7450A8BD0"
+        symbol: "axl-wstETH"
+      secret-snip:
+        ibc_denom: "ibc/459EE271B636C8F500FD24442E8D90006B21C4DC863B99B559666D37F6E51019"
         symbol: "axl-wstETH"
       secret:
         ibc_denom: "ibc/D690CBA4D218BDECACC696182D938F5898D76A1DFAEA4BC9FAAAC93AFBFFAFAB"
