@@ -477,6 +477,30 @@ mainnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    # immutable:
+    #   chain_id:
+    #   chain_name: "immutable"
+    #   maintainer_id: "immutable"
+    #   endpoints:
+    #     rpc:
+    #       - "https://rpc.mainnet.immutable.com"
+    #   native_token:
+    #     name: "ImmutableX"
+    #     symbol: "tIMX"
+    #     decimals: 18
+    #   name: "Immutable"
+    #   short_name: "IMX"
+    #   image: "/logos/chains/immutable.svg"
+    #   color: "#0d0d0d"
+    #   explorer:
+    #     name: "Immutable"
+    #     url: "https://explorer.mainnet.immutable.com"
+    #     icon: "/logos/explorers/immutable.png"
+    #     block_path: "/block/{block}"
+    #     address_path: "/address/{address}"
+    #     contract_path: "/token/{address}"
+    #     contract_0_path: "/address/{address}"
+    #     transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_id: "axelar-dojo-1"
@@ -2287,6 +2311,30 @@ testnet:
         name: "Scrollscan"
         url: "https://sepolia.scrollscan.com"
         icon: "/logos/explorers/scroll.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        contract_0_path: "/address/{address}"
+        transaction_path: "/tx/{tx}"
+    immutable:
+      chain_id: 13472
+      chain_name: "immutable"
+      maintainer_id: "immutable"
+      endpoints:
+        rpc:
+          - "https://rpc.testnet.immutable.com"
+      native_token:
+        name: "ImmutableX"
+        symbol: "tIMX"
+        decimals: 18
+      name: "Immutable"
+      short_name: "IMX"
+      image: "/logos/chains/immutable.svg"
+      color: "#0d0d0d"
+      explorer:
+        name: "Immutable"
+        url: "https://explorer.testnet.immutable.com"
+        icon: "/logos/explorers/immutable.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
