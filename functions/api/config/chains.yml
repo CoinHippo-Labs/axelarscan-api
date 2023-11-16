@@ -2317,12 +2317,12 @@ testnet:
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
     immutable:
-      chain_id: 13472
+      chain_id: 13473
       chain_name: "immutable"
       maintainer_id: "immutable"
       endpoints:
         rpc:
-          - "https://rpc.testnet.immutable.com"
+          - "https://rpc-geth.testnet.immutable.com"
       native_token:
         name: "ImmutableX"
         symbol: "tIMX"
