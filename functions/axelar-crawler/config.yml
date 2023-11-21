@@ -15,7 +15,7 @@ mainnet:
 
 testnet:
   api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
-  ws: "ws://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
+  ws: "ws://testnet.archive-node-rpc.axelarscan.io:80" # "ws://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
   reindex:
     enable: false
     start_block: 7000000
