@@ -3058,6 +3058,35 @@ testnet:
       prefix_address: "celestia"
       prefix_chain_ids:
         - "mocha-"
+    elys:
+      chain_id: "elystestnet-1"
+      chain_name: "elys"
+      endpoints:
+        lcd:
+          - "https://api.testnet.elys.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Elys"
+        symbol: "ELYS"
+        denom: "uelys"
+        decimals: 6
+      name: "Elys"
+      short_name: "ELYS"
+      image: "/logos/chains/elys.svg"
+      color: "#363738"
+      explorer:
+        name: "Elys"
+        url: "https://testnet.ping.pub/elys"
+        icon: "/logos/explorers/elys.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "elys"
+      prefix_chain_ids:
+        - "elystestnet-"
     terra-3:
       chain_id: "pisco-1"
       chain_name: "terra-3"

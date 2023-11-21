@@ -166,6 +166,11 @@ TIA:
   decimals: 6
 axlTIA:
   redirect: "TIA"
+ELYS:
+  coingecko_id: "elys"
+  default_price:
+    usd: 0.01
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
