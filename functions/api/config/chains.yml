@@ -2322,7 +2322,7 @@ testnet:
       maintainer_id: "immutable"
       endpoints:
         rpc:
-          - "https://rpc-geth.testnet.immutable.com"
+          - "https://rpc.testnet.immutable.com"
       native_token:
         name: "ImmutableX"
         symbol: "tIMX"
