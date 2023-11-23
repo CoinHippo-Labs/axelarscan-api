@@ -6,31 +6,35 @@ const { toArray } = require('../../../utils');
 module.exports = async params => {
   let output;
 
-  const { status } = { ...params };
-  const response = await searchTransfers({
-    ...params,
-    status: status || 'confirmed',
-    aggs: {
-      source_chains: {
-        terms: { field: 'send.original_source_chain.keyword', size: 1000 },
-        aggs: {
-          destination_chains: {
-            terms: { field: 'send.original_destination_chain.keyword', size: 1000 },
-            aggs: {
-              assets: {
-                terms: { field: 'send.denom.keyword', size: 1000 },
-                aggs: { volume: { sum: { field: 'send.value' } } },
+  let { status } = { ...params };
+  status = status || 'confirmed';
+  const response = await searchTransfers(
+    {
+      ...params,
+      status,
+      aggs: {
+        source_chains: {
+          terms: { field: 'send.original_source_chain.keyword', size: 1000 },
+          aggs: {
+            destination_chains: {
+              terms: { field: 'send.original_destination_chain.keyword', size: 1000 },
+              aggs: {
+                assets: {
+                  terms: { field: 'send.denom.keyword', size: 1000 },
+                  aggs: { volume: { sum: { field: 'send.value' } } },
+                },
               },
             },
           },
         },
+        types: {
+          terms: { field: 'type.keyword', size: 10 },
+        },
       },
-      types: {
-        terms: { field: 'type.keyword', size: 10 },
-      },
+      size: 0,
     },
-    size: 0,
-  });
+    `transfersStats_status_${status}`,
+  );
   const { aggs, total } = { ...response };
   const { source_chains } = { ...aggs };
   let { types } = { ...aggs };

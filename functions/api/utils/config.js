@@ -135,6 +135,7 @@ module.exports = {
   TVL_COLLECTION: 'tvls',
   ASSET_COLLECTION: 'assets',
   TOKEN_COLLECTION: 'tokens',
+  CACHE_COLLECTION: 'cache',
   CURRENCY: 'usd',
   CONFIRM_TYPES: ['ConfirmDeposit', 'ConfirmERC20Deposit'],
   VOTE_TYPES: ['VoteConfirmDeposit', 'Vote'],
