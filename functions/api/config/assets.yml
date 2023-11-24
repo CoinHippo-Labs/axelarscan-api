@@ -3738,7 +3738,7 @@ mainnet:
       optimism:
         address: "0x3A18dcC9745eDcD1Ef33ecB93b0b6eBA5671e7Ca"
       axelarnet:
-        address: "ibc/1EDB735A58AA984F6FF11E332077D8A05D5E70E355427C2CF419BD1566FC1E2C"
+        ibc_denom: "ibc/1EDB735A58AA984F6FF11E332077D8A05D5E70E355427C2CF419BD1566FC1E2C"
       kujira:
         ibc_denom: "ukuji"
   ungm:
