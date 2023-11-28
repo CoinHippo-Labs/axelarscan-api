@@ -435,7 +435,7 @@ mainnet:
       no_recover: true
       endpoints:
         rpc:
-          - ""
+          - "https://fullnode.parachain.centrifuge.io"
       native_token:
         name: "Algol"
         symbol: "ALGL"
