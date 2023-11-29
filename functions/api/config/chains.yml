@@ -446,13 +446,13 @@ mainnet:
       color: "#ffc012"
       explorer:
         name: "Centrifuge"
-        url: ""
+        url: "https://centrifuge.subscan.io"
         icon: "/logos/explorers/centrifuge.png"
         block_path: "/block/{block}"
-        address_path: "/address/{address}"
-        contract_path: "/token/{address}"
-        contract_0_path: "/address/{address}"
-        transaction_path: "/tx/{tx}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/extrinsic/{tx}"
     scroll:
       chain_id: 534352
       chain_name: "scroll"
