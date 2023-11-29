@@ -788,6 +788,29 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/2E435CEEEBA18CCB2719E0182BC5D142A364D6CCE9957DE6E1AC4D62127D2913"
         symbol: "axlFRAX"
+  sfrax-wei:
+    denom: "sfrax-wei"
+    native_chain: "ethereum"
+    name: "sFrax"
+    symbol: "sFRAX"
+    decimals: 18
+    image: "/logos/assets/sfrax.svg"
+    coingecko_id: "frax"
+    addresses:
+      ethereum:
+        address: "0xA663B02CF0a4b149d2aD41910CB81e23e1c41c32"
+      mantle:
+        address: "0xf3602C5A7f625181659445C8dDDde73dA15c22e3"
+      linea:
+        address: "0xf3602C5A7f625181659445C8dDDde73dA15c22e3"
+      scroll:
+        address: "0xf3602C5A7f625181659445C8dDDde73dA15c22e3"
+      axelarnet:
+        ibc_denom: "sfrax-wei"
+      osmosis:
+        ibc_denom: "ibc/4062A80E72B08BFF5AD591BB43CF4891D94EFAD7D591F8E574D1D1AC5DB2241A"
+      kujira:
+        ibc_denom: "ibc/E727C3108CCF0299A0331BBC7C62909644BB92D4D01421073154A209A3D80F28"
   cusd-wei:
     denom: "cusd-wei"
     native_chain: "celo"

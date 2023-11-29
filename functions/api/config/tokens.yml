@@ -313,6 +313,8 @@ FRAX:
   decimals: 18
 axlFRAX:
   redirect: "FRAX"
+sFRAX:
+  redirect: "FRAX"
 cUSD:
   coingecko_id: "celo-dollar"
   default_price:
