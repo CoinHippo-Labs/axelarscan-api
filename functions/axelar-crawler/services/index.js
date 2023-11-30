@@ -9,6 +9,7 @@ const updateWraps = require('./updateWraps');
 const updateUnwraps = require('./updateUnwraps');
 const updateERC20Transfers = require('./updateERC20Transfers');
 const updateFeeValues = require('./updateFeeValues');
+const updateStats = require('./updateStats');
 const { getReindex } = require('../utils/config');
 
 const { enable } = { ...getReindex() };
@@ -28,5 +29,6 @@ module.exports = context => {
     updateUnwraps(context);
     updateERC20Transfers(context);
     // updateFeeValues(context);
+    updateStats(context); 
   }
 };

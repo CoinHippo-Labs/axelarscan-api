@@ -4,6 +4,7 @@
 
 mainnet:
   api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io"
+  gmp_api: "https://tlvaojpaa1.execute-api.us-east-2.amazonaws.com" # "https://api.gmp.axelarscan.io"
   ws: "ws://archive-node-rpc.axelarscan.io:80" # "ws://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"  
   reindex:
     enable: false
@@ -15,6 +16,7 @@ mainnet:
 
 testnet:
   api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
+  gmp_api: "https://7hf6gameo0.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.gmp.axelarscan.io"
   ws: "ws://testnet.archive-node-rpc.axelarscan.io:80" # "ws://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
   reindex:
     enable: false
@@ -26,6 +28,7 @@ testnet:
 
 stagenet:
   api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io"
+  gmp_api: "https://8mcrlxwctd.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.gmp.axelarscan.io"
   ws: "ws://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"
   reindex:
     enable: false
