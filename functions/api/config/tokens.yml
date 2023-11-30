@@ -28,6 +28,8 @@ AURORA:
 ARB:
   coingecko_id: "arbitrum"
   decimals: 18
+axlARB:
+  redirect: "ARB"
 MNT:
   coingecko_id: "mantle"
   decimals: 18
