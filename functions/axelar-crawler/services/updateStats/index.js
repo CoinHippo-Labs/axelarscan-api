@@ -30,7 +30,7 @@ module.exports = async context => {
                     break;
                 }
                 // log('info', service_name, `start ${method}`, params);
-                await _api.get('/', { params: { method, ...params } }).catch(error => parseRequestError(error));
+                await _api.get('/', { params: { method: m, ...params } }).catch(error => parseRequestError(error));
                 // log('info', service_name, `end ${method}`, params);
               }
             )
