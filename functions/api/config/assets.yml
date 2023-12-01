@@ -222,6 +222,9 @@ mainnet:
       ixo:
         ibc_denom: "ibc/2658C97FC74B74AB1898982081523C455561BBE3C705E47707021D47F3D94B38"
         symbol: "axlUSDC"
+      migaloo:
+        ibc_denom: "ibc/3808384ECC813CAF207992BE997BD18E18560E473D5368F1B4B77C3822262C4D"
+        symbol: "axlUSDC"
       haqq:
         ibc_denom: "ibc/65D0BEC6DAD96C7F5043D1E54E54B6BB5D5B3AEC3FF6CEBB75B9E059F3580EA3"
         symbol: "axlUSDC"
@@ -1038,6 +1041,9 @@ mainnet:
         symbol: "axlWBTC"
       ixo:
         ibc_denom: "ibc/0C41C965F14BA706011DDB3DAFAED259DAAED38D90941B4A816FA0A722063A9D"
+        symbol: "axlWBTC"
+      migaloo:
+        ibc_denom: "ibc/B65E189D3168DB40C88C6A6C92CA3D3BB0A8B6310325D4C43AB5702F06ECD60B"
         symbol: "axlWBTC"
       terra-2:
         ibc_denom: "ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD"
@@ -1872,6 +1878,9 @@ mainnet:
         symbol: "axlAVAX"
       archway:
         ibc_denom: "ibc/AF62035CBD6A7896882827CC6063024E9C3B57ABF5F0C37B5DB735BA6D1E1825"
+        symbol: "axlAVAX"
+      migaloo:
+        ibc_denom: "ibc/E09B0B8169A4DCE24AAE8C44E02477143A328D0AAE5EE67D9D645BA75F0C1C05"
         symbol: "axlAVAX"
       terra-2:
         ibc_denom: "ibc/F992067A054C819B42D2DAB57F5CCE347D38352EB90453E59D566BFE64F1614B"
