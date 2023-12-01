@@ -37,7 +37,7 @@ mainnet:
       maintainer_id: "binance"
       endpoints:
         rpc:
-          - "https://bsc-dataseed.binance.org"
+          - "https://bsc-dataseed.bnbchain.org"
           - "https://bsc-dataseed1.ninicoin.io"
           - "https://bsc-dataseed1.defibit.io"
           - "https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3"
@@ -1815,9 +1815,10 @@ testnet:
       maintainer_id: "binance"
       endpoints:
         rpc:
-          - "https://data-seed-prebsc-1-s1.binance.org:8545"
-          - "https://data-seed-prebsc-2-s1.binance.org:8545"
-          - "https://data-seed-prebsc-1-s2.binance.org:8545"
+          - "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+          - "https://data-seed-prebsc-2-s1.bnbchain.org:8545"
+          - "https://data-seed-prebsc-1-s2.bnbchain.org:8545"
+          - "https://bsc-testnet.blockpi.network/v1/rpc/public"
           - "https://bsc-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/bsc_testnet_chapel"
       native_token:
@@ -3235,9 +3236,10 @@ stagenet:
       maintainer_id: "binance"
       endpoints:
         rpc:
-          - "https://data-seed-prebsc-1-s1.binance.org:8545"
-          - "https://data-seed-prebsc-2-s1.binance.org:8545"
-          - "https://data-seed-prebsc-1-s2.binance.org:8545"
+          - "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+          - "https://data-seed-prebsc-2-s1.bnbchain.org:8545"
+          - "https://data-seed-prebsc-1-s2.bnbchain.org:8545"
+          - "https://bsc-testnet.blockpi.network/v1/rpc/public"
           - "https://bsc-testnet.public.blastapi.io"
           - "https://rpc.ankr.com/bsc_testnet_chapel"
       native_token:
