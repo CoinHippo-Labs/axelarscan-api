@@ -1998,7 +1998,8 @@ testnet:
           # - "https://goerli-rollup.arbitrum.io/rpc"
           # - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
           # - "https://arb-goerli.g.alchemy.com/v2/demo"
-          # - "https://arbitrum-goerli.publicnode.com"
+          - "https://arbitrum-goerli.publicnode.com"
+          - "https://arbitrum-goerli.blockpi.network/v1/rpc/public"
           - "https://arbitrum-goerli.public.blastapi.io"
       native_token:
         name: "Ethereum"
@@ -3371,7 +3372,8 @@ stagenet:
           # - "https://goerli-rollup.arbitrum.io/rpc"
           # - "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
           # - "https://arb-goerli.g.alchemy.com/v2/demo"
-          # - "https://arbitrum-goerli.publicnode.com"
+          - "https://arbitrum-goerli.publicnode.com"
+          - "https://arbitrum-goerli.blockpi.network/v1/rpc/public"
           - "https://arbitrum-goerli.public.blastapi.io"
       native_token:
         name: "Ethereum"
