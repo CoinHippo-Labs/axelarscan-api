@@ -7,7 +7,7 @@ const service_name = 'gmp';
 
 module.exports = async (event, chain) => {
   let output;
-  const api = getGMP() && axios.create({ baseURL: getGMP() });
+  const api = getGMP() && axios.create({ baseURL: getGMP(), timeout: 20000 });
   if (api && event && chain) {
     const params = { method: 'saveGMP', ...(typeof event === 'object' ? event : { event }), chain };
     log('info', service_name, 'saveGMP', { params });
