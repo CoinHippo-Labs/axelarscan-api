@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/CoinHippo-Labs/axelarscan-api#readme",
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "^1.6.2",
     "command-line-args": "^5.2.1",
     "config-yml": "^0.10.3",
     "dotenv": "^16.3.1",
