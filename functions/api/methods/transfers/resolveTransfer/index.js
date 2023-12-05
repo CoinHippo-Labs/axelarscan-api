@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const { generateId } = require('../analytics/preprocessing');
 const { getTimeSpent } = require('../analytics/analyzing');
-const addFieldsToResult = require('../searchTransfers/addFieldsToResult'); 
+const addFieldsToResult = require('../searchTransfers/addFieldsToResult');
 const { isCommandExecuted, getTransaction, getBlockTime, normalizeLink, updateLink, updateSend } = require('../utils');
 const { searchTransactions } = require('../../axelar');
 const indexTransaction = require('../../lcd/tx');

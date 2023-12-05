@@ -7,7 +7,7 @@ module.exports = async context => {
     const service_name = `${!context ? 'local_' : ''}axelarscan-axelar-crawler`;
     const method = 'updateTVL';
     const response = await api.get('/', { params: { method: 'getAssets' } }).catch(error => parseRequestError(error));
-    const { data } = { ...response }; 
+    const { data } = { ...response };
     for (const d of toArray(data)) {
       const { id } = { ...d };
       // log('info', service_name, `start ${method}`, { id });

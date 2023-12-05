@@ -437,8 +437,8 @@ mainnet:
         rpc:
           - "https://fullnode.parachain.centrifuge.io"
       native_token:
-        name: "Algol"
-        symbol: "ALGL"
+        name: "Centrifuge"
+        symbol: "CFG"
         decimals: 18
       name: "Centrifuge"
       short_name: "CFG"

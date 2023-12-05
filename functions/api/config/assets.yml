@@ -1344,7 +1344,7 @@ mainnet:
         symbol: "axl-wstETH"
       terra-2:
         ibc_denom: "ibc/57C5ECAE3AAA7382AC93CFE971CA2F9B669323FDF5A5A138B535E4F9EAD185BD"
-        symbol: "axl-wstETH"  
+        symbol: "axl-wstETH"
   cbeth-wei:
     denom: "cbeth-wei"
     native_chain: "ethereum"

@@ -29,6 +29,6 @@ module.exports = context => {
     updateUnwraps(context);
     updateERC20Transfers(context);
     // updateFeeValues(context);
-    updateStats(context); 
+    updateStats(context);
   }
 };
