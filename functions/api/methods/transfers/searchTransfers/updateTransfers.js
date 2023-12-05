@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 
-const addFieldsToResult = require('./addFieldsToResult'); 
+const addFieldsToResult = require('./addFieldsToResult');
 const resolveTransfer = require('../resolveTransfer');
 const { generateId } = require('../analytics/preprocessing');
 const { getTimeSpent } = require('../analytics/analyzing');

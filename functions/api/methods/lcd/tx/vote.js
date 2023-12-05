@@ -175,7 +175,7 @@ module.exports = async (lcd_response = {}) => {
                       });
                     }
                     else if (poll_data) {
-                      confirmation_events = toArray(poll_data.confirmation_events); 
+                      confirmation_events = toArray(poll_data.confirmation_events);
                     }
 
                     const _chain = _.head(toArray(confirmation_events.map(e => e.chain)));

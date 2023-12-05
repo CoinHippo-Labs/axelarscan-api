@@ -279,7 +279,7 @@ const getBlockTime = async (blockNumber, chain) => {
             output = timestamp;
           }
         }
-      } catch (error) {}  
+      } catch (error) {}
     }
   }
   return output;
