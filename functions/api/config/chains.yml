@@ -3089,6 +3089,35 @@ testnet:
       prefix_address: "elys"
       prefix_chain_ids:
         - "elystestnet-"
+    ojo:
+      chain_id: "agamotto"
+      chain_name: "ojo"
+      endpoints:
+        lcd:
+          - "https://api.ditto-val-stage-0.ojo.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Ojo"
+        symbol: "OJO"
+        denom: "uojo"
+        decimals: 6
+      name: "Ojo"
+      short_name: "OJO"
+      image: "/logos/chains/ojo.svg"
+      color: "#fb4746"
+      explorer:
+        name: "Ojo"
+        url: "https://ojo.explorers.guru"
+        icon: "/logos/explorers/ojo.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "ojo"
+      prefix_chain_ids:
+        - "agamotto"
     terra-3:
       chain_id: "pisco-1"
       chain_name: "terra-3"
