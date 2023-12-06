@@ -228,6 +228,9 @@ mainnet:
       haqq:
         ibc_denom: "ibc/65D0BEC6DAD96C7F5043D1E54E54B6BB5D5B3AEC3FF6CEBB75B9E059F3580EA3"
         symbol: "axlUSDC"
+      terra:
+        ibc_denom: "ibc/E1E3674A0E4E1EF9C69646F9AF8D9497173821826074622D831BAB73CCB99A2D"
+        symbol: "axlUSDC"
       terra-2:
         ibc_denom: "ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4"
         symbol: "axlUSDC"
@@ -405,6 +408,9 @@ mainnet:
         symbol: "axlUSDT"
       ixo:
         ibc_denom: "ibc/E4A8CC9F31A9598F6F92CAE5992380161389AC4BB22CAA154A508A14473740CC"
+        symbol: "axlUSDT"
+      terra:
+        ibc_denom: "ibc/386A4031D68DE6370B85F9FF7E89CEF8DE7CDE01CC193CBD87BD3ED60F6662CE"
         symbol: "axlUSDT"
       terra-2:
         ibc_denom: "ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF"
@@ -1045,6 +1051,9 @@ mainnet:
       migaloo:
         ibc_denom: "ibc/B65E189D3168DB40C88C6A6C92CA3D3BB0A8B6310325D4C43AB5702F06ECD60B"
         symbol: "axlWBTC"
+      terra:
+        ibc_denom: "ibc/911B721F15A40ABB29636CBF8AE630076DDF62841ACE7E6D879405CA8870CEA2"
+        symbol: "axlWBTC"
       terra-2:
         ibc_denom: "ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD"
         symbol: "axlWBTC"
@@ -1190,6 +1199,9 @@ mainnet:
         symbol: "axlETH"
       ixo:
         ibc_denom: "ibc/346392E297585AFCCDDA1E9D24AEED98FF67CB2B5ACE3160CD0D82618A658CC2"
+        symbol: "axlETH"
+      terra:
+        ibc_denom: "ibc/9B68CC79EFF12D25AF712EB805C5062B8F97B2CCE5F3FE55B107EE03095514A3"
         symbol: "axlETH"
       terra-2:
         ibc_denom: "ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674"
@@ -3774,6 +3786,8 @@ mainnet:
     image: "/logos/assets/kuji.svg"
     coingecko_id: "kujira"
     addresses:
+      binance:
+        address: "0x073690e6CE25bE816E68F32dCA3e11067c9FB5Cc"
       arbitrum:
         address: "0x3A18dcC9745eDcD1Ef33ecB93b0b6eBA5671e7Ca"
       optimism:
