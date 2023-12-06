@@ -173,6 +173,11 @@ ELYS:
   default_price:
     usd: 0.01
   decimals: 6
+OJO:
+  coingecko_id: "ojo"
+  default_price:
+    usd: 0.01
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
