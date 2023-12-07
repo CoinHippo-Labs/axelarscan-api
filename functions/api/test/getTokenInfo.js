@@ -10,7 +10,7 @@ module.exports = () => {
     'getTokenInfo',
     () => {
       it(
-        'Should receive total info',
+        'Should receive token info',
         async () => {
           const response = await getTokenInfo();
           expect(response).to.be.a('object');

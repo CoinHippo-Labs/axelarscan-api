@@ -122,7 +122,6 @@ const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY
 
 const getExchangeRates = async () => {
   const api = axios.create({ baseURL: PRICE_ORACLE_API, timeout: 5000 });
-
   let response;
   let cache;
   const cache_id = 'rates';
@@ -147,6 +146,7 @@ const getExchangeRates = async () => {
       response = Object.keys({ ...cache }).length > 0 ? cache : response;
     }
   }
+  return response;
 };
 
 module.exports = {

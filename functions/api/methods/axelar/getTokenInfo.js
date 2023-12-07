@@ -18,14 +18,14 @@ module.exports = async (params = {}) => {
 
   switch (agent) {
     case 'upbit':
-      const exchangeRates = await getExchangeRates();
+      const exchangeRates = (await getExchangeRates())?.data;
       return ['KRW', 'USD', 'IDR', 'SGD', 'THB'].map(currencyCode => {
         const currency = currencyCode.toLowerCase();
         const _price = price * (exchangeRates?.[currency] && currency !== CURRENCY ? exchangeRates[currency].value / exchangeRates[CURRENCY].value : 1);
         return {
           symbol,
           currencyCode,
-          price,
+          price: _price,
           marketCap: circulatingSupply * _price,
           circulatingSupply,
           maxSupply: totalSupply,

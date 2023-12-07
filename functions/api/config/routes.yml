@@ -1018,6 +1018,8 @@ getCirculatingSupply:
   description: "The API route provides information of the circulating supply of the Axelar Network."
 getTotalSupply:
   description: "The API route provides information of the total supply of the Axelar Network."
+getTokenInfo:
+  description: "The API route provides the token supply-related information of the AXL token."
 getInflation:
   description: "The API route provides information of the inflation rate in the Axelar Network."
 searchPolls:
