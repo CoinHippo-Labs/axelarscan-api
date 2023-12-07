@@ -140,6 +140,7 @@ const getExchangeRates = async () => {
     response = await api.get('/exchange_rates').catch(error => parseRequestError(error));
     const { data, error } = { ...response };
     if (data?.rates && !error) {
+      response = { ...response, data: data.rates };
       await write(RATES_COLLECTION, cache_id, { data: data.rates, updated_at: moment().valueOf() });
     }
     else {
