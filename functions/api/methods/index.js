@@ -2,7 +2,7 @@ const { crud } = require('../services/index');
 const rpc = require('./rpc');
 const lcd = require('./lcd');
 const { getTokensPrice } = require('./tokens');
-const { getCirculatingSupply, getTotalSupply, getInflation, getChainMaintainers, getEscrowAddresses, searchBlocks, searchTransactions } = require('./axelar');
+const { getCirculatingSupply, getTotalSupply, getTokenInfo, getInflation, getChainMaintainers, getEscrowAddresses, searchBlocks, searchTransactions } = require('./axelar');
 const { getBalances, getDelegations, getRedelegations, getUnbondings } = require('./account');
 const { searchPolls } = require('./polls');
 const { searchUptimes, searchHeartbeats, getValidators, getValidatorsVotes } = require('./validators');
@@ -25,6 +25,7 @@ module.exports = {
   getTokensPrice,
   getCirculatingSupply,
   getTotalSupply,
+  getTokenInfo,
   getInflation,
   getChainMaintainers,
   getEscrowAddresses,
