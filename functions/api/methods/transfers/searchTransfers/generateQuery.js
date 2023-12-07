@@ -336,6 +336,17 @@ module.exports = params => {
               case 'state':
                 if (v) {
                   switch (v) {
+                    case 'confirmed':
+                      obj = {
+                        bool: {
+                          should: [
+                            { exists: { field: 'confirm' } },
+                            { exists: { field: 'vote' } },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      };
+                      break;
                     case 'completed':
                     case 'success':
                     case 'executed':
