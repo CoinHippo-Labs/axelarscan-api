@@ -8,6 +8,7 @@ exports.handler = async (event, context, callback) => {
     getTokensPrice,
     getCirculatingSupply,
     getTotalSupply,
+    getTokenInfo,
     getInflation,
     getChainMaintainers,
     getEscrowAddresses,
@@ -263,6 +264,13 @@ exports.handler = async (event, context, callback) => {
       case 'getTotalSupply':
         try {
           output = await getTotalSupply(params);
+        } catch (error) {
+          output = errorOutput(error);
+        }
+        break;
+      case 'getTokenInfo':
+        try {
+          output = await getTokenInfo(params);
         } catch (error) {
           output = errorOutput(error);
         }

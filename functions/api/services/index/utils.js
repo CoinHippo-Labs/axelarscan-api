@@ -10,6 +10,7 @@ const {
   TVL_COLLECTION,
   ASSET_COLLECTION,
   TOKEN_COLLECTION,
+  RATES_COLLECTION,
 } = require('../../utils/config');
 
 const normalizeObject = object => Array.isArray(object) ? object : Object.fromEntries(Object.entries(object).map(([k, v]) => [k, typeof v === 'object' ? normalizeObject(v) : typeof v === 'boolean' ? v : !isNaN(v) ? Number(v) : v]));
@@ -26,6 +27,7 @@ const transferCollections = [
   TVL_COLLECTION,
   ASSET_COLLECTION,
   TOKEN_COLLECTION,
+  RATES_COLLECTION,
 ];
 
 module.exports = {

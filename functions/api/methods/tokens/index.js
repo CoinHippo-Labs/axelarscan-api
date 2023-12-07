@@ -3,7 +3,7 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const { get, write } = require('../../services/index');
-const { TOKEN_COLLECTION, CURRENCY, getAssetData, getTokens } = require('../../utils/config');
+const { TOKEN_COLLECTION, RATES_COLLECTION, CURRENCY, getAssetData, getTokens } = require('../../utils/config');
 const { toArray, parseRequestError } = require('../../utils');
 
 // config
@@ -18,7 +18,7 @@ const getTokenConfig = symbol => {
   return redirect ? getTokenConfig(redirect) : token;
 };
 
-const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY) => {
+const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY, debug = false) => {
   let tokens_data = toArray(toArray(symbols).map(s => getTokenConfig(s)));
 
   if (tokens_data.findIndex(t => t.coingecko_id) > -1) {
@@ -91,6 +91,10 @@ const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY
         }
       }
 
+      if (debug && response?.data && !response.error) {
+        return response;
+      }
+
       const { data } = { ...response };
       const { error } = { ...data };
       if (data && !error) {
@@ -116,7 +120,37 @@ const getTokensPrice = async (symbols, timestamp = moment(), currency = CURRENCY
   return typeof symbols === 'string' && prices.length === 1 ? _.head(prices) : prices;
 };
 
+const getExchangeRates = async () => {
+  const api = axios.create({ baseURL: PRICE_ORACLE_API, timeout: 5000 });
+
+  let response;
+  let cache;
+  const cache_id = 'rates';
+
+  // get rates from cache
+  try {
+    cache = await get(RATES_COLLECTION, cache_id);
+    const { data, updated_at } = { ...cache };
+    if (data && updated_at && moment().diff(moment(updated_at), 'minutes', true) <= 5) {
+      response = cache;
+    }
+  } catch (error) {}
+
+  // get rates from api when cache miss
+  if (!response) {
+    response = await api.get('/exchange_rates').catch(error => parseRequestError(error));
+    const { data, error } = { ...response };
+    if (data?.rates && !error) {
+      await write(RATES_COLLECTION, cache_id, { data: data.rates, updated_at: moment().valueOf() });
+    }
+    else {
+      response = Object.keys({ ...cache }).length > 0 ? cache : response;
+    }
+  }
+};
+
 module.exports = {
   getTokenConfig,
   getTokensPrice,
+  getExchangeRates,
 };
