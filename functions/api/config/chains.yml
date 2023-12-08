@@ -3144,7 +3144,7 @@ testnet:
         contract_path: "/account/{address}"
         contract_0_path: "/account/{address}"
         transaction_path: "/tx/{tx}"
-      prefix_address: "ojo"
+      prefix_address: "saga"
       prefix_chain_ids:
         - "ssc-testnet-"
     terra-3:
