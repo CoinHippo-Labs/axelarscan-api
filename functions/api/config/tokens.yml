@@ -178,6 +178,11 @@ OJO:
   default_price:
     usd: 0.01
   decimals: 6
+SAGA:
+  coingecko_id: "saga"
+  default_price:
+    usd: 0.01
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6

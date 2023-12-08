@@ -3118,6 +3118,35 @@ testnet:
       prefix_address: "ojo"
       prefix_chain_ids:
         - "agamotto"
+    saga:
+      chain_id: "ssc-testnet-1"
+      chain_name: "saga"
+      endpoints:
+        lcd:
+          - "https://testnet-ssc-lcd.sagarpc.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Saga"
+        symbol: "SAGA"
+        denom: "usaga"
+        decimals: 6
+      name: "Saga"
+      short_name: "SAGA"
+      image: "/logos/chains/saga.svg"
+      color: "#000000"
+      explorer:
+        name: "Saga"
+        url: "https://testnet.ping.pub/saga"
+        icon: "/logos/explorers/saga.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "ojo"
+      prefix_chain_ids:
+        - "ssc-testnet-"
     terra-3:
       chain_id: "pisco-1"
       chain_name: "terra-3"
