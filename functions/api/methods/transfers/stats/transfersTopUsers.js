@@ -9,7 +9,7 @@ module.exports = async params => {
 
   const { orderBy } = { ...params };
   let { size } = { ...params };
-  size = size || 100000;
+  size = size || 65535;
   if (params) {
     delete params.orderBy;
     delete params.size;
@@ -21,7 +21,7 @@ module.exports = async params => {
       aggs: {
         users: {
           terms: { field: 'send.sender_address.keyword', size },
-          ...(orderBy === 'volume' ? { aggs: { volume: { sum: { field: 'send.value' } }, volume_sort: { bucket_sort: { sort: [{ volume: { order: 'desc' } }] } } } } : null),
+          ...(orderBy === 'volume' ? { aggs: { volume: { sum: { field: 'send.value' } }, volume_sort: { bucket_sort: { sort: [{ volume: { order: 'desc' } }] } } } } : { aggs: { volume: { sum: { field: 'send.value' } } } }),
         },
       },
       size: 0,
