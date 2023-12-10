@@ -28,7 +28,7 @@ module.exports = async params => {
     },
     `transfersTopUsers_size_${size}_${orderBy}`,
   );
-  const { aggs, total } = { ...response };
+  const { aggs } = { ...response };
   const { users } = { ...aggs };
   const { buckets } = { ...users };
 
@@ -49,8 +49,8 @@ module.exports = async params => {
         }),
         [orderBy || 'num_txs'], ['desc'],
       ),
-      total,
     };
+    output = { ...output, total: output.data.length };
   }
   else {
     output = response;
