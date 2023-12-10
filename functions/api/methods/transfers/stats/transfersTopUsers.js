@@ -9,7 +9,7 @@ module.exports = async params => {
 
   const { orderBy } = { ...params };
   let { size } = { ...params };
-  size = size || 100;
+  size = size || 100000;
   if (params) {
     delete params.orderBy;
     delete params.size;
