@@ -8,8 +8,11 @@ module.exports = async params => {
   let output;
 
   const { orderBy } = { ...params };
+  let { size } = { ...params };
+  size = size || 100;
   if (params) {
     delete params.orderBy;
+    delete params.size;
   }
 
   const response = await searchTransfers(
@@ -17,13 +20,13 @@ module.exports = async params => {
       ...params,
       aggs: {
         users: {
-          terms: { field: 'send.sender_address.keyword', size: 100 },
+          terms: { field: 'send.sender_address.keyword', size },
           ...(orderBy === 'volume' ? { aggs: { volume: { sum: { field: 'send.value' } }, volume_sort: { bucket_sort: { sort: [{ volume: { order: 'desc' } }] } } } } : null),
         },
       },
       size: 0,
     },
-    `transfersTopUsers_${orderBy}`,
+    `transfersTopUsers_size_${size}_${orderBy}`,
   );
   const { aggs, total } = { ...response };
   const { users } = { ...aggs };
