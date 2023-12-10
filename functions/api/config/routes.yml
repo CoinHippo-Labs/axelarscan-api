@@ -20,15 +20,15 @@ interchainChart:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
       override:
-        value: 1646240400
+        value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
       override:
-        value: 1659459600
+        value: 1701363599
 interchainTotalVolume:
   description: "The API route provides the total volume of the interchain activities through the Axelar network."
   parameters:
@@ -43,11 +43,11 @@ interchainTotalVolume:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 interchainTotalFee:
   description: "The API route provides the total fee of the interchain activities through the Axelar network."
   parameters:
@@ -62,11 +62,11 @@ interchainTotalFee:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 interchainTotalActiveUsers:
   description: "The API route provides the total active users of the interchain activities through the Axelar network."
   parameters:
@@ -81,11 +81,11 @@ interchainTotalActiveUsers:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 searchTransfers:
   description: "The Search API provides query-based access to the cross-chain transfer information on the Axelar network. The response includes only the transfers that the Axelar network has already confirmed."
   parameters:
@@ -143,7 +143,7 @@ searchTransfers:
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
     -
       id: "from"
       type: "integer"
@@ -174,15 +174,15 @@ transfersStats:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
       override:
-        value: 1646240400
+        value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
       override:
-        value: 1659459600
+        value: 1701363599
 transfersChart:
   description: "The API route provides information used for visualizing Transfers charts on the Transfers page. The provided data include transfer information, such as the number of transfers and volumes for each day in a specific timeframe."
   parameters:
@@ -205,15 +205,15 @@ transfersChart:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
       override:
-        value: 1646240400
+        value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
       override:
-        value: 1659459600
+        value: 1701363599
 transfersCumulativeVolume:
   description: "The API route provides the cumulative volume of the cross-chain transfer through the Axelar network."
   parameters:
@@ -232,11 +232,11 @@ transfersCumulativeVolume:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 transfersTotalVolume:
   description: "The API route provides the total volume of the cross-chain transfer through the Axelar network."
   parameters:
@@ -255,11 +255,11 @@ transfersTotalVolume:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 transfersTotalFee:
   description: "The API route provides the total fee of the cross-chain transfer through the Axelar network."
   parameters:
@@ -278,11 +278,11 @@ transfersTotalFee:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 transfersTotalActiveUsers:
   description: "The API route provides the total active users of the cross-chain transfer through the Axelar network."
   parameters:
@@ -301,11 +301,11 @@ transfersTotalActiveUsers:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 transfersTopUsers:
   description: "The API route provides the top users of the cross-chain transfer through the Axelar network."
   parameters:
@@ -324,17 +324,23 @@ transfersTopUsers:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1646240400
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
     -
       id: "orderBy"
       type: "string"
       enums:
         - "volume"
         - "num_txs"
+    -
+      id: "size"
+      type: "integer"
+      value: 100
+      override:
+        value: 100
 searchGMP:
   is_gmp: true
   description: "The search API route provides query-based access to GMP transfers and related transactions and statuses."
@@ -406,7 +412,7 @@ searchGMP:
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
     -
       id: "from"
       type: "integer"
@@ -604,15 +610,15 @@ GMPStats:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1649373200
+      value: 1698771600
       override:
-        value: 1649373200
+        value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
       override:
-        value: 1659459600
+        value: 1701363599
 GMPChart:
   is_gmp: true
   description: "The API route provides the number of GMP calls for each day in a specific timeframe."
@@ -667,15 +673,15 @@ GMPChart:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1698771600
       override:
-        value: 1659373200
+        value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
       override:
-        value: 1659459600
+        value: 1701363599
 GMPCumulativeVolume:
   is_gmp: true
   description: "The API route provides the cumulative volume of the GMP through the Axelar network."
@@ -726,11 +732,11 @@ GMPCumulativeVolume:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 GMPTotalVolume:
   is_gmp: true
   description: "The API route provides the total volume of the GMP through the Axelar network."
@@ -781,11 +787,11 @@ GMPTotalVolume:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 GMPTotalFee:
   is_gmp: true
   description: "The API route provides the total fee of the GMP through the Axelar network."
@@ -836,11 +842,11 @@ GMPTotalFee:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 GMPTotalActiveUsers:
   is_gmp: true
   description: "The API route provides the total active users of the GMP through the Axelar network."
@@ -891,11 +897,11 @@ GMPTotalActiveUsers:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
 GMPTopUsers:
   is_gmp: true
   description: "The API route provides the top users by number of transactions of the GMP through the Axelar network."
@@ -946,11 +952,17 @@ GMPTopUsers:
     -
       id: "fromTime"
       type: "unixTime"
-      value: 1659373200
+      value: 1698771600
     -
       id: "toTime"
       type: "unixTime"
-      value: 1659459600
+      value: 1701363599
+    -
+      id: "size"
+      type: "integer"
+      value: 100
+      override:
+        value: 100
 getTVL:
   description: "The API route provides the latest total volume locked (TVL) on the Axelar network, separated by assets."
   parameters:
