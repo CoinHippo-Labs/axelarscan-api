@@ -83,6 +83,14 @@ const getChainKey = (chain, chain_types = [], environment = ENVIRONMENT) => {
     key = _.head(
       Object.entries({ ...getChains(chain_types, environment) })
         .filter(([k, v]) => {
+          const { id, chain_name, maintainer_id } = { ...v };
+          return toArray([id, chain_name, maintainer_id]).findIndex(s => equalsIgnoreCase(chain, s)) > -1;
+        })
+        .map(([k, v]) => k)
+    ) ||
+    _.head(
+      Object.entries({ ...getChains(chain_types, environment) })
+        .filter(([k, v]) => {
           const { id, chain_name, maintainer_id, prefix_address, prefix_chain_ids, chain_type } = { ...v };
           return (
             toArray([id, chain_name, maintainer_id, prefix_address]).findIndex(s => equalsIgnoreCase(chain, s) || (chain_type !== 'evm' && chain.startsWith(s))) > -1 ||
