@@ -385,6 +385,7 @@ mainnet:
       no_recover: true
       endpoints:
         rpc:
+          - "https://filecoin.chainup.net/rpc/v1"
           - "https://rpc.ankr.com/filecoin"
           - "https://api.node.glif.io"
       native_token:
