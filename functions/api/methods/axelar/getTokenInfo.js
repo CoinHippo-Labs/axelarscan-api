@@ -5,16 +5,18 @@ const getTotalSupply = require('./getTotalSupply');
 const { getTokensPrice, getExchangeRates } = require('../tokens');
 const { CURRENCY, getAssetData } = require('../../utils/config');
 
-const { denom, symbol, name, coingecko_id } = { ...getAssetData('uaxl') };
-
 module.exports = async (params = {}) => {
   const { agent } = { ...params };
+  let { symbol } = { ...params };
+  symbol = symbol || 'AXL';
 
+  const { denom, name, coingecko_id } = { ...getAssetData(symbol) };
   const { data, updated_at } = { ...await getTokensPrice(symbol, moment(), CURRENCY, true) };
   const price = data?.[coingecko_id]?.[CURRENCY];
-  const circulatingSupply = await getCirculatingSupply();
-  const totalSupply = await getTotalSupply({ asset: denom });
-  const updatedAt = updated_at || moment().valueOf();
+  const supplyData = await getCirculatingSupply({ symbol, debug: true });
+  const circulatingSupply = supplyData?.circulating_supply;
+  const totalSupply = denom === 'uaxl' ? await getTotalSupply({ asset: denom }) : null;
+  const updatedAt = supplyData?.updated_at || updated_at || moment().valueOf();
 
   switch (agent) {
     case 'upbit':
