@@ -1028,10 +1028,24 @@ getChainMaintainers:
       value: "polygon"
 getCirculatingSupply:
   description: "The API route provides information of the circulating supply of the Axelar Network."
+  parameters:
+    -
+      id: "symbol"
+      type: "string"
+      value: "AXL"
+      override:
+        value: "AXL"
 getTotalSupply:
   description: "The API route provides information of the total supply of the Axelar Network."
 getTokenInfo:
   description: "The API route provides the token supply-related information of the AXL token."
+  parameters:
+    -
+      id: "symbol"
+      type: "string"
+      value: "AXL"
+      override:
+        value: "AXL"
 getInflation:
   description: "The API route provides information of the inflation rate in the Axelar Network."
 searchPolls:
