@@ -42,7 +42,7 @@ module.exports = async (params = {}) => {
         price,
         marketCap: circulatingSupply * price,
         circulatingSupply,
-        totalSupply,
+        maxSupply: totalSupply,
         updatedAt,
       };
   }
