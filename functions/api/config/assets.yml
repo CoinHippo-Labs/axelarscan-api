@@ -3786,6 +3786,8 @@ mainnet:
     image: "/logos/assets/kuji.svg"
     coingecko_id: "kujira"
     addresses:
+      ethereum:
+        address: "0x5e354e4f52D14FF07662CF0493d0d588d38a44A6"
       binance:
         address: "0x073690e6CE25bE816E68F32dCA3e11067c9FB5Cc"
       arbitrum:
