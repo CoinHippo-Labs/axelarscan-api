@@ -297,6 +297,10 @@ axlUSDC:
   redirect: "USDC"
 aUSDC:
   redirect: "USDC"
+PolygonUSDC:
+  redirect: "USDC"
+AvalancheUSDC:
+  redirect: "USDC"
 USDT:
   coingecko_id: "tether"
   default_price:
@@ -514,6 +518,10 @@ uaxl:
   redirect: "AXL"
 uusdc:
   redirect: "USDC"
+polygon-uusdc:
+  redirect: "PolygonUSDC"
+avalanche-uusdc:
+  redirect: "AvalancheUSDC"
 uusdt:
   redirect: "USDT"
 dai-wei:
