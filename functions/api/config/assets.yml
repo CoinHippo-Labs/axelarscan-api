@@ -5387,6 +5387,26 @@ testnet:
         symbol: "axlSEI"
       sei:
         ibc_denom: "usei"
+  utsaga:
+    denom: "utsaga"
+    native_chain: "saga"
+    name: "Saga"
+    symbol: "TSAGA"
+    decimals: 6
+    image: "/logos/assets/tsaga.svg"
+    coingecko_id: "tsaga"
+    addresses:
+      ethereum-2:
+        address: "0x07E5c21E9f39ddb2E7b7A939Bc9ef3244dE19a36"
+        symbol: "axlTSAGA"
+      avalanche:
+        address: "0x66cB47913F450370460cB3CC8da151071e52Eff2"
+        symbol: "axlTSAGA"
+      axelarnet:
+        ibc_denom: "ibc/3E96BBF51B2CAA39358DE0432CDCF2745EFEBB67AABE1FDEF5DC20E5FE26745C"
+        symbol: "axlTSAGA"
+      saga:
+        ibc_denom: "utsaga"
   uusd:
     denom: "uusd"
     native_chain: "terra"
