@@ -4136,6 +4136,9 @@ mainnet:
       ethereum:
         address: "0x31dab3430f3081dff3ccd80f17ad98583437b213"
         symbol: "axlLUNC"
+      binance:
+        address: "0x07aB0f18EA886fbbEcF52902E5F086D9363410a5"
+        symbol: "axlLUNC"
       polygon:
         address: "0xa17927fb75e9faea10c08259902d0468b3dead88"
         symbol: "axlLUNC"
