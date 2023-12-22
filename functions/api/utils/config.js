@@ -44,6 +44,7 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
             let provider_params;
             let gateway_address;
             let no_inflation;
+            let no_tvl;
             switch (k) {
               case 'evm':
                 provider_params = [{
@@ -54,8 +55,8 @@ const getChains = (chain_types = [], environment = ENVIRONMENT, for_crawler = fa
                   blockExplorerUrls: [url],
                 }];
                 gateway_address = getContracts(environment)?.gateway_contracts?.[_k]?.address;
-                no_inflation = !!(!maintainer_id || deprecated || !gateway_address);
-                no_tvl = deprecated;
+                no_inflation = !maintainer_id || !!deprecated || !gateway_address;
+                no_tvl = !!deprecated;
                 break;
               default:
                 break;
