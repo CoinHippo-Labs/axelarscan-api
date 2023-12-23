@@ -191,10 +191,13 @@ UST:
 USTC:
   redirect: "UST"
 LUNA:
+  coingecko_id: "terra-luna-2"
+  decimals: 6
+LUNC:
   coingecko_id: "terra-luna"
   decimals: 6
 LUNAC:
-  redirect: "LUNA"
+  redirect: "LUNC"
 wAXL:
   redirect: "AXL"
 WAXL:
