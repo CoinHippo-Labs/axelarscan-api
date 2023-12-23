@@ -20,7 +20,7 @@ variable "package_name" {
 
 variable "environment" {
   description = "Environment"
-  default     = "testnet"
+  default     = "stagenet"
 }
 
 variable "indexer_url" {
