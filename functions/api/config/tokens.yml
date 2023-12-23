@@ -348,6 +348,13 @@ wUSDM:
   default_price:
     usd: 1.00
   decimals: 18
+USDY:
+  coingecko_id: "ondo-us-dollar-yield"
+  default_price:
+    usd: 1.00
+  decimals: 18
+axlUSDY:
+  redirect: "USDY"
 EEUR:
   coingecko_id: "e-money-eur"
   decimals: 18
@@ -491,6 +498,12 @@ KTC:
   coingecko_id: "ktx-finance"
 axlKTC:
   redirect: "KTC"
+FPI:
+  coingecko_id: "frax-price-index"
+  decimals: 18
+FXS:
+  coingecko_id: "frax-share"
+  decimals: 18
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
@@ -534,6 +547,8 @@ cusd-wei:
   redirect: "CUSD"
 yieldusd-wei:
   redirect: "YieldUSD"
+usdy-wei:
+  redirect: "USDY"
 wbtc-satoshi:
   redirect: "WBTC"
 eth-wei:
@@ -654,6 +669,10 @@ bal-wei:
   redirect: "BAL"
 ktc-wei:
   redirect: "KTC"
+fpi-wei:
+  redirect: "FPI"
+fxs-wei:
+  redirect: "FXS"
 uosmo:
   redirect: "OSMO"
 uatom:
@@ -676,6 +695,8 @@ stuatom:
   redirect: "stATOM"
 usomm:
   redirect: "SOMM"
+utori:
+  redirect: "TORI"
 utia:
   redirect: "TIA"
 dot-planck:
