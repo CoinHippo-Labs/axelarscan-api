@@ -6,7 +6,7 @@ const saveIBCChannels = require('./saveIBCChannels');
 const { getTokensPrice } = require('../tokens');
 const { get, read, write } = require('../../services/indexer');
 const { getBalance, getTokenSupply } = require('../../utils/chain/evm');
-const { getEVMBalance, getIBCSupply } = require('../../utils/chain/cosmos');
+const { getCosmosBalance, getIBCSupply } = require('../../utils/chain/cosmos');
 const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData, getContracts, getTVLConfig } = require('../../utils/config');
 const { toHash, getAddress, toArray } = require('../../utils/parser');
 const { lastString } = require('../../utils/string');
@@ -196,7 +196,7 @@ module.exports = async params => {
     const percent_diff_supply = evm_escrow_address ? evm_escrow_balance > 0 && total_on_evm > 0 ? Math.abs(evm_escrow_balance - total_on_evm) * 100 / evm_escrow_balance : null : total > 0 && total_on_evm >= 0 && total_on_cosmos >= 0 && total_on_evm + total_on_cosmos > 0 ? Math.abs(total - (total_on_evm + total_on_cosmos)) * 100 / total : null;
 
     data.push({
-      asset, price: (await getTokensPrice(asset))?.[asset]?.price,
+      asset, price: (await getTokensPrice({ symbol: asset }))?.[asset]?.price,
       tvl, total_on_evm, total_on_cosmos, total,
       evm_escrow_address, evm_escrow_balance, evm_escrow_address_urls,
       percent_diff_supply, is_abnormal_supply: percent_diff_supply > (evm_escrow_address ? percent_diff_escrow_supply_threshold : percent_diff_total_supply_threshold),
@@ -211,8 +211,8 @@ module.exports = async params => {
   else if (cacheId) {
     const unsuccessData = data.filter(d => !d.success);
     // caching
-    if (unsuccessData.length === 0) await write(TVL_COLLECTION, cacheId, result);
-    else not_updated_on_chains = unsuccessData.flatMap(d => Object.entries(d.tvl).filter(([k, v]) => !v?.success).map(([k, v]) => k));
+    // if (unsuccessData.length === 0) await write(TVL_COLLECTION, cacheId, result);
+    // else not_updated_on_chains = unsuccessData.flatMap(d => Object.entries(d.tvl).filter(([k, v]) => !v?.success).map(([k, v]) => k));
   }
   return { ...result, not_updated_on_chains };
 };

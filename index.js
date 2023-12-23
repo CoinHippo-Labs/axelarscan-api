@@ -1,4 +1,4 @@
-exports.handler = async (event, context, callback) => {
+exports.handler = async (event = {}, context, callback) => {
   const moment = require('moment');
 
   const METHODS = require('./methods');

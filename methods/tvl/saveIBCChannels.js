@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const { read, write } = require('../../services/indexer');
 const { IBC_CHANNEL_COLLECTION, getChainData, getLCD } = require('../../utils/config');
