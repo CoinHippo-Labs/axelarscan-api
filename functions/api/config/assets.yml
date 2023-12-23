@@ -911,6 +911,23 @@ mainnet:
         ibc_denom: "ibc/E79C3DAA6E5E0180F61F30C1515B8933F1E9092E81020222080C405D1716C533"
       sei:
         ibc_denom: "ibc/E7824AC1CB5AF191E4EE6265D3BB269FFBFC86112BA7765CC755B187EF0B1A50"
+  usdy-wei:
+    denom: "usdy-wei"
+    native_chain: "ethereum"
+    name: "Ondo US Dollar Yield"
+    symbol: "USDY"
+    decimals: 18
+    image: "/logos/assets/usdy.svg"
+    coingecko_id: "ondo-us-dollar-yield"
+    addresses:
+      ethereum:
+        address: "0x96F6eF951840721AdBF46Ac996b59E0235CB985C"
+      axelarnet:
+        ibc_denom: "usdy-wei"
+        symbol: "axlUSDY"
+      osmosis:
+        ibc_denom: "ibc/EC0CAF0CBC780D4B55980E28E1C646D207ED05A22EA08C5F3B605AE00C9AB984"
+        symbol: "axlUSDY"
   wbtc-satoshi:
     denom: "wbtc-satoshi"
     native_chain: "ethereum"
@@ -3672,6 +3689,52 @@ mainnet:
         address: "0x01C5ED019A1Bc07d3A320a09C83C398d91f8fd5D"
       axelarnet:
         ibc_denom: "ktc-wei"
+  fpi-wei:
+    denom: "fpi-wei"
+    native_chain: "ethereum"
+    name: "Frax Price Index"
+    symbol: "FPI"
+    decimals: 18
+    image: "/logos/assets/fpi.svg"
+    coingecko_id: "frax-price-index"
+    addresses:
+      ethereum:
+        address: "0x5Ca135cB8527d76e932f34B5145575F9d8cbE08E"
+      mantle:
+        address: "0x219279953d8D23520B7878447e8A6c266a51de2f"
+      linea:
+        address: "0x219279953d8D23520B7878447e8A6c266a51de2f"
+      scroll:
+        address: "0x219279953d8D23520B7878447e8A6c266a51de2f"
+      axelarnet:
+        ibc_denom: "fpi-wei"
+      osmosis:
+        ibc_denom: "ibc/CCF507932C95AC713079BE5FA0E5DF863434B1DBCC7F77524E3CF168EB266CD7"
+      kujira:
+        ibc_denom: "ibc/27987DF83B82160E42FA9487986B2BBCFEB9B43C8B321485A8B69502773B62C0"
+  fxs-wei:
+    denom: "fxs-wei"
+    native_chain: "ethereum"
+    name: "Frax Share"
+    symbol: "FXS"
+    decimals: 18
+    image: "/logos/assets/fxs.svg"
+    coingecko_id: "frax-share"
+    addresses:
+      ethereum:
+        address: "0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0"
+      mantle:
+        address: "0x5860a0bF37133f8461b2DEDe7C80e55D6bfF3721"
+      linea:
+        address: "0x5860a0bF37133f8461b2DEDe7C80e55D6bfF3721"
+      scroll:
+        address: "0x5860a0bF37133f8461b2DEDe7C80e55D6bfF3721"
+      axelarnet:
+        ibc_denom: "fxs-wei"
+      osmosis:
+        ibc_denom: "ibc/56FA051C097D26D3285D7A3ABA5F9F18F6654517E50E99A9F3F2D0E6FECDB433"
+      kujira:
+        ibc_denom: "ibc/6EC52E4E4105A3647FE4626767F6E169DBC56CE99862DF62935CD273F3F92CD1"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
@@ -3971,6 +4034,49 @@ mainnet:
         symbol: "axlSOMM"
       sommelier:
         ibc_denom: "usomm"
+  utori:
+    denom: "utori"
+    native_chain: "teritori"
+    name: "Teritori"
+    symbol: "TORI"
+    decimals: 6
+    image: "/logos/assets/tori.svg"
+    coingecko_id: "teritori"
+    addresses:
+      ethereum:
+        address: "0x010cddfA5518f74c43Efe911db29Af71b44b4E1C"
+      binance:
+        address: "0x11eDFA12d70e8AC9e94DE019eBa278430873f8C3"
+      polygon:
+        address: "0x69deD9B7658507ca8C5A6f1F6ff53276802ec228"
+      avalanche:
+        address: "0xc13c0d723e01B02984499C672e205D5Ec9c05d10"
+      fantom:
+        address: "0x11eDFA12d70e8AC9e94DE019eBa278430873f8C3"
+      moonbeam:
+        address: "0x010cddfA5518f74c43Efe911db29Af71b44b4E1C"
+      arbitrum:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      optimism:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      base:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      mantle:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      celo:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      kava:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      filecoin:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      linea:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      scroll:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      axelarnet:
+        ibc_denom: "ibc/F236A548FDC4436557B13919391109309C2FF58D7E89C3C8840C2C703E582DCD"
+      teritori:
+        ibc_denom: "utori"
   utia:
     denom: "utia"
     native_chain: "celestia"
