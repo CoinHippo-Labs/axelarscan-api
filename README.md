@@ -2,7 +2,7 @@
 
 ## API Endpoints
 - mainnet: [https://api.axelarscan.io](https://api.axelarscan.io)
-- testnet: [https://testnet.api.axelarscan.io](https://testnet.gmp.axelarscan.io)
+- testnet: [https://testnet.api.axelarscan.io](https://testnet.api.axelarscan.io)
 
 ## Deployment
 ### Prerequisites
