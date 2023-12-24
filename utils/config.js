@@ -86,6 +86,7 @@ const getLCD = (env = ENVIRONMENT) => getEndpoints(env)?.lcd;
 const getAPI = (env = ENVIRONMENT) => getEndpoints(env)?.api;
 const getGMPAPI = (env = ENVIRONMENT) => getEndpoints(env)?.gmp_api;
 const getTokenTransferAPI = (env = ENVIRONMENT) => getEndpoints(env)?.token_transfer_api;
+const getValidatorAPI = (env = ENVIRONMENT) => getEndpoints(env)?.validator_api;
 const getAppURL = (env = ENVIRONMENT) => getEndpoints(env)?.app;
 const getTokens = () => tokens;
 const getSupplyConfig = (env = ENVIRONMENT) => supply[env];
@@ -113,6 +114,7 @@ module.exports = {
   getAPI,
   getGMPAPI,
   getTokenTransferAPI,
+  getValidatorAPI,
   getAppURL,
   getTokens,
   getSupplyConfig,

@@ -8,6 +8,7 @@ mainnet:
   api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io"
   gmp_api: "https://tlvaojpaa1.execute-api.us-east-2.amazonaws.com" # "https://api.gmp.axelarscan.io"
   token_transfer_api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.token-transfer.axelarscan.io"
+  validator_api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.validator.axelarscan.io"
   app: "https://axelarscan.io"
 
 
@@ -18,6 +19,7 @@ testnet:
   api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
   gmp_api: "https://7hf6gameo0.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.gmp.axelarscan.io"
   token_transfer_api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.token-transfer.axelarscan.io"
+  validator_api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.validator.axelarscan.io"
   app: "https://testnet.axelarscan.io"
 
 
@@ -28,4 +30,5 @@ stagenet:
   api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io"
   gmp_api: "https://8mcrlxwctd.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.gmp.axelarscan.io"
   token_transfer_api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.token-transfer.axelarscan.io"
+  validator_api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.validator.axelarscan.io"
   app: "https://stagenet.axelarscan.io"
