@@ -75,7 +75,7 @@ module.exports = async params => {
     const assetData = await getAssetData(asset, assetsData);
     const { native_chain, addresses } = { ...assetData };
     const isNativeOnEVM = !!getChainData(native_chain, 'evm');
-    const isNativeOnCosmos = getChainData(native_chain, 'cosmos');
+    const isNativeOnCosmos = !!getChainData(native_chain, 'cosmos');
     const isNativeOnAxelarnet = native_chain === 'axelarnet';
 
     let tvl = Object.fromEntries((await Promise.all(
@@ -89,13 +89,13 @@ module.exports = async params => {
         switch (chain_type) {
           case 'evm':
             try {
-              const contract_data = { ...assetData, ...addresses?.[id] };
+              const contract_data = { ...assetData, ...addresses?.[id], contract_address: addresses?.[id]?.address };
               delete contract_data.addresses;
               const { address } = { ...contract_data };
 
               if (address) {
-                const gateway_balance = await getBalance(id, gateway_address, contract_data);
-                const supply = !isNative ? await getTokenSupply(contract_data, id) : 0;
+                const gateway_balance = toNumber(await getBalance(id, gateway_address, contract_data));
+                const supply = !isNative ? toNumber(await getTokenSupply(id, contract_data)) : 0;
                 result = {
                   contract_data, gateway_address, gateway_balance,
                   supply, total: isNativeOnCosmos ? 0 : gateway_balance + supply,
@@ -135,8 +135,8 @@ module.exports = async params => {
                   }
                 }
 
-                const escrow_balance = _.sum(await Promise.all(toArray(escrow_addresses).map(address => new Promise(async resolve => resolve(await getCosmosBalance('axelarnet', address, denom_data))))));
-                const source_escrow_balance = _.sum(await Promise.all(toArray(source_escrow_addresses).map(address => new Promise(async resolve => resolve(await getCosmosBalance(id, address, denom_data))))));
+                const escrow_balance = _.sum(await Promise.all(toArray(escrow_addresses).map(address => new Promise(async resolve => resolve(toNumber(await getCosmosBalance('axelarnet', address, denom_data)))))));
+                const source_escrow_balance = _.sum(await Promise.all(toArray(source_escrow_addresses).map(address => new Promise(async resolve => resolve(toNumber(await getCosmosBalance(id, address, denom_data)))))));
 
                 const isNativeOnCosmos = isNative && id !== 'axelarnet';
                 const isNotNativeOnAxelarnet = !isNative && id === 'axelarnet';
@@ -191,7 +191,7 @@ module.exports = async params => {
     const total_on_cosmos = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos' && k !== native_chain).map(([k, v]) => v[hasAllCosmosChains ? isNativeOnCosmos ? 'supply' : 'total' : 'escrow_balance'])));
     const total = isNativeOnCosmos || isNativeOnAxelarnet ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => isNativeOnEVM ? d.gateway_balance : d.total)));
     const evm_escrow_address = isNativeOnCosmos ? getAddress(isNativeOnAxelarnet ? asset : `ibc/${toHash(`transfer/${_.last(tvl[native_chain]?.ibc_channels)?.channel_id}/${asset}`)}`, axelarnet.prefix_address, 32) : undefined;
-    const evm_escrow_balance = evm_escrow_address && await getCosmosBalance('axelarnet', evm_escrow_address, { ...assetData, ...addresses?.axelarnet });
+    const evm_escrow_balance = evm_escrow_address ? toNumber(await getCosmosBalance('axelarnet', evm_escrow_address, { ...assetData, ...addresses?.axelarnet })) : 0;
     const evm_escrow_address_urls = evm_escrow_address && toArray([axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`, `${axelarnetLCDUrl}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`]);
     const percent_diff_supply = evm_escrow_address ? evm_escrow_balance > 0 && total_on_evm > 0 ? Math.abs(evm_escrow_balance - total_on_evm) * 100 / evm_escrow_balance : null : total > 0 && total_on_evm >= 0 && total_on_cosmos >= 0 && total_on_evm + total_on_cosmos > 0 ? Math.abs(total - (total_on_evm + total_on_cosmos)) * 100 / total : null;
 
@@ -211,8 +211,8 @@ module.exports = async params => {
   else if (cacheId) {
     const unsuccessData = data.filter(d => !d.success);
     // caching
-    // if (unsuccessData.length === 0) await write(TVL_COLLECTION, cacheId, result);
-    // else not_updated_on_chains = unsuccessData.flatMap(d => Object.entries(d.tvl).filter(([k, v]) => !v?.success).map(([k, v]) => k));
+    if (unsuccessData.length === 0) await write(TVL_COLLECTION, cacheId, result);
+    else not_updated_on_chains = unsuccessData.flatMap(d => Object.entries(d.tvl).filter(([k, v]) => !v?.success).map(([k, v]) => k));
   }
   return { ...result, not_updated_on_chains };
 };
