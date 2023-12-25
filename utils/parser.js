@@ -18,6 +18,8 @@ const hexToBech32 = (address, prefix = 'axelar') => {
   }
 };
 
+const bech32ToBech32 = (address, prefix) => bech32.encode(prefix, bech32.decode(address).words);
+
 const _getAddress = (string, prefix = 'axelar', length = 20) => hexToBech32(toHash(string, length), prefix);
 
 const getIcapAddress = string => {
@@ -90,6 +92,7 @@ const toArray = (x, options) => {
 module.exports = {
   toHash,
   hexToBech32,
+  bech32ToBech32,
   getAddress: _getAddress,
   getIcapAddress,
   base64ToHex,

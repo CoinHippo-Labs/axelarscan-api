@@ -1,7 +1,7 @@
 const { FixedNumber, isHexString, formatUnits: _formatUnits, parseUnits: _parseUnits } = require('ethers');
 
 const { split } = require('./parser');
-const { isString } = require('./string');
+const { isString, headString } = require('./string');
 
 const isNumber = number => typeof number === 'number' || (isString(number) && number && !isNaN(number));
 
@@ -11,7 +11,7 @@ const toBigNumber = number => {
   try {
     return number.round(0).toString().replace('.0', '');
   } catch (error) {
-    return (isHexString(number?.hex) ? BigInt(number.hex) : isHexString(number) ? BigInt(number) : number)?.toString() || '0';
+    return headString((isHexString(number?.hex) ? BigInt(number.hex) : isHexString(number) ? BigInt(number) : number)?.toString(), '.') || '0';
   }
 };
 

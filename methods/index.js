@@ -1,5 +1,5 @@
 const { getTokensPrice } = require('./tokens');
-const { getTotalSupply, getCirculatingSupply, getTokenInfo, getInflation } = require('./axelar');
+const { getTotalSupply, getCirculatingSupply, getTokenInfo, getInflation, getBalances, getDelegations, getRedelegations, getUnbondings, getRewards, getCommissions, getAccountAmounts, getProposals, getProposal } = require('./axelar');
 const validator = require('./axelar/validator');
 const { getTVL, getTVLAlert } = require('./tvl');
 const GMP = require('./interchain/gmp');
@@ -16,6 +16,15 @@ module.exports = {
   getCirculatingSupply,
   getTokenInfo,
   getInflation,
+  getBalances,
+  getDelegations,
+  getRedelegations,
+  getUnbondings,
+  getRewards,
+  getCommissions,
+  getAccountAmounts,
+  getProposals,
+  getProposal,
   getTVL,
   getTVLAlert,
   interchainChart,
