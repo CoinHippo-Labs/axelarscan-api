@@ -7,10 +7,8 @@ const { timeDiff } = require('../../utils/time');
 
 module.exports = async () => {
   const cacheId = 'rates';
-  let cache;
   // get rates from cache
-  cache = await get(EXCHANGE_RATE_COLLECTION, cacheId);
-  const { data, updated_at } = { ...cache };
+  const { data, updated_at } = { ...await get(EXCHANGE_RATE_COLLECTION, cacheId) };
   if (data && timeDiff(updated_at) < 300) return data;
 
   // get rates from api when cache miss
