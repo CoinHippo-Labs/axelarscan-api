@@ -11,7 +11,7 @@ const createInstance = (url, options) => {
   return axios.create({ ...options, baseURL: url, timeout, headers });
 };
 
-const parseError = error => { return { error: error?.response?.data }; };
+const parseError = error => { return { error: error?.response?.data || error?.message }; };
 
 const request = async (instance, options) => {
   if (!instance) return null;

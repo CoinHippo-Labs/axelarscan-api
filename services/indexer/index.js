@@ -20,7 +20,7 @@ const crud = async (params = {}) => {
   params = normalizeSearchObjects(removeFieldsFromParams(params));
 
   if (INDEXER_URL && collection) {
-    const indexer = createInstance(INDEXER_URL, { gzip: true });
+    const indexer = createInstance(INDEXER_URL, { timeout: 30000, gzip: true });
     const auth = { username: INDEXER_USERNAME, password: INDEXER_PASSWORD };
 
     switch (method) {
