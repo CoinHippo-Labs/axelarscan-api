@@ -151,7 +151,7 @@ module.exports = async (lcd_response = {}) => {
             const { txhash, timestamp, logs } = { ...transaction_data };
 
             if (txhash) {
-              const { attributes } = { ..._.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'write_acknowledgement')))) };
+              const { attributes } = { ..._.head(toArray(logs).flatMap(l => toArray(l.events).filter(e => equalsIgnoreCase(e.type, 'write_acknowledgement') && packet_sequence === toArray(e.attributes).find(a => a.key === 'packet_sequence')?.value))) };
               const packet_ack = toArray(attributes).find(a => a.key === 'packet_ack')?.value;
               const { result, error } = { ...toJson(packet_ack) };
               const failed = (result && !['AQ==', 'MQ=='].includes(result)) || !!error;
