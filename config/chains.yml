@@ -336,7 +336,7 @@ mainnet:
       maintainer_id: "kava"
       endpoints:
         rpc:
-          - "https://evm.data.axelar.kava.io"
+          # - "https://evm.data.axelar.kava.io"
           - "https://evm.kava.io"
           - "https://evm2.kava.io"
       native_token:
