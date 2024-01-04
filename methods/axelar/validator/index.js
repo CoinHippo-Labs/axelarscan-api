@@ -4,8 +4,6 @@ const { createInstance, request } = require('../../../utils/http');
 const requestAPI = async params => await request(createInstance(getValidatorAPI(), { timeout: 30000 }), { params });
 
 module.exports = {
-  rpc: async params => await requestAPI({ ...params, method: 'rpc' }),
-  lcd: async params => await requestAPI({ ...params, method: 'lcd' }),
   searchBlocks: async params => await requestAPI({ ...params, method: 'searchBlocks' }),
   searchTransactions: async params => await requestAPI({ ...params, method: 'searchTransactions' }),
   searchUptimes: async params => await requestAPI({ ...params, method: 'searchUptimes' }),
