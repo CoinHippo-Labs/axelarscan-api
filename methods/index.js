@@ -8,9 +8,9 @@ const { interchainChart, interchainTotalVolume, interchainTotalFee, interchainTo
 const { getChainsList, getAssetsList, getContracts } = require('../utils/config');
 
 module.exports = {
-  getChains: getChainsList,
-  getAssets: getAssetsList,
-  getContracts,
+  getChains: () => getChainsList(),
+  getAssets: () => getAssetsList(),
+  getContracts: () => getContracts(),
   getTokensPrice,
   getTotalSupply,
   getCirculatingSupply,
