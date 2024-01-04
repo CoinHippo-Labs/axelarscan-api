@@ -5,10 +5,10 @@
 mainnet:
   rpc: "http://archive-node-rpc.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
   lcd: "http://archive-node-lcd.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
-  api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io"
+  api: "https://l4sytro3nf.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io"
   gmp_api: "https://tlvaojpaa1.execute-api.us-east-2.amazonaws.com" # "https://api.gmp.axelarscan.io"
-  token_transfer_api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.token-transfer.axelarscan.io"
-  validator_api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.validator.axelarscan.io"
+  token_transfer_api: "https://kzb57uyt1b.execute-api.us-east-2.amazonaws.com" # "https://api.token-transfer.axelarscan.io"
+  validator_api: "https://k69t8uxsk1.execute-api.us-east-2.amazonaws.com" # "https://api.validator.axelarscan.io"
   app: "https://axelarscan.io"
 
 
@@ -16,10 +16,10 @@ mainnet:
 testnet:
   rpc: "http://testnet.archive-node-rpc.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
   lcd: "http://testnet.archive-node-lcd.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:1317"
-  api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
+  api: "https://vup1csssf8.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
   gmp_api: "https://7hf6gameo0.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.gmp.axelarscan.io"
-  token_transfer_api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.token-transfer.axelarscan.io"
-  validator_api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.validator.axelarscan.io"
+  token_transfer_api: "https://n7un1h54uh.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.token-transfer.axelarscan.io"
+  validator_api: "https://3jfa5vdne3.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.validator.axelarscan.io"
   app: "https://testnet.axelarscan.io"
 
 
@@ -27,8 +27,8 @@ testnet:
 stagenet:
   rpc: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"
   lcd: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
-  api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io"
+  api: "https://l49zjsjm3f.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io"
   gmp_api: "https://8mcrlxwctd.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.gmp.axelarscan.io"
-  token_transfer_api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.token-transfer.axelarscan.io"
-  validator_api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.validator.axelarscan.io"
+  token_transfer_api: "https://3l7llp0gn7.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.token-transfer.axelarscan.io"
+  validator_api: "https://grqtmmbqq2.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.validator.axelarscan.io"
   app: "https://stagenet.axelarscan.io"

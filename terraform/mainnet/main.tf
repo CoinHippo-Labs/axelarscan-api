@@ -80,7 +80,7 @@ resource "aws_lambda_function" "function" {
 
 resource "aws_lambda_provisioned_concurrency_config" "config" {
   function_name                     = aws_lambda_function.function.function_name
-  provisioned_concurrent_executions = 100
+  provisioned_concurrent_executions = 50
   qualifier                         = aws_lambda_function.function.version
 }
 
