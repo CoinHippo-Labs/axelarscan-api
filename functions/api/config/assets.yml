@@ -4170,7 +4170,7 @@ mainnet:
     symbol: "HUAHUA"
     decimals: 6
     image: "/logos/assets/huahua.svg"
-    coingecko_id: "chihuahua-chain"
+    coingecko_id: "chihuahua-token"
     addresses:
       ethereum:
         address: "0xF7C79FfDa0d13b68081761BB0a5a66cFC48D97f5"
