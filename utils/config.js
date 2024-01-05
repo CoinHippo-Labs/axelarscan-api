@@ -6,9 +6,10 @@ const { request } = require('./http');
 const { toArray } = require('./parser');
 const { equalsIgnoreCase, capitalize, removeDoubleQuote } = require('./string');
 
-const { chains, assets, endpoints, tokens, supply, tvl } = { ...config };
+const { methods, chains, assets, endpoints, tokens, supply, tvl } = { ...config };
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
+const getMethods = () => methods;
 const getChains = (chainTypes = [], env = ENVIRONMENT) => {
   chainTypes = toArray(chainTypes);
   return Object.fromEntries(
@@ -100,6 +101,7 @@ module.exports = {
   EXCHANGE_RATE_COLLECTION: 'exchange_rates',
   PRICE_ORACLE_API: 'https://api.coingecko.com/api/v3/',
   CURRENCY: 'usd',
+  getMethods,
   getChains,
   getChainsList,
   getChainData,
