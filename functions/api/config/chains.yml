@@ -1668,6 +1668,44 @@ mainnet:
       prefix_address: "celestia"
       prefix_chain_ids:
         - "celestia"
+    chihuahua:
+      chain_id: "chihuahua-1"
+      chain_name: "chihuahua"
+      endpoints:
+        lcd:
+          - "https://chihuahua-api.polkachu.com"
+          - "https://api.chihuahua.wtf"
+          - "https://rest-chihuahua.ecostake.com"
+          - "https://api-chihuahua-ia.cosmosia.notional.ventures"
+          - "https://chihuahua-api.lavenderfive.com"
+          - "https://chihuahua-api.kleomedes.network"
+          - "https://api-chihuahua.pupmos.network"
+          - "https://chihuahua-mainnet-lcd.autostake.com:443"
+          - "https://chihuahua-rest.publicnode.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Chihuahua"
+        symbol: "HUAHUA"
+        denom: "uhuahua"
+        decimals: 6
+      name: "Chihuahua"
+      short_name: "HUAHUA"
+      image: "/logos/chains/chihuahua.svg"
+      color: "#fed52e"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/chihuahua"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        contract_0_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
+      prefix_address: "chihuahua"
+      prefix_chain_ids:
+        - "chihuahua-"
     terra-2:
       chain_id: "phoenix-1"
       chain_name: "terra-2"
