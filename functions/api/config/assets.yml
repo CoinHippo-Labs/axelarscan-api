@@ -1516,7 +1516,29 @@ mainnet:
     addresses:
       ethereum:
         address: "0xac3E018457B222d93114458476f3E3416Abbe38F"
+      binance:
+        address: "0x4E30B1B79bfF30840755FafafD9ce8e408131552"
+      polygon:
+        address: "0x6013ee0C255d00BB885Fed03A3e1F1Ec3aD548AC"
+      avalanche:
+        address: "0x9428DCF8F77bFb504917A333d0b8030EBA6af8AB"
+      fantom:
+        address: "0x4E30B1B79bfF30840755FafafD9ce8e408131552"
+      moonbeam:
+        address: "0xa30d75990F80eC49944D5fC30157D43Fc28777b3"
+      arbitrum:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
+      optimism:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
+      base:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
       mantle:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
+      celo:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
+      kava:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
+      filecoin:
         address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
       linea:
         address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
