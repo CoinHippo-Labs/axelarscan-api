@@ -168,6 +168,9 @@ TIA:
   decimals: 6
 axlTIA:
   redirect: "TIA"
+HUAHUA:
+  coingecko_id: "chihuahua-chain"
+  decimals: 6
 ELYS:
   coingecko_id: "elys"
   default_price:
@@ -702,6 +705,8 @@ utori:
   redirect: "TORI"
 utia:
   redirect: "TIA"
+uhuahua:
+  redirect: "HUAHUA"
 dot-planck:
   redirect: "DOT"
 uusd:
