@@ -169,7 +169,7 @@ TIA:
 axlTIA:
   redirect: "TIA"
 HUAHUA:
-  coingecko_id: "chihuahua-chain"
+  coingecko_id: "chihuahua-token"
   decimals: 6
 ELYS:
   coingecko_id: "elys"
