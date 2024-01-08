@@ -107,7 +107,7 @@ resource "aws_lambda_function" "api" {
   source_code_hash = data.archive_file.zip_api.output_base64sha256
   role             = aws_iam_role.axelarscan_lambda.arn
   handler          = "index.handler"
-  runtime          = "nodejs14.x"
+  runtime          = "nodejs20.x"
   timeout          = 30
   memory_size      = 512
   publish          = true
@@ -219,7 +219,7 @@ resource "aws_lambda_function" "axelar_crawler" {
   source_code_hash = data.archive_file.zip_axelar_crawler.output_base64sha256
   role             = aws_iam_role.axelarscan_lambda.arn
   handler          = "index.handler"
-  runtime          = "nodejs14.x"
+  runtime          = "nodejs20.x"
   timeout          = 900
   memory_size      = 1536
   environment {
@@ -264,7 +264,7 @@ resource "aws_lambda_function" "evm_crawler" {
   source_code_hash = data.archive_file.zip_evm_crawler.output_base64sha256
   role             = aws_iam_role.axelarscan_lambda.arn
   handler          = "index.handler"
-  runtime          = "nodejs14.x"
+  runtime          = "nodejs20.x"
   timeout          = 630
   memory_size      = 1536
   environment {
