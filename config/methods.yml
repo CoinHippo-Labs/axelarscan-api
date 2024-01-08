@@ -185,7 +185,7 @@ methods:
                   type: "string"
                   description: "symbol of asset on each chain"
   -
-    name: "getContracts"
+    id: "getContracts"
     description: "The API route provides a list of Axelar gateway and the Gas Service contract addresses on each EVM-supported chain."
     response:
       -
@@ -231,7 +231,7 @@ methods:
                   name: "address"
                   type: "string"
   -
-    name: "getTokensPrice"
+    id: "getTokensPrice"
     description: "The API route provides price of asset."
     parameters:
       -
@@ -268,7 +268,7 @@ methods:
                   type: "string"
                   description: "asset identifier on coingecko service"
   -
-    name: "getTotalSupply"
+    id: "getTotalSupply"
     description: "The API route provides information of the total supply of the Axelar Network."
     response:
       -
@@ -277,7 +277,7 @@ methods:
         description: "total supply"
         primitive: true
   -
-    name: "getCirculatingSupply"
+    id: "getCirculatingSupply"
     description: "The API route provides information of the circulating supply of the Axelar Network."
     parameters:
       -
@@ -291,7 +291,7 @@ methods:
         description: "circulating supply"
         primitive: true
   -
-    name: "getTokenInfo"
+    id: "getTokenInfo"
     description: "The API route provides the token supply-related information of the AXL token."
     parameters:
       -
@@ -325,7 +325,7 @@ methods:
         name: "updatedAt"
         description: "updated time (in milliseconds)"
   -
-    name: "getInflation"
+    id: "getInflation"
     description: "The API route provides information of the inflation rate in the Axelar Network."
     response:
       -
@@ -357,7 +357,7 @@ methods:
         name: "inflation"
         type: "float"
   -
-    name: "interchainChart"
+    id: "interchainChart"
     description: "The API route provides the number of interchain activities for each day in a specific timeframe."
     parameters:
       -
@@ -431,7 +431,7 @@ methods:
             type: "integer"
             description: "number of users using token transfers"
   -
-    name: "interchainTotalVolume"
+    id: "interchainTotalVolume"
     description: "The API route provides the total volume of the interchain activities through the Axelar network."
     parameters:
       -
@@ -453,7 +453,7 @@ methods:
         description: "total volume"
         primitive: true
   -
-    name: "interchainTotalFee"
+    id: "interchainTotalFee"
     description: "The API route provides the total fee of the interchain activities through the Axelar network."
     parameters:
       -
