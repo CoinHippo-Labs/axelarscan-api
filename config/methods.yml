@@ -132,58 +132,63 @@ methods:
     description: "The API route provides all assets information supported on the Axelar network."
     response:
       -
-        name: "id"
-        type: "string"
-        description: "ID using in general purpose"
-      -
-        name: "denom"
-        type: "string"
-      -
-        name: "native_chain"
-        type: "string"
-        description: "general ID of chain that asset in native on"
-      -
-        name: "name"
-        type: "string"
-        description: "display name"
-      -
-        name: "symbol"
-        type: "string"
-      -
-        name: "decimals"
-        type: "integer"
-        description: "token decimals"
-      -
-        name: "image"
-        type: "string"
-        description: "logo path"
-      -
-        name: "coingecko_id"
-        type: "string"
-        description: "asset identifier on coingecko service"
-      -
-        name: "addresses"
-        type: "Map"
-        description: "asset's address lookup by chain ([chain, token])"
+        name: "data"
+        type: "[object]"
+        primitive: true
         attributes:
           -
-            type: "entry"
-            key: "chain"
-            value:
-              type: "object"
-              attributes:
-                -
-                  name: "address"
-                  type: "string"
-                  description: "EVM token address"
-                -
-                  name: "ibc_denom"
-                  type: "string"
-                  description: "Cosmos token address (denom)"
-                -
-                  name: "symbol"
-                  type: "string"
-                  description: "symbol of asset on each chain"
+            name: "id"
+            type: "string"
+            description: "ID using in general purpose"
+          -
+            name: "denom"
+            type: "string"
+          -
+            name: "native_chain"
+            type: "string"
+            description: "general ID of chain that asset in native on"
+          -
+            name: "name"
+            type: "string"
+            description: "display name"
+          -
+            name: "symbol"
+            type: "string"
+          -
+            name: "decimals"
+            type: "integer"
+            description: "token decimals"
+          -
+            name: "image"
+            type: "string"
+            description: "logo path"
+          -
+            name: "coingecko_id"
+            type: "string"
+            description: "asset identifier on coingecko service"
+          -
+            name: "addresses"
+            type: "Map"
+            description: "asset's address lookup by chain ([chain, token])"
+            attributes:
+              -
+                type: "entry"
+                key: "chain"
+                value:
+                  type: "object"
+                  attributes:
+                    -
+                      name: "address"
+                      type: "string"
+                      description: "EVM token address"
+                    -
+                      name: "ibc_denom"
+                      type: "string"
+                      description: "Cosmos token address (denom)"
+                    -
+                      name: "symbol"
+                      type: "string"
+                      description: "symbol of asset on each chain"
   -
     id: "getContracts"
     description: "The API route provides a list of Axelar gateway and the Gas Service contract addresses on each EVM-supported chain."
