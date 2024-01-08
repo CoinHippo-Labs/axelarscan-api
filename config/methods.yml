@@ -328,6 +328,7 @@ methods:
         type: "float"
       -
         name: "updatedAt"
+        type: "long"
         description: "updated time (in milliseconds)"
   -
     id: "getInflation"
