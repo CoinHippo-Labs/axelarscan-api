@@ -61,7 +61,7 @@ resource "aws_lambda_function" "function" {
   source_code_hash = data.archive_file.zip.output_base64sha256
   role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
-  runtime          = "nodejs16.x"
+  runtime          = "nodejs20.x"
   timeout          = 30
   memory_size      = 512
   publish          = true
