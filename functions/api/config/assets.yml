@@ -1461,6 +1461,34 @@ mainnet:
     addresses:
       ethereum:
         address: "0x5E8422345238F34275888049021821E8E08CAa1f"
+      binance:
+        address: "0x39Db1A30122031751e803Fabf329C44efBBfBf4B"
+      polygon:
+        address: "0x01e91A094f5559f211e4ad4bED01468aBb64Bde3"
+      avalanche:
+        address: "0x939b1a17C0d0Aa3fEA634Ad9157c88245A53C713"
+      fantom:
+        address: "0x39Db1A30122031751e803Fabf329C44efBBfBf4B"
+      moonbeam:
+        address: "0x29C795559e4Db87054Ba70fafC454214c20aDbD4"
+      arbitrum:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      optimism:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      base:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      mantle:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      celo:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      kava:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      filecoin:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      linea:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      scroll:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
       axelarnet:
         ibc_denom: "frxeth-wei"
       osmosis:
