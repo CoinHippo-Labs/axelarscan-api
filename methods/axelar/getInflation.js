@@ -19,14 +19,19 @@ module.exports = async params => {
       switch (param) {
         case 'tendermintInflationRate':
           resolve(toNumber((await request(getLCD(), { path: '/cosmos/mint/v1beta1/inflation' }))?.inflation));
+          break;
         case 'communityTax':
           resolve(toNumber((await request(getLCD(), { path: '/cosmos/distribution/v1beta1/params' }))?.params?.community_tax));
+          break;
         case 'keyMgmtRelativeInflationRate':
           resolve(toNumber(removeDoubleQuote((await request(getLCD(), { path: '/cosmos/params/v1beta1/params', params: { subspace: 'reward', key: 'KeyMgmtRelativeInflationRate' } }))?.param?.value)));
+          break;
         case 'externalChainVotingInflationRate':
           resolve(toNumber(removeDoubleQuote((await request(getLCD(), { path: '/cosmos/params/v1beta1/params', params: { subspace: 'reward', key: 'ExternalChainVotingInflationRate' } }))?.param?.value)));
+          break;
         default:
           resolve();
+          break;
       }
     }))
   );
