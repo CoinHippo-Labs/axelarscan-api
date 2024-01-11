@@ -4,12 +4,12 @@ const { createInstance, request } = require('../../../utils/http');
 const requestAPI = async params => await request(createInstance(getTokenTransferAPI(), { timeout: 30000 }), { params });
 
 module.exports = {
+  transfersStats: async params => await requestAPI({ ...params, method: 'transfersStats' }),
   transfersChart: async params => await requestAPI({ ...params, method: 'transfersChart' }),
+  transfersCumulativeVolume: async params => await requestAPI({ ...params, method: 'transfersCumulativeVolume' }),
   transfersTotalVolume: async params => await requestAPI({ ...params, method: 'transfersTotalVolume' }),
   transfersTotalFee: async params => await requestAPI({ ...params, method: 'transfersTotalFee' }),
   transfersTotalActiveUsers: async params => await requestAPI({ ...params, method: 'transfersTotalActiveUsers' }),
-  transfersStats: async params => await requestAPI({ ...params, method: 'transfersStats' }),
-  transfersCumulativeVolume: async params => await requestAPI({ ...params, method: 'transfersCumulativeVolume' }),
   transfersTopUsers: async params => await requestAPI({ ...params, method: 'transfersTopUsers' }),
   searchTransfers: async params => await requestAPI({ ...params, method: 'searchTransfers' }),
   getTransfersDataMapping: async params => await requestAPI({ ...params, method: 'getTransfersDataMapping' }),
