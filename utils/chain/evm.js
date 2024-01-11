@@ -30,24 +30,6 @@ const getProvider = (chain, _rpcs) => {
   return null;
 };
 
-const isContract = async (address, chain) => {
-  let output;
-  if (address && chain) {
-    const { rpc } = { ...getChainData(chain, 'evm')?.endpoints };
-    for (const url of toArray(rpc)) {
-      try {
-        const { result } = { ...await request(url, { method: 'post', params: { jsonrpc: '2.0', method: 'eth_getCode', params: [address, 'latest'], id: 0 } }) };
-        if (result) {
-          output = result !== '0x';
-          break;
-        }
-      } catch (error) {}
-    }
-    output = output || false;
-  }
-  return output;
-};
-
 const getBalance = async (chain, address, contractData) => {
   const { rpc } = { ...getChainData(chain, 'evm')?.endpoints };
   if (!(rpc && address)) return null;
@@ -106,7 +88,6 @@ const getTokenSupply = async (chain, contractData) => {
 
 module.exports = {
   getProvider,
-  isContract,
   getBalance,
   getTokenSupply,
 };
