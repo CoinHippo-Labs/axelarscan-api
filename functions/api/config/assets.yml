@@ -2307,6 +2307,23 @@ mainnet:
       terra-2:
         ibc_denom: "ibc/0A31B4B46B4C5F10ED3EF4BFBD1453CE96A270D168FC672436ABCA2DB4CC1401"
         symbol: "axlARB"
+  op-wei:
+    denom: "op-wei"
+    native_chain: "optimism"
+    name: "Optimism"
+    symbol: "OP"
+    decimals: 18
+    image: "/logos/assets/op.svg"
+    coingecko_id: "optimism"
+    addresses:
+      optimism:
+        address: "0x4200000000000000000000000000000000000042"
+      base:
+        address: "0x994ac01750047B9d35431a7Ae4Ed312ee955E030"
+        symbol: "axlOP"
+      axelarnet:
+        ibc_denom: "op-wei"
+        symbol: "axlOP"
   fil-wei:
     denom: "fil-wei"
     denoms:
