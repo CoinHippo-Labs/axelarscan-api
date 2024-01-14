@@ -30,6 +30,11 @@ ARB:
   decimals: 18
 axlARB:
   redirect: "ARB"
+OP:
+  coingecko_id: "optimism"
+  decimals: 18
+axlOP:
+  redirect: "OP"
 MNT:
   coingecko_id: "mantle"
   decimals: 18
