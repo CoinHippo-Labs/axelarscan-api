@@ -1257,7 +1257,7 @@ mainnet:
     name: "Lido Staked Ether"
     symbol: "stETH"
     decimals: 18
-    image: "/logos/assets/steth.png"
+    image: "/logos/assets/steth.svg"
     addresses:
       ethereum:
         address: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
@@ -1673,7 +1673,7 @@ mainnet:
     name: "Wrapped BNB"
     symbol: "WBNB"
     decimals: 18
-    image: "/logos/assets/wbnb.png"
+    image: "/logos/assets/wbnb.svg"
     addresses:
       binance:
         address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
@@ -4358,7 +4358,7 @@ mainnet:
     name: "TerraClassicUSD"
     symbol: "USTC"
     decimals: 6
-    image: "/logos/assets/ust.png"
+    image: "/logos/assets/ustc.svg"
     addresses:
       ethereum:
         address: "0x085416975fe14c2a731a97ec38b9bf8135231f62"
@@ -4386,7 +4386,7 @@ mainnet:
     name: "Terra Classic"
     symbol: "LUNC"
     decimals: 6
-    image: "/logos/assets/lunc.png"
+    image: "/logos/assets/lunc.svg"
     addresses:
       ethereum:
         address: "0x31dab3430f3081dff3ccd80f17ad98583437b213"
@@ -4791,7 +4791,7 @@ testnet:
     name: "Wrapped BNB"
     symbol: "WBNB"
     decimals: 18
-    image: "/logos/assets/wbnb.png"
+    image: "/logos/assets/wbnb.svg"
     addresses:
       ethereum-2:
         address: "0xA9A2D8F279ABC436a18DBB1df3FB233039935D0A"
@@ -5654,7 +5654,7 @@ testnet:
     name: "TerraClassicUSD"
     symbol: "USTC"
     decimals: 6
-    image: "/logos/assets/ust.png"
+    image: "/logos/assets/ustc.svg"
     no_tvl: true
     addresses:
       ethereum:
@@ -5683,7 +5683,7 @@ testnet:
     name: "Terra Classic"
     symbol: "LUNC"
     decimals: 6
-    image: "/logos/assets/lunc.png"
+    image: "/logos/assets/lunc.svg"
     no_tvl: true
     addresses:
       ethereum:
