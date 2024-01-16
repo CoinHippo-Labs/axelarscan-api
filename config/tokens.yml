@@ -657,7 +657,7 @@ grain-wei:
 knc-wei:
   redirect: "KNC"
 oath-wei:
-  redirect: "OAUTH"
+  redirect: "OATH"
 orbs-wei:
   redirect: "ORBS"
 pols-wei:
