@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/axelarnetwork/axelarscan-api.git"
   },
-  "author": "axelar.network",
+  "author": "Interop Labs",
   "bugs": {
     "url": "https://github.com/axelarnetwork/axelarscan-api/issues"
   },
