@@ -731,7 +731,6 @@ mainnet:
         block_path: "/block/{block}"
         address_path: "/address/{address}"
         contract_path: "/contract/{address}"
-        contract_0_path: "/contract/{address}"
         transaction_path: "/tx/{tx}"
       prefix_address: "kujira"
       prefix_chain_ids:
@@ -1170,7 +1169,6 @@ mainnet:
         block_path: "/blocks/{block}"
         address_path: "/accounts/{address}"
         contract_path: "/accounts/{address}"
-        contract_0_path: "/accounts/{address}"
         transaction_path: "/transactions/{tx}"
       prefix_address: "agoric"
       prefix_chain_ids:
@@ -1297,7 +1295,6 @@ mainnet:
         block_path: "/block/{block}?net=main"
         address_path: "/account/{address}?net=main"
         contract_path: "/account/{address}?net=main"
-        contract_0_path: "/account/{address}?net=main"
         transaction_path: "/transaction/{tx}?net=main"
       prefix_address: "swth"
       prefix_chain_ids:
@@ -1643,7 +1640,6 @@ mainnet:
         block_path: "/block/{block}"
         address_path: "/account/{address}"
         contract_path: "/account/{address}"
-        contract_0_path: "/account/{address}"
         transaction_path: "/txs/{tx}"
         asset_path: "/assets/ibc/{ibc_denom}"
       prefix_address: "chihuahua"
@@ -2794,7 +2790,6 @@ testnet:
         block_path: "/block/{block}?net=test"
         address_path: "/account/{address}?net=test"
         contract_path: "/account/{address}?net=test"
-        contract_0_path: "/account/{address}?net=test"
         transaction_path: "/transaction/{tx}?net=test"
       prefix_address: "swth"
       prefix_chain_ids:
@@ -2823,7 +2818,6 @@ testnet:
         block_path: "/blocks/{block}"
         address_path: "/accounts/{address}"
         contract_path: "/accounts/{address}"
-        contract_0_path: "/accounts/{address}"
         transaction_path: "/transactions/{tx}"
       prefix_address: "odin"
       prefix_chain_ids:
@@ -2883,7 +2877,6 @@ testnet:
         block_path: "/block/{block}"
         address_path: "/accounts/{address}"
         contract_path: "/accounts/{address}"
-        contract_0_path: "/accounts/{address}"
         transaction_path: "/tx/{tx}"
       prefix_address: "tp"
       prefix_chain_ids:
@@ -3143,6 +3136,34 @@ testnet:
       prefix_address: "nibi"
       prefix_chain_ids:
         - "nibiru-testnet-"
+    fxcore:
+      chain_id: "dhobyghaut"
+      chain_name: "fxcore"
+      endpoints:
+        lcd:
+          - "https://testnet-fx-rest.functionx.io:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Function X"
+        symbol: "FX"
+        denom: "ufx"
+        decimals: 6
+      name: "Function X"
+      short_name: "FX"
+      image: "/logos/chains/fxcore.svg"
+      color: "#020a12"
+      explorer:
+        name: "FxCore"
+        url: "https://testnet.ping.pub/fxcore"
+        icon: "/logos/explorers/fxcore.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "fx"
+      prefix_chain_ids:
+        - "dhobyghaut"
     terra-3:
       chain_id: "pisco-1"
       chain_name: "terra-3"

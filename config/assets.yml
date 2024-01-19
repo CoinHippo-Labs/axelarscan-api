@@ -3853,6 +3853,22 @@ mainnet:
         ibc_denom: "ibc/56FA051C097D26D3285D7A3ABA5F9F18F6654517E50E99A9F3F2D0E6FECDB433"
       kujira:
         ibc_denom: "ibc/6EC52E4E4105A3647FE4626767F6E169DBC56CE99862DF62935CD273F3F92CD1"
+  ox-wei:
+    denom: "ox-wei"
+    native_chain: "ethereum"
+    name: "Open Exchange"
+    symbol: "OX"
+    decimals: 18
+    image: "/logos/assets/ox.svg"
+    addresses:
+      ethereum:
+        address: "0x78a0A62Fba6Fb21A83FE8a3433d44C73a4017A6f"
+      axelarnet:
+        ibc_denom: "ox-wei"
+      osmosis:
+        ibc_denom: "ibc/61DE6748CA641D2422C6D07C53F6C7215EEF7AE8BC61439B83A0DEA061B487E1"
+      sei:
+        ibc_denom: "ibc/91DF61C7EFA0E52C56BA0724E80B93DF6ADECD3A5B19D38FD2B4A7F955D2E2E7"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
@@ -4581,6 +4597,8 @@ testnet:
         ibc_denom: "ibc/5BDD47E9E73BF91C14497E254F0A751F1A7D3A6084343F66EA7CEE834A384651"
       nibiru:
         ibc_denom: "ibc/4BDF2D63B8FFE3454AF30E9BC10D2D7979BD3A938D989889ABC94FC5B86F1E2D"
+      fxcore:
+        ibc_denom: "ibc/A4CEA4766647FE70F414F9AE310F38B85B5D6C4F38A893E0072D735153B36845"
       terra-3:
         ibc_denom: "ibc/720B52BDE1E2B84C5898D07C983B085C77EB5ED2D4C0ACD56B882A14777F750C"
   wbtc-satoshi:
@@ -4761,6 +4779,9 @@ testnet:
       nibiru:
         ibc_denom: "ibc/13F73121EEA6CAA0DF51B06F64C39FD55EF394C64223881569DFA5628FA1288D"
         symbol: "axlETH"
+      fxcore:
+        ibc_denom: "ibc/0DBF4A36139D93F477A728CBA10DFB4DD915D39D4FF440C312E53E7589B2BE89"
+        symbol: "axlETH"
       terra-3:
         ibc_denom: "ibc/7C2C1F14F3BD93792CCEDB76FDA5C1BB8F981F7C2C7308339BBCBA677224CA8F"
         symbol: "axlETH"
@@ -4931,6 +4952,9 @@ testnet:
       nibiru:
         ibc_denom: "ibc/52F7DAC8D338E4D7388D02EBD6E522B86EBB62A48C6732C2651423A9E79377DE"
         symbol: "axlBNB"
+      fxcore:
+        ibc_denom: "ibc/6D57CC97C38769E83360454569DCD1EF9D8FD3A220EE9D65AFA11DE94D320A67"
+        symbol: "axlBNB"
       terra-3:
         ibc_denom: "ibc/8291F71592AEE7C593D5DC05C1B66CD190B2EEA74DF09D2B8BF57BF6C4E8BCAA"
         symbol: "axlBNB"
@@ -5076,6 +5100,9 @@ testnet:
       nibiru:
         ibc_denom: "ibc/7BFC5893BCCC6C9A4B173BC1183D2706141CBF71679EA6BDCE15E679CEC05183"
         symbol: "axlMATIC"
+      fxcore:
+        ibc_denom: "ibc/C42B67A2559609F974D54BA91F33C2E458BB3C783EB0C1F298DA21BC9BF191A6"
+        symbol: "axlMATIC"
       terra-3:
         ibc_denom: "ibc/8DE781194A674B7129D9EFA838F3E50B5F50212995AA825634BF702E0D037AC3"
         symbol: "axlMATIC"
@@ -5220,6 +5247,9 @@ testnet:
         symbol: "axlAVAX"
       nibiru:
         ibc_denom: "ibc/78D5DAB545549A930F5DB22CFA7C821ACE8EF55DCF787BED93A56D04CC7477F5"
+        symbol: "axlAVAX"
+      fxcore:
+        ibc_denom: "ibc/7F7DB257AE11CB585B14B298C160A271ABC024EEC2CA894DD5B9B3E6D83A1FDE"
         symbol: "axlAVAX"
       terra-3:
         ibc_denom: "ibc/2B84B3D7B8AA4B04607ACD2E5096D20B34D6D355D33F4F5DD4659449EB757597"
@@ -5369,6 +5399,9 @@ testnet:
       nibiru:
         ibc_denom: "ibc/301A96A9BB897EF914BA74534EE1D75417753A0E113F2F766838274057290B79"
         symbol: "axlFTM"
+      fxcore:
+        ibc_denom: "ibc/A1F450E3D6FBEE7742642B0699D70E3508167302BEC78BC4E5C1ECDFF1CA73E9"
+        symbol: "axlFTM"
       terra-3:
         ibc_denom: "ibc/66000303A64E819F9B46E71EF3B62172921EEE3A74F19076F88D7EDA519F9C3B"
         symbol: "axlFTM"
@@ -5513,6 +5546,9 @@ testnet:
         symbol: "axlDEV"
       nibiru:
         ibc_denom: "ibc/6A4043BCBD3FB6E9D86A14F6A018C33CD4E05990E977729CC1946395B2972B11"
+        symbol: "axlDEV"
+      fxcore:
+        ibc_denom: "ibc/C3467FC3FEF4285B822DC1915E1C13FA6CE7817D4747663E83D2E6F9936CC1F2"
         symbol: "axlDEV"
       terra-3:
         ibc_denom: "ibc/4F89D2416F2E2CF9CFE68CE8B77A11A07B4F590B13E410DA86B1A5E6BCBDA24B"
