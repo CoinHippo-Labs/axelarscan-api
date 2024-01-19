@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 const { getTokensPrice } = require('./tokens');
-const { getTotalSupply, getCirculatingSupply, getTokenInfo, getInflation, getBalances, getDelegations, getRedelegations, getUnbondings, getRewards, getCommissions, getAccountAmounts, getProposals, getProposal } = require('./axelar');
+const { getTotalSupply, getCirculatingSupply, getTokenInfo, getInflation, getNetworkParameters, getBalances, getDelegations, getRedelegations, getUnbondings, getRewards, getCommissions, getAccountAmounts, getProposals, getProposal } = require('./axelar');
 const validator = require('./axelar/validator');
 const { getTVL, getTVLAlert } = require('./tvl');
 const GMP = require('./interchain/gmp');
@@ -18,6 +18,7 @@ const METHODS = {
   getCirculatingSupply,
   getTokenInfo,
   getInflation,
+  getNetworkParameters,
   getBalances,
   getDelegations,
   getRedelegations,
