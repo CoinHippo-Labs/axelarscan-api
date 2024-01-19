@@ -3204,7 +3204,7 @@ testnet:
       name: "Dymension"
       short_name: "DYM"
       image: "/logos/chains/dymension.svg"
-      color: "#625ab5"
+      color: "#000000"
       explorer:
         name: "Dymension"
         url: "https://testnet.dymension.explorers.guru"
