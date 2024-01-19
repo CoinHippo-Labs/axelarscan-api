@@ -3188,6 +3188,62 @@ testnet:
       prefix_address: "saga"
       prefix_chain_ids:
         - "ssc-testnet-"
+    dymension:
+      chain_id: "blumbus_111-1"
+      chain_name: "dymension"
+      endpoints:
+        lcd:
+          - "https://blumbus.api.silknodes.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Dymension"
+        symbol: "DYM"
+        denom: "udym"
+        decimals: 6
+      name: "Dymension"
+      short_name: "DYM"
+      image: "/logos/chains/dymension.svg"
+      color: "#625ab5"
+      explorer:
+        name: "Dymension"
+        url: "https://testnet.dymension.explorers.guru"
+        icon: "/logos/explorers/dymension.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "dym"
+      prefix_chain_ids:
+        - "blumbus_"
+    nibiru:
+      chain_id: "nibiru-testnet-1"
+      chain_name: "nibiru"
+      endpoints:
+        lcd:
+          - "https://lcd.testnet-1.nibiru.fi"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Nibiru"
+        symbol: "NIBI"
+        denom: "unibi"
+        decimals: 6
+      name: "Nibiru"
+      short_name: "NIBI"
+      image: "/logos/chains/nibiru.svg"
+      color: "#625ab5"
+      explorer:
+        name: "Nibiru"
+        url: "https://testnet.nibiru.explorers.guru"
+        icon: "/logos/explorers/nibiru.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "nibi"
+      prefix_chain_ids:
+        - "nibiru-testnet-"
     terra-3:
       chain_id: "pisco-1"
       chain_name: "terra-3"

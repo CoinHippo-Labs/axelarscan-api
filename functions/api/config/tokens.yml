@@ -191,6 +191,16 @@ SAGA:
   default_price:
     usd: 0.01
   decimals: 6
+DYM:
+  coingecko_id: "dymension"
+  default_price:
+    usd: 0.01
+  decimals: 6
+NIBI:
+  coingecko_id: "nibiru"
+  default_price:
+    usd: 0.01
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
