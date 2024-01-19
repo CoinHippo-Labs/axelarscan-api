@@ -201,6 +201,11 @@ NIBI:
   default_price:
     usd: 0.01
   decimals: 6
+FX:
+  coingecko_id: "fx-coin"
+  default_price:
+    usd: 0.01
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
@@ -525,6 +530,9 @@ FPI:
 FXS:
   coingecko_id: "frax-share"
   decimals: 18
+OX:
+  coingecko_id: "open-exchange-token"
+  decimals: 18
 stATOM:
   coingecko_id: "stride-staked-atom"
   decimals: 6
@@ -696,6 +704,8 @@ fpi-wei:
   redirect: "FPI"
 fxs-wei:
   redirect: "FXS"
+ox-wei:
+  redirect: "OX"
 uosmo:
   redirect: "OSMO"
 uatom:
