@@ -162,7 +162,17 @@ module.exports = async (params, cache_age_seconds = 60) => {
             break;
           case 'status':
             try {
-              const response = searchHeartbeats({ size: validators_data.length * 5 });
+              let { latest_block_height } = { ...await rpc('/status') };
+              latest_block_height = Number(latest_block_height);
+              const response = await searchHeartbeats({ fromBlock: latest_block_height - NUM_UPTIME_BLOCKS, aggs: { heartbeats: { terms: { field: 'sender.keyword', size: validators_data.length + 10 }, aggs: { period_height: { terms: { field: 'period_height', size: 1000 } } } } } });
+              const { data } = { ...response };
+              validators_data = validators_data.map(d => {
+                const uptime = Number(data.find(_d => equalsIgnoreCase(_d.key, d.broadcaster_address))?.count) * 100 / 200;
+                return { ...d, heartbeat_uptime: uptime > 100 ? 100 : uptime };
+              });
+            } catch (error) {}
+            try {
+              const response = await searchHeartbeats({ size: validators_data.length * 5 });
               const { data } = { ...response };
               if (toArray(data).length > 0) {
                 validators_data = validators_data.map(d => {
