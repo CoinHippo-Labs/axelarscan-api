@@ -192,11 +192,12 @@ module.exports = async (params = {}) => {
 
                       const is_native_on_cosmos = is_native && id !== 'axelarnet';
                       const is_not_native_on_axelarnet = !is_native && id === 'axelarnet';
+                      const isSecretSnip = id === 'secret-snip';
                       const lcd_url = _.head(endpoints?.lcd);
                       const supply = is_native ? id !== 'axelarnet' ? source_escrow_balance : 0 : toArray(escrow_addresses).length > 0 ? await getIBCSupply(denom_data, id) : 0;
                       const total_supply = is_native_on_cosmos ? await getIBCSupply(denom_data, 'axelarnet') : 0;
                       const percent_diff_supply = is_native_on_cosmos ? total_supply > 0 && source_escrow_balance > 0 ? Math.abs(source_escrow_balance - total_supply) * 100 / source_escrow_balance : null : supply > 0 && escrow_balance > 0 ? Math.abs(escrow_balance - supply) * 100 / escrow_balance : null;
-                      const total = is_not_native_on_axelarnet ? await getIBCSupply(denom_data, id) : 0;
+                      const total = is_not_native_on_axelarnet ? await getIBCSupply(denom_data, id) : isSecretSnip ? escrow_balance : 0;
 
                       result = {
                         denom_data,
@@ -211,10 +212,10 @@ module.exports = async (params = {}) => {
                         is_abnormal_supply: percent_diff_supply > percent_diff_escrow_supply_threshold,
                         url: url && address_path && toArray(source_escrow_addresses).length > 0 && is_native_on_cosmos ?
                           `${url}${address_path.replace('{address}', _.last(source_escrow_addresses))}` :
-                          url && asset_path && ibc_denom?.includes('/') ?
+                          !isSecretSnip && url && asset_path && ibc_denom?.includes('/') ?
                             `${url}${asset_path.replace('{ibc_denom}', Buffer.from(_.last(toArray(ibc_denom, 'normal', '/'))).toString('base64'))}` :
                             axelarnet.explorer?.url && axelarnet.explorer.address_path && toArray(escrow_addresses).length > 0 ?
-                              `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', _.last(escrow_addresses))}` :
+                              `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', isSecretSnip ? _.head(escrow_addresses) : _.last(escrow_addresses))}` :
                               null,
                         escrow_addresses_urls: toArray(
                           is_native_on_cosmos ?
@@ -255,9 +256,10 @@ module.exports = async (params = {}) => {
       })
     );
 
+    const hasSecretSnip = tvl['secret-snip']?.total > 0;
     const total_on_evm = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply)));
     const total_on_cosmos = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos' && k !== native_chain).map(([k, v]) => v[has_all_cosmos_chains ? is_native_on_cosmos ? 'supply' : 'total' : 'escrow_balance'])));
-    const total = is_native_on_axelarnet || is_native_on_cosmos ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => is_native_on_evm ? d.gateway_balance : d.total)));
+    const total = is_native_on_axelarnet || is_native_on_cosmos || hasSecretSnip ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => is_native_on_evm ? d.gateway_balance : d.total)));
     const evm_escrow_address = is_native_on_cosmos ? getAddress(is_native_on_axelarnet ? asset : `ibc/${toHash(`transfer/${_.last(tvl[native_chain]?.ibc_channels)?.channel_id}/${asset}`)}`, axelarnet.prefix_address, 32) : undefined;
     const evm_escrow_balance = evm_escrow_address && await getCosmosBalance(evm_escrow_address, { ...asset_data, ...addresses?.axelarnet }, 'axelarnet');
     const evm_escrow_address_urls = evm_escrow_address && toArray([axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`, `${axelarnet_lcd_url}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`]);
