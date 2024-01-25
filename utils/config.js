@@ -6,7 +6,7 @@ const { request } = require('./http');
 const { toArray } = require('./parser');
 const { equalsIgnoreCase, capitalize, removeDoubleQuote } = require('./string');
 
-const { methods, chains, assets, endpoints, tokens, supply, tvl } = { ...config };
+const { methods, chains, assets, its_assets, endpoints, tokens, supply, tvl } = { ...config };
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
 const getMethods = () => methods;
@@ -80,6 +80,12 @@ const getAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
   return toArray(assetsData).find(d => toArray(_.concat(d.denom, d.denoms, d.symbol)).findIndex(s => equalsIgnoreCase(s, asset)) > -1 || toArray(Object.values({ ...d.addresses })).findIndex(a => toArray([a.ibc_denom, a.symbol]).findIndex(s => equalsIgnoreCase(s, asset)) > -1) > -1);
 };
 
+const getITSAssets = (env = ENVIRONMENT) => its_assets[env];
+const getITSAssetData = (asset, env = ENVIRONMENT) => {
+  if (!asset) return;
+  return toArray(getITSAssets()).find(d => toArray(_.concat(d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
+}
+
 const getContracts = async (env = ENVIRONMENT) => await request(getGMPAPI(env), { params: { method: 'getContracts' } });
 const getEndpoints = (env = ENVIRONMENT) => endpoints[env];
 const getRPC = (env = ENVIRONMENT) => getEndpoints(env)?.rpc;
@@ -109,6 +115,8 @@ module.exports = {
   getAssets,
   getAssetsList,
   getAssetData,
+  getITSAssets,
+  getITSAssetData,
   getContracts,
   getEndpoints,
   getRPC,
