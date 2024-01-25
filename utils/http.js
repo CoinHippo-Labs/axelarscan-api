@@ -1,4 +1,5 @@
 const axios = require('axios');
+const https = require('https');
 
 const { isString } = require('./string');
 
@@ -8,7 +9,8 @@ const createInstance = (url, options) => {
   let { timeout, headers } = { ...options };
   timeout = timeout || 5000;
   if (gzip) headers = { ...headers, 'Accept-Encoding': 'gzip' };
-  return axios.create({ ...options, baseURL: url, timeout, headers });
+  const httpsAgent = url.includes('amazonaws.com') ? new https.Agent({ keepAlive: true }) : undefined;
+  return axios.create({ ...options, baseURL: url, timeout, headers, httpsAgent });
 };
 
 const parseError = error => { return { error: error?.response?.data || error?.message }; };
