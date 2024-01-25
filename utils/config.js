@@ -62,12 +62,12 @@ const getAssets = async (env = ENVIRONMENT) => {
         const { assetSymbol, ibcDenom, tokenAddress } = { ...v };
         const key = getChain(k, { fromConfig: true });
         let { symbol, address, ibc_denom } = { ...addresses?.[key] };
-        symbol = assetSymbol || symbol;
+        symbol = id.endsWith('-uusdc') ? assetsData[denom]?.symbol : assetSymbol || symbol;
         address = (tokenAddress === id ? undefined : tokenAddress) || address;
         ibc_denom = (ibcDenom === id ? undefined : ibcDenom) || ibc_denom;
         addresses = { ...addresses, [key]: { symbol, address, ibc_denom } };
       });
-      const assetData = { denom, native_chain: getChain(native_chain, { fromConfig: true }), name: assetName, symbol: assetSymbol, decimals, image: `/logos/assets/${assetSymbol?.toLowerCase()}.svg`, addresses };
+      const assetData = { denom, native_chain: getChain(native_chain, { fromConfig: true }), name: assetName, symbol: id.endsWith('-uusdc') ? assetsData[denom]?.symbol : assetSymbol, decimals, image: `/logos/assets/${assetSymbol?.toLowerCase()}.svg`, addresses };
       assetsData[denom] = { ...assetsData[denom], ...assetData };
     });
   }
