@@ -101,7 +101,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
         }
 
         tx.body.messages = messages;
-        transaction_data.tx = tx;
+        transaction_data.tx = _.cloneDeep(tx);
         tx_response.tx = tx;
         lcd_response.tx = tx;
         lcd_response.tx_response = tx_response;
@@ -111,7 +111,7 @@ module.exports = async (lcd_response = {}, params = {}) => {
         const { messages } = { ...transaction_data.tx.body };
         if (messages) {
           for (let i = 0; i < messages.length; i++) {
-            const message = messages[i];
+            const message = _.cloneDeep(messages[i]);
             if (message) {
               const fields = ['limit', 'chain'];
               for (const field of fields) {

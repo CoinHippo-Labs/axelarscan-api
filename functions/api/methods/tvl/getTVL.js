@@ -197,7 +197,7 @@ module.exports = async (params = {}) => {
                       const supply = is_native ? id !== 'axelarnet' ? source_escrow_balance : 0 : toArray(escrow_addresses).length > 0 ? await getIBCSupply(denom_data, id) : 0;
                       const total_supply = is_native_on_cosmos ? await getIBCSupply(denom_data, 'axelarnet') : 0;
                       const percent_diff_supply = is_native_on_cosmos ? total_supply > 0 && source_escrow_balance > 0 ? Math.abs(source_escrow_balance - total_supply) * 100 / source_escrow_balance : null : supply > 0 && escrow_balance > 0 ? Math.abs(escrow_balance - supply) * 100 / escrow_balance : null;
-                      const total = is_not_native_on_axelarnet || is_native_on_cosmos ? await getIBCSupply(denom_data, id) : isSecretSnip ? escrow_balance : 0;
+                      const total = is_not_native_on_axelarnet ? await getIBCSupply(denom_data, id) : is_native_on_cosmos ? await getIBCSupply({ ...denom_data, ibc_denom: denom_data.denom }, 'axelarnet') : isSecretSnip ? escrow_balance : 0;
 
                       result = {
                         denom_data,
