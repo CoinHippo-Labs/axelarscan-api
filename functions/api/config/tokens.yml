@@ -206,6 +206,11 @@ FX:
   default_price:
     usd: 0.01
   decimals: 6
+C4E:
+  coingecko_id: "c4e"
+  default_price:
+    usd: 0.01
+  decimals: 6
 WHALE:
   coingecko_id: "white-whale"
   decimals: 6
