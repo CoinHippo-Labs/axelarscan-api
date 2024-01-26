@@ -116,13 +116,16 @@ module.exports = async (lcd_response = {}, params = {}) => {
               const fields = ['limit', 'chain'];
               for (const field of fields) {
                 if (message[field] && typeof message[field] === 'object') {
-                  message[field] = message[field].toString();
+                  try {
+                    message[field] = JSON.stringify(message[field]);
+                  } catch (error) {
+                    message[field] = message[field].toString();
+                  }
                 }
               }
-              messages[i] = message;
+              transaction_data.tx.body.messages[i] = message;
             }
           }
-          transaction_data.tx.body.messages = messages;
         }
       }
 
