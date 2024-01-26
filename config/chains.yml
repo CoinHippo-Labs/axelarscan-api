@@ -2909,13 +2909,12 @@ testnet:
       prefix_address: "ixo"
       prefix_chain_ids:
         - "pandora-"
-    teritori:
-      chain_id: "teritori-testnet-v3"
-      chain_name: "teritori"
+    teritori-2:
+      chain_id: "teritori-test-6"
+      chain_name: "teritori-2"
       endpoints:
         lcd:
-          - "https://teritori-testnet.api.kjnodes.com"
-          - "https://api-t.teritori.nodestake.top"
+          - "https://rest.testnet.teritori.com"
         timeout:
           lcd: 3000
       native_token:
@@ -2929,7 +2928,7 @@ testnet:
       color: "#428fff"
       explorer:
         name: "Teritori"
-        url: "https://explorer.kjnodes.com/teritori-testnet"
+        url: "https://explorer.teritori.com/teritori-testnet"
         icon: "/logos/explorers/teritori.png"
         block_path: "/blocks/{block}"
         address_path: "/account/{address}"
@@ -3164,6 +3163,34 @@ testnet:
       prefix_address: "fx"
       prefix_chain_ids:
         - "dhobyghaut"
+    chain4energy:
+      chain_id: "babajaga-1"
+      chain_name: "chain4energy"
+      endpoints:
+        lcd:
+          - "https://lcd-testnet.c4e.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Chain4Energy"
+        symbol: "C4E"
+        denom: "uc4e"
+        decimals: 6
+      name: "Chain4Energy"
+      short_name: "C4E"
+      image: "/logos/chains/chain4energy.svg"
+      color: "#77b229"
+      explorer:
+        name: "Chain4Energy"
+        url: "https://explorer-testnet.c4e.io"
+        icon: "/logos/explorers/chain4energy.png"
+        block_path: "/blocks/{block}"
+        address_path: "/accounts/{address}"
+        contract_path: "/accounts/{address}"
+        transaction_path: "/transactions/{tx}"
+      prefix_address: "c4e"
+      prefix_chain_ids:
+        - "babajaga"
     terra-3:
       chain_id: "pisco-1"
       chain_name: "terra-3"
