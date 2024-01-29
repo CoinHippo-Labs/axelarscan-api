@@ -523,7 +523,7 @@ estimateGasFee:
     -
       id: "minGasPrice"
       type: "BigNumber"
-      value: "1000000000"
+      value: "0"
       override:
         value: "0"
     -
