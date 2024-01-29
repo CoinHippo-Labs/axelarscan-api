@@ -112,6 +112,12 @@ resource "aws_apigatewayv2_route" "route" {
   target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
+resource "aws_apigatewayv2_route" "route_method" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /{method}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+}
+
 resource "aws_cloudwatch_event_rule" "schedule" {
   name                = "${var.package_name}-${var.environment}-rule"
   schedule_expression = "cron(*/5 * * * ? *)"

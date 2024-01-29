@@ -4,7 +4,8 @@ const { log } = require('./logger');
 
 const parseParams = (req, from) => {
   const { query, body } = { ...req };
-  const params = { ...query, ...body };
+  const method = req?.params?.method || body?.method || query?.method;
+  const params = { ...query, ...body, method };
   if (from) log('debug', from, 'receive request', { params });
   return params;
 };
