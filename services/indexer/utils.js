@@ -1,4 +1,5 @@
-const { equalsIgnoreCase, toBoolean } = require('../../utils/string');
+const { isString, equalsIgnoreCase, toBoolean } = require('../../utils/string');
+const { isNumber, toNumber } = require('../../utils/number');
 
 const normalizeSearchObject = object => {
   try { object = JSON.parse(object); } catch (error) {}
@@ -12,7 +13,7 @@ const normalizeSearchObject = object => {
         case 'boolean':
           break;
         default:
-          v = !isNaN(v) ? Number(v) : v;
+          v = isNumber(v) && (!isString(v) || !v.startsWith('0x')) ? toNumber(v) : v;
           break;
       }
       return [k, v];
@@ -35,7 +36,7 @@ const normalizeSearchParams = params => {
   use_raw_data = toBoolean(use_raw_data);
   update_only = toBoolean(update_only);
   track_total_hits = toBoolean(track_total_hits);
-  if (!isNaN(height)) height = Number(height);
+  if (isNumber(height)) height = toNumber(height);
   return { ...params, path, use_raw_data, update_only, track_total_hits, height };
 };
 
