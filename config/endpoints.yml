@@ -27,8 +27,8 @@ testnet:
 stagenet:
   rpc: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"
   lcd: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
-  api: "https://l49zjsjm3f.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io"
-  gmp_api: "https://8mcrlxwctd.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.gmp.axelarscan.io"
-  token_transfer_api: "https://3l7llp0gn7.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.token-transfer.axelarscan.io"
-  validator_api: "https://grqtmmbqq2.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.validator.axelarscan.io"
+  api: "https://l49zjsjm3f.execute-api.us-east-2.amazonaws.com" # "https://stagenet-test.api.axelarscan.io/api"
+  gmp_api: "https://8mcrlxwctd.execute-api.us-east-2.amazonaws.com" # "https://stagenet-test.api.axelarscan.io/gmp"
+  token_transfer_api: "https://3l7llp0gn7.execute-api.us-east-2.amazonaws.com" # "https://stagenet-test.api.axelarscan.io/token"
+  validator_api: "https://grqtmmbqq2.execute-api.us-east-2.amazonaws.com" # "https://stagenet-test.api.axelarscan.io/validator"
   app: "https://stagenet.axelarscan.io"
