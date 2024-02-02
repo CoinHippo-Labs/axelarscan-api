@@ -86,7 +86,7 @@ const getITSAssetData = (asset, env = ENVIRONMENT) => {
   return toArray(getITSAssets()).find(d => toArray(_.concat(d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
 }
 
-const getContracts = async (env = ENVIRONMENT) => await request(getGMPAPI(env), { params: { method: 'getContracts' } });
+const getContracts = async (env = ENVIRONMENT) => await request(`${getGMPAPI(env)}/getContracts`);
 const getEndpoints = (env = ENVIRONMENT) => endpoints[env];
 const getRPC = (env = ENVIRONMENT) => getEndpoints(env)?.rpc;
 const getLCD = (env = ENVIRONMENT) => getEndpoints(env)?.lcd;
