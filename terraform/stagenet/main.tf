@@ -26,6 +26,10 @@ provider "aws" {
 
 provider "archive" {}
 
+locals {
+  url_subpath_api_mapping = "api" # map apigw to url subpath /api from aws_api_gateway_domain_name
+}
+
 data "archive_file" "zip_api" {
   type        = "zip"
   source_dir  = "../../functions/api"
@@ -184,6 +188,13 @@ resource "aws_apigatewayv2_stage" "lambda" {
   api_id      = aws_apigatewayv2_api.api.id
   auto_deploy = true
   name        = "stagenet"
+}
+
+resource "aws_apigatewayv2_api_mapping" "stagenet_api" {
+  api_id          = aws_apigatewayv2_api.api.id
+  domain_name     = aws_apigatewayv2_domain_name.stagenet.domain_name
+  stage           = aws_apigatewayv2_stage.lambda.id
+  api_mapping_key = local.url_subpath_api_mapping
 }
 
 data "aws_acm_certificate" "api_axelarscan_io" {
