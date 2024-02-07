@@ -52,7 +52,9 @@ const getAssets = async (env = ENVIRONMENT) => {
   const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
 
   Object.values({ ...response?.assets }).filter(d => d.type === 'gateway').forEach(d => {
-    const denom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(v.denoms).includes(d.id))?.[0] || d.id;
+    const existingDenom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(v.denoms).includes(d.id))?.[0];
+    const denom = existingDenom || d.id;
+    const image = existingDenom ? d.iconUrl?.replace('/images/tokens/', '/logos/assets/') : `${response.resources?.staticAssetHost}${d.iconUrl}`;
     let { addresses } = { ...assetsData[denom] };
 
     Object.entries({ ...d.chains }).forEach(([k, v]) => {
@@ -63,7 +65,7 @@ const getAssets = async (env = ENVIRONMENT) => {
       ibc_denom = (v.tokenAddress === d.id || v.tokenAddress?.includes('/') ? v.tokenAddress : undefined) || ibc_denom;
       addresses = { ...addresses, [key]: { symbol, address, ibc_denom } };
     });
-    const assetData = { denom, native_chain: getChain(d.originAxelarChainId, { fromConfig: true }), name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image: d.iconUrl?.replace('/images/tokens/', '/logos/assets/'), coingecko_id: d.coingeckoId, addresses };
+    const assetData = { denom, native_chain: getChain(d.originAxelarChainId, { fromConfig: true }), name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image, coingecko_id: d.coingeckoId, addresses };
     assetsData[denom] = { ...assetsData[denom], ...assetData };
   });
   return Object.entries({ ...assetsData }).filter(([k, v]) => Object.values({ ...assetsData }).findIndex(d => toArray(d.denoms).includes(k)) < 0).map(([k, v]) => { return { ...v, id: k }; });
@@ -96,7 +98,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
         id: d.id,
         symbol: d.prettySymbol,
         decimals: d.decimals,
-        image: d.iconUrl?.replace('/images/tokens/', '/logos/its/'),
+        image: `${response.resources?.staticAssetHost}${d.iconUrl}`,
         coingecko_id: d.coingeckoId,
         addresses: _.uniq(toArray(Object.values({ ...d.chains }).map(_d => _d.tokenAddress))),
       });
