@@ -5,6 +5,7 @@
 mainnet:
   -
     symbol: "RMRK"
+    decimals: 18
     image: "/logos/its/rmrk.svg"
     coingecko_id: "rmrk"
     addresses:
