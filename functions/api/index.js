@@ -226,7 +226,7 @@ exports.handler = async (event, context, callback) => {
         try {
           const { path } = { ...params };
           delete params.path;
-          output = await lcd(path, params);
+          output = await lcd(path, params.params || params);
         } catch (error) {
           output = errorOutput(error);
         }
