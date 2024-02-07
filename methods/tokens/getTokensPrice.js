@@ -21,7 +21,7 @@ module.exports = async ({ symbols, symbol, timestamp = moment(), currency = CURR
   symbols = _.uniq(toArray(_.concat(symbols, symbol)));
 
   let updatedAt;
-  let tokensData = toArray(symbols).map(s => { return { symbol: s, ...await getTokenConfig(s) }; });
+  let tokensData = await Promise.all(toArray(symbols).map(s => new Promise(async resolve => resolve({ symbol: s, ...await getTokenConfig(s) }))));
   if (tokensData.findIndex(d => d.coingecko_id) > -1) {
     // query historical price
     if (timeDiff(timestamp, 'hours') > 4) {
