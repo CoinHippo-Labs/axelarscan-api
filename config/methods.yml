@@ -5,7 +5,7 @@
 endpoints:
   mainnet: "https://api.axelarscan.io"
   testnet: "https://testnet.api.axelarscan.io"
-  stagenet: "https://stagenet-test.api.axelarscan.io/api"
+  stagenet: "https://stagenet.api.axelarscan.io/api"
 methods:
   -
     id: "getChains"
