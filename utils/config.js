@@ -63,7 +63,7 @@ const getAssets = async (env = ENVIRONMENT) => {
       ibc_denom = (v.tokenAddress === d.id || v.tokenAddress?.includes('/') ? v.tokenAddress : undefined) || ibc_denom;
       addresses = { ...addresses, [key]: { symbol, address, ibc_denom } };
     });
-    const assetData = { denom, native_chain: getChain(d.originAxelarChainId, { fromConfig: true }), name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image: d.iconUrl?.replace('/images/tokens/', '/logos/assets/'), addresses };
+    const assetData = { denom, native_chain: getChain(d.originAxelarChainId, { fromConfig: true }), name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image: d.iconUrl?.replace('/images/tokens/', '/logos/assets/'), coingecko_id: d.coingeckoId, addresses };
     assetsData[denom] = { ...assetsData[denom], ...assetData };
   });
   return Object.entries({ ...assetsData }).filter(([k, v]) => Object.values({ ...assetsData }).findIndex(d => toArray(d.denoms).includes(k)) < 0).map(([k, v]) => { return { ...v, id: k }; });

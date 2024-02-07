@@ -3,14 +3,14 @@ const moment = require('moment');
 const getTotalSupply = require('./getTotalSupply');
 const getCirculatingSupply = require('./getCirculatingSupply');
 const { getTokensPrice, getExchangeRates } = require('../tokens');
-const { CURRENCY, getAssetData } = require('../../utils/config');
+const { CURRENCY, getAssetData, getITSAssetData } = require('../../utils/config');
 
 module.exports = async params => {
   const { agent } = { ...params };
   let { symbol } = { ...params };
   symbol = symbol || 'AXL';
 
-  const { denom, name } = { ...await getAssetData(symbol) };
+  const { denom, name } = { ...(await getAssetData(symbol) || await getITSAssetData(symbol)) };
   const { data, updated_at } = { ...await getTokensPrice({ symbol, currency: CURRENCY, debug: true }) };
   const price = data?.[symbol]?.price;
   const supplyData = await getCirculatingSupply({ symbol, debug: true });

@@ -2,7 +2,7 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const { get, write } = require('../../services/indexer');
-const { TOKEN_PRICE_COLLECTION, PRICE_ORACLE_API, CURRENCY, getTokens } = require('../../utils/config');
+const { TOKEN_PRICE_COLLECTION, PRICE_ORACLE_API, CURRENCY, getAssetData, getITSAssetData, getTokens } = require('../../utils/config');
 const { request } = require('../../utils/http');
 const { toArray } = require('../../utils/parser');
 const { equalsIgnoreCase, lastString } = require('../../utils/string');
@@ -11,17 +11,17 @@ const { timeDiff } = require('../../utils/time');
 
 const tokens = getTokens();
 
-const getTokenConfig = symbol => {
-  const tokenData = tokens[symbol] || _.last(Object.entries(tokens).find(([k, v]) => equalsIgnoreCase(k, lastString(symbol, '/'))));
+const getTokenConfig = async symbol => {
+  const tokenData = tokens[symbol] || _.last(Object.entries(tokens).find(([k, v]) => equalsIgnoreCase(k, lastString(symbol, '/')))) || await getAssetData(symbol) || await getITSAssetData(symbol);
   const { redirect } = { ...tokenData };
-  return { ...(redirect ? getTokenConfig(redirect) : tokenData) };
+  return { ...(redirect ? await getTokenConfig(redirect) : tokenData) };
 };
 
 module.exports = async ({ symbols, symbol, timestamp = moment(), currency = CURRENCY, debug = false }) => {
   symbols = _.uniq(toArray(_.concat(symbols, symbol)));
 
   let updatedAt;
-  let tokensData = toArray(symbols).map(s => { return { symbol: s, ...getTokenConfig(s) }; });
+  let tokensData = toArray(symbols).map(s => { return { symbol: s, ...await getTokenConfig(s) }; });
   if (tokensData.findIndex(d => d.coingecko_id) > -1) {
     // query historical price
     if (timeDiff(timestamp, 'hours') > 4) {
