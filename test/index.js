@@ -1,5 +1,6 @@
 const getChains = require('./getChains');
 const getAssets = require('./getAssets');
+const getITSAssets = require('./getITSAssets');
 const getContracts = require('./getContracts');
 const getTokensPrice = require('./getTokensPrice');
 const getTotalSupply = require('./getTotalSupply');
@@ -20,6 +21,7 @@ const interchainTotalActiveUsers = require('./interchainTotalActiveUsers');
 const test = async () => {
   getChains();
   await getAssets();
+  await getITSAssets();
   await getContracts();
   await getTokensPrice();
   await getTotalSupply();

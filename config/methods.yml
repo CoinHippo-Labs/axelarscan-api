@@ -190,6 +190,38 @@ methods:
                       type: "string"
                       description: "symbol of asset on each chain"
   -
+    id: "getITSAssets"
+    description: "The API route provides all its assets information supported on the Axelar network."
+    response:
+      -
+        name: "data"
+        type: "[object]"
+        primitive: true
+        attributes:
+          -
+            name: "id"
+            type: "string"
+            description: "interchain token id"
+          -
+            name: "symbol"
+            type: "string"
+          -
+            name: "decimals"
+            type: "integer"
+            description: "token decimals"
+          -
+            name: "image"
+            type: "string"
+            description: "logo path"
+          -
+            name: "coingecko_id"
+            type: "string"
+            description: "asset identifier on coingecko service"
+          -
+            name: "addresses"
+            type: "[string]"
+            description: "list of token address"
+  -
     id: "getContracts"
     description: "The API route provides a list of Axelar gateway and the Gas Service contract addresses on each EVM-supported chain."
     response:

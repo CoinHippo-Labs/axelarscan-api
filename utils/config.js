@@ -49,28 +49,23 @@ const getChain = (chain, options) => {
 const getAssets = async (env = ENVIRONMENT) => {
   const assetsData = assets[env];
   env = env !== 'mainnet' ? 'testnet' : env;
-  const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/${env}-asset-config.json`);
+  const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
 
-  if (response && !response.error) {
-    Object.entries(response).filter(([k, v]) => !v.wrapped_erc20).forEach(([k, v]) => {
-      const { id, native_chain, decimals, chain_aliases } = { ...v };
-      const { assetSymbol, assetName } = { ...chain_aliases[native_chain] };
-      const denom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(v.denoms).includes(id))?.[0] || id;
-      let { addresses } = { ...assetsData[denom] };
+  Object.values({ ...response?.assets }).filter(d => d.type === 'gateway').forEach(d => {
+    const denom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(v.denoms).includes(d.id))?.[0] || d.id;
+    let { addresses } = { ...assetsData[denom] };
 
-      Object.entries(chain_aliases).forEach(([k, v]) => {
-        const { assetSymbol, ibcDenom, tokenAddress } = { ...v };
-        const key = getChain(k, { fromConfig: true });
-        let { symbol, address, ibc_denom } = { ...addresses?.[key] };
-        symbol = id.endsWith('-uusdc') ? assetsData[denom]?.symbol : assetSymbol || symbol;
-        address = (tokenAddress === id ? undefined : tokenAddress) || address;
-        ibc_denom = (ibcDenom === id ? undefined : ibcDenom) || ibc_denom;
-        addresses = { ...addresses, [key]: { symbol, address, ibc_denom } };
-      });
-      const assetData = { denom, native_chain: getChain(native_chain, { fromConfig: true }), name: assetName, symbol: id.endsWith('-uusdc') ? assetsData[denom]?.symbol : assetSymbol, decimals, image: `/logos/assets/${assetSymbol?.toLowerCase()}.svg`, addresses };
-      assetsData[denom] = { ...assetsData[denom], ...assetData };
+    Object.entries({ ...d.chains }).forEach(([k, v]) => {
+      const key = getChain(k, { fromConfig: true });
+      let { symbol, address, ibc_denom } = { ...addresses?.[key] };
+      symbol = d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : v.symbol || symbol;
+      address = (v.tokenAddress?.startsWith('0x') ? v.tokenAddress : undefined) || address;
+      ibc_denom = (v.tokenAddress === d.id || v.tokenAddress?.includes('/') ? v.tokenAddress : undefined) || ibc_denom;
+      addresses = { ...addresses, [key]: { symbol, address, ibc_denom } };
     });
-  }
+    const assetData = { denom, native_chain: getChain(d.originAxelarChainId, { fromConfig: true }), name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image: d.iconUrl?.replace('/images/tokens/', '/logos/assets/'), addresses };
+    assetsData[denom] = { ...assetsData[denom], ...assetData };
+  });
   return Object.entries({ ...assetsData }).filter(([k, v]) => Object.values({ ...assetsData }).findIndex(d => toArray(d.denoms).includes(k)) < 0).map(([k, v]) => { return { ...v, id: k }; });
 };
 const getAssetsList = async (env = ENVIRONMENT) => Object.values(await getAssets(env));
@@ -80,10 +75,38 @@ const getAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
   return toArray(assetsData).find(d => toArray(_.concat(d.denom, d.denoms, d.symbol)).findIndex(s => equalsIgnoreCase(s, asset)) > -1 || toArray(Object.values({ ...d.addresses })).findIndex(a => toArray([a.ibc_denom, a.symbol]).findIndex(s => equalsIgnoreCase(s, asset)) > -1) > -1);
 };
 
-const getITSAssets = (env = ENVIRONMENT) => its_assets[env];
-const getITSAssetData = (asset, env = ENVIRONMENT) => {
+const getITSAssets = async (env = ENVIRONMENT) => {
+  const assetsData = its_assets[env];
+  env = env !== 'mainnet' ? 'testnet' : env;
+  const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
+
+  Object.values({ ...response?.assets }).filter(d => d.type === 'customInterchain').forEach(d => {
+    const i = assetsData.findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
+    if (i > -1) {
+      const assetData = assetsData[i];
+      assetData.id = d.id;
+      assetData.decimals = assetData.decimals || d.decimals;
+      assetData.image = assetData.image || d.iconUrl?.replace('/images/tokens/', '/logos/its/');
+      assetData.coingecko_id = assetData.coingecko_id || d.coingeckoId;
+      assetData.addresses = _.uniq(toArray(_.concat(assetData.addresses, Object.values({ ...d.chains }).map(_d => _d.tokenAddress))));
+      assetsData[i] = assetData;
+    }
+    else {
+      assetsData.push({
+        id: d.id,
+        symbol: d.prettySymbol,
+        decimals: d.decimals,
+        image: d.iconUrl?.replace('/images/tokens/', '/logos/its/'),
+        coingecko_id: d.coingeckoId,
+        addresses: _.uniq(toArray(Object.values({ ...d.chains }).map(_d => _d.tokenAddress))),
+      });
+    }
+  });
+  return assetsData;
+};
+const getITSAssetData = async (asset, env = ENVIRONMENT) => {
   if (!asset) return;
-  return toArray(getITSAssets()).find(d => toArray(_.concat(d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
+  return toArray(await getITSAssets()).find(d => toArray(_.concat(d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
 }
 
 const getContracts = async (env = ENVIRONMENT) => await request(`${getGMPAPI(env)}/getContracts`);
