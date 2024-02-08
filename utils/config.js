@@ -92,6 +92,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
       assetData.image = assetData.image || d.iconUrl?.replace('/images/tokens/', '/logos/its/');
       assetData.coingecko_id = assetData.coingecko_id || d.coingeckoId;
       assetData.addresses = _.uniq(toArray(_.concat(assetData.addresses, Object.values({ ...d.chains }).map(_d => _d.tokenAddress))));
+      assetData.native_chain = getChain(d.originAxelarChainId, { fromConfig: true });
       assetData.chains = d.chains;
       assetsData[i] = assetData;
     }
@@ -104,6 +105,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
         image: `${response.resources?.staticAssetHost}${d.iconUrl}`,
         coingecko_id: d.coingeckoId,
         addresses: _.uniq(toArray(Object.values({ ...d.chains }).map(_d => _d.tokenAddress))),
+        native_chain: getChain(d.originAxelarChainId, { fromConfig: true }),
         chains: d.chains,
       });
     }
