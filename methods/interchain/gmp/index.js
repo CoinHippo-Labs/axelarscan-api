@@ -12,6 +12,7 @@ module.exports = {
   GMPTotalFee: async params => await requestAPI('GMPTotalFee', params),
   GMPTotalActiveUsers: async params => await requestAPI('GMPTotalActiveUsers', params),
   GMPTopUsers: async params => await requestAPI('GMPTopUsers', params),
+  GMPTopITSAssets: async params => await requestAPI('GMPTopITSAssets', params),
   searchGMP: async params => await requestAPI('searchGMP', params),
   getGMPDataMapping: async params => await requestAPI('getGMPDataMapping', params),
 };
