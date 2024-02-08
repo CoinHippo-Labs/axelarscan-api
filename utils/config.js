@@ -52,7 +52,7 @@ const getAssets = async (env = ENVIRONMENT) => {
   const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
 
   Object.values({ ...response?.assets }).filter(d => d.type === 'gateway').forEach(d => {
-    const existingDenom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(v.denoms).includes(d.id))?.[0];
+    const existingDenom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(_.concat(v.denom, v.denoms)).includes(d.id))?.[0];
     const denom = existingDenom || d.id;
     const image = existingDenom ? d.iconUrl?.replace('/images/tokens/', '/logos/assets/') : `${response.resources?.staticAssetHost}${d.iconUrl}`;
     let { addresses } = { ...assetsData[denom] };
