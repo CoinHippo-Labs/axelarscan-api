@@ -87,6 +87,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
     if (i > -1) {
       const assetData = assetsData[i];
       assetData.id = d.id;
+      assetsData.name = d.name;
       assetData.decimals = assetData.decimals || d.decimals;
       assetData.image = assetData.image || d.iconUrl?.replace('/images/tokens/', '/logos/its/');
       assetData.coingecko_id = assetData.coingecko_id || d.coingeckoId;
@@ -98,6 +99,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
       assetsData.push({
         id: d.id,
         symbol: d.prettySymbol,
+        name: d.name,
         decimals: d.decimals,
         image: `${response.resources?.staticAssetHost}${d.iconUrl}`,
         coingecko_id: d.coingeckoId,
