@@ -18,8 +18,8 @@ testnet:
   lcd: "http://testnet.archive-node-lcd.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:1317"
   api: "https://vup1csssf8.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
   gmp_api: "https://7hf6gameo0.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.gmp.axelarscan.io"
-  token_transfer_api: "https://n7un1h54uh.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.token-transfer.axelarscan.io"
-  validator_api: "https://3jfa5vdne3.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.validator.axelarscan.io"
+  token_transfer_api: "https://jzrxbirmli.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io/token"
+  validator_api: "https://gtiorun7sc.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io/validator"
   app: "https://testnet.axelarscan.io"
 
 

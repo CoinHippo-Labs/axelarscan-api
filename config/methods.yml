@@ -4,7 +4,7 @@
 
 endpoints:
   mainnet: "https://api.axelarscan.io"
-  testnet: "https://testnet.api.axelarscan.io"
+  testnet: "https://testnet.api.axelarscan.io/api"
   stagenet: "https://stagenet.api.axelarscan.io/api"
 methods:
   -
