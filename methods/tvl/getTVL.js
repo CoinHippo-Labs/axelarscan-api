@@ -7,7 +7,7 @@ const { getTokensPrice } = require('../tokens');
 const { get, read, write } = require('../../services/indexer');
 const { getBalance, getTokenSupply } = require('../../utils/chain/evm');
 const { getCosmosBalance, getIBCSupply } = require('../../utils/chain/cosmos');
-const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData, getContracts, getTVLConfig } = require('../../utils/config');
+const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData, getITSAssets, getITSAssetData, getContracts, getTVLConfig } = require('../../utils/config');
 const { toHash, getAddress, toArray } = require('../../utils/parser');
 const { lastString } = require('../../utils/string');
 const { isNumber, toNumber } = require('../../utils/number');
@@ -18,11 +18,12 @@ const IBC_CHANNELS_UPDATE_INTERVAL_SECONDS = 240 * 60;
 
 module.exports = async params => {
   const assetsData = toArray(await getAssetsList());
+  const itsAssetsData = toArray(await getITSAssets());
   const { gateway_contracts } = { ...await getContracts() };
   const { asset, chain, force_update } = { ...params };
   let { assets, chains } = { ...params };
   assets = toArray(assets || asset);
-  assets = assets.length === 0 ? assetsData.map(d => d.id) : await Promise.all(assets.map(d => new Promise(async resolve => resolve((await getAssetData(d, assetsData))?.denom))));
+  assets = assets.length === 0 ? _.concat(assetsData, itsAssetsData).map(d => d.id) : await Promise.all(assets.map(d => new Promise(async resolve => resolve((await getAssetData(d, assetsData))?.denom || (await getITSAssetData(d, assetsData))?.id))));
   chains = toArray(chains || chain);
   chains = chains.length === 0 ? getChainsList().filter(d => (d.chain_type === 'cosmos' || gateway_contracts?.[d.id]?.address) && !d.no_tvl).map(d => d.id) : _.uniq(_.concat('axelarnet', toArray(chains.map(d => getChainData(d)?.id))));
 
@@ -72,7 +73,28 @@ module.exports = async params => {
 
   const data = [];
   for (const asset of assets) {
-    const assetData = await getAssetData(asset, assetsData);
+    let assetData = await getAssetData(asset, assetsData);
+    let assetType = 'gateway';
+
+    if (!assetData) {
+      const itsAssetData = await getITSAssetData(asset, itsAssetsData);
+      if (itsAssetData) {
+        assetData = { ...itsAssetData, addresses: Object.fromEntries(Object.entries({ ...itsAssetData.chains }).map(([k, v]) => {
+          const value = { symbol: v.symbol };
+          switch (getChainData(k)?.chain_type) {
+            case 'cosmos':
+              value.ibc_denom = v.tokenAddress;
+              break;
+            default:
+              value.address = v.tokenAddress;
+          }
+          return [k, value];
+        })) };
+        delete assetData.chains;
+        assetType = 'its';
+      }
+    }
+
     const { native_chain, addresses } = { ...assetData };
     const isNativeOnEVM = !!getChainData(native_chain, 'evm');
     const isNativeOnCosmos = !!getChainData(native_chain, 'cosmos');
@@ -95,12 +117,12 @@ module.exports = async params => {
 
               if (address) {
                 const gateway_balance = toNumber(await getBalance(id, gateway_address, contract_data));
-                const supply = !isNative ? toNumber(await getTokenSupply(id, contract_data)) : 0;
+                const supply = !isNative || assetType === 'its' ? toNumber(await getTokenSupply(id, contract_data)) : 0;
                 result = {
                   contract_data, gateway_address, gateway_balance,
                   supply, total: isNativeOnCosmos ? 0 : gateway_balance + supply,
-                  url: url && `${url}${(address === ZeroAddress ? address_path : contract_path).replace('{address}', address === ZeroAddress ? gateway_address : address)}${isNative && address !== ZeroAddress && gateway_address ? `?a=${gateway_address}` : ''}`,
-                  success: isNumber(isNative ? gateway_balance : supply),
+                  url: url && `${url}${(address === ZeroAddress ? address_path : contract_path).replace('{address}', address === ZeroAddress ? gateway_address : address)}${isNative && address !== ZeroAddress && gateway_address && assetType !== 'its' ? `?a=${gateway_address}` : ''}`,
+                  success: isNumber(isNative && assetType !== 'its' ? gateway_balance : supply),
                 };
               }
             } catch (error) {}
@@ -185,20 +207,20 @@ module.exports = async params => {
 
     tvl = Object.fromEntries(Object.entries(tvl).map(([k, v]) => {
       const { supply, total } = { ...v };
-      return [k, { ...v, supply: getChainData(k)?.chain_type !== 'cosmos' ? supply : k === 'axelarnet' ? isNativeOnEVM ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos').map(([k, v]) => v.supply))) : isNativeOnCosmos ? total ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply))) : 0 : supply : supply }];
+      return [k, { ...v, supply: getChainData(k)?.chain_type !== 'cosmos' ? supply : k === 'axelarnet' && assetType !== 'its' ? isNativeOnEVM ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos').map(([k, v]) => v.supply))) : isNativeOnCosmos ? total ? total - _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply))) : 0 : supply : supply }];
     }));
 
     const hasSecretSnip = tvl['secret-snip']?.total > 0;
     const total_on_evm = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'evm').map(([k, v]) => v.supply)));
     const total_on_cosmos = _.sum(toArray(Object.entries(tvl).filter(([k, v]) => getChainData(k)?.chain_type === 'cosmos' && k !== native_chain).map(([k, v]) => v[hasAllCosmosChains ? isNativeOnCosmos ? 'supply' : 'total' : 'escrow_balance'])));
-    const total = isNativeOnCosmos || isNativeOnAxelarnet || hasSecretSnip ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => isNativeOnEVM ? d.gateway_balance : d.total)));
+    const total = isNativeOnCosmos || isNativeOnAxelarnet || hasSecretSnip ? total_on_evm + total_on_cosmos : _.sum(toArray(Object.values(tvl).map(d => assetType === 'its' ? d.supply : isNativeOnEVM ? d.gateway_balance : d.total)));
     const evm_escrow_address = isNativeOnCosmos ? getAddress(isNativeOnAxelarnet ? asset : `ibc/${toHash(`transfer/${_.last(tvl[native_chain]?.ibc_channels)?.channel_id}/${asset}`)}`, axelarnet.prefix_address, 32) : undefined;
     const evm_escrow_balance = evm_escrow_address ? toNumber(await getCosmosBalance('axelarnet', evm_escrow_address, { ...assetData, ...addresses?.axelarnet })) : 0;
     const evm_escrow_address_urls = evm_escrow_address && toArray([axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`, `${axelarnetLCDUrl}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`]);
     const percent_diff_supply = evm_escrow_address ? evm_escrow_balance > 0 && total_on_evm > 0 ? Math.abs(evm_escrow_balance - total_on_evm) * 100 / evm_escrow_balance : null : total > 0 && total_on_evm >= 0 && total_on_cosmos >= 0 && total_on_evm + total_on_cosmos > 0 ? Math.abs(total - (total_on_evm + total_on_cosmos)) * 100 / total : null;
 
     data.push({
-      asset, price: (await getTokensPrice({ symbol: asset }))?.[asset]?.price,
+      asset, assetType, price: (await getTokensPrice({ symbol: asset }))?.[asset]?.price,
       tvl, total_on_evm, total_on_cosmos, total,
       evm_escrow_address, evm_escrow_balance, evm_escrow_address_urls,
       percent_diff_supply, is_abnormal_supply: percent_diff_supply > (evm_escrow_address ? percent_diff_escrow_supply_threshold : percent_diff_total_supply_threshold),

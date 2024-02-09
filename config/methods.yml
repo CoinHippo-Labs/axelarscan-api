@@ -555,6 +555,10 @@ methods:
             type: "string"
             description: "asset denom from parameters"
           -
+            name: "assetType"
+            type: "string"
+            description: "asset type (gateway | its)"
+          -
             name: "total"
             type: "float"
             description: "total supply locked on Axelar network"
