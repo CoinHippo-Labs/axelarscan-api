@@ -2314,7 +2314,7 @@ testnet:
       color: "#111111"
       explorer:
         name: "Fraxtal"
-        url: "https://testnet.frax.com"
+        url: "https://explorer.testnet.frax.com"
         icon: "/logos/explorers/fraxtal.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
