@@ -2868,6 +2868,34 @@ testnet:
       prefix_address: "odin"
       prefix_chain_ids:
         - "odin-"
+    sommelier:
+      chain_id: "chardonnay"
+      chain_name: "sommelier"
+      endpoints:
+        lcd:
+          - "http://chardonnay0.somm.fi:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Sommelier"
+        symbol: "SOMM"
+        denom: "usomm"
+        decimals: 6
+      name: "Sommelier"
+      short_name: "SOMM"
+      image: "/logos/chains/sommelier.svg"
+      color: "#eb5d54"
+      explorer:
+        name: "Sommelier"
+        url: ""
+        icon: "/logos/explorers/sommelier.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+      prefix_address: "somm"
+      prefix_chain_ids:
+        - "chardonnay"
     neutron:
       chain_id: "pion-1"
       chain_name: "neutron"
