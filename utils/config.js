@@ -47,12 +47,12 @@ const getChain = (chain, options) => {
 }
 
 const getAssets = async (env = ENVIRONMENT) => {
-  const assetsData = assets[env];
+  const assetsData = _.cloneDeep(assets[env]);
   env = env !== 'mainnet' ? 'testnet' : env;
   const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
 
   Object.values({ ...response?.assets }).filter(d => d.type === 'gateway').forEach(d => {
-    const existingDenom = Object.entries({ ...assetsData }).find(([k, v]) => toArray(_.concat(v.denom, v.denoms)).includes(d.id))?.[0];
+    const existingDenom = Object.entries({ ...assets[env] }).find(([k, v]) => toArray(_.concat(v.denom, v.denoms)).includes(d.id))?.[0];
     const denom = existingDenom || d.id;
     const image = existingDenom ? d.iconUrl?.replace('/images/tokens/', '/logos/assets/') : `${response.resources?.staticAssetHost}${d.iconUrl}`;
     let { addresses } = { ...assetsData[denom] };
@@ -78,12 +78,12 @@ const getAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
 };
 
 const getITSAssets = async (env = ENVIRONMENT) => {
-  const assetsData = its_assets[env];
+  const assetsData = _.cloneDeep(its_assets[env]);
   env = env !== 'mainnet' ? 'testnet' : env;
   const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
 
   Object.values({ ...response?.assets }).filter(d => d.type === 'customInterchain').forEach(d => {
-    const i = assetsData.findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
+    const i = its_assets[env].findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
     if (i > -1) {
       const assetData = assetsData[i];
       assetData.id = d.id;
