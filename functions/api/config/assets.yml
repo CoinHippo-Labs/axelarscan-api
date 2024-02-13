@@ -3936,6 +3936,21 @@ mainnet:
         ibc_denom: "ibc/61DE6748CA641D2422C6D07C53F6C7215EEF7AE8BC61439B83A0DEA061B487E1"
       sei:
         ibc_denom: "ibc/91DF61C7EFA0E52C56BA0724E80B93DF6ADECD3A5B19D38FD2B4A7F955D2E2E7"
+  wmnt-wei:
+    denom: "wmnt-wei"
+    native_chain: "mantle"
+    name: "Wrapped Mantle"
+    symbol: "WMNT"
+    decimals: 18
+    image: "/logos/assets/wmnt.svg"
+    coingecko_id: "mantle"
+    addresses:
+      mantle:
+        address: "0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8"
+      axelarnet:
+        ibc_denom: "wmnt-wei"
+      carbon:
+        ibc_denom: "ibc/80225543AE8CFD1729533264C3672442769B79AC1C80AA66ED0646D9BE02EFF2"
   uosmo:
     denom: "uosmo"
     native_chain: "osmosis"
@@ -4356,6 +4371,92 @@ mainnet:
         ibc_denom: "ibc/9FD79FAFC071C4F858860C44C942F5A108EC9562BBDD26374EC8966C0287D95F"
       chihuahua:
         ibc_denom: "uhuahua"
+  uscrt:
+    denom: "uscrt"
+    native_chain: "secret"
+    name: "Secret"
+    symbol: "SCRT"
+    decimals: 6
+    image: "/logos/assets/scrt.svg"
+    coingecko_id: "secret"
+    addresses:
+      ethereum:
+        address: "0xBA09B04F38310aCF7f098DaC6017D1AFcfB6411d"
+      binance:
+        address: "0x57FeE7e92887d7A4792b5917354D2ce557aa63e9"
+      polygon:
+        address: "0x290540d1E1EdFabD31315dF4f6a9d6638966d54F"
+      avalanche:
+        address: "0x1DF5F036497898F62AF6A2C7085f1f2e75B23500"
+      fantom:
+        address: "0x57FeE7e92887d7A4792b5917354D2ce557aa63e9"
+      moonbeam:
+        address: "0xBA09B04F38310aCF7f098DaC6017D1AFcfB6411d"
+      arbitrum:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      optimism:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      base:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      mantle:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      celo:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      kava:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      filecoin:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      linea:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      scroll:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      axelarnet:
+        ibc_denom: "ibc/5B0968D76C6250F0824BD0BB4317DB34E884A14B345C83FB8256809855AC7CA7"
+      secret:
+        ibc_denom: "uscrt"
+  aislm:
+    denom: "aislm"
+    native_chain: "haqq"
+    name: "ISLM"
+    symbol: "ISLM"
+    decimals: 18
+    image: "/logos/assets/islm.svg"
+    coingecko_id: "islamiccoin"
+    addresses:
+      ethereum:
+        address: "0xF10c41cA085FC8d9326a65408D14Dae28A3E69a5"
+      binance:
+        address: "0xB208C4451bc3DE576a836406bD785951b939503E"
+      polygon:
+        address: "0x4E7A6031B7282431ff9cBC016dA2E7e50e0C54A4"
+      avalanche:
+        address: "0xB5D8c52B65c24B020c51736D22F8bd961A281909"
+      fantom:
+        address: "0xB208C4451bc3DE576a836406bD785951b939503E"
+      moonbeam:
+        address: "0xF10c41cA085FC8d9326a65408D14Dae28A3E69a5"
+      arbitrum:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      optimism:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      base:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      mantle:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      celo:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      kava:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      filecoin:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      linea:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      scroll:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      axelarnet:
+        ibc_denom: "ibc/0B1A2FD6D40BBD60EEAF9ED619767EA8047CC7A46DC2A103183D7E9EE1063599"
+      haqq:
+        ibc_denom: "aislm"
   dot-planck:
     denom: "dot-planck"
     native_chain: "moonbeam"
