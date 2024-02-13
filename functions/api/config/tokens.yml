@@ -178,9 +178,6 @@ axlTIA:
 HUAHUA:
   coingecko_id: "chihuahua-token"
   decimals: 6
-SCRT:
-  coingecko_id: "secret"
-  decimals: 6
 ELYS:
   coingecko_id: "elys"
   default_price:
