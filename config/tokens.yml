@@ -38,6 +38,8 @@ axlOP:
 MNT:
   coingecko_id: "mantle"
   decimals: 18
+WMNT:
+  redirect: "MNT"
 aETH:
   redirect: "ETH"
 CELO:
@@ -175,6 +177,9 @@ axlTIA:
   redirect: "TIA"
 HUAHUA:
   coingecko_id: "chihuahua-token"
+  decimals: 6
+SCRT:
+  coingecko_id: "secret"
   decimals: 6
 ELYS:
   coingecko_id: "elys"
@@ -711,6 +716,8 @@ fxs-wei:
   redirect: "FXS"
 ox-wei:
   redirect: "OX"
+wmnt-wei:
+  redirect: "WMNT"
 uosmo:
   redirect: "OSMO"
 uatom:
@@ -739,6 +746,8 @@ utia:
   redirect: "TIA"
 uhuahua:
   redirect: "HUAHUA"
+uscrt:
+  redirect: "SCRT"
 dot-planck:
   redirect: "DOT"
 uusd:
