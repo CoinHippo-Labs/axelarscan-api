@@ -510,6 +510,7 @@ estimateGasFee:
       value: "fantom"
     -
       id: "gasLimit"
+      require: true
       type: "BigNumber"
       value: "700000"
       override:
@@ -518,8 +519,6 @@ estimateGasFee:
       id: "gasMultiplier"
       type: "number"
       value: 1.1
-      override:
-        value: "1.1"
     -
       id: "minGasPrice"
       type: "BigNumber"
