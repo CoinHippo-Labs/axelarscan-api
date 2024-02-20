@@ -502,6 +502,29 @@ mainnet:
         contract_path: "/token/{address}"
         contract_0_path: "/address/{address}"
         transaction_path: "/tx/{tx}"
+    fraxtal:
+      chain_id: 252
+      chain_name: "fraxtal"
+      maintainer_id: "fraxtal"
+      endpoints:
+        rpc:
+          - "https://rpc.frax.com"
+      native_token:
+        name: "Frax Ether"
+        symbol: "frxETH"
+        decimals: 18
+      name: "Fraxtal"
+      short_name: "FRAXTAL"
+      image: "/logos/chains/fraxtal.svg"
+      color: "#111111"
+      explorer:
+        name: "Fraxtal"
+        url: "https://fraxscan.com"
+        icon: "/logos/explorers/fraxtal.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_id: "axelar-dojo-1"
