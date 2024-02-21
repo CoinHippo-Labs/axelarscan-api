@@ -1691,6 +1691,62 @@ mainnet:
       prefix_address: "chihuahua"
       prefix_chain_ids:
         - "chihuahua-"
+    dymension:
+      chain_id: "dymension_1100-1"
+      chain_name: "dymension"
+      endpoints:
+        lcd:
+          - "https://dymension-api.polkachu.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Dymension"
+        symbol: "DYM"
+        denom: "udym"
+        decimals: 6
+      name: "Dymension"
+      short_name: "DYM"
+      image: "/logos/chains/dymension.svg"
+      color: "#000000"
+      explorer:
+        name: "Dymension"
+        url: "https://dymension.explorers.guru"
+        icon: "/logos/explorers/dymension.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
+      prefix_address: "dym"
+      prefix_chain_ids:
+        - "dymension_"
+    fxcore:
+      chain_id: "fxcore"
+      chain_name: "fxcore"
+      endpoints:
+        lcd:
+          - "https://fx-rest.functionx.io:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Function X"
+        symbol: "FX"
+        denom: "ufx"
+        decimals: 6
+      name: "Function X"
+      short_name: "FX"
+      image: "/logos/chains/fxcore.svg"
+      color: "#020a12"
+      explorer:
+        name: "FxCore"
+        url: "https://ping.pub/fxcore"
+        icon: "/logos/explorers/fxcore.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "fx"
+      prefix_chain_ids:
+        - "fxcore"
     terra-2:
       chain_id: "phoenix-1"
       chain_name: "terra-2"
