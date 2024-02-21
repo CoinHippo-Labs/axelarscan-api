@@ -362,6 +362,9 @@ searchGMP:
         - "sendToken"
         - "RemoteStandardizedTokenAndManagerDeploymentInitialized"
         - "StandardizedTokenDeployed"
+        - "InterchainTransfer"
+        - "InterchainTokenDeployment"
+        - "TokenManagerDeployment"
     -
       id: "sourceChain"
       type: "string"
