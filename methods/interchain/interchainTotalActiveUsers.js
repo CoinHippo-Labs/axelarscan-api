@@ -3,6 +3,7 @@ const _ = require('lodash');
 const { transfersTotalActiveUsers } = require('./token-transfer');
 const { GMPTotalActiveUsers } = require('./gmp');
 const { toArray } = require('../../utils/parser');
+const { isNumber } = require('../../utils/number');
 
 module.exports = async params => _.sum(toArray(await Promise.all(
   ['transfer', 'gmp'].map(d => new Promise(async resolve => {
@@ -20,4 +21,4 @@ module.exports = async params => _.sum(toArray(await Promise.all(
     }
     resolve(value);
   }))
-)));
+)).filter(d => isNumber(d)));
