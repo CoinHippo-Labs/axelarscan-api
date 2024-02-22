@@ -1,10 +1,13 @@
 const config = require('config-yml');
 const { toBeHex } = require('ethers');
 const _ = require('lodash');
+const moment = require('moment');
 
+const { get, write } = require('../services/indexer');
 const { request } = require('./http');
-const { toArray } = require('./parser');
+const { toJson, toArray } = require('./parser');
 const { equalsIgnoreCase, capitalize, removeDoubleQuote } = require('./string');
+const { timeDiff } = require('./time');
 
 const { methods, chains, assets, its_assets, endpoints, tokens, supply, tvl } = { ...config };
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
@@ -44,12 +47,26 @@ const getChain = (chain, options) => {
   const chainsLookup = { terra: env !== 'mainnet' ? 'terra-3' : 'terra-2' };
   if (fromConfig && chainsLookup[chain]) return chainsLookup[chain];
   return getChainData(chain)?.id || chain;
-}
+};
+
+const AXELAR_CONFIG_COLLECTION = 'axelar_configs';
+const getAxelarConfig = async env => {
+  let response;
+  const cacheId = 'config';
+  const { data, updated_at } = { ...await get(AXELAR_CONFIG_COLLECTION, cacheId) };
+  if (data && timeDiff(updated_at) < 3600) response = toJson(data);
+  else {
+    response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
+    if (response?.assets) await write(AXELAR_CONFIG_COLLECTION, cacheId, { data: JSON.stringify(response), updated_at: moment().valueOf() });
+    else if (Object.keys({ ...toJson(data) }).length > 0) response = toJson(data);
+  }
+  return response;
+};
 
 const getAssets = async (env = ENVIRONMENT) => {
   const assetsData = _.cloneDeep(assets[env]);
   env = env !== 'mainnet' ? 'testnet' : env;
-  const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
+  const response = await getAxelarConfig(env);
 
   Object.values({ ...response?.assets }).filter(d => d.type === 'gateway').forEach(d => {
     const existingDenom = Object.entries({ ...assets[env] }).find(([k, v]) => toArray(_.concat(v.denom, v.denoms)).includes(d.id))?.[0];
@@ -80,7 +97,7 @@ const getAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
 const getITSAssets = async (env = ENVIRONMENT) => {
   const assetsData = _.cloneDeep(its_assets[env]);
   env = env !== 'mainnet' ? 'testnet' : env;
-  const response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
+  const response = await getAxelarConfig(env);
 
   Object.values({ ...response?.assets }).filter(d => d.type === 'customInterchain').forEach(d => {
     const i = its_assets[env].findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
@@ -116,7 +133,7 @@ const getITSAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
   if (!asset) return;
   assetsData = assetsData || await getITSAssets(env);
   return toArray(assetsData).find(d => toArray(_.concat(d.id, d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
-}
+};
 
 const getContracts = async (env = ENVIRONMENT) => await request(`${getGMPAPI(env)}/getContracts`);
 const getEndpoints = (env = ENVIRONMENT) => endpoints[env];
@@ -137,6 +154,7 @@ module.exports = {
   TVL_COLLECTION: 'tvls',
   TOKEN_PRICE_COLLECTION: 'token_prices',
   EXCHANGE_RATE_COLLECTION: 'exchange_rates',
+  AXELAR_CONFIG_COLLECTION,
   PRICE_ORACLE_API: 'https://api.coingecko.com/api/v3/',
   CURRENCY: 'usd',
   getMethods,
