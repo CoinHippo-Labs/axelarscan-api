@@ -5990,6 +5990,21 @@ testnet:
         symbol: "axlTSAGA"
       saga:
         ibc_denom: "utsaga"
+  uc4e:
+    denom: "uc4e"
+    native_chain: "chain4energy"
+    name: "C4E"
+    symbol: "C4E"
+    decimals: 6
+    image: "/logos/assets/c4e.svg"
+    coingecko_id: ""
+    addresses:
+      ethereum-2:
+        address: "0x4181bB666c30BcDcFDB28051ADA97B0a42AF002C"
+      axelarnet:
+        ibc_denom: "ibc/12041B94D01218FC1731D43041072D91B79DC2D390F0B11ED50031561B0D1FB0"
+      chain4energy:
+        ibc_denom: "uc4e"
   uusd:
     denom: "uusd"
     native_chain: "terra"
