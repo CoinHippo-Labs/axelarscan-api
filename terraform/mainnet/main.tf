@@ -26,6 +26,14 @@ provider "aws" {
 
 provider "archive" {}
 
+locals {
+  url_subpath_api_mapping = "api" # map apigw to url subpath /api from aws_api_gateway_domain_name
+}
+
+data "aws_api_gateway_domain_name" "mainnet" {
+  domain_name = "api.axelarscan.io"
+}
+
 data "archive_file" "zip" {
   type        = "zip"
   source_dir  = "../../"
@@ -84,6 +92,14 @@ resource "aws_lambda_provisioned_concurrency_config" "config" {
   qualifier                         = aws_lambda_function.function.version
 }
 
+resource "aws_lambda_permission" "api" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.function.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}
+
 resource "aws_apigatewayv2_api" "api" {
   name          = "${var.package_name}-${var.environment}-api"
   protocol_type = "HTTP"
@@ -116,6 +132,25 @@ resource "aws_apigatewayv2_route" "route_method" {
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "ANY /{method}"
   target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+}
+
+resource "aws_apigatewayv2_route" "default" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "$default"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+}
+
+resource "aws_apigatewayv2_stage" "mainnet" {
+  api_id      = aws_apigatewayv2_api.api.id
+  auto_deploy = true
+  name        = var.environment
+}
+
+resource "aws_apigatewayv2_api_mapping" "mainnet" {
+  api_id          = aws_apigatewayv2_api.api.id
+  domain_name     = data.aws_api_gateway_domain_name.mainnet.id
+  stage           = aws_apigatewayv2_stage.mainnet.id
+  api_mapping_key = local.url_subpath_api_mapping
 }
 
 resource "aws_cloudwatch_event_rule" "schedule" {
