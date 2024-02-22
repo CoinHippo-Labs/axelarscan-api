@@ -112,9 +112,10 @@ const getITSAssets = async (env = ENVIRONMENT) => {
   });
   return assetsData;
 };
-const getITSAssetData = async (asset, env = ENVIRONMENT) => {
+const getITSAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
   if (!asset) return;
-  return toArray(await getITSAssets()).find(d => toArray(_.concat(d.id, d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
+  assetsData = assetsData || await getITSAssets(env);
+  return toArray(assetsData).find(d => toArray(_.concat(d.id, d.symbol, d.addresses)).findIndex(s => equalsIgnoreCase(s, asset)) > -1);
 }
 
 const getContracts = async (env = ENVIRONMENT) => await request(`${getGMPAPI(env)}/getContracts`);

@@ -2,7 +2,7 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const { get, write } = require('../../services/indexer');
-const { TOKEN_PRICE_COLLECTION, PRICE_ORACLE_API, CURRENCY, getAssetData, getITSAssetData, getTokens } = require('../../utils/config');
+const { TOKEN_PRICE_COLLECTION, PRICE_ORACLE_API, CURRENCY, getAssetsList, getAssetData, getITSAssets, getITSAssetData, getTokens } = require('../../utils/config');
 const { request } = require('../../utils/http');
 const { toArray } = require('../../utils/parser');
 const { equalsIgnoreCase, lastString } = require('../../utils/string');
@@ -11,17 +11,18 @@ const { timeDiff } = require('../../utils/time');
 
 const tokens = getTokens();
 
-const getTokenConfig = async symbol => {
-  const tokenData = tokens[symbol] || _.last(Object.entries(tokens).find(([k, v]) => equalsIgnoreCase(k, lastString(symbol, '/')))) || await getAssetData(symbol) || await getITSAssetData(symbol);
+const getTokenConfig = async (symbol, additionalAssetsData, notGetAssetConfig = false) => {
+  const tokenData = tokens[symbol] || _.last(Object.entries(tokens).find(([k, v]) => equalsIgnoreCase(k, lastString(symbol, '/')))) || (!notGetAssetConfig ? await getAssetData(symbol, additionalAssetsData) || await getITSAssetData(symbol, additionalAssetsData) : undefined);
   const { redirect } = { ...tokenData };
-  return { ...(redirect ? await getTokenConfig(redirect) : tokenData) };
+  return { ...(redirect ? await getTokenConfig(redirect, additionalAssetsData, notGetAssetConfig) : tokenData) };
 };
 
 module.exports = async ({ symbols, symbol, timestamp = moment(), currency = CURRENCY, debug = false }) => {
   symbols = _.uniq(toArray(_.concat(symbols, symbol)));
+  const assetsData = toArray(await Promise.all(toArray(symbols).map(s => new Promise(async resolve => resolve(Object.keys(await getTokenConfig(s, undefined, true)).length === 0))))).length > 0 ? toArray(_.concat(await Promise.all([0, 1].map(i => new Promise(async resolve => resolve(i === 0 ? await getAssetsList() : await getITSAssets())))))) : undefined;
 
   let updatedAt;
-  let tokensData = await Promise.all(toArray(symbols).map(s => new Promise(async resolve => resolve({ symbol: s, ...await getTokenConfig(s) }))));
+  let tokensData = await Promise.all(toArray(symbols).map(s => new Promise(async resolve => resolve({ symbol: s, ...await getTokenConfig(s, assetsData) }))));
   if (tokensData.findIndex(d => d.coingecko_id) > -1) {
     // query historical price
     if (timeDiff(timestamp, 'hours') > 4) {
