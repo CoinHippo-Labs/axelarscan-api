@@ -167,6 +167,7 @@ module.exports = {
   getAssetsList,
   getAssetData,
   getITSAssets,
+  getITSAssetsList,
   getITSAssetData,
   getContracts,
   getEndpoints,
