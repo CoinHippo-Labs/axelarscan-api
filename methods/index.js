@@ -7,12 +7,12 @@ const { getTVL, getTVLAlert } = require('./tvl');
 const GMP = require('./interchain/gmp');
 const tokenTransfer = require('./interchain/token-transfer');
 const { interchainChart, interchainTotalVolume, interchainTotalFee, interchainTotalActiveUsers } = require('./interchain');
-const { getMethods, getChainsList, getAssetsList, getITSAssets, getContracts } = require('../utils/config');
+const { getMethods, getChainsList, getAssetsList, getITSAssetsList, getContracts } = require('../utils/config');
 
 const METHODS = {
   getChains: () => getChainsList(),
   getAssets: () => getAssetsList(),
-  getITSAssets: () => getITSAssets(),
+  getITSAssets: () => getITSAssetsList(),
   getContracts: () => getContracts(),
   getTokensPrice,
   getTotalSupply,

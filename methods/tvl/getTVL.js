@@ -7,7 +7,7 @@ const { getTokensPrice } = require('../tokens');
 const { get, read, write } = require('../../services/indexer');
 const { getBalance, getTokenSupply } = require('../../utils/chain/evm');
 const { getCosmosBalance, getIBCSupply } = require('../../utils/chain/cosmos');
-const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData, getITSAssets, getITSAssetData, getContracts, getTVLConfig } = require('../../utils/config');
+const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData, getITSAssetsList, getITSAssetData, getContracts, getTVLConfig } = require('../../utils/config');
 const { toHash, getAddress, toArray } = require('../../utils/parser');
 const { lastString } = require('../../utils/string');
 const { isNumber, toNumber } = require('../../utils/number');
@@ -18,7 +18,7 @@ const IBC_CHANNELS_UPDATE_INTERVAL_SECONDS = 240 * 60;
 
 module.exports = async params => {
   const assetsData = toArray(await getAssetsList());
-  const itsAssetsData = toArray(await getITSAssets());
+  const itsAssetsData = toArray(await getITSAssetsList());
   const { gateway_contracts } = { ...await getContracts() };
   const { asset, chain, force_update } = { ...params };
   let { assets, chains } = { ...params };

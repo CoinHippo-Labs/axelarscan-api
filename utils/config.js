@@ -54,7 +54,7 @@ const getAxelarConfig = async env => {
   let response;
   const cacheId = 'config';
   const { data, updated_at } = { ...await get(AXELAR_CONFIG_COLLECTION, cacheId) };
-  if (data && timeDiff(updated_at) < 3600) response = toJson(data);
+  if (data && timeDiff(updated_at) < 600) response = toJson(data);
   else {
     response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
     if (response?.assets) await write(AXELAR_CONFIG_COLLECTION, cacheId, { data: JSON.stringify(response), updated_at: moment().valueOf() });
@@ -129,6 +129,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
   });
   return assetsData;
 };
+const getITSAssetsList = async (env = ENVIRONMENT) => await getITSAssets(env);
 const getITSAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
   if (!asset) return;
   assetsData = assetsData || await getITSAssets(env);
