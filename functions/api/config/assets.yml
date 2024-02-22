@@ -231,6 +231,9 @@ mainnet:
       chihuahua:
         ibc_denom: "ibc/3816292E7134C03F261BA0E1CF4ED8E46E74DEF348A8BD4DF72E337CCFA482A6"
         symbol: "axlUSDC"
+      dymension:
+        ibc_denom: "ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65"
+        symbol: "axlUSDC"
       terra:
         ibc_denom: "ibc/E1E3674A0E4E1EF9C69646F9AF8D9497173821826074622D831BAB73CCB99A2D"
         symbol: "axlUSDC"
@@ -1259,6 +1262,9 @@ mainnet:
         symbol: "axlETH"
       chihuahua:
         ibc_denom: "ibc/E614301CF4F54C23FAEEBF50F33D247AC743E9F247AB094AC57F68DB3A80635C"
+        symbol: "axlETH"
+      dymension:
+        ibc_denom: "ibc/E3AB0DFDE9E782262B770C32DF94AC2A92B93DC4825376D6F6C874D3C877864E"
         symbol: "axlETH"
       terra:
         ibc_denom: "ibc/9B68CC79EFF12D25AF712EB805C5062B8F97B2CCE5F3FE55B107EE03095514A3"
