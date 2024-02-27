@@ -525,6 +525,29 @@ mainnet:
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
         transaction_path: "/tx/{tx}"
+    blast:
+      chain_id: 238
+      chain_name: "blast"
+      maintainer_id: "blast"
+      endpoints:
+        rpc:
+          - "https://rpc.blastblockchain.com"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Blast"
+      short_name: "BLAST"
+      image: "/logos/chains/blast.svg"
+      color: "#fefb1c"
+      explorer:
+        name: "Blast"
+        url: "https://mainnet.blastblockchain.com"
+        icon: "/logos/explorers/blast.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        transaction_path: "/tx/{tx}"
   cosmos:
     axelarnet:
       chain_id: "axelar-dojo-1"
