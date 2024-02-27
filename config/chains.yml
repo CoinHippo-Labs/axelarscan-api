@@ -499,12 +499,12 @@ mainnet:
         contract_path: "/token/{address}"
         transaction_path: "/tx/{tx}"
     blast:
-      chain_id: 238
+      chain_id: 81457
       chain_name: "blast"
       maintainer_id: "blast"
       endpoints:
         rpc:
-          - "https://rpc.blastblockchain.com"
+          - ""
       native_token:
         name: "Ethereum"
         symbol: "ETH"
@@ -515,7 +515,7 @@ mainnet:
       color: "#fefb1c"
       explorer:
         name: "Blast"
-        url: "https://mainnet.blastblockchain.com"
+        url: "https://blastscan.io"
         icon: "/logos/explorers/blast.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
@@ -2418,6 +2418,30 @@ testnet:
         name: "Fraxtal"
         url: "https://holesky.fraxscan.com"
         icon: "/logos/explorers/fraxtal.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        transaction_path: "/tx/{tx}"
+    blast:
+      chain_id: 168587773
+      chain_name: "blast"
+      maintainer_id: "blast"
+      endpoints:
+        rpc:
+          - "https://sepolia.blast.io"
+          - "https://blast-sepolia.blockpi.network/v1/rpc/public"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Blast"
+      short_name: "BLAST"
+      image: "/logos/chains/blast.svg"
+      color: "#fefb1c"
+      explorer:
+        name: "Blast"
+        url: "https://testnet.blastscan.io"
+        icon: "/logos/explorers/blast.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
