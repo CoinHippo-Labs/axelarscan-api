@@ -18,7 +18,7 @@ testnet:
   rpc: "http://testnet.archive-node-rpc.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
   lcd: "http://testnet.archive-node-lcd.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:1317"
   api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
-  gmp_api: "https://7hf6gameo0.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.gmp.axelarscan.io"
+  gmp_api: "https://drfti3v7x2.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.gmp.axelarscan.io"
   app: "https://testnet.axelarscan.io"
   mintscan:
     api: "https://api.mintscan.io/v1/axelar-testnet"

@@ -12,9 +12,9 @@ module.exports = async (params = {}) => {
   const _params = generateReadParams(params);
   // search data
   output = await search(POLL_COLLECTION, query, _params);
-  if (await updatePolls(POLL_COLLECTION, output?.data, params)) {
-    output = await search(POLL_COLLECTION, query, _params, 0.5 * 1000);
-  }
+  // if (await updatePolls(POLL_COLLECTION, output?.data, params)) {
+  //   output = await search(POLL_COLLECTION, query, _params, 0.5 * 1000);
+  // }
   output = {
     ...output,
     data: addFieldsToResult(output?.data),
