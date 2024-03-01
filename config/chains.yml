@@ -504,7 +504,8 @@ mainnet:
       maintainer_id: "blast"
       endpoints:
         rpc:
-          - ""
+          - "https://rpc.ankr.com/blast"
+          - "https://blast.blockpi.network/v1/rpc/public"
       native_token:
         name: "Ethereum"
         symbol: "ETH"
