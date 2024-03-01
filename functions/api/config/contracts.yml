@@ -77,9 +77,15 @@ testnet:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    optimism-sepolia:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     base:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    base-sepolia:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     mantle:
+      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+    mantle-sepolia:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     celo:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
