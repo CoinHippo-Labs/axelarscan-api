@@ -1842,6 +1842,7 @@ testnet:
       chain_id: 5
       chain_name: "ethereum-2"
       maintainer_id: "ethereum-2"
+      deprecated: true
       endpoints:
         rpc:
           - "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -2065,6 +2066,7 @@ testnet:
       chain_id: 421613
       chain_name: "arbitrum"
       maintainer_id: "arbitrum"
+      deprecated: true
       endpoints:
         rpc:
           # - "https://goerli-rollup.arbitrum.io/rpc"
@@ -2117,6 +2119,7 @@ testnet:
       chain_id: 420
       chain_name: "optimism"
       maintainer_id: "optimism"
+      deprecated: true
       endpoints:
         rpc:
           - "https://optimism-goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
@@ -2164,6 +2167,7 @@ testnet:
       chain_id: 84531
       chain_name: "base"
       maintainer_id: "base"
+      deprecated: true
       endpoints:
         rpc:
           - "https://goerli.base.org"
@@ -2212,6 +2216,7 @@ testnet:
       chain_id: 5001
       chain_name: "mantle"
       maintainer_id: "mantle"
+      deprecated: true
       endpoints:
         rpc:
           - "https://rpc.testnet.mantle.xyz"
