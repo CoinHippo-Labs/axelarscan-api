@@ -22,7 +22,7 @@ module.exports = context => {
   }
   if (context || !enable) {
     archive(context);
-    updatePolls(context);
+    // updatePolls(context);
     updateBatches(context);
     updateTVL(context);
     updateWraps(context);
