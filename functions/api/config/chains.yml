@@ -2542,10 +2542,10 @@ testnet:
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
         transaction_path: "/tx/{tx}"
-    blast:
+    blast-sepolia:
       chain_id: 168587773
-      chain_name: "blast"
-      maintainer_id: "blast"
+      chain_name: "blast-sepolia"
+      maintainer_id: "blast-sepolia"
       endpoints:
         rpc:
           - "https://sepolia.blast.io"
