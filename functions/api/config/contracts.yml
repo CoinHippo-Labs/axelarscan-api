@@ -74,7 +74,7 @@ testnet:
     arbitrum:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     arbitrum-sepolia:
-      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+      address: "0xe1cE95479C84e9809269227C7F8524aE051Ae77a"
     optimism:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     optimism-sepolia:
@@ -86,7 +86,7 @@ testnet:
     mantle:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     mantle-sepolia:
-      address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
+      address: "0xC8D18F85cB0Cee5C95eC29c69DeaF6cea972349c"
     celo:
       address: "0xe432150cce91c13a887f7D836923d5597adD8E31"
     kava:
