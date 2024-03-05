@@ -94,6 +94,8 @@ SEI:
 STARS:
   coingecko_id: "stargaze"
   decimals: 6
+axlSTARS:
+  redirect: "STARS"
 MNTL:
   coingecko_id: "assetmantle"
   decimals: 6
@@ -745,6 +747,8 @@ uhuahua:
   redirect: "HUAHUA"
 uscrt:
   redirect: "SCRT"
+ustars:
+  redirect: "STARS"
 dot-planck:
   redirect: "DOT"
 uusd:
