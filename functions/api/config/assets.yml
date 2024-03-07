@@ -60,6 +60,9 @@ mainnet:
       fraxtal:
         address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
         symbol: "wAXL"
+      blast:
+        address: "0x23ee2343B892b1BB63503a4FAbc840E0e2C6810f"
+        symbol: "wAXL"
       axelarnet:
         ibc_denom: "uaxl"
       osmosis:
@@ -133,6 +136,9 @@ mainnet:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
       fraxtal:
+        address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
+        symbol: "axlUSDC"
+      blast:
         address: "0xEB466342C4d449BC9f53A865D5Cb90586f405215"
         symbol: "axlUSDC"
       axelarnet:
@@ -337,6 +343,9 @@ mainnet:
       fraxtal:
         address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
         symbol: "axlUSDT"
+      blast:
+        address: "0x7f5373AE26c3E8FfC4c77b7255DF7eC1A9aF52a6"
+        symbol: "axlUSDT"
       axelarnet:
         ibc_denom: "uusdt"
         symbol: "axlUSDT"
@@ -491,6 +500,9 @@ mainnet:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       fraxtal:
+        address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
+        symbol: "axlDAI"
+      blast:
         address: "0x5C7e299CF531eb66f2A1dF637d37AbB78e6200C7"
         symbol: "axlDAI"
       axelarnet:
@@ -746,6 +758,9 @@ mainnet:
       fraxtal:
         address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
         symbol: "axlFRAX"
+      blast:
+        address: "0x406Cde76a3fD20e48bc1E0F60651e60Ae204B040"
+        symbol: "axlFRAX"
       axelarnet:
         ibc_denom: "frax-wei"
         symbol: "axlFRAX"
@@ -870,6 +885,8 @@ mainnet:
       scroll:
         address: "0xf3602C5A7f625181659445C8dDDde73dA15c22e3"
       fraxtal:
+        address: "0xf3602C5A7f625181659445C8dDDde73dA15c22e3"
+      blast:
         address: "0xf3602C5A7f625181659445C8dDDde73dA15c22e3"
       axelarnet:
         ibc_denom: "sfrax-wei"
@@ -1038,6 +1055,9 @@ mainnet:
       fraxtal:
         address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
         symbol: "axlWBTC"
+      blast:
+        address: "0x1a35EE4640b0A3B87705B0A4B45D227Ba60Ca2ad"
+        symbol: "axlWBTC"
       axelarnet:
         ibc_denom: "wbtc-satoshi"
         symbol: "axlWBTC"
@@ -1194,6 +1214,9 @@ mainnet:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       fraxtal:
+        address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
+        symbol: "axlETH"
+      blast:
         address: "0xb829b68f57CC546dA7E5806A929e53bE32a4625D"
         symbol: "axlETH"
       axelarnet:
@@ -1542,6 +1565,8 @@ mainnet:
         address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
       fraxtal:
         address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
+      blast:
+        address: "0xEcc68d0451E20292406967Fe7C04280E5238Ac7D"
       axelarnet:
         ibc_denom: "frxeth-wei"
       osmosis:
@@ -1626,6 +1651,8 @@ mainnet:
       scroll:
         address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
       fraxtal:
+        address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
+      blast:
         address: "0x4f74ca4a686203a5D4eBF6E8868c5eBC450bf283"
       axelarnet:
         ibc_denom: "sfrxeth-wei"
@@ -2402,6 +2429,8 @@ mainnet:
       scroll:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       fraxtal:
+        address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
+      blast:
         address: "0x5E2Cf56A562b1bDD32ec26315063074ADC420C73"
       axelarnet:
         ibc_denom: "wfil-wei"
@@ -3332,6 +3361,9 @@ mainnet:
       fraxtal:
         address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
         symbol: "axlWMAI"
+      blast:
+        address: "0x88DfaAABaf06f3a41D2606EA98BC8edA109AbeBb"
+        symbol: "axlWMAI"
       axelarnet:
         ibc_denom: "wmai-wei"
         symbol: "axlWMAI"
@@ -3370,6 +3402,8 @@ mainnet:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       fraxtal:
         address: "0xa334884bF6b0A066d553D19e507315E839409e62"
+      blast:
+        address: "0xa334884bF6b0A066d553D19e507315E839409e62"
       axelarnet:
         ibc_denom: "ern-wei"
   stern-wei:
@@ -3406,6 +3440,8 @@ mainnet:
       scroll:
         address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
       fraxtal:
+        address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
+      blast:
         address: "0xf7A0dd3317535eC4f4d29ADF9d620B3d8D5D5069"
       axelarnet:
         ibc_denom: "stern-wei"
@@ -3619,6 +3655,9 @@ mainnet:
       fraxtal:
         address: "0xB448eC505C924944ca8B2C55EF05c299eE0781df"
         symbol: "axlKNC"
+      blast:
+        address: "0xB448eC505C924944ca8B2C55EF05c299eE0781df"
+        symbol: "axlKNC"
       axelarnet:
         ibc_denom: "knc-wei"
         symbol: "axlKNC"
@@ -3662,6 +3701,8 @@ mainnet:
       scroll:
         address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
       fraxtal:
+        address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
+      blast:
         address: "0x00e1724885473B63bCE08a9f0a52F35b0979e35A"
       axelarnet:
         ibc_denom: "oath-wei"
@@ -3917,6 +3958,8 @@ mainnet:
         address: "0x219279953d8D23520B7878447e8A6c266a51de2f"
       fraxtal:
         address: "0x219279953d8D23520B7878447e8A6c266a51de2f"
+      blast:
+        address: "0x219279953d8D23520B7878447e8A6c266a51de2f"
       axelarnet:
         ibc_denom: "fpi-wei"
       osmosis:
@@ -3963,6 +4006,8 @@ mainnet:
       scroll:
         address: "0x5860a0bF37133f8461b2DEDe7C80e55D6bfF3721"
       fraxtal:
+        address: "0x5860a0bF37133f8461b2DEDe7C80e55D6bfF3721"
+      blast:
         address: "0x5860a0bF37133f8461b2DEDe7C80e55D6bfF3721"
       axelarnet:
         ibc_denom: "fxs-wei"
@@ -4074,6 +4119,9 @@ mainnet:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
       fraxtal:
+        address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
+        symbol: "axlATOM"
+      blast:
         address: "0x06beE9E7238a331B68D83Df3B5B9B16d5DBa83ff"
         symbol: "axlATOM"
       axelarnet:
@@ -4243,6 +4291,8 @@ mainnet:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       fraxtal:
         address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
+      blast:
+        address: "0x05931D5e2F7E1C1A710c9c1dCdD94e413652376F"
       axelarnet:
         ibc_denom: "ibc/F42AC6E51C46D30F7F39ADCA1A38E29374745771F23AB3250444F09EBBB4A107"
       stride:
@@ -4283,6 +4333,8 @@ mainnet:
       scroll:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       fraxtal:
+        address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
+      blast:
         address: "0x7ba861c07d40e3341B901Fd6F418e96E0132E25b"
       axelarnet:
         ibc_denom: "ibc/CFB9D610B7BB02E8E6FDB0AF87FCADDF97687A3F13E76AC624C500E54335ADAA"
@@ -4348,6 +4400,8 @@ mainnet:
       scroll:
         address: "0x809c55916bb542c1419724022B3F0162087E3C88"
       fraxtal:
+        address: "0x809c55916bb542c1419724022B3F0162087E3C88"
+      blast:
         address: "0x809c55916bb542c1419724022B3F0162087E3C88"
       axelarnet:
         ibc_denom: "ibc/F236A548FDC4436557B13919391109309C2FF58D7E89C3C8840C2C703E582DCD"
@@ -4429,6 +4483,8 @@ mainnet:
         address: "0x64D599b3d0c5f1375e5e639E98aB86298261A30B"
       fraxtal:
         address: "0x64D599b3d0c5f1375e5e639E98aB86298261A30B"
+      blast:
+        address: "0x64D599b3d0c5f1375e5e639E98aB86298261A30B"
       axelarnet:
         ibc_denom: "ibc/9FD79FAFC071C4F858860C44C942F5A108EC9562BBDD26374EC8966C0287D95F"
       chihuahua:
@@ -4473,6 +4529,8 @@ mainnet:
       scroll:
         address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
       fraxtal:
+        address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
+      blast:
         address: "0x308717203Ab045d4a8fE49ECD149aB14F0Eb16c5"
       axelarnet:
         ibc_denom: "ibc/5B0968D76C6250F0824BD0BB4317DB34E884A14B345C83FB8256809855AC7CA7"
@@ -4535,6 +4593,9 @@ mainnet:
       fraxtal:
         address: "0xd58Dc7aa4827CC51169b68E64f0fD4EA7faC557D"
         symbol: "axlSTARS"
+      blast:
+        address: "0xd58Dc7aa4827CC51169b68E64f0fD4EA7faC557D"
+        symbol: "axlSTARS"
       axelarnet:
         ibc_denom: "ibc/A139C0E0B5E87CBA8EAEEB12B9BEE13AC7C814CFBBFA87BBCADD67E31003466C"
         symbol: "axlSTARS"
@@ -4580,6 +4641,8 @@ mainnet:
       scroll:
         address: "0x2a98d978817949D45a5528013850772E762B7F12"
       fraxtal:
+        address: "0x2a98d978817949D45a5528013850772E762B7F12"
+      blast:
         address: "0x2a98d978817949D45a5528013850772E762B7F12"
       axelarnet:
         ibc_denom: "ibc/0B1A2FD6D40BBD60EEAF9ED619767EA8047CC7A46DC2A103183D7E9EE1063599"
