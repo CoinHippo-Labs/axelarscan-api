@@ -3,8 +3,8 @@
 ###########################
 
 mainnet:
-  rpc: "http://archive-node-rpc.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
-  lcd: "http://archive-node-lcd.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
+  rpc: "http://rpc.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
+  lcd: "http://lcd.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
   api: "https://l4sytro3nf.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/api"
   gmp_api: "https://tlvaojpaa1.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/gmp"
   token_transfer_api: "https://pwjmnxldza.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/token"
