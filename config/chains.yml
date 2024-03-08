@@ -2309,6 +2309,7 @@ testnet:
       chain_id: 3141
       chain_name: "filecoin"
       maintainer_id: "filecoin"
+      deprecated: true
       no_recover: true
       endpoints:
         rpc:
