@@ -6,10 +6,10 @@ const { toArray } = require('../../utils/parser');
 
 module.exports = async params => {
   const data = await Promise.all(
-    ['transfer', 'gmp'].map(d => new Promise(async resolve => {
+    ['transfers', 'gmp'].map(d => new Promise(async resolve => {
       let response;
       switch (d) {
-        case 'transfer':
+        case 'transfers':
           response = await transfersChart(params);
           break;
         case 'gmp':

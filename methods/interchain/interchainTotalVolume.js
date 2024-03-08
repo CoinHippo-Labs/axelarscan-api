@@ -6,10 +6,10 @@ const { toArray } = require('../../utils/parser');
 const { isNumber } = require('../../utils/number');
 
 module.exports = async params => _.sum(toArray(await Promise.all(
-  ['transfer', 'gmp'].map(d => new Promise(async resolve => {
+  ['transfers', 'gmp'].map(d => new Promise(async resolve => {
     let value;
     switch (d) {
-      case 'transfer':
+      case 'transfers':
         value = await transfersTotalVolume(params);
         break;
       case 'gmp':
