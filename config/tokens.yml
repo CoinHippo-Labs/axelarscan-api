@@ -94,6 +94,8 @@ SEI:
 STARS:
   coingecko_id: "stargaze"
   decimals: 6
+axlSTARS:
+  redirect: "STARS"
 MNTL:
   coingecko_id: "assetmantle"
   decimals: 6
@@ -195,23 +197,20 @@ SAGA:
   decimals: 6
 DYM:
   coingecko_id: "dymension"
-  default_price:
-    usd: 0.01
   decimals: 6
 NIBI:
   coingecko_id: "nibiru"
-  default_price:
-    usd: 0.01
   decimals: 6
 FX:
   coingecko_id: "fx-coin"
-  default_price:
-    usd: 0.01
   decimals: 6
 C4E:
   coingecko_id: "c4e"
   default_price:
     usd: 0.01
+  decimals: 6
+LAVA:
+  coingecko_id: "lava"
   decimals: 6
 WHALE:
   coingecko_id: "white-whale"
@@ -745,6 +744,8 @@ uhuahua:
   redirect: "HUAHUA"
 uscrt:
   redirect: "SCRT"
+ustars:
+  redirect: "STARS"
 dot-planck:
   redirect: "DOT"
 uusd:
