@@ -12,7 +12,7 @@ module.exports = async params => {
 
   const { denom, name } = { ...(await getAssetData(symbol) || await getITSAssetData(symbol)) };
   const { data, updated_at } = { ...await getTokensPrice({ symbol, currency: CURRENCY, debug: true }) };
-  const price = data?.[symbol]?.price;
+  const { price } = { ...(data?.[symbol] || Object.values({ ...data }).find(d => d.denom === symbol)) };
   const supplyData = await getCirculatingSupply({ symbol, debug: true });
   const circulatingSupply = supplyData?.circulating_supply;
   const totalSupply = denom === 'uaxl' ? await getTotalSupply({ asset: denom }) : null;

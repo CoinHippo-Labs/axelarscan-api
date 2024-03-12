@@ -11,7 +11,8 @@ const aggregate = async (data, assetsData, options) => Object.entries(_.groupBy(
   const { denom, symbol, decimals } = { ...assetData };
 
   const amount = formatUnits(d.amount, decimals || 6);
-  const { price } = { ...(includesValue ? (await getTokensPrice({ symbol: denom }))?.[denom] : undefined) };
+  const pricesData = includesValue ? await getTokensPrice({ symbol: denom }) : undefined;
+  const { price } = { ...(pricesData?.[denom] || Object.values({ ...pricesData }).find(d => d.denom === denom)) };
   const value = isNumber(price) ? amount * price : undefined;
   resolve({ ...d, symbol, amount, price, value, asset_data: assetData });
 }))), 'denom')).map(([k, v]) => { return { denom: k, ..._.head(v), amount: _.sumBy(v, 'amount'), value: _.sumBy(v, 'value') }; });

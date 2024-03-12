@@ -219,8 +219,10 @@ module.exports = async params => {
     const evm_escrow_address_urls = evm_escrow_address && toArray([axelarnet.explorer?.url && axelarnet.explorer.address_path && `${axelarnet.explorer.url}${axelarnet.explorer.address_path.replace('{address}', evm_escrow_address)}`, `${axelarnetLCDUrl}/cosmos/bank/v1beta1/balances/${evm_escrow_address}`]);
     const percent_diff_supply = evm_escrow_address ? evm_escrow_balance > 0 && total_on_evm > 0 ? Math.abs(evm_escrow_balance - total_on_evm) * 100 / evm_escrow_balance : null : total > 0 && total_on_evm >= 0 && total_on_cosmos >= 0 && total_on_evm + total_on_cosmos > 0 ? Math.abs(total - (total_on_evm + total_on_cosmos)) * 100 / total : null;
 
+    const pricesData = await getTokensPrice({ symbol: asset });
+    const { price } = { ...(pricesData?.[asset] || Object.values({ ...pricesData }).find(d => d.denom === asset)) };
     data.push({
-      asset, assetType, price: (await getTokensPrice({ symbol: asset }))?.[asset]?.price,
+      asset, assetType, price,
       tvl, total_on_evm, total_on_cosmos, total,
       evm_escrow_address, evm_escrow_balance, evm_escrow_address_urls,
       percent_diff_supply, is_abnormal_supply: percent_diff_supply > (evm_escrow_address ? percent_diff_escrow_supply_threshold : percent_diff_total_supply_threshold),
