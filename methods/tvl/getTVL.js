@@ -49,7 +49,7 @@ module.exports = async params => {
     else if (assets.length > 1 && hasAllChains) {
       const response = await read(TVL_COLLECTION, {
         bool: {
-          should: assets.map(id => { return { match: { _id: id } }; }),
+          should: assets.map(id => { return { match: { _id: normalizeCacheId(id) } }; }),
           minimum_should_match: 1,
         },
       }, { size: assets.length });
