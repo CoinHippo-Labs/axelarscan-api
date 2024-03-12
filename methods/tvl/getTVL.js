@@ -8,13 +8,15 @@ const { get, read, write } = require('../../services/indexer');
 const { getBalance, getTokenSupply } = require('../../utils/chain/evm');
 const { getCosmosBalance, getIBCSupply } = require('../../utils/chain/cosmos');
 const { IBC_CHANNEL_COLLECTION, TVL_COLLECTION, getChainsList, getChainData, getAssetsList, getAssetData, getITSAssetsList, getITSAssetData, getContracts, getTVLConfig } = require('../../utils/config');
-const { toHash, getAddress, toArray } = require('../../utils/parser');
-const { lastString } = require('../../utils/string');
+const { toHash, getAddress, split, toArray } = require('../../utils/parser');
+const { isString, lastString } = require('../../utils/string');
 const { isNumber, toNumber } = require('../../utils/number');
 const { timeDiff } = require('../../utils/time');
 
 const CACHE_AGE_SECONDS = 60 * 60;
 const IBC_CHANNELS_UPDATE_INTERVAL_SECONDS = 240 * 60;
+
+const normalizeCacheId = id => isString(id) ? split(id, { delimiter: '/' }).join('_') : undefined;
 
 module.exports = async params => {
   const assetsData = toArray(await getAssetsList());
@@ -35,7 +37,7 @@ module.exports = async params => {
   const hasAllChains = hasAllEVMChains && hasAllCosmosChains;
 
   // set cacheId on querying single asset on every chains
-  const cacheId = assets.length === 1 && hasAllChains && _.head(assets);
+  const cacheId = assets.length === 1 && hasAllChains && normalizeCacheId(_.head(assets));
   let cache;
   if (!force_update) {
     // query cache
