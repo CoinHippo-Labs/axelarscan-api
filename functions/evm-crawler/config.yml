@@ -3,6 +3,7 @@
 #########################
 
 mainnet:
+  disabled: true
   api: "https://lmfw5li4k2.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io"
   past_events_block_per_request: 100 # [1-500]
   max_query_events_block: 1000
@@ -10,6 +11,7 @@ mainnet:
 
 
 testnet:
+  disabled: true
   api: "https://525fvkaztb.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io"
   past_events_block_per_request: 100 # [1-500]
   max_query_events_block: 1000
@@ -17,6 +19,7 @@ testnet:
 
 
 stagenet:
+  disabled: true
   api: "https://9d7cqdtnme.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io"
   past_events_block_per_request: 100 # [1-500]
   max_query_events_block: 1000

@@ -6,6 +6,7 @@ const { equalsIgnoreCase, toArray, parseRequestError } = require('./');
 const ENVIRONMENT = process.env.ENVIRONMENT || 'testnet';
 
 const getConfig = (env = ENVIRONMENT) => { return { ...config?.[env] }; };
+const getDisabled = (env = ENVIRONMENT) => getConfig(env)?.disabled;
 const getAPI = (timeout = 30000, env = ENVIRONMENT) => getConfig(env).api && axios.create({ baseURL: getConfig(env).api, timeout });
 
 const getChains = async (env = ENVIRONMENT) => {
@@ -59,6 +60,7 @@ module.exports = {
   ENVIRONMENT,
   GATEWAY_EVENTS: ['TokenSent', 'Executed'],
   getConfig,
+  getDisabled,
   getAPI,
   getChains,
   getChainData,
