@@ -11,15 +11,8 @@
 3. [Install terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ```bash
-cd ./functions/api
 yarn
-cd ./functions/axelar-crawler
-yarn
-cd ./functions/evm-crawler
-yarn
-
 cd ./terraform/testnet
-cp variables.tf.example variables.tf
 terraform init
 terraform apply
 ```

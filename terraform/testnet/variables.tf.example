@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "iam_role" {
   description = "AWS IAM role"
-  default     = ""
+  default     = "axelar-gmp-role-lambda"
 }
 
 variable "project_name" {
@@ -13,43 +13,28 @@ variable "project_name" {
   default     = "axelarscan"
 }
 
+variable "package_name" {
+  description = "Package name"
+  default     = "axelarscan-api"
+}
+
 variable "environment" {
   description = "Environment"
   default     = "testnet"
 }
 
-variable "general_indexer_url" {
-  description = "General indexer url"
+variable "indexer_url" {
+  description = "Indexer url"
   default     = ""
 }
 
-variable "general_indexer_username" {
-  description = "General indexer username"
+variable "indexer_username" {
+  description = "Indexer username"
   default     = ""
 }
 
-variable "general_indexer_password" {
-  description = "General indexer password"
-  default     = ""
-}
-
-variable "transfers_indexer_url" {
-  description = "Transfers indexer url"
-  default     = ""
-}
-
-variable "transfers_indexer_username" {
-  description = "Transfers indexer username"
-  default     = ""
-}
-
-variable "transfers_indexer_password" {
-  description = "Transfers indexer password"
-  default     = ""
-}
-
-variable "api_gateway_integration_id" {
-  description = "API gateway integration id"
+variable "indexer_password" {
+  description = "Indexer password"
   default     = ""
 }
 

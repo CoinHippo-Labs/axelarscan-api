@@ -1,0 +1,44 @@
+variable "aws_region" {
+  description = "AWS region"
+  default     = "us-east-2"
+}
+
+variable "iam_role" {
+  description = "AWS IAM role"
+  default     = "axelar-gmp-role-lambda"
+}
+
+variable "project_name" {
+  description = "Project name"
+  default     = "axelarscan"
+}
+
+variable "package_name" {
+  description = "Package name"
+  default     = "axelarscan-api"
+}
+
+variable "environment" {
+  description = "Environment"
+  default     = "stagenet"
+}
+
+variable "indexer_url" {
+  description = "Indexer url"
+  default     = ""
+}
+
+variable "indexer_username" {
+  description = "Indexer username"
+  default     = ""
+}
+
+variable "indexer_password" {
+  description = "Indexer password"
+  default     = ""
+}
+
+variable "log_level" {
+  description = "Log level"
+  default     = "debug"
+}
