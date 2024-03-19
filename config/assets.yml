@@ -3361,7 +3361,7 @@ mainnet:
     native_chain: "ethereum"
     name: "Wrapped DOGE"
     symbol: "WDOGE"
-    decimals: 18
+    decimals: 8
     image: "/logos/assets/wdoge.svg"
     addresses:
       ethereum:
