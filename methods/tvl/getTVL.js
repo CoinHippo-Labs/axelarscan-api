@@ -89,6 +89,7 @@ module.exports = async params => {
               break;
             default:
               value.address = v.tokenAddress;
+              break;
           }
           return [k, value];
         })) };
