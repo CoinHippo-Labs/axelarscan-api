@@ -95,12 +95,12 @@ const getAssetData = async (asset, assetsData, env = ENVIRONMENT) => {
 };
 
 const getITSAssets = async (env = ENVIRONMENT) => {
-  const assetsData = _.cloneDeep(its_assets[env]);
+  const assetsData = _.cloneDeep(toArray(its_assets[env]));
   env = env !== 'mainnet' ? 'testnet' : env;
   const response = await getAxelarConfig(env);
 
   Object.values({ ...response?.assets }).filter(d => ['customInterchain', 'interchain', 'canonical'].includes(d.type)).forEach(d => {
-    const i = its_assets[env].findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
+    const i = toArray(its_assets[env]).findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
     if (i > -1) {
       const assetData = assetsData[i];
       assetData.id = d.id;
