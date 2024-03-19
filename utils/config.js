@@ -99,7 +99,7 @@ const getITSAssets = async (env = ENVIRONMENT) => {
   env = env !== 'mainnet' ? 'testnet' : env;
   const response = await getAxelarConfig(env);
 
-  Object.values({ ...response?.assets }).filter(d => d.type === 'customInterchain').forEach(d => {
+  Object.values({ ...response?.assets }).filter(d => ['customInterchain', 'interchain', 'canonical'].includes(d.type)).forEach(d => {
     const i = its_assets[env].findIndex(_d => equalsIgnoreCase(_d.symbol, d.prettySymbol));
     if (i > -1) {
       const assetData = assetsData[i];
