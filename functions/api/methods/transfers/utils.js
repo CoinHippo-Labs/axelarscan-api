@@ -408,7 +408,7 @@ const updateSend = async (send, link, data, update_only = false) => {
         if (asset_data) {
           send.denom = asset_data.denom || send.denom;
           if (typeof send.amount === 'string') {
-            _decimals === 18 ? _decimals : send.amount.length > 18 ? 18 : _decimals;
+            _decimals = _decimals === 18 ? _decimals : send.amount.length > 18 ? 18 : _decimals;
             send.amount = Number(formatUnits(send.amount, _decimals));
           }
           if (['uluna', 'uusd'].includes(send.denom) && moment(TERRA_COLLAPSED_DATE, 'YYYYMMDD').utc().diff(moment(send.created_at?.ms), 'seconds') > 0) {
