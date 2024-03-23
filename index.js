@@ -47,6 +47,6 @@ exports.handler = async (event = {}, context, callback) => {
   }
 
   response = finalizeResponse(response, params, startTime);
-  log('debug', 'api', 'send response', response);
+  // log('debug', 'api', 'send response', response);
   return response;
 };
