@@ -597,7 +597,6 @@ mainnet:
           - "https://api-cosmoshub-ia.cosmosia.notional.ventures"
           - "https://cosmos-api.polkachu.com"
           - "https://cosmos-api.cyphercore.io"
-          - "https://lcd-cosmoshub.blockapsis.com"
           - "https://lcd.cosmos.dragonstake.io"
         timeout:
           lcd: 3000
@@ -629,9 +628,6 @@ mainnet:
         lcd:
           - "https://api-juno-ia.cosmosia.notional.ventures"
           - "https://juno-api.polkachu.com"
-          - "https://lcd-juno.itastakers.com"
-          - "https://lcd-cosmoshub.blockapsis.com"
-          - "https://api.juno.interbloc.org"
         timeout:
           lcd: 3000
       native_token:
@@ -662,8 +658,6 @@ mainnet:
         lcd:
           - "https://api-emoney-ia.cosmosia.notional.ventures"
           - "https://emoney.validator.network/api"
-          - "https://api.emoney.freak12techno.io"
-          - "https://e-money-api.ibs.team"
           - "https://api.emoney.bh.rocks"
         timeout:
           lcd: 3000
@@ -756,10 +750,8 @@ mainnet:
         lcd:
           - "https://api-kujira-ia.cosmosia.notional.ventures"
           - "https://kujira-api.polkachu.com"
-          - "https://lcd.kaiyo.kujira.setten.io"
           - "https://kujira-api.lavenderfive.com"
           - "https://rest-kujira.ecostake.com"
-          - "https://kujira-lcd.wildsage.io"
         timeout:
           lcd: 3000
       native_token:
@@ -787,7 +779,6 @@ mainnet:
       chain_name: "secret-snip"
       endpoints:
         lcd:
-          - "https://lcd.secret.express"
           - "https://secret-4.api.trivium.network:1317"
           - "https://secretnetwork-lcd.stakely.io"
         timeout:
@@ -818,7 +809,6 @@ mainnet:
       chain_name: "secret"
       endpoints:
         lcd:
-          - "https://lcd.secret.express"
           - "https://secret-4.api.trivium.network:1317"
           - "https://secretnetwork-lcd.stakely.io"
         timeout:
@@ -851,7 +841,6 @@ mainnet:
         lcd:
           - "https://sei-api.polkachu.com"
           - "https://sei-rest.brocha.in"
-          - "https://rest-sei.rhinostake.com"
         timeout:
           lcd: 3000
       native_token:
@@ -1069,7 +1058,6 @@ mainnet:
       endpoints:
         lcd:
           - "https://comdex-api.polkachu.com"
-          - "https://api-comdex.zenchainlabs.io"
           - "https://api.comdex.chaintools.tech"
           - "https://rest.comdex.one"
         timeout:
@@ -1101,8 +1089,6 @@ mainnet:
       endpoints:
         lcd:
           - "https://rest.core.persistence.one"
-          - "https://api-persistent-ia.cosmosia.notional.ventures"
-          - "https://api-persistence.starsquid.io"
           - "https://persistence-api.polkachu.com"
           - "https://persistence-api.kleomedes.network"
         timeout:
@@ -1257,9 +1243,7 @@ mainnet:
         - "acrechain"
       endpoints:
         lcd:
-          - "https://api-acre.d-stake.xyz"
           - "https://lcd-acre.synergynodes.com"
-          - "https://acre-rest.agoranodes.com"
           - "https://rest.acre.tcnetwork.io"
         timeout:
           lcd: 3000
@@ -1289,9 +1273,7 @@ mainnet:
       endpoints:
         lcd:
           - "https://stride-api.polkachu.com"
-          - "https://stride.api.chandrastation.com"
           - "https://stride-api.lavenderfive.com"
-          - "https://api.stride.silentvalidator.com"
           - "https://stride.api.kjnodes.com"
           - "https://api-stride.pupmos.network"
         timeout:
@@ -1414,8 +1396,9 @@ mainnet:
       chain_name: "rebus"
       endpoints:
         lcd:
-          - "https://api.rebuschain.com:1317"
-          - "https://api.mainnet.rebus.money:1317"
+          - "https://rebus.api.m.stavr.tech"
+          - "https://api-1.rebus.nodes.guru"
+          - "https://rebus-rest.brocha.in"
         timeout:
           lcd: 3000
       native_token:
@@ -1444,7 +1427,6 @@ mainnet:
       endpoints:
         lcd:
           - "https://api.mainnet.archway.io"
-          - "https://archway-mainnet-archive.allthatnode.com:1317"
           - "https://m-archway.api.utsa.tech"
         timeout:
           lcd: 3000
@@ -1539,7 +1521,6 @@ mainnet:
       endpoints:
         lcd:
           - "https://migaloo-api.lavenderfive.com"
-          - "https://whitewhale-mainnet-lcd.autostake.com:443"
         timeout:
           lcd: 3000
       native_token:
@@ -1569,7 +1550,6 @@ mainnet:
         lcd:
           - "https://teritori-api.lavenderfive.com:443"
           - "https://teritori-api.polkachu.com"
-          - "https://api.teritori.nodestake.top"
         timeout:
           lcd: 3000
       native_token:
@@ -1626,7 +1606,6 @@ mainnet:
       chain_name: "celestia"
       endpoints:
         lcd:
-          - "https://lcd-celestia.keplr.app"
           - "https://celestia-api.polkachu.com"
           - "https://public-celestia-lcd.numia.xyz"
           - "https://celestia-rest.mesa.newmetric.xyz"
