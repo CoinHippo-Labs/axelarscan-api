@@ -209,6 +209,12 @@ C4E:
   default_price:
     usd: 0.01
   decimals: 6
+BTSG:
+  coingecko_id: "bitsong"
+  decimals: 6
+NLS:
+  coingecko_id: "nolus"
+  decimals: 6
 LAVA:
   coingecko_id: "lava"
   decimals: 6

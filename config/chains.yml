@@ -1634,6 +1634,34 @@ mainnet:
       prefix_address: "celestia"
       prefix_chain_ids:
         - "celestia"
+    ojo:
+      chain_id: "agamotto"
+      chain_name: "ojo"
+      endpoints:
+        lcd:
+          - "https://api.agamotto-val-stage-0.ojo.network"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Ojo"
+        symbol: "OJO"
+        denom: "uojo"
+        decimals: 6
+      name: "Ojo"
+      short_name: "OJO"
+      image: "/logos/chains/ojo.svg"
+      color: "#fb4746"
+      explorer:
+        name: "Ojo"
+        url: "https://agamotto.ojo.network/agamotto"
+        icon: "/logos/explorers/ojo.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "ojo"
+      prefix_chain_ids:
+        - "agamotto"
     chihuahua:
       chain_id: "chihuahua-1"
       chain_name: "chihuahua"
@@ -1727,6 +1755,91 @@ mainnet:
       prefix_address: "fx"
       prefix_chain_ids:
         - "fxcore"
+    chain4energy:
+      chain_id: "perun-1"
+      chain_name: "chain4energy"
+      endpoints:
+        lcd:
+          - "https://lcd.c4e.io"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Chain4Energy"
+        symbol: "C4E"
+        denom: "uc4e"
+        decimals: 6
+      name: "Chain4Energy"
+      short_name: "C4E"
+      image: "/logos/chains/chain4energy.svg"
+      color: "#77b229"
+      explorer:
+        name: "Chain4Energy"
+        url: "https://explorer.c4e.io"
+        icon: "/logos/explorers/chain4energy.png"
+        block_path: "/blocks/{block}"
+        address_path: "/accounts/{address}"
+        contract_path: "/accounts/{address}"
+        transaction_path: "/transactions/{tx}"
+      prefix_address: "c4e"
+      prefix_chain_ids:
+        - "perun-"
+    bitsong:
+      chain_id: "bitsong-2b"
+      chain_name: "bitsong"
+      endpoints:
+        lcd:
+          - "https://bitsong-api.lavenderfive.com"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Bitsong"
+        symbol: "BTSG"
+        denom: "ubtsg"
+        decimals: 6
+      name: "Bitsong"
+      short_name: "BTSG"
+      image: "/logos/chains/bitsong.svg"
+      color: "#f2533c"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/bitsong"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
+      prefix_address: "bitsong"
+      prefix_chain_ids:
+        - "bitsong-"
+    nolus:
+      chain_id: "pirin-1"
+      chain_name: "nolus"
+      endpoints:
+        lcd:
+          - "https://pirin-cl.nolus.network:1317"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Nolus"
+        symbol: "NLS"
+        denom: "unls"
+        decimals: 6
+      name: "Nolus"
+      short_name: "NLS"
+      image: "/logos/chains/nolus.svg"
+      color: "#fd472c"
+      explorer:
+        name: "Nolus"
+        url: "https://ping.pub/nolus"
+        icon: "/logos/explorers/nolus.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/tx/{tx}"
+      prefix_address: "nolus"
+      prefix_chain_ids:
+        - "pirin-"
     terra-2:
       chain_id: "phoenix-1"
       chain_name: "terra-2"
@@ -3424,7 +3537,7 @@ testnet:
         transaction_path: "/transactions/{tx}"
       prefix_address: "c4e"
       prefix_chain_ids:
-        - "babajaga"
+        - "babajaga-"
     lava:
       chain_id: "lava-testnet-2"
       chain_name: "lava"
