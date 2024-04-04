@@ -1635,7 +1635,6 @@ mainnet:
       prefix_chain_ids:
         - "celestia"
     ojo:
-      disabled: true
       chain_id: "agamotto"
       chain_name: "ojo"
       endpoints:
@@ -1757,7 +1756,6 @@ mainnet:
       prefix_chain_ids:
         - "fxcore"
     chain4energy:
-      disabled: true
       chain_id: "perun-1"
       chain_name: "chain4energy"
       endpoints:
@@ -1786,7 +1784,6 @@ mainnet:
       prefix_chain_ids:
         - "perun-"
     bitsong:
-      disabled: true
       chain_id: "bitsong-2b"
       chain_name: "bitsong"
       endpoints:
@@ -1816,7 +1813,6 @@ mainnet:
       prefix_chain_ids:
         - "bitsong-"
     nolus:
-      disabled: true
       chain_id: "pirin-1"
       chain_name: "nolus"
       endpoints:
