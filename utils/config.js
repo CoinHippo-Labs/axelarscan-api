@@ -50,11 +50,12 @@ const getChain = (chain, options) => {
 };
 
 const AXELAR_CONFIG_COLLECTION = 'axelar_configs';
-const getAxelarConfig = async env => {
+const getAxelarConfig = async (env = ENVIRONMENT, forceCache = false) => {
+  env = env !== 'mainnet' ? 'testnet' : env;
   let response;
   const cacheId = 'config';
   const { data, updated_at } = { ...await get(AXELAR_CONFIG_COLLECTION, cacheId) };
-  if (data && timeDiff(updated_at) < 600) response = toJson(data);
+  if (data && timeDiff(updated_at) < 600 && !forceCache) response = toJson(data);
   else {
     response = await request(`https://axelar-${env}.s3.us-east-2.amazonaws.com/configs/${env}-config-1.x.json`);
     if (response?.assets) await write(AXELAR_CONFIG_COLLECTION, cacheId, { data: JSON.stringify(response), updated_at: moment().valueOf() });
@@ -163,6 +164,7 @@ module.exports = {
   getChainsList,
   getChainData,
   getChain,
+  getAxelarConfig,
   getAssets,
   getAssetsList,
   getAssetData,
