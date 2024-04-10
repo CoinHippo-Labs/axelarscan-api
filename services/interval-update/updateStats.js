@@ -1,6 +1,6 @@
 const METHODS = require('../../methods');
 
-module.exports = async context => {
+module.exports = async () => {
   await Promise.all(['transfersStats', 'transfersChart', 'transfersCumulativeVolume', 'transfersTotalVolume', 'transfersTotalFee', 'transfersTotalActiveUsers', 'transfersTopUsers', 'transfersTopUsersByVolume', 'GMPStats', 'GMPStatsAVGTimes', 'GMPChart', 'GMPCumulativeVolume', 'GMPTotalVolume', 'GMPTotalFee', 'GMPTotalActiveUsers', 'GMPTopUsers', 'GMPTopITSUsers', 'GMPTopITSUsersByVolume', 'GMPTopITSAssets', 'GMPTopITSAssetsByVolume'].map(d => new Promise(async resolve => {
     switch (d) {
       case 'transfersTopUsers':
@@ -8,6 +8,9 @@ module.exports = async context => {
         break;
       case 'transfersTopUsersByVolume':
         resolve(await METHODS.transfersTopUsers({ orderBy: 'volume', size: 100 }));
+        break;
+      case 'GMPStats':
+        resolve(await METHODS.GMPStats({ forceCache: true }));
         break;
       case 'GMPTopUsers':
         resolve(await METHODS.GMPTopUsers({ size: 100 }));
