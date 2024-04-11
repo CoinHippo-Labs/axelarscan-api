@@ -2998,6 +2998,35 @@ testnet:
       prefix_address: "persistence"
       prefix_chain_ids:
         - "test-core-"
+    umee:
+      chain_id: "canon-4"
+      chain_name: "umee"
+      endpoints:
+        lcd:
+          - "https://canon-4.api.network.umee.cc"
+        timeout:
+          lcd: 3000
+      native_token:
+        name: "Umee"
+        symbol: "UMEE"
+        denom: "uumee"
+        decimals: 6
+      name: "Umee"
+      short_name: "UMEE"
+      image: "/logos/chains/umee.svg"
+      color: "#fda9ff"
+      explorer:
+        name: "Mintscan"
+        url: "https://www.mintscan.io/umee-testnet"
+        icon: "/logos/explorers/mintscan.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/txs/{tx}"
+        asset_path: "/assets/ibc/{ibc_denom}"
+      prefix_address: "umee"
+      prefix_chain_ids:
+        - "canon-"
     xpla:
       chain_id: "cube_47-5"
       chain_name: "xpla"
