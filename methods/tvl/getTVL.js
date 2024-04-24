@@ -25,7 +25,7 @@ module.exports = async params => {
   const { asset, chain, force_update } = { ...params };
   let { assets, chains } = { ...params };
   assets = toArray(assets || asset);
-  assets = assets.length === 0 ? _.concat(assetsData, itsAssetsData).map(d => d.id) : await Promise.all(assets.map(d => new Promise(async resolve => resolve((await getAssetData(d, assetsData))?.denom || (await getITSAssetData(d, assetsData))?.id))));
+  assets = assets.length === 0 ? _.concat(assetsData, itsAssetsData).map(d => d.id) : await Promise.all(assets.map(d => new Promise(async resolve => resolve((await getAssetData(d, assetsData))?.denom || (await getITSAssetData(d, itsAssetsData))?.id))));
   chains = toArray(chains || chain);
   chains = chains.length === 0 ? getChainsList().filter(d => (d.chain_type === 'cosmos' || gateway_contracts?.[d.id]?.address) && !d.no_tvl).map(d => d.id) : _.uniq(_.concat('axelarnet', toArray(chains.map(d => getChainData(d)?.id))));
 
