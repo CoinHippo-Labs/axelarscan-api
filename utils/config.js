@@ -43,8 +43,14 @@ const getChains = (chainTypes = [], env = ENVIRONMENT) => {
 const getChainsList = (chainTypes = [], env = ENVIRONMENT) => Object.values(getChains(chainTypes, env)).filter(d => !d.disabled);
 const getChainData = (chain, chainTypes = [], env = ENVIRONMENT) => chain && (getChains(chainTypes, env)[removeDoubleQuote(chain).toLowerCase()] || Object.values(getChains(chainTypes)).find(d => toArray(_.concat(d.chain_id, d.chain_name, d.maintainer_id, d.aliases)).findIndex(s => equalsIgnoreCase(s, removeDoubleQuote(chain))) > -1 || toArray(d.prefix_chain_ids).findIndex(p => chain.startsWith(p)) > -1));
 const getChain = (chain, options) => {
-  const { env, fromConfig } = { ...options };
-  const chainsLookup = { terra: env !== 'mainnet' ? 'terra-3' : 'terra-2' };
+  const { fromConfig } = { ...options };
+  let { env } = { ...options };
+  env = env || ENVIRONMENT;
+  const chainsLookup = {
+    secret: env !== 'mainnet' ? undefined : 'secret-snip',
+    c4e: env !== 'mainnet' ? undefined : 'chain4energy',
+    terra: env !== 'mainnet' ? 'terra-3' : undefined,
+  };
   if (fromConfig && chainsLookup[chain]) return chainsLookup[chain];
   return getChainData(chain)?.id || chain;
 };
