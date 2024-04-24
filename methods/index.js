@@ -91,4 +91,4 @@ METHODS.getMethods = async () => {
   return { ...methodsConfig, methods: await Promise.all(methods.map(d => new Promise(async resolve => resolve({ ...d, parameters: parseParameters(d.parameters, methods), response: await parseResponse(d.response, methods) })))) };
 };
 
-module.exports = METHODS
+module.exports = METHODS;

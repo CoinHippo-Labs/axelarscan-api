@@ -70,7 +70,7 @@ resource "aws_lambda_function" "function" {
   role             = data.aws_iam_role.role.arn
   handler          = "index.handler"
   runtime          = "nodejs20.x"
-  timeout          = 300
+  timeout          = 840
   memory_size      = 512
   publish          = true
   environment {
