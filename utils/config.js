@@ -47,7 +47,6 @@ const getChain = (chain, options) => {
   let { env } = { ...options };
   env = env || ENVIRONMENT;
   const chainsLookup = {
-    secret: env !== 'mainnet' ? undefined : 'secret-snip',
     c4e: env !== 'mainnet' ? undefined : 'chain4energy',
     terra: env !== 'mainnet' ? 'terra-3' : undefined,
   };
@@ -89,7 +88,9 @@ const getAssets = async (env = ENVIRONMENT) => {
       ibc_denom = (v.tokenAddress === d.id || v.tokenAddress?.includes('/') ? v.tokenAddress : undefined) || ibc_denom;
       addresses = { ...addresses, [key]: { symbol, address, ibc_denom } };
     });
-    const assetData = { denom, native_chain: getChain(d.originAxelarChainId, { fromConfig: true }), name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image, coingecko_id: d.coingeckoId, addresses };
+    const native_chain = getChain(d.originAxelarChainId, { fromConfig: true });
+    if (native_chain && !addresses?.[native_chain] && getChainData(native_chain, 'cosmos')) addresses = { ...addresses, [native_chain]: { symbol: d.prettySymbol, ibc_denom: d.id } };
+    const assetData = { denom, native_chain, name: d.name || d.prettySymbol, symbol: d.id.endsWith('-uusdc') ? assetsData[denom]?.symbol : d.prettySymbol, decimals: d.decimals, image, coingecko_id: d.coingeckoId, addresses };
     assetsData[denom] = { ...assetsData[denom], ...assetData };
   });
   return Object.entries({ ...assetsData }).filter(([k, v]) => Object.values({ ...assetsData }).findIndex(d => toArray(d.denoms).includes(k)) < 0).map(([k, v]) => { return { ...v, id: k }; });
