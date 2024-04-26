@@ -2045,7 +2045,7 @@ testnet:
         name: "Polygon"
         symbol: "MATIC"
         decimals: 18
-      name: "Polygon"
+      name: "Polygon Sepolia"
       short_name: "POLYGON"
       image: "/logos/chains/polygon.svg"
       color: "#8247e5"
@@ -2508,7 +2508,7 @@ testnet:
         name: "Ethereum"
         symbol: "ETH"
         decimals: 18
-      name: "Linea"
+      name: "Linea Sepolia"
       short_name: "LINEA"
       image: "/logos/chains/linea.svg"
       color: "#62dfff"
