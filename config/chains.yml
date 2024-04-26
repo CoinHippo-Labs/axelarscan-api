@@ -2033,6 +2033,30 @@ testnet:
         address_path: "/address/{address}"
         contract_path: "/token/{address}"
         transaction_path: "/tx/{tx}"
+    polygon-sepolia:
+      chain_id: 80002
+      chain_name: "polygon-sepolia"
+      maintainer_id: "polygon-sepolia"
+      endpoints:
+        rpc:
+          - "https://rpc-amoy.polygon.technology"
+          - "https://rpc.ankr.com/polygon_amoy"
+      native_token:
+        name: "Polygon"
+        symbol: "MATIC"
+        decimals: 18
+      name: "Polygon"
+      short_name: "POLYGON"
+      image: "/logos/chains/polygon.svg"
+      color: "#8247e5"
+      explorer:
+        name: "Polygonscan"
+        url: "https://amoy.polygonscan.com"
+        icon: "/logos/explorers/polygonscan.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        transaction_path: "/tx/{tx}"
     polygon-zkevm:
       chain_id: 1442
       chain_name: "polygon-zkevm"
@@ -2467,6 +2491,30 @@ testnet:
       explorer:
         name: "Linea"
         url: "https://goerli.lineascan.build"
+        icon: "/logos/explorers/linea.png"
+        block_path: "/block/{block}"
+        address_path: "/address/{address}"
+        contract_path: "/token/{address}"
+        transaction_path: "/tx/{tx}"
+    linea-sepolia:
+      chain_id: 59141
+      chain_name: "linea-sepolia"
+      maintainer_id: "linea-sepolia"
+      endpoints:
+        rpc:
+          - "https://linea-sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+          - "https://rpc.sepolia.linea.build"
+      native_token:
+        name: "Ethereum"
+        symbol: "ETH"
+        decimals: 18
+      name: "Linea"
+      short_name: "LINEA"
+      image: "/logos/chains/linea.svg"
+      color: "#62dfff"
+      explorer:
+        name: "Linea"
+        url: "https://sepolia.lineascan.build"
         icon: "/logos/explorers/linea.png"
         block_path: "/block/{block}"
         address_path: "/address/{address}"
