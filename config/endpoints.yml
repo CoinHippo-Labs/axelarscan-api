@@ -5,7 +5,7 @@
 mainnet:
   rpc: "http://rpc.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
   lcd: "http://lcd.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
-  api: "https://l4sytro3nf.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/api"
+  api: "https://api.axelarscan.io/api" # "https://l4sytro3nf.execute-api.us-east-2.amazonaws.com"
   gmp_api: "https://zsg096v428.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/gmp"
   token_transfer_api: "https://xo550w4a8b.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/token"
   validator_api: "https://ww5e4qrad0.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/validator"
