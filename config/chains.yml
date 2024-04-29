@@ -1197,8 +1197,8 @@ mainnet:
       color: "#bb2d40"
       explorer:
         name: "Agoric"
-        url: "https://bigdipper.live/agoric"
-        icon: "/logos/explorers/bigdipper.png"
+        url: "https://atomscan.com/agoric"
+        icon: "/logos/explorers/mintscan.png"
         block_path: "/blocks/{block}"
         address_path: "/accounts/{address}"
         contract_path: "/accounts/{address}"
