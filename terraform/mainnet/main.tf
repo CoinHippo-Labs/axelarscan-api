@@ -91,7 +91,7 @@ resource "aws_iam_role" "lambda_role" {
 resource "aws_lambda_function" "function" {
   function_name = "${var.package_name}-${var.environment}"
   package_type  = "Image"
-  image_uri     = "499786161782.dkr.ecr.us-east-2.amazonaws.com/axelarscan-api:v${var.app_version}"
+  image_uri     = "${var.aws_account}.dkr.ecr.us-east-2.amazonaws.com/axelarscan-api:v${var.app_version}"
   role          = aws_iam_role.lambda_role.arn
   timeout       = 840
   memory_size   = 512
@@ -106,7 +106,7 @@ resource "aws_lambda_function" "function" {
       LOG_LEVEL             = var.log_level
       DD_LAMBDA_HANDLER     = "index.handler"
       DD_SITE               = "datadoghq.com"
-      DD_API_KEY_SECRET_ARN = "arn:aws:secretsmanager:us-east-2:499786161782:secret:DdApiKeySecret-gJ9EIYVknJGu-HYZ3nM"
+      DD_API_KEY_SECRET_ARN = "arn:aws:secretsmanager:us-east-2:${var.aws_account}:secret:DdApiKeySecret-gJ9EIYVknJGu-HYZ3nM"
       DD_TRACE_ENABLED      = true
       DD_ENV                = var.environment
       DD_SERVICE            = "${var.package_name}-${var.environment}"

@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/dockerize-build
   workflow_dispatch:
 jobs:
   build-and-push-latest-docker-image:

@@ -3,6 +3,11 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
+variable "aws_account" {
+  description = "AWS account id"
+  default     = ""
+}
+
 variable "iam_role" {
   description = "AWS IAM role"
   default     = "axelar-gmp-role-lambda"
