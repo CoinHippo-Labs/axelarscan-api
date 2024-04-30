@@ -5,7 +5,7 @@
 mainnet:
   rpc: "http://rpc.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:26657"
   lcd: "http://lcd.axelarscan.io:80" # "http://ec2-18-218-242-252.us-east-2.compute.amazonaws.com:1317"
-  api: "https://api.axelarscan.io/api" # "https://l4sytro3nf.execute-api.us-east-2.amazonaws.com"
+  api: "https://api.axelarscan.io/api" # "https://rbciot6683.execute-api.us-east-2.amazonaws.com"
   gmp_api: "https://api.axelarscan.io/gmp" # "https://zsg096v428.execute-api.us-east-2.amazonaws.com"
   token_transfer_api: "https://xo550w4a8b.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/token"
   validator_api: "https://ww5e4qrad0.execute-api.us-east-2.amazonaws.com" # "https://api.axelarscan.io/validator"
@@ -16,7 +16,7 @@ mainnet:
 testnet:
   rpc: "http://testnet.rpc.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:26657"
   lcd: "http://testnet.lcd.axelarscan.io:80" # "http://ec2-18-188-23-105.us-east-2.compute.amazonaws.com:1317"
-  api: "https://testnet.api.axelarscan.io/api" # "https://egrqktt9ob.execute-api.us-east-2.amazonaws.com"
+  api: "https://testnet.api.axelarscan.io/api" # "https://86z9r9x0r9.execute-api.us-east-2.amazonaws.com"
   gmp_api: "https://testnet.api.axelarscan.io/gmp" # "https://drfti3v7x2.execute-api.us-east-2.amazonaws.com"
   token_transfer_api: "https://dl5bgfjozd.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io/token"
   validator_api: "https://762da1qejd.execute-api.us-east-2.amazonaws.com" # "https://testnet.api.axelarscan.io/validator"
@@ -27,7 +27,7 @@ testnet:
 stagenet:
   rpc: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:26657"
   lcd: "http://k8s-stagenet-axelarco-bcdb269e08-d3015352a090f6b0.elb.us-east-2.amazonaws.com:1317"
-  api: "https://stagenet.api.axelarscan.io/api" # "https://kkk2m8qdv0.execute-api.us-east-2.amazonaws.com"
+  api: "https://stagenet.api.axelarscan.io/api" # "https://v5uinwdgn2.execute-api.us-east-2.amazonaws.com"
   gmp_api: "https://stagenet.api.axelarscan.io/gmp" # "https://8mcrlxwctd.execute-api.us-east-2.amazonaws.com"
   token_transfer_api: "https://glhbed8wmg.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io/token"
   validator_api: "https://g45hmsa0tg.execute-api.us-east-2.amazonaws.com" # "https://stagenet.api.axelarscan.io/validator"

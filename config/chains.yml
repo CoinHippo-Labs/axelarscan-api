@@ -1197,12 +1197,12 @@ mainnet:
       color: "#bb2d40"
       explorer:
         name: "Agoric"
-        url: "https://atomscan.com/agoric"
-        icon: "/logos/explorers/mintscan.png"
-        block_path: "/blocks/{block}"
-        address_path: "/accounts/{address}"
-        contract_path: "/accounts/{address}"
-        transaction_path: "/transactions/{tx}"
+        url: "https://agoric.explorers.guru"
+        icon: "/logos/explorers/agoric.png"
+        block_path: "/block/{block}"
+        address_path: "/account/{address}"
+        contract_path: "/account/{address}"
+        transaction_path: "/transaction/{tx}"
       prefix_address: "agoric"
       prefix_chain_ids:
         - "agoric-"
