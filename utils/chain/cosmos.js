@@ -71,7 +71,7 @@ const getIBCSupply = async (chain, denomData) => {
     valid = !!(supply && supply !== '0');
   }
   if (!valid) {
-    const response = await lcds.query('/cosmos/bank/v1beta1/supply', { 'pagination.limit': 3000 });
+    const response = await lcds.query('/cosmos/bank/v1beta1/supply', { 'pagination.limit': 10000 });
     supply = toArray(response?.supply).find(d => equalsIgnoreCase(d.denom, ibc_denom))?.amount;
     if (!(supply && supply !== '0') && response?.supply) supply = '0';
   }
