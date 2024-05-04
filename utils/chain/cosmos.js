@@ -6,7 +6,7 @@ const { toArray } = require('../parser');
 const { equalsIgnoreCase } = require('../string');
 const { formatUnits } = require('../number');
 
-const getLCDs = (chain, onlyFirstLCD = false, timeout) => {
+const getLCDs = (chain, numLCDs, timeout) => {
   const { deprecated, endpoints } = { ...getChainData(chain, 'cosmos') };
   const lcds = toArray(endpoints?.lcd);
   if (lcds.length > 0 && !deprecated) {
@@ -15,7 +15,7 @@ const getLCDs = (chain, onlyFirstLCD = false, timeout) => {
         query: async (path = '', params = {}) => {
           let output;
           if (path) {
-            for (const lcd of _.slice(lcds, 0, onlyFirstLCD ? 1 : lcds.length)) {
+            for (const lcd of _.slice(lcds, 0, numLCDs && numLCDs < lcds.length ? numLCDs : lcds.length)) {
               const response = await request(createInstance(lcd, { timeout: timeout || endpoints?.timeout?.lcd, gzip: true }), { path, params });
               const { error } = { ...response };
               if (response && !error) {
@@ -33,7 +33,7 @@ const getLCDs = (chain, onlyFirstLCD = false, timeout) => {
 };
 
 const getCosmosBalance = async (chain, address, denomData) => {
-  const lcds = getLCDs(chain, false, 10000);
+  const lcds = getLCDs(chain, 3);
   const { denom, ibc_denom, decimals } = { ...denomData };
   const denoms = toArray([denom, ibc_denom]);
   if (!(lcds && address)) return null;
@@ -58,7 +58,7 @@ const getCosmosBalance = async (chain, address, denomData) => {
 };
 
 const getIBCSupply = async (chain, denomData) => {
-  const lcds = getLCDs(chain, false, 10000);
+  const lcds = getLCDs(chain, 3, 5000);
   const { ibc_denom, decimals } = { ...denomData };
   if (!(lcds && ibc_denom)) return null;
 
