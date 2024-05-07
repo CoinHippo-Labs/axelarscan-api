@@ -4,7 +4,7 @@ const { getChainData } = require('../config');
 const { createInstance, request } = require('../http');
 const { toArray } = require('../parser');
 const { equalsIgnoreCase } = require('../string');
-const { formatUnits } = require('../number');
+const { isNumber, formatUnits } = require('../number');
 
 const getLCDs = (chain, numLCDs, timeout) => {
   const { deprecated, endpoints } = { ...getChainData(chain, 'cosmos') };
@@ -74,8 +74,9 @@ const getIBCSupply = async (chain, denomData) => {
     const response = await lcds.query('/cosmos/bank/v1beta1/supply', { 'pagination.limit': 10000 });
     supply = toArray(response?.supply).find(d => equalsIgnoreCase(d.denom, ibc_denom))?.amount;
     if (!(supply && supply !== '0') && response?.supply) supply = '0';
+    valid = isNumber(supply);
   }
-  return formatUnits(supply, decimals || 6, false);
+  return valid ? formatUnits(supply, decimals || 6, false) : null;
 };
 
 module.exports = {
