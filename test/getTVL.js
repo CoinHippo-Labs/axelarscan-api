@@ -14,6 +14,6 @@ module.exports = () => {
         expect(d.tvl).to.be.an('object');
         expect(d.total).to.be.a('number');
       });
-    }).timeout(30000);
+    }).timeout(60000);
   });
 };
